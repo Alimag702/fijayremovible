@@ -1,0 +1,899 @@
+2024-03-17T23:11:22+01:00 CRITICAL Cannot redeclare activar_plugin_gestionclinicas() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php:59) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\gestionclinicas\gestionclinicas.php on line 20
+
+2024-03-17T23:37:41+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "activar_plugin_gestionclinicas" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(565): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp.php(830): do_action_ref_array('wp', Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php(1336): WP->main('')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(16): wp()
+#5 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-17T23:38:04+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "activar_plugin_gestionclinicas" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(565): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp.php(830): do_action_ref_array('wp', Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php(1336): WP->main('')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(16): wp()
+#5 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-17T23:38:39+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "activar_plugin_gestionclinicas" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(565): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp.php(830): do_action_ref_array('wp', Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php(1336): WP->main(Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\post.php(1291): wp(Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\class-wp-posts-list-table.php(165): wp_edit_posts_query()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\edit.php(235): WP_Posts_List_Table->prepare_items()
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-17T23:38:39+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "activar_plugin_gestionclinicas" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(565): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp.php(830): do_action_ref_array('wp', Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php(1336): WP->main(Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\post.php(1291): wp(Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\class-wp-posts-list-table.php(165): wp_edit_posts_query()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\edit.php(235): WP_Posts_List_Table->prepare_items()
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-17T23:40:29+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "dcms_list_data" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('\t\t<div data-ele...', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[smartslider3 s...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-pagebuilder.php(9): the_content()
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page-templates\template-pagebuilder-full-width.php(23): get_template_part('template-parts/...', 'pagebuilder')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#9 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#10 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-18T00:57:11+01:00 CRITICAL Uncaught Error: Call to undefined function intvalue() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php:62
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(433): edit_user_table_shortcode('1', '', 'edit_user_table')
+#1 [internal function]: do_shortcode_tag(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#17 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#18 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php on line 62
+
+2024-03-18T00:58:31+01:00 CRITICAL Uncaught Error: Call to undefined function inval() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php:61
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(433): edit_user_table_shortcode('1', '', 'edit_user_table')
+#1 [internal function]: do_shortcode_tag(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#17 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#18 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php on line 61
+
+2024-03-18T01:04:28+01:00 CRITICAL Uncaught Error: Call to undefined function get_user_data() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php:62
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(433): edit_user_table_shortcode(Array, '', 'edit_user_table')
+#1 [internal function]: do_shortcode_tag(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#17 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#18 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\manageclinics\manageclinics.php on line 62
+
+2024-03-18T01:04:53+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:04:55+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:05:19+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:05:48+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:06:07+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:06:11+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:07:14+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:07:20+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:08:39+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:09:53+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-18T01:12:01+01:00 CRITICAL Uncaught Error: Object of class WP_User could not be converted to string in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php:433
+Stack trace:
+#0 [internal function]: do_shortcode_tag(Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(edit_u...', 'do_shortcode_ta...', '[edit_user_tabl...')
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[edit_user_tabl...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[edit_user_tabl...', Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[edit_user_tabl...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#17 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php on line 433
+
+2024-03-24T13:55:31+01:00 CRITICAL syntax error, unexpected token ".", expecting ")" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 33
+
+2024-03-24T13:57:31+01:00 CRITICAL syntax error, unexpected token ".", expecting ")" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 33
+
+2024-03-24T14:19:39+01:00 CRITICAL syntax error, unexpected token ".", expecting ")" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 33
+
+2024-03-24T14:33:57+01:00 CRITICAL Uncaught Error: Call to undefined function enqueue_style() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php:32
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): cargar_scripts('')
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\script-loader.php(2262): do_action('wp_enqueue_scri...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): wp_enqueue_scripts('')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(3052): do_action('wp_head')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\header.php(46): wp_head()
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(790): require_once('C:\\xampp8.2.12\\...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', true, Array)
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(48): locate_template(Array, true, true, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page-templates\template-pagebuilder-full-width.php(19): get_header()
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#16 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 32
+
+2024-03-24T14:35:46+01:00 CRITICAL syntax error, unexpected single-quoted string "/js/custom-script.js", expecting ")" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 32
+
+2024-03-24T14:46:09+01:00 CRITICAL syntax error, unexpected variable "$custom_script_url" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 32
+
+2024-03-24T14:46:21+01:00 CRITICAL syntax error, unexpected token "function" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 34
+
+2024-03-24T17:14:39+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "procesar_formulario_trabajos_pendientes" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-24T17:39:39+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 86
+
+2024-03-24T17:40:16+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 90
+
+2024-03-24T18:41:28+01:00 CRITICAL Cannot redeclare wpcf7_select_form_tag_handler() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:20) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 118
+
+2024-03-24T18:42:07+01:00 CRITICAL Cannot redeclare wpcf7_select_form_tag_handler() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:20) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 118
+
+2024-03-24T18:42:44+01:00 CRITICAL Cannot redeclare wpcf7_select_form_tag_handler() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:20) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 118
+
+2024-03-24T18:49:52+01:00 CRITICAL syntax error, unexpected variable "$html" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 82
+
+2024-03-24T18:50:43+01:00 CRITICAL syntax error, unexpected variable "$selected", expecting "," or ";" in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 91
+
+2024-03-24T18:53:08+01:00 CRITICAL Uncaught TypeError: array_unshift(): Argument #1 ($array) must be of type array, null given in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:80
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php(80): array_unshift(NULL, '&#8212;Por favo...')
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\form-tags-manager.php(551): wpcf7_select_form_tag_handler(Object(WPCF7_FormTag))
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\form-tags-manager.php(460): WPCF7_FormTagsManager->scan_callback(Array, true)
+#3 [internal function]: WPCF7_FormTagsManager->replace_callback(Array)
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\form-tags-manager.php(353): preg_replace_callback('/(\\[?)\\[(accept...', Array, '<p><label>Cl\xC3\xADn...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\form-tags-manager.php(328): WPCF7_FormTagsManager->scan('<p><label>Cl\xC3\xADn...', true)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\contact-form.php(880): WPCF7_FormTagsManager->replace_all('<p><label>Cl\xC3\xADn...')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\contact-form.php(946): WPCF7_ContactForm->replace_all_form_tags()
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\contact-form.php(646): WPCF7_ContactForm->form_elements()
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\contact-form-functions.php(269): WPCF7_ContactForm->form_html(Array)
+#10 [internal function]: {closure}(Object(WPCF7_ContactForm), Array)
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\l10n.php(147): call_user_func(Object(Closure), Object(WPCF7_ContactForm), Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\contact-form-functions.php(272): wpcf7_switch_locale('es_ES', Object(Closure), Object(WPCF7_ContactForm), Array)
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(433): wpcf7_contact_form_tag_func(Array, '', 'contact-form-7')
+#14 [internal function]: do_shortcode_tag(Array)
+#15 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\shortcodes.php(273): preg_replace_callback('/\\[(\\[?)(contac...', 'do_shortcode_ta...', '[contact-form-7...')
+#16 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): do_shortcode('[contact-form-7...')
+#17 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(205): WP_Hook->apply_filters('[contact-form-7...', Array)
+#18 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\post-template.php(256): apply_filters('the_content', '[contact-form-7...')
+#19 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\inc\views\page_layout.php(29): the_content()
+#20 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): Neve\Views\Page_Layout->render_page('')
+#21 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#22 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#23 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\template-parts\content-page.php(9): do_action('neve_do_single_...')
+#24 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(792): require('C:\\xampp8.2.12\\...')
+#25 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', false, Array)
+#26 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(206): locate_template(Array, true, false, Array)
+#27 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(47): get_template_part('template-parts/...', 'page')
+#28 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#29 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#30 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#31 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 80
+
+2024-03-24T18:53:52+01:00 CRITICAL Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, function "custom_wpcf7_add_form_tag_select" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:322
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\load.php(147): do_action('wpcf7_init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(322): wpcf7_init()
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#10 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 322
+
+2024-03-24T19:06:09+01:00 CRITICAL Cannot redeclare wpcf7_swv_add_select_rules() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:140) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 197
+
+2024-03-24T19:06:26+01:00 CRITICAL Cannot redeclare wpcf7_swv_add_select_rules() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:140) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 197
+
+2024-03-24T19:06:29+01:00 CRITICAL Cannot redeclare wpcf7_swv_add_select_rules() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php:140) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 197
+
+2024-03-24T20:26:28+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-select-plugin.php on line 2
+
+2024-03-24T20:27:00+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-select-plugin.php on line 2
+
+2024-03-24T20:27:11+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-select-plugin.php on line 2
+
+2024-03-24T20:30:07+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom_select_plugin\custom-select-plugin.php on line 2
+
+2024-03-24T20:30:16+01:00 CRITICAL syntax error, unexpected token "<", expecting end of file in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom_select_plugin\custom-select-plugin.php on line 2
+
+2024-03-24T20:37:23+01:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_selectclinica() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php:130) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php on line 19
+
+2024-03-24T20:38:30+01:00 CRITICAL Unterminated comment starting line 125 in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve-child\functions.php on line 125
+
+2024-03-24T20:55:51+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "custom_cf7_selectcolor_script" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\script-loader.php(2262): do_action('wp_enqueue_scri...')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): wp_enqueue_scripts('')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(3052): do_action('wp_head')
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\header.php(46): wp_head()
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(790): require_once('C:\\xampp8.2.12\\...')
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', true, Array)
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(48): locate_template(Array, true, true, Array)
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(10): get_header()
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#15 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-24T22:22:33+01:00 CRITICAL Uncaught Error: Call to undefined function get_file_uri() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:81
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): custom_cf7_select_script('')
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\script-loader.php(2262): do_action('wp_enqueue_scri...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): wp_enqueue_scripts('')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(3052): do_action('wp_head')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\header.php(46): wp_head()
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(790): require_once('C:\\xampp8.2.12\\...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', true, Array)
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(48): locate_template(Array, true, true, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(10): get_header()
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#16 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php on line 81
+
+2024-03-24T22:24:46+01:00 CRITICAL Uncaught Error: Call to undefined function get_plugin_file_uri() in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:81
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): custom_cf7_select_script('')
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\script-loader.php(2262): do_action('wp_enqueue_scri...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(324): wp_enqueue_scripts('')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#7 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(3052): do_action('wp_head')
+#8 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\header.php(46): wp_head()
+#9 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(790): require_once('C:\\xampp8.2.12\\...')
+#10 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template.php(725): load_template('C:\\xampp8.2.12\\...', true, Array)
+#11 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\general-template.php(48): locate_template(Array, true, true, Array)
+#12 C:\xampp8.2.12\htdocs\fijayremovible\wp-content\themes\neve\page.php(10): get_header()
+#13 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\template-loader.php(106): include('C:\\xampp8.2.12\\...')
+#14 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(19): require_once('C:\\xampp8.2.12\\...')
+#15 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#16 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php on line 81
+
+2024-03-24T23:56:48+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-24T23:57:49+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-24T23:59:15+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-25T00:00:16+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-25T22:33:04+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-25T22:33:20+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-03-25T22:34:02+01:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(643): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(13): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-12T20:27:11+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(102): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-blog-header.php(13): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\index.php(17): require('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:16:59+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:18:32+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:19:32+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:20:32+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:22:33+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-05-18T18:22:37+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:10:28+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(22): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:10:45+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:10:50+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(10): require_once('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:10:55+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugin-install.php(16): require_once('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:12:52+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugin-install.php(16): require_once('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:13:04+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin.php(34): require_once('C:\\xampp8.2.12\\...')
+#6 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugin-install.php(16): require_once('C:\\xampp8.2.12\\...')
+#7 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:13:12+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-login.php(12): require('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:13:51+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-login.php(12): require('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:14:18+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "save_form_works_register" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-settings.php(695): do_action('init')
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-config.php(104): require_once('C:\\xampp8.2.12\\...')
+#4 C:\xampp8.2.12\htdocs\fijayremovible\wp-load.php(50): require_once('C:\\xampp8.2.12\\...')
+#5 C:\xampp8.2.12\htdocs\fijayremovible\wp-login.php(12): require('C:\\xampp8.2.12\\...')
+#6 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:22:24+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "create_table_custom_form" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\plugin.php(705): do_action('activate_custom...', false)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(60): activate_plugin('custom-form/cus...', 'http://localhos...', false)
+#4 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:22:43+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "create_table_custom_form" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\plugin.php(705): do_action('activate_custom...', false)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(60): activate_plugin('custom-form/cus...', 'http://localhos...', false)
+#4 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:23:57+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "create_table_custom_form" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\plugin.php(705): do_action('activate_custom...', false)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(60): activate_plugin('custom-form/cus...', 'http://localhos...', false)
+#4 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:30:27+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "create_table_custom_form" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\plugin.php(705): do_action('activate_custom...', false)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(60): activate_plugin('custom-form/cus...', 'http://localhos...', false)
+#4 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T18:33:39+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, function "create_table_custom_form" not found or invalid function name in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\includes\plugin.php(705): do_action('activate_custom...', false)
+#3 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\plugins.php(60): activate_plugin('custom-form/cus...', 'http://localhos...', false)
+#4 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2024-06-20T19:30:34+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2024-06-20T19:31:40+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2024-06-20T19:32:35+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2024-06-20T19:33:03+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2024-06-20T19:33:11+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2024-06-20T19:34:21+02:00 CRITICAL Cannot redeclare wpcf7_add_form_tag_select() (previously declared in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\custom-form\custom-form.php:32) in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\modules\select.php on line 14
+
+2025-05-18T18:13:16+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\Requests\src\Transport\Curl.php on line 506
+
+2025-06-23T20:25:35+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, class ThemeisleSDK\Modules\Notification does not have a method "regular_dismiss" in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(192): do_action('wp_ajax_themeis...')
+#3 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+
+2025-06-23T20:25:35+02:00 CRITICAL Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, class ThemeisleSDK\Modules\Notification does not have a method "regular_dismiss" in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php:324
+Stack trace:
+#0 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#1 C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\plugin.php(517): WP_Hook->do_action(Array)
+#2 C:\xampp8.2.12\htdocs\fijayremovible\wp-admin\admin-ajax.php(192): do_action('wp_ajax_themeis...')
+#3 {main}
+  thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
+

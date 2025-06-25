@@ -1,0 +1,785 @@
+/*!*****************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./theme/assets/css/src/editor.css ***!
+  \*****************************************************************************************************************************/
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* stylelint-disable */
+
+:root {
+	--search-background: #fff;
+	--mdc-theme-max-content-width: 840px;
+	--material-footer-max-width: 960px;
+	--md-sys-color-on-surface-variant: var(--md-sys-color-on-background);
+	--mdc-theme-text-secondary-on-background: var(--md-sys-color-on-background);
+	--mdc-theme-text-hint-on-background: var(--md-sys-color-on-background);
+	--mdc-theme-text-disabled-on-background: var(--md-sys-color-on-background);
+	--mdc-theme-text-icon-on-background: var(--md-sys-color-on-background);
+	--wp-cover-block-text: #fff;
+	--back-to-top-boder: var(--md-sys-color-primary, #18191a);
+	--outline-color: rgb(0, 95, 204);
+
+	--md-sys-typescale-display-small-size: 96px;
+
+	--md-sys-typescale-display-small-line-height: 1;
+
+	--md-sys-typescale-display-small-style: normal;
+
+	--md-sys-typescale-display-small-weight: 300;
+
+	--md-sys-typescale-display-small-tracking: -1.5px;
+	--md-sys-typescale-headline-large-size: 60px;
+	--md-sys-typescale-headline-large-line-height: 1;
+	--md-sys-typescale-headline-large-style: normal;
+	--md-sys-typescale-headline-large-weight: 300;
+	--md-sys-typescale-headline-large-tracking: -0.5px;
+	--md-sys-typescale-headline-medium-size: 48px;
+	--md-sys-typescale-headline-medium-line-height: 1.04;
+	--md-sys-typescale-headline-medium-style: normal;
+	--md-sys-typescale-headline-medium-weight: 400;
+	--md-sys-typescale-headline-medium-tracking: 0px;
+	--md-sys-typescale-headline-small-size: 34px;
+	--md-sys-typescale-headline-small-line-height: 1.18;
+	--md-sys-typescale-headline-small-style: normal;
+	--md-sys-typescale-headline-small-weight: 400;
+	--md-sys-typescale-headline-small-tracking: 0.25px;
+	--md-sys-typescale-title-large-size: 24px;
+	--md-sys-typescale-title-large-line-height: 1.33;
+	--md-sys-typescale-title-large-style: normal;
+	--md-sys-typescale-title-large-weight: 400;
+	--md-sys-typescale-title-large-tracking: 0px;
+
+	/* @mixin fontvars title-medium, 1.25, 1.6, 500, 0.15; */
+
+	--md-sys-typescale-title-medium-size: 16px;
+
+	--md-sys-typescale-title-medium-line-height: 1.75;
+
+	--md-sys-typescale-title-medium-style: normal;
+
+	--md-sys-typescale-title-medium-weight: 400;
+
+	--md-sys-typescale-title-medium-tracking: 0.15px;
+	--md-sys-typescale-title-small-size: 14px;
+	--md-sys-typescale-title-small-line-height: 1.57;
+	--md-sys-typescale-title-small-style: normal;
+	--md-sys-typescale-title-small-weight: 500;
+	--md-sys-typescale-title-small-tracking: 0.1px;
+	--md-sys-typescale-body-large-size: 16px;
+	--md-sys-typescale-body-large-line-height: 1.5;
+	--md-sys-typescale-body-large-style: normal;
+	--md-sys-typescale-body-large-weight: 400;
+	--md-sys-typescale-body-large-tracking: 0.5px;
+	--md-sys-typescale-body-medium-size: 14px;
+	--md-sys-typescale-body-medium-line-height: 1.43;
+	--md-sys-typescale-body-medium-style: normal;
+	--md-sys-typescale-body-medium-weight: 400;
+	--md-sys-typescale-body-medium-tracking: 0.25px;
+	--md-sys-typescale-body-small-size: 12px;
+	--md-sys-typescale-body-small-line-height: 1.67;
+	--md-sys-typescale-body-small-style: normal;
+	--md-sys-typescale-body-small-weight: 400;
+	--md-sys-typescale-body-small-tracking: 0.4px;
+	--md-sys-typescale-label-large-size: 16px;
+	--md-sys-typescale-label-large-line-height: 1.75;
+	--md-sys-typescale-label-large-style: normal;
+	--md-sys-typescale-label-large-weight: 400;
+	--md-sys-typescale-label-large-tracking: 0.15px;
+	--md-sys-typescale-label-medium-size: 14px;
+	--md-sys-typescale-label-medium-line-height: 1.375;
+	--md-sys-typescale-label-medium-style: normal;
+	--md-sys-typescale-label-medium-weight: 500;
+	--md-sys-typescale-label-medium-tracking: 0.1px;
+	--md-sys-typescale-label-small-size: 12px;
+	--md-sys-typescale-label-small-line-height: 2;
+	--md-sys-typescale-label-small-style: normal;
+	--md-sys-typescale-label-small-weight: 500;
+	--md-sys-typescale-label-small-tracking: 1.5px;
+}
+
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Material typography styles for html elements.
+ * See https://github.com/material-foundation/material-tokens/blob/325df4f3d53fa748298d9f3650ed9cdb951f8af4/css/typography.css
+ **/
+
+h1  {
+	font-family: var(--md-sys-typescale-display-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-display-small-size, 6em);
+	line-height: var(--md-sys-typescale-display-small-line-height, 6);
+	font-style: var(--md-sys-typescale-display-small-style, normal);
+	font-weight: var(--md-sys-typescale-display-small-weight, 300);
+	letter-spacing: var(--md-sys-typescale-display-small-tracking);
+}
+
+h2  {
+	font-family: var(--md-sys-typescale-headline-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-large-size, 3.75em);
+	line-height: var(--md-sys-typescale-headline-large-line-height, 3.75);
+	font-style: var(--md-sys-typescale-headline-large-style, normal);
+	font-weight: var(--md-sys-typescale-headline-large-weight, 300);
+	letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+}
+
+h3  {
+	font-family: var(--md-sys-typescale-headline-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-medium-size, 3em);
+	line-height: var(--md-sys-typescale-headline-medium-line-height, 3.125);
+	font-style: var(--md-sys-typescale-headline-medium-style, normal);
+	font-weight: var(--md-sys-typescale-headline-medium-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
+}
+
+h4  {
+	font-family: var(--md-sys-typescale-headline-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-small-size, 2.125em);
+	line-height: var(--md-sys-typescale-headline-small-line-height, 2.5);
+	font-style: var(--md-sys-typescale-headline-small-style, normal);
+	font-weight: var(--md-sys-typescale-headline-small-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+}
+
+h5  {
+	font-family: var(--md-sys-typescale-title-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-large-size, 1.5em);
+	line-height: var(--md-sys-typescale-title-large-line-height, 2);
+	font-style: var(--md-sys-typescale-title-large-style, normal);
+	font-weight: var(--md-sys-typescale-title-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-title-large-tracking);
+}
+
+h6  {
+	font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-medium-size, 1.25em);
+	line-height: var(--md-sys-typescale-title-medium-line-height, 2);
+	font-style: var(--md-sys-typescale-title-medium-style, normal);
+	font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+p  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+figcaption  {
+	font-family: var(--md-sys-typescale-label-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-large-size, 1em);
+	line-height: var(--md-sys-typescale-label-large-line-height, 1.75);
+	font-style: var(--md-sys-typescale-label-large-style, normal);
+	font-weight: var(--md-sys-typescale-label-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-label-large-tracking);
+}
+
+/* Add typography m3 classes. */
+
+.display-large  {
+		font-family: var(--md-sys-typescale-display-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-display-large-size, 7.5em);
+		line-height: var(--md-sys-typescale-display-large-line-height, 6);
+		font-style: var(--md-sys-typescale-display-large-style, normal);
+		font-weight: var(--md-sys-typescale-display-large-weight, 300);
+		letter-spacing: var(--md-sys-typescale-display-large-tracking);
+	}
+
+.display-medium  {
+		font-family: var(--md-sys-typescale-display-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-display-medium-size, 6.875em);
+		line-height: var(--md-sys-typescale-display-medium-line-height, 6);
+		font-style: var(--md-sys-typescale-display-medium-style, normal);
+		font-weight: var(--md-sys-typescale-display-medium-weight, 300);
+		letter-spacing: var(--md-sys-typescale-display-medium-tracking);
+	}
+
+.display-small  {
+		font-family: var(--md-sys-typescale-display-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-display-small-size, 6em);
+		line-height: var(--md-sys-typescale-display-small-line-height, 6);
+		font-style: var(--md-sys-typescale-display-small-style, normal);
+		font-weight: var(--md-sys-typescale-display-small-weight, 300);
+		letter-spacing: var(--md-sys-typescale-display-small-tracking);
+	}
+
+.headline-large  {
+		font-family: var(--md-sys-typescale-headline-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-headline-large-size, 3.75em);
+		line-height: var(--md-sys-typescale-headline-large-line-height, 3.75);
+		font-style: var(--md-sys-typescale-headline-large-style, normal);
+		font-weight: var(--md-sys-typescale-headline-large-weight, 300);
+		letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+	}
+
+.headline-medium  {
+		font-family: var(--md-sys-typescale-headline-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-headline-medium-size, 3em);
+		line-height: var(--md-sys-typescale-headline-medium-line-height, 3.125);
+		font-style: var(--md-sys-typescale-headline-medium-style, normal);
+		font-weight: var(--md-sys-typescale-headline-medium-weight, 400);
+		letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
+	}
+
+.headline-small  {
+		font-family: var(--md-sys-typescale-headline-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-headline-small-size, 2.125em);
+		line-height: var(--md-sys-typescale-headline-small-line-height, 2.5);
+		font-style: var(--md-sys-typescale-headline-small-style, normal);
+		font-weight: var(--md-sys-typescale-headline-small-weight, 400);
+		letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+	}
+
+.title-large  {
+		font-family: var(--md-sys-typescale-title-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-title-large-size, 1.5em);
+		line-height: var(--md-sys-typescale-title-large-line-height, 2);
+		font-style: var(--md-sys-typescale-title-large-style, normal);
+		font-weight: var(--md-sys-typescale-title-large-weight, 400);
+		letter-spacing: var(--md-sys-typescale-title-large-tracking);
+	}
+
+.title-medium  {
+		font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-title-medium-size, 1.25em);
+		line-height: var(--md-sys-typescale-title-medium-line-height, 2);
+		font-style: var(--md-sys-typescale-title-medium-style, normal);
+		font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+		letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+	}
+
+.title-small  {
+		font-family: var(--md-sys-typescale-title-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-title-small-size, 0.875em);
+		line-height: var(--md-sys-typescale-title-small-line-height, 1.57);
+		font-style: var(--md-sys-typescale-title-small-style, normal);
+		font-weight: var(--md-sys-typescale-title-small-weight, 500);
+		letter-spacing: var(--md-sys-typescale-title-small-tracking);
+	}
+
+.label-large  {
+		font-family: var(--md-sys-typescale-label-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-label-large-size, 1em);
+		line-height: var(--md-sys-typescale-label-large-line-height, 1.75);
+		font-style: var(--md-sys-typescale-label-large-style, normal);
+		font-weight: var(--md-sys-typescale-label-large-weight, 400);
+		letter-spacing: var(--md-sys-typescale-label-large-tracking);
+	}
+
+.label-medium  {
+		font-family: var(--md-sys-typescale-label-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-label-medium-size, 0.875em);
+		line-height: var(--md-sys-typescale-label-medium-line-height, 1.375);
+		font-style: var(--md-sys-typescale-label-medium-style, normal);
+		font-weight: var(--md-sys-typescale-label-medium-weight, 500);
+		letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+	}
+
+.label-small  {
+		font-family: var(--md-sys-typescale-label-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-label-small-size, 0.75em);
+		line-height: var(--md-sys-typescale-label-small-line-height, 2);
+		font-style: var(--md-sys-typescale-label-small-style, normal);
+		font-weight: var(--md-sys-typescale-label-small-weight, 500);
+		letter-spacing: var(--md-sys-typescale-label-small-tracking);
+	}
+
+.body-large  {
+		font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-body-large-size, 1em);
+		line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+		font-style: var(--md-sys-typescale-body-large-style, normal);
+		font-weight: var(--md-sys-typescale-body-large-weight, 400);
+		letter-spacing: var(--md-sys-typescale-body-large-tracking);
+	}
+
+.body-medium  {
+		font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-body-medium-size, 0.875em);
+		line-height: var(--md-sys-typescale-body-medium-line-height, 1.25);
+		font-style: var(--md-sys-typescale-body-medium-style, normal);
+		font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+		letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+	}
+
+.body-small  {
+		font-family: var(--md-sys-typescale-body-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+		font-size: var(--md-sys-typescale-body-small-size, 0.75em);
+		line-height: var(--md-sys-typescale-body-small-line-height, 1.25);
+		font-style: var(--md-sys-typescale-body-small-style, normal);
+		font-weight: var(--md-sys-typescale-body-small-weight, 400);
+		letter-spacing: var(--md-sys-typescale-body-small-tracking);
+	}
+
+/** Backward compatibility for old typography classes. */
+
+.mdc-typography--headline1  {
+	font-family: var(--md-sys-typescale-display-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-display-small-size, 6em);
+	line-height: var(--md-sys-typescale-display-small-line-height, 6);
+	font-style: var(--md-sys-typescale-display-small-style, normal);
+	font-weight: var(--md-sys-typescale-display-small-weight, 300);
+	letter-spacing: var(--md-sys-typescale-display-small-tracking);
+}
+
+.mdc-typography--headline2  {
+	font-family: var(--md-sys-typescale-headline-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-large-size, 3.75em);
+	line-height: var(--md-sys-typescale-headline-large-line-height, 3.75);
+	font-style: var(--md-sys-typescale-headline-large-style, normal);
+	font-weight: var(--md-sys-typescale-headline-large-weight, 300);
+	letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+}
+
+.mdc-typography--headline3  {
+	font-family: var(--md-sys-typescale-headline-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-medium-size, 3em);
+	line-height: var(--md-sys-typescale-headline-medium-line-height, 3.125);
+	font-style: var(--md-sys-typescale-headline-medium-style, normal);
+	font-weight: var(--md-sys-typescale-headline-medium-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
+}
+
+.mdc-typography--headline4  {
+	font-family: var(--md-sys-typescale-headline-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-small-size, 2.125em);
+	line-height: var(--md-sys-typescale-headline-small-line-height, 2.5);
+	font-style: var(--md-sys-typescale-headline-small-style, normal);
+	font-weight: var(--md-sys-typescale-headline-small-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+}
+
+.mdc-typography--headline5  {
+	font-family: var(--md-sys-typescale-title-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-large-size, 1.5em);
+	line-height: var(--md-sys-typescale-title-large-line-height, 2);
+	font-style: var(--md-sys-typescale-title-large-style, normal);
+	font-weight: var(--md-sys-typescale-title-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-title-large-tracking);
+}
+
+.mdc-typography--headline6  {
+	font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-medium-size, 1.25em);
+	line-height: var(--md-sys-typescale-title-medium-line-height, 2);
+	font-style: var(--md-sys-typescale-title-medium-style, normal);
+	font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+.mdc-typography--subhead1  {
+	font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-medium-size, 1.25em);
+	line-height: var(--md-sys-typescale-title-medium-line-height, 2);
+	font-style: var(--md-sys-typescale-title-medium-style, normal);
+	font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+.mdc-typography--subhead2  {
+	font-family: var(--md-sys-typescale-title-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-small-size, 0.875em);
+	line-height: var(--md-sys-typescale-title-small-line-height, 1.57);
+	font-style: var(--md-sys-typescale-title-small-style, normal);
+	font-weight: var(--md-sys-typescale-title-small-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-small-tracking);
+}
+
+.mdc-typography--body1  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+.mdc-typography--body2  {
+	font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-medium-size, 0.875em);
+	line-height: var(--md-sys-typescale-body-medium-line-height, 1.25);
+	font-style: var(--md-sys-typescale-body-medium-style, normal);
+	font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+}
+
+.mdc-typography--caption  {
+	font-family: var(--md-sys-typescale-body-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-small-size, 0.75em);
+	line-height: var(--md-sys-typescale-body-small-line-height, 1.25);
+	font-style: var(--md-sys-typescale-body-small-style, normal);
+	font-weight: var(--md-sys-typescale-body-small-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-small-tracking);
+}
+
+.mdc-typography--button  {
+	font-family: var(--md-sys-typescale-label-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-large-size, 1em);
+	line-height: var(--md-sys-typescale-label-large-line-height, 1.75);
+	font-style: var(--md-sys-typescale-label-large-style, normal);
+	font-weight: var(--md-sys-typescale-label-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-label-large-tracking);
+}
+
+.mdc-typography--overline  {
+	font-family: var(--md-sys-typescale-label-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-medium-size, 0.875em);
+	line-height: var(--md-sys-typescale-label-medium-line-height, 1.375);
+	font-style: var(--md-sys-typescale-label-medium-style, normal);
+	font-weight: var(--md-sys-typescale-label-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+}
+
+.mdc-typography--subtitle1  {
+	font-family: var(--md-sys-typescale-label-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-large-size, 1em);
+	line-height: var(--md-sys-typescale-label-large-line-height, 1.75);
+	font-style: var(--md-sys-typescale-label-large-style, normal);
+	font-weight: var(--md-sys-typescale-label-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-label-large-tracking);
+}
+
+.mdc-typography--subtitle2  {
+	font-family: var(--md-sys-typescale-label-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-medium-size, 0.875em);
+	line-height: var(--md-sys-typescale-label-medium-line-height, 1.375);
+	font-style: var(--md-sys-typescale-label-medium-style, normal);
+	font-weight: var(--md-sys-typescale-label-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+}
+
+/** WordPress Gutenberg typography class registered in theme support / theme.json. */
+
+.has-display-large-font-size  {
+	font-family: var(--md-sys-typescale-display-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-display-large-size, 7.5em);
+	line-height: var(--md-sys-typescale-display-large-line-height, 6);
+	font-style: var(--md-sys-typescale-display-large-style, normal);
+	font-weight: var(--md-sys-typescale-display-large-weight, 300);
+	letter-spacing: var(--md-sys-typescale-display-large-tracking);
+}
+
+.has-display-medium-font-size  {
+	font-family: var(--md-sys-typescale-display-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-display-medium-size, 6.875em);
+	line-height: var(--md-sys-typescale-display-medium-line-height, 6);
+	font-style: var(--md-sys-typescale-display-medium-style, normal);
+	font-weight: var(--md-sys-typescale-display-medium-weight, 300);
+	letter-spacing: var(--md-sys-typescale-display-medium-tracking);
+}
+
+.has-display-small-font-size  {
+	font-family: var(--md-sys-typescale-display-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-display-small-size, 6em);
+	line-height: var(--md-sys-typescale-display-small-line-height, 6);
+	font-style: var(--md-sys-typescale-display-small-style, normal);
+	font-weight: var(--md-sys-typescale-display-small-weight, 300);
+	letter-spacing: var(--md-sys-typescale-display-small-tracking);
+}
+
+.has-headline-large-font-size  {
+	font-family: var(--md-sys-typescale-headline-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-large-size, 3.75em);
+	line-height: var(--md-sys-typescale-headline-large-line-height, 3.75);
+	font-style: var(--md-sys-typescale-headline-large-style, normal);
+	font-weight: var(--md-sys-typescale-headline-large-weight, 300);
+	letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+}
+
+.has-headline-medium-font-size  {
+	font-family: var(--md-sys-typescale-headline-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-medium-size, 3em);
+	line-height: var(--md-sys-typescale-headline-medium-line-height, 3.125);
+	font-style: var(--md-sys-typescale-headline-medium-style, normal);
+	font-weight: var(--md-sys-typescale-headline-medium-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
+}
+
+.has-headline-small-font-size  {
+	font-family: var(--md-sys-typescale-headline-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-small-size, 2.125em);
+	line-height: var(--md-sys-typescale-headline-small-line-height, 2.5);
+	font-style: var(--md-sys-typescale-headline-small-style, normal);
+	font-weight: var(--md-sys-typescale-headline-small-weight, 400);
+	letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+}
+
+.has-title-large-font-size  {
+	font-family: var(--md-sys-typescale-title-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-large-size, 1.5em);
+	line-height: var(--md-sys-typescale-title-large-line-height, 2);
+	font-style: var(--md-sys-typescale-title-large-style, normal);
+	font-weight: var(--md-sys-typescale-title-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-title-large-tracking);
+}
+
+.has-title-medium-font-size  {
+	font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-medium-size, 1.25em);
+	line-height: var(--md-sys-typescale-title-medium-line-height, 2);
+	font-style: var(--md-sys-typescale-title-medium-style, normal);
+	font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+.has-title-small-font-size  {
+	font-family: var(--md-sys-typescale-title-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-title-small-size, 0.875em);
+	line-height: var(--md-sys-typescale-title-small-line-height, 1.57);
+	font-style: var(--md-sys-typescale-title-small-style, normal);
+	font-weight: var(--md-sys-typescale-title-small-weight, 500);
+	letter-spacing: var(--md-sys-typescale-title-small-tracking);
+}
+
+.has-body-large-font-size  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+.has-body-medium-font-size  {
+	font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-medium-size, 0.875em);
+	line-height: var(--md-sys-typescale-body-medium-line-height, 1.25);
+	font-style: var(--md-sys-typescale-body-medium-style, normal);
+	font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+}
+
+.has-body-small-font-size  {
+	font-family: var(--md-sys-typescale-body-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-small-size, 0.75em);
+	line-height: var(--md-sys-typescale-body-small-line-height, 1.25);
+	font-style: var(--md-sys-typescale-body-small-style, normal);
+	font-weight: var(--md-sys-typescale-body-small-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-small-tracking);
+}
+
+.has-label-large-font-size  {
+	font-family: var(--md-sys-typescale-label-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-large-size, 1em);
+	line-height: var(--md-sys-typescale-label-large-line-height, 1.75);
+	font-style: var(--md-sys-typescale-label-large-style, normal);
+	font-weight: var(--md-sys-typescale-label-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-label-large-tracking);
+}
+
+.has-label-medium-font-size  {
+	font-family: var(--md-sys-typescale-label-medium-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-medium-size, 0.875em);
+	line-height: var(--md-sys-typescale-label-medium-line-height, 1.375);
+	font-style: var(--md-sys-typescale-label-medium-style, normal);
+	font-weight: var(--md-sys-typescale-label-medium-weight, 500);
+	letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+}
+
+.has-label-small-font-size  {
+	font-family: var(--md-sys-typescale-label-small-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-label-small-size, 0.75em);
+	line-height: var(--md-sys-typescale-label-small-line-height, 2);
+	font-style: var(--md-sys-typescale-label-small-style, normal);
+	font-weight: var(--md-sys-typescale-label-small-weight, 500);
+	letter-spacing: var(--md-sys-typescale-label-small-tracking);
+}
+
+/* Backward compat: For `body` types typography should be applied to child elements as well */
+
+.mdc-typography--body1 *  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+.mdc-typography--body2 *  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 0.875em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.25);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Setup default table style with m3 without radius */
+
+table {
+	max-width: calc(100vw - 80px);
+	border: 1px solid var(--md-sys-color-outline);
+	width: 100%;
+}
+
+@media screen and (max-width: 480px) {
+
+table {
+		max-width: calc(100vw - 48px)
+}
+	}
+
+thead tr,
+tbody th {
+	border: none;
+}
+
+th {
+	background: var(--md-sys-color-surface-variant);
+	color: var(--md-sys-color-on-surface-variant);
+	font-weight: bold;
+	border-right: 1px solid var(--md-sys-color-on-surface-variant);
+}
+
+th,
+td {
+	padding: 16px 24px;
+	border-top: 1px solid var(--md-sys-color-outline);
+	vertical-align: middle;
+}
+
+th:first-child, td:first-child {
+		border-right: 0;
+	}
+
+td {
+	border-right: 1px solid var(--md-sys-color-outline);
+}
+
+td:empty,
+th:empty {
+	border-top: 0;
+}
+
+thead:first-child tr:first-child th,
+tbody:first-child tr:first-child td {
+	border-top: 0;
+}
+
+.wp-block-table figcaption {
+	text-align: center;
+}
+
+.wp-block div  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+p  {
+	font-family: var(--md-sys-typescale-body-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-body-large-size, 1em);
+	line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+	font-style: var(--md-sys-typescale-body-large-style, normal);
+	font-weight: var(--md-sys-typescale-body-large-weight, 400);
+	letter-spacing: var(--md-sys-typescale-body-large-tracking);
+}
+
+.editor-post-title__input  {
+	font-family: var(--md-sys-typescale-headline-large-font, var(--md-ref-typeface-plain, Roboto, sans-serif));
+	font-size: var(--md-sys-typescale-headline-large-size, 6em);
+	line-height: var(--md-sys-typescale-headline-large-line-height, 6);
+	font-style: var(--md-sys-typescale-headline-large-style, normal);
+	font-weight: var(--md-sys-typescale-headline-large-weight, 300);
+	letter-spacing: var(--md-sys-typescale-headline-large-tracking);
+}
+
+body {
+	background: var(--md-sys-color-background, #fff);
+	color: var(--md-sys-color-on-background, #000);
+}
+
+blockquote {
+	border-right: 1px solid var(--md-sys-color-primary, #6200ee);
+}
+
+blockquote div {
+		margin-bottom: 1.5rem;
+		margin-top: 1rem;
+	}
+
+blockquote .wp-block-quote__citation {
+		color: currentColor;
+	}
+

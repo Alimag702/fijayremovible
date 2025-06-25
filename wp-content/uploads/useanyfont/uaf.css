@@ -1,0 +1,13 @@
+				@font-face {
+					font-family: 'dessau-medium';
+					src: url('/fijayremovible/wp-content/uploads/useanyfont/2672Dessau-Medium.woff2') format('woff2'),
+						url('/fijayremovible/wp-content/uploads/useanyfont/2672Dessau-Medium.woff') format('woff');
+					  font-display: auto;
+				}
+
+				.dessau-medium{font-family: 'dessau-medium' !important;}
+
+						h1, h2, h3, h4, h5, h6, .site-title{
+					font-family: 'dessau-medium' !important;
+				}
+		
