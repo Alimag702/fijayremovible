@@ -1,0 +1,29 @@
+# BEGIN WordPress
+# Las directivas (líneas) entre «BEGIN WordPress» y «END WordPress» son
+# generadas dinámicamente y solo deberían ser modificadas mediante filtros de WordPress.
+# Cualquier cambio en las directivas que hay entre esos marcadores serán sobrescritas.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /fijayremovible/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /fijayremovible/index.php [L]
+</IfModule>
+
+# END WordPress
+
+# BEGIN Speed Optimizer by 10Web
+# Las directivas (líneas) entre «BEGIN Speed Optimizer by 10Web» y «END Speed Optimizer by 10Web» son
+# generadas dinámicamente y solo deberían ser modificadas mediante filtros de WordPress.
+# Cualquier cambio en las directivas que hay entre esos marcadores serán sobrescritas.
+
+
+# END Speed Optimizer by 10Web
+# BEGIN ShortPixelWebp
+# Las directivas (líneas) entre «BEGIN ShortPixelWebp» y «END ShortPixelWebp» son
+# generadas dinámicamente y solo deberían ser modificadas mediante filtros de WordPress.
+# Cualquier cambio en las directivas que hay entre esos marcadores serán sobrescritas.
+
+# END ShortPixelWebp
