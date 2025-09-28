@@ -71,3 +71,21 @@ function delete_user_callback() {
     wp_die();
 }
 
+// menu para regisrigir al usuario a registro o a pagina cliente
+
+function menu_area_cliente_condicional( $items, $args ) {
+    // Cambia 'menu-principal' por el location de tu menú (Apariencia > Menús)
+    if ( $args->theme_location == 'menu-secundario' ) {
+        foreach ( $items as $item ) {
+            if ( $item->title == 'Área Cliente' ) { // Texto del ítem de menú
+                if ( is_user_logged_in() ) {
+                    $item->url = site_url('/area-cliente/'); // página para usuarios logueados
+                } else {
+                    $item->url = site_url('/mi-cuenta/'); // página para login/registro
+                }
+            }
+        }
+    }
+    return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'menu_area_cliente_condicional', 10, 2 );

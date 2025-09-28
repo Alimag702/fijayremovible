@@ -12,9 +12,19 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 
 /*Plugin manage clinics*/
 
-.manageclinics{
+.manageclinics {
     font-size: x-large !important;
     width: 75% !important;
     margin-left: 13% !important; 
-
 } 
+
+ body.user-registration-page .user-registration:not(.user-registration-MyAccount) .ur-form-row .ur-form-grid .ur-field-item label:not(.user-registration-error) {
+    color: #f9f9f9 !important;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 19px;
+}
+
+.user-registration-password-hint {
+    color: #f9f9f9 !important;
+}

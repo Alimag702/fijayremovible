@@ -897,3 +897,19 @@ Stack trace:
 #3 {main}
   thrown in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\class-wp-hook.php on line 324
 
+2025-08-11T23:51:26+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\Requests\src\Utility\CaseInsensitiveDictionary.php on line 8
+
+2025-08-11T23:51:26+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\Requests\src\Utility\CaseInsensitiveDictionary.php on line 8
+
+2025-09-20T11:38:45+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\lib\plugins-cross-sell-page\core\class-rest-api.php on line 14
+
+2025-09-20T11:38:46+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\lib\plugins-cross-sell-page\core\class-rest-api.php on line 14
+
+2025-09-24T18:29:26+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\conditionals\non-multisite-conditional.php on line 8
+
+2025-09-24T18:29:26+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\conditionals\non-multisite-conditional.php on line 8
+
+2025-09-25T21:58:40+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\front-end\feed-improvements.php on line 3
+
+2025-09-25T21:58:40+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\front-end\feed-improvements.php on line 3
+
