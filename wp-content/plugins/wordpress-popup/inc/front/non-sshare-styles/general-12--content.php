@@ -227,6 +227,10 @@ foreach ( $typos as $key => $prop ) {
 		// Mobile styles.
 		$style     .= $prefix_mobile . $component . ' ' . $key . ':not([class*="forminator-"]) {';
 			$style .= ( 'li' === $key ) ? 'margin: 0 0 5px;' : 'margin: 0 0 10px;';
+		if ( 'li' === $key ) {
+			$style .= 'display: flex;';
+			$style .= 'align-items: flex-start;';
+		}
 			$style .= ( ! $is_vanilla ) ? 'color: ' . $font_color . ';' : '';
 			$style .= ( 'inherit' !== $font_family ) ? 'font: ' . $mobile_font_weight . ' ' . $mobile_font_size . '/' . $mobile_line_height . ' ' . $font_family . ';' : '';
 			$style .= ( 'inherit' === $font_family ) ? 'font-size: ' . $mobile_font_size . ';' : '';
@@ -244,11 +248,15 @@ foreach ( $typos as $key => $prop ) {
 		if ( 'li' === $key && ! $is_vanilla ) {
 
 			$style     .= $prefix_mobile . $component . ' ol:not([class*="forminator-"]) ' . $key . ':before {';
-				$style .= 'color: ' . $colors['ol_counter'];
+				$style .= 'color: ' . $colors['ol_counter'] . ';';
+				$style .= 'flex-shrink: 0;';
 			$style     .= '}';
 
 			$style     .= $prefix_mobile . $component . ' ul:not([class*="forminator-"]) ' . $key . ':before {';
-				$style .= 'background-color: ' . $colors['ul_bullets'];
+				$style .= 'color: ' . $colors['ul_bullets'] . ';';
+				$style .= 'content: "\2022";';
+				$style .= 'font-size: 16px;';
+				$style .= 'flex-shrink: 0;';
 			$style     .= '}';
 
 		}

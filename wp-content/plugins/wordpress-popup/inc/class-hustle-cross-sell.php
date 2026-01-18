@@ -1,12 +1,19 @@
 <?php
 /**
- * File for Hustle_Cross_Sell class.
+ * Hustle Cross Sell Class
+ *
  * Set's and loads the Cross Sell sub module
  *
  * @package Hustle
  * @since 7.8.7
  */
 
+/**
+ * File for Hustle_Cross_Sell class.
+ *
+ * @package Hustle
+ * @since 7.8.7
+ */
 class Hustle_Cross_Sell {
 
 	/**
@@ -42,11 +49,10 @@ class Hustle_Cross_Sell {
 				'menu_slug'       => 'hustle_cross_sell', // Optional - Strongly recommended to set in order to avoid admin page conflicts with other WPMU DEV plugins.
 				'position'        => 13, // Optional – Usually a specific position will be required.
 				'translation_dir' => dirname( Opt_In::$plugin_path ) . '/languages', // Optional – The directory where the translation files are located.
-				//'menu_hook_priority' => 99, // Optional – The priority of the menu hook.
+				// 'menu_hook_priority' => 99, // Optional – The priority of the menu hook.
 			);
 
 			$cross_sell = new \WPMUDEV\Modules\Plugin_Cross_Sell( $submenu_params );
 		}
 	}
-
 }

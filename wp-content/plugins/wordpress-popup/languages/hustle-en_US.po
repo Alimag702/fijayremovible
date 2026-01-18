@@ -1,12 +1,12 @@
-# Copyright (C) 2025 Hustle 7.8.7
-# This file is distributed under the same license as the Hustle 7.8.7 package.
+# Copyright (C) 2026 Hustle 7.8.9.2
+# This file is distributed under the same license as the Hustle 7.8.9.2 package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hustle 7.8.7\n"
+"Project-Id-Version: Hustle 7.8.9.2\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-25 16:31+0000\n"
+"POT-Creation-Date: 2026-01-14 10:09+0000\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -74,31 +74,31 @@ msgstr ""
 msgid "There was an issue processing your request. Please reload the page and try again."
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:617, views/admin/commons/wizard/background-image.php:34, views/admin/commons/sui-wizard/tab-content/image-uploader.php:47
+#: inc/class-hustle-admin-page-abstract.php:638, views/admin/commons/wizard/background-image.php:34, views/admin/commons/sui-wizard/tab-content/image-uploader.php:48
 msgid "Clear"
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:618
+#: inc/class-hustle-admin-page-abstract.php:639
 msgid "Clear color"
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:619, views/admin/sshare/appearance/tpl--icons-style.php:14, views/admin/commons/sui-listing/dialogs/import-module.php:148, views/admin/commons/sui-wizard/elements/palette-general.php:234, views/admin/commons/sui-wizard/elements/palette-general.php:312, views/admin/commons/sui-wizard/elements/palette-general.php:396, views/admin/commons/sui-wizard/elements/palette-general.php:440, views/admin/commons/sui-wizard/elements/palette-optin.php:36, views/admin/commons/sui-wizard/elements/palette-optin.php:140, views/admin/commons/sui-wizard/elements/palette-optin.php:189, views/admin/commons/sui-wizard/elements/palette-optin.php:288, views/admin/commons/sui-wizard/elements/palette-optin.php:352, views/admin/commons/sui-wizard/elements/palette-optin.php:436, views/admin/commons/sui-wizard/elements/palette-optin.php:540, views/admin/commons/sui-wizard/elements/palette-optin.php:609, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:72, views/admin/commons/sui-wizard/tab-appearance/rows/layout.php:130, views/admin/commons/sui-wizard/tab-appearance/rows/layout.php:56, views/admin/commons/sui-wizard/tab-appearance/rows/typography.php:39, views/admin/commons/sui-wizard/tab-appearance/row-customize-elements/optin_form/form-fields.php:22
+#: inc/class-hustle-admin-page-abstract.php:640, views/admin/sshare/appearance/tpl--icons-style.php:14, views/admin/commons/sui-listing/dialogs/import-module.php:148, views/admin/commons/sui-wizard/elements/palette-general.php:234, views/admin/commons/sui-wizard/elements/palette-general.php:312, views/admin/commons/sui-wizard/elements/palette-general.php:396, views/admin/commons/sui-wizard/elements/palette-general.php:440, views/admin/commons/sui-wizard/elements/palette-optin.php:36, views/admin/commons/sui-wizard/elements/palette-optin.php:140, views/admin/commons/sui-wizard/elements/palette-optin.php:189, views/admin/commons/sui-wizard/elements/palette-optin.php:288, views/admin/commons/sui-wizard/elements/palette-optin.php:352, views/admin/commons/sui-wizard/elements/palette-optin.php:436, views/admin/commons/sui-wizard/elements/palette-optin.php:540, views/admin/commons/sui-wizard/elements/palette-optin.php:609, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:72, views/admin/commons/sui-wizard/tab-appearance/rows/layout.php:130, views/admin/commons/sui-wizard/tab-appearance/rows/layout.php:56, views/admin/commons/sui-wizard/tab-appearance/rows/typography.php:39, views/admin/commons/sui-wizard/tab-appearance/row-customize-elements/optin_form/form-fields.php:22
 msgid "Default"
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:620
+#: inc/class-hustle-admin-page-abstract.php:641
 msgid "Select default color"
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:621
+#: inc/class-hustle-admin-page-abstract.php:642
 msgid "Select Color"
 msgstr ""
 
-#: inc/class-hustle-admin-page-abstract.php:622
+#: inc/class-hustle-admin-page-abstract.php:643
 msgid "Color value"
 msgstr ""
 
-#: inc/class-hustle-dashboard-admin.php:38, inc/class-hustle-module-admin.php:126, views/admin/settings/general/dashboard.php:36
+#: inc/class-hustle-dashboard-admin.php:38, inc/class-hustle-module-admin.php:183, views/admin/settings/general/dashboard.php:36
 msgid "Dashboard"
 msgstr ""
 
@@ -138,7 +138,7 @@ msgstr ""
 msgid "Total Modules"
 msgstr ""
 
-#: inc/class-hustle-dashboard-admin.php:281, inc/class-hustle-dashboard-admin.php:317, inc/class-hustle-module-page-abstract.php:805, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:383, inc/providers/mailster/class-hustle-mailster-form-settings.php:433, views/admin/integrations-page/summary.php:33, views/admin/commons/sui-wizard/elements/image-fitting.php:35, views/admin/commons/sui-wizard/tab-content/call-to-action.php:137, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1396, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/text-decoration.php:12, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/text-transform.php:12
+#: inc/class-hustle-dashboard-admin.php:281, inc/class-hustle-dashboard-admin.php:317, inc/class-hustle-module-page-abstract.php:805, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:383, inc/providers/mailster/class-hustle-mailster-form-settings.php:433, views/admin/integrations-page/summary.php:33, views/admin/commons/sui-wizard/elements/image-fitting.php:35, views/admin/commons/sui-wizard/tab-content/call-to-action.php:137, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1407, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/text-decoration.php:12, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/text-transform.php:12
 msgid "None"
 msgstr ""
 
@@ -146,39 +146,39 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:127, views/admin/global/sui-components/footer/navigation.php:29, views/admin/global/sui-components/footer/navigation.php:16
+#: inc/class-hustle-module-admin.php:81, inc/class-hustle-module-admin.php:82, inc/class-hustle-module-admin.php:191
+msgid "Get Hustle Pro"
+msgstr ""
+
+#: inc/class-hustle-module-admin.php:184, views/admin/global/sui-components/footer/navigation.php:29, views/admin/global/sui-components/footer/navigation.php:16
 msgid "Docs"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:145
+#: inc/class-hustle-module-admin.php:202
 msgid "Renew Membership"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:137
+#: inc/class-hustle-module-admin.php:194
 msgid "Upgrade"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:134
-msgid "Upgrade For 80% Off!"
-msgstr ""
-
-#: inc/class-hustle-module-admin.php:169
+#: inc/class-hustle-module-admin.php:226
 msgid "Rate Hustle"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:172
+#: inc/class-hustle-module-admin.php:229
 msgid "Premium Support"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:172, views/admin/global/sui-components/footer/navigation.php:28, views/admin/global/sui-components/footer/navigation.php:15
+#: inc/class-hustle-module-admin.php:229, views/admin/global/sui-components/footer/navigation.php:28, views/admin/global/sui-components/footer/navigation.php:15
 msgid "Support"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:177, views/admin/global/sui-components/footer/navigation.php:27, views/admin/global/sui-components/footer/navigation.php:14
+#: inc/class-hustle-module-admin.php:234, views/admin/global/sui-components/footer/navigation.php:27, views/admin/global/sui-components/footer/navigation.php:14
 msgid "Roadmap"
 msgstr ""
 
-#: inc/class-hustle-module-admin.php:251, inc/opt-in-utils.php:1376
+#: inc/class-hustle-module-admin.php:308, inc/opt-in-utils.php:1376
 msgid "Hustle"
 msgstr ""
 
@@ -228,11 +228,11 @@ msgstr ""
 msgid "Module successfully duplicated."
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:610, inc/hustle-modules-common-admin-ajax.php:643
+#: inc/class-hustle-module-page-abstract.php:610, inc/hustle-modules-common-admin-ajax.php:666
 msgid "Module's tracking data successfully reset."
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:611, inc/hustle-modules-common-admin-ajax.php:678
+#: inc/class-hustle-module-page-abstract.php:611, inc/hustle-modules-common-admin-ajax.php:701
 msgid "Module's Email List successfully purged."
 msgstr ""
 
@@ -356,11 +356,11 @@ msgstr ""
 msgid "Browser Cookie"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:797, views/admin/commons/sui-wizard/tab-visibility/conditions.php:663
+#: inc/class-hustle-module-page-abstract.php:797, views/admin/commons/sui-wizard/tab-visibility/conditions.php:674
 msgid "Mobile only"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:798, views/admin/commons/sui-wizard/tab-visibility/conditions.php:678
+#: inc/class-hustle-module-page-abstract.php:798, views/admin/commons/sui-wizard/tab-visibility/conditions.php:689
 msgid "Desktop only"
 msgstr ""
 
@@ -380,19 +380,19 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:806, views/admin/commons/sui-wizard/tab-visibility/conditions.php:991
+#: inc/class-hustle-module-page-abstract.php:806, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1002
 msgid "True"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:807, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1002
+#: inc/class-hustle-module-page-abstract.php:807, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1013
 msgid "False"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:808, views/admin/commons/sui-wizard/tab-visibility/conditions.php:534
+#: inc/class-hustle-module-page-abstract.php:808, views/admin/commons/sui-wizard/tab-visibility/conditions.php:545
 msgid "Logged in"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:809, views/admin/commons/sui-wizard/tab-visibility/conditions.php:545
+#: inc/class-hustle-module-page-abstract.php:809, views/admin/commons/sui-wizard/tab-visibility/conditions.php:556
 msgid "Logged out"
 msgstr ""
 
@@ -560,15 +560,15 @@ msgstr ""
 msgid "Use this image"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:905, views/admin/commons/sui-wizard/tab-behaviour/additional-settings.php:218, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:68, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:165, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:10, views/admin/commons/sui-wizard/tab-emails/automated-email.php:32, views/admin/commons/sui-wizard/tab-emails/automated-email.php:125, views/admin/commons/sui-wizard/tab-emails/submission-behaviour.php:71, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:38, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:66, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:38
+#: inc/class-hustle-module-page-abstract.php:905, views/admin/commons/sui-wizard/tab-behaviour/additional-settings.php:218, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:68, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:165, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:10, views/admin/commons/sui-wizard/tab-emails/automated-email.php:32, views/admin/commons/sui-wizard/tab-emails/automated-email.php:125, views/admin/commons/sui-wizard/tab-emails/submission-behaviour.php:71, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:40, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:67, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:39
 msgid "seconds"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:906, views/admin/commons/sui-wizard/tab-behaviour/additional-settings.php:225, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:73, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:170, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:11, views/admin/commons/sui-wizard/tab-emails/automated-email.php:33, views/admin/commons/sui-wizard/tab-emails/automated-email.php:126, views/admin/commons/sui-wizard/tab-emails/submission-behaviour.php:74, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:44, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:72, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:44
+#: inc/class-hustle-module-page-abstract.php:906, views/admin/commons/sui-wizard/tab-behaviour/additional-settings.php:225, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:73, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:170, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:11, views/admin/commons/sui-wizard/tab-emails/automated-email.php:33, views/admin/commons/sui-wizard/tab-emails/automated-email.php:126, views/admin/commons/sui-wizard/tab-emails/submission-behaviour.php:74, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:46, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:73, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:45
 msgid "minutes"
 msgstr ""
 
-#: inc/class-hustle-module-page-abstract.php:907, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:78, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:175, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:12, views/admin/commons/sui-wizard/tab-emails/automated-email.php:34, views/admin/commons/sui-wizard/tab-emails/automated-email.php:127, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:50, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:78, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:50
+#: inc/class-hustle-module-page-abstract.php:907, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:78, views/admin/commons/sui-wizard/tab-behaviour/closing-methods.php:175, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:12, views/admin/commons/sui-wizard/tab-emails/automated-email.php:34, views/admin/commons/sui-wizard/tab-emails/automated-email.php:127, views/admin/commons/sui-wizard/tab-behaviour/trigger/adblock.php:52, views/admin/commons/sui-wizard/tab-behaviour/trigger/exit-intent.php:79, views/admin/commons/sui-wizard/tab-behaviour/trigger/time.php:51
 msgid "hours"
 msgstr ""
 
@@ -860,10 +860,6 @@ msgstr ""
 msgid "Tutorials"
 msgstr ""
 
-#: inc/class-hustle-upsell-page.php:26, inc/class-hustle-upsell-page.php:28, inc/opt-in-utils.php:1378, views/admin/dashboard/components/box-upsell.php:12
-msgid "Hustle Pro"
-msgstr ""
-
 #: inc/class-hustle-wp-dashboard-page.php:109, views/admin/widget-analytics.php:38, views/admin/commons/sui-listing/elements/tracking-data-chart.php:75
 msgid "Views"
 msgstr ""
@@ -949,7 +945,7 @@ msgstr ""
 msgid "Active Integrations"
 msgstr ""
 
-#: inc/hustle-entries-admin.php:786, inc/hustle-sshare-model.php:301, inc/providers/icontact/hustle-icontact.php:245, inc/providers/madmimi/hustle-mad-mimi.php:227, inc/providers/mailster/class-hustle-mailster-form-settings.php:341, views/admin/commons/sui-wizard/dialogs/optin-fields.php:16
+#: inc/hustle-entries-admin.php:786, inc/hustle-sshare-model.php:301, inc/providers/icontact/hustle-icontact.php:245, inc/providers/mailster/class-hustle-mailster-form-settings.php:341, views/admin/commons/sui-wizard/dialogs/optin-fields.php:16
 msgid "Email"
 msgstr ""
 
@@ -1032,15 +1028,15 @@ msgstr ""
 msgid "Inline"
 msgstr ""
 
-#: inc/hustle-module-model.php:28, inc/hustle-sshare-model.php:43, views/admin/widget-analytics.php:73, views/admin/sshare/display-options/tpl--widget.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:125, views/admin/commons/sui-wizard/tab-visibility/conditions.php:121
+#: inc/hustle-module-model.php:28, inc/hustle-sshare-model.php:43, views/admin/widget-analytics.php:73, views/admin/sshare/display-options/tpl--widget.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:125, views/admin/commons/sui-wizard/tab-visibility/conditions.php:131
 msgid "Widget"
 msgstr ""
 
-#: inc/hustle-module-model.php:29, inc/hustle-sshare-model.php:44, views/admin/widget-analytics.php:75, views/admin/settings/unsubscribe/shortcode.php:13, views/admin/sshare/display-options/tpl--shortcode.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:165, views/admin/commons/sui-wizard/tab-visibility/conditions.php:137
+#: inc/hustle-module-model.php:29, inc/hustle-sshare-model.php:44, views/admin/widget-analytics.php:75, views/admin/settings/unsubscribe/shortcode.php:13, views/admin/sshare/display-options/tpl--shortcode.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:165, views/admin/commons/sui-wizard/tab-visibility/conditions.php:147
 msgid "Shortcode"
 msgstr ""
 
-#: inc/hustle-module-model.php:601, inc/hustle-sshare-model.php:179
+#: inc/hustle-module-model.php:602, inc/hustle-sshare-model.php:179
 msgid "This field is required"
 msgstr ""
 
@@ -1144,31 +1140,31 @@ msgid "You can't import modules of other than \"Social Sharing\" type into Socia
 msgstr ""
 
 #. translators: module name
-#: inc/hustle-modules-common-admin-ajax.php:603
+#: inc/hustle-modules-common-admin-ajax.php:626
 msgid "Tracking updated on %s"
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:588
+#: inc/hustle-modules-common-admin-ajax.php:611
 msgid "Tracking is disabled on %s"
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:589
+#: inc/hustle-modules-common-admin-ajax.php:612
 msgid "Tracking is enabled on %s"
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:711
+#: inc/hustle-modules-common-admin-ajax.php:734
 msgid "Please select the settings to import."
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:745
+#: inc/hustle-modules-common-admin-ajax.php:768
 msgid "Access denied. You do not have permission to perform this action."
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:832
+#: inc/hustle-modules-common-admin-ajax.php:855
 msgid "Creating a new module went wrong"
 msgstr ""
 
-#: inc/hustle-modules-common-admin-ajax.php:844, inc/hustle-modules-common-admin-ajax.php:912
+#: inc/hustle-modules-common-admin-ajax.php:867, inc/hustle-modules-common-admin-ajax.php:935
 msgid "Failed"
 msgstr ""
 
@@ -1365,11 +1361,11 @@ msgid "%s ago"
 msgstr ""
 
 #. translators: %s: geoip provider name.
-#: inc/opt-in-geo.php:316
+#: inc/opt-in-geo.php:322
 msgid "GeoIP provider %s does not exist. Switching to default."
 msgstr ""
 
-#: inc/opt-in-geo.php:305
+#: inc/opt-in-geo.php:311
 msgid "Local IP Lookup Table"
 msgstr ""
 
@@ -2730,11 +2726,15 @@ msgstr ""
 msgid "Note: When enabled, this will set a tracking cookie in your visitor’s web browser."
 msgstr ""
 
+#: inc/opt-in-utils.php:1378, views/admin/dashboard/components/box-upsell.php:12
+msgid "Hustle Pro"
+msgstr ""
+
 #: inc/opt-in-wpmudev-api.php:105
 msgid "Retry"
 msgstr ""
 
-#: inc/opt-in-wpmudev-api.php:108, views/admin/dialogs/final-integration-form-delete.php:25, views/admin/dialogs/migrate-dismiss-confirmation.php:28, views/admin/dialogs/remove-active-integration.php:62, views/admin/email-lists/dialog-filter.php:130, views/admin/settings/dialogs/data-reset-data-dialog.php:28, views/admin/settings/dialogs/palettes-edit-palette.php:195, views/admin/settings/dialogs/privacy-ip-delete.php:84, views/admin/commons/sui-listing/dialogs/delete-module.php:83, views/admin/commons/sui-listing/dialogs/import-module.php:92, views/admin/commons/sui-listing/dialogs/manage-tracking.php:30, views/admin/commons/sui-wizard/dialogs/add-platforms.php:39, views/admin/commons/sui-wizard/dialogs/add-schedule.php:668, views/admin/commons/sui-wizard/dialogs/add-schedule.php:706, views/admin/commons/sui-wizard/dialogs/optin-fields.php:118, views/admin/commons/sui-wizard/dialogs/visibility-options.php:151
+#: inc/opt-in-wpmudev-api.php:108, views/admin/dialogs/final-integration-form-delete.php:25, views/admin/dialogs/migrate-dismiss-confirmation.php:28, views/admin/dialogs/remove-active-integration.php:62, views/admin/email-lists/dialog-filter.php:130, views/admin/settings/dialogs/data-reset-data-dialog.php:28, views/admin/settings/dialogs/palettes-edit-palette.php:199, views/admin/settings/dialogs/privacy-ip-delete.php:84, views/admin/commons/sui-listing/dialogs/delete-module.php:83, views/admin/commons/sui-listing/dialogs/import-module.php:92, views/admin/commons/sui-listing/dialogs/manage-tracking.php:30, views/admin/commons/sui-wizard/dialogs/add-platforms.php:39, views/admin/commons/sui-wizard/dialogs/add-schedule.php:668, views/admin/commons/sui-wizard/dialogs/add-schedule.php:706, views/admin/commons/sui-wizard/dialogs/optin-fields.php:118, views/admin/commons/sui-wizard/dialogs/visibility-options.php:151
 msgid "Cancel"
 msgstr ""
 
@@ -2748,79 +2748,87 @@ msgstr ""
 msgid "%s Preview"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:110
+#: inc/front/hustle-module-front-ajax.php:111, inc/front/hustle-module-front-ajax.php:1058
+msgid "Invalid security token."
+msgstr ""
+
+#: inc/front/hustle-module-front-ajax.php:116
 msgid "Invalid module ID!"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:114, inc/front/hustle-module-front-ajax.php:1051, inc/front/hustle-module-front-ajax.php:1094, inc/provider/class-hustle-provider-admin-ajax.php:488, inc/provider/class-hustle-provider-admin-ajax.php:556
+#: inc/front/hustle-module-front-ajax.php:126, inc/front/hustle-module-front-ajax.php:1069, inc/front/hustle-module-front-ajax.php:1112, inc/provider/class-hustle-provider-admin-ajax.php:488, inc/provider/class-hustle-provider-admin-ajax.php:556
 msgid "Invalid module!"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:262
+#: inc/front/hustle-module-front-ajax.php:274
 msgid "Invalid module"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:266
+#: inc/front/hustle-module-front-ajax.php:278
 msgid "Module is not active"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:304
+#: inc/front/hustle-module-front-ajax.php:316
 msgid "Error saving form"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:567
+#: inc/front/hustle-module-front-ajax.php:579
 msgid "reCAPTCHA must be verified to submit the form."
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:595
+#: inc/front/hustle-module-front-ajax.php:607
 msgid "reCAPTCHA validation failed. Please try again."
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:605
+#: inc/front/hustle-module-front-ajax.php:617
 msgid "reCAPTCHA validation failed. The score is too low."
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:834, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:76, inc/providers/mailchimp/hustle-mailchimp-api.php:395, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:201, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:161, inc/providers/sendy/hustle-sendy.php:168
+#: inc/front/hustle-module-front-ajax.php:846, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:76, inc/providers/mailchimp/hustle-mailchimp-api.php:395, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:201, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:161, inc/providers/sendy/hustle-sendy.php:168
 msgid "Something went wrong."
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1024
+#: inc/front/hustle-module-front-ajax.php:1036
 msgid "K"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1025
+#: inc/front/hustle-module-front-ajax.php:1037
 msgid "M"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1046
+#: inc/front/hustle-module-front-ajax.php:1064
 msgid "Invalid Request!"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1069, inc/front/hustle-module-front-ajax.php:1113
+#: inc/front/hustle-module-front-ajax.php:1087, inc/front/hustle-module-front-ajax.php:1131
 msgid "Stats Successfully saved"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1067, inc/front/hustle-module-front-ajax.php:1111
+#: inc/front/hustle-module-front-ajax.php:1085, inc/front/hustle-module-front-ajax.php:1129
 msgid "Error saving stats"
 msgstr ""
 
-#: inc/front/hustle-module-front-ajax.php:1089
+#: inc/front/hustle-module-front-ajax.php:1107
 msgid "Invalid Request: Module id invalid"
 msgstr ""
 
-#: inc/front/hustle-module-renderer.php:1662, inc/metas/class-hustle-meta-base-emails.php:105, views/admin/commons/sui-wizard/tab-emails/form-fields.php:47, views/admin/commons/sui-wizard/tab-appearance/rows/custom-css.php:54
+#: inc/front/hustle-module-renderer.php:163
+msgid "popup"
+msgstr ""
+
+#: inc/front/hustle-module-renderer.php:1665, inc/metas/class-hustle-meta-base-emails.php:105, views/admin/commons/sui-wizard/tab-emails/form-fields.php:47, views/admin/commons/sui-wizard/tab-appearance/rows/custom-css.php:54
 msgid "Submit"
 msgstr ""
 
-#: inc/front/hustle-module-renderer.php:1663
+#: inc/front/hustle-module-renderer.php:1666
 msgid "Form is being submitted, please wait a bit."
 msgstr ""
 
-#: inc/front/hustle-module-renderer.php:1920, views/general/unsubscribe-form.php:17
+#: inc/front/hustle-module-renderer.php:1923, views/general/unsubscribe-form.php:17
 msgid "There was an error submitting the form"
 msgstr ""
 
-#: inc/front/hustle-module-renderer.php:1947
+#: inc/front/hustle-module-renderer.php:1950
 msgid "Never see this message again"
 msgstr ""
 
@@ -2829,11 +2837,11 @@ msgid "Custom user font"
 msgstr ""
 
 #. translators: Plugin name
-#: inc/helpers/class-hustle-layout-helper.php:313, views/admin/image-markup.php:14
+#: inc/helpers/class-hustle-layout-helper.php:319, views/admin/image-markup.php:14
 msgid "%s image"
 msgstr ""
 
-#: inc/helpers/class-hustle-layout-helper.php:352, views/admin/commons/sui-wizard/elements/palette-optin.php:183
+#: inc/helpers/class-hustle-layout-helper.php:358, views/admin/commons/sui-wizard/elements/palette-optin.php:183
 msgid "Select"
 msgstr ""
 
@@ -3284,7 +3292,7 @@ msgstr ""
 msgid "No Settings available for %s"
 msgstr ""
 
-#: inc/provider/class-hustle-provider-abstract.php:1318, inc/providers/activecampaign/hustle-activecampaign.php:215, inc/providers/aweber/hustle-aweber.php:407, inc/providers/campaignmonitor/hustle-campaignmonitor.php:231, inc/providers/convertkit/hustle-convertkit.php:197, inc/providers/e_newsletter/hustle-e-newsletter.php:199, inc/providers/getresponse/hustle-get-response.php:197, inc/providers/icontact/hustle-icontact.php:223, inc/providers/infusionsoft/hustle-infusion-soft.php:218, inc/providers/madmimi/hustle-mad-mimi.php:205, inc/providers/mailchimp/hustle-mailchimp.php:305, inc/providers/mailerlite/hustle-mailerlite.php:174, inc/providers/mailpoet/class-hustle-mailpoet.php:216, inc/providers/mailpoet/class-hustle-mailpoet.php:271, inc/providers/mailster/class-hustle-mailster.php:193, inc/providers/mailster/class-hustle-mailster.php:245, inc/providers/mautic/hustle-mautic.php:218, inc/providers/sendgrid/hustle-sendgrid.php:189, inc/providers/sendinblue/hustle-sendinblue.php:190, inc/providers/sendy/hustle-sendy-form-settings.php:67, inc/providers/sendy/hustle-sendy.php:201, inc/providers/zapier/hustle-zapier.php:200, views/admin/dialogs/modal-preview.php:30
+#: inc/provider/class-hustle-provider-abstract.php:1318, inc/providers/activecampaign/hustle-activecampaign.php:215, inc/providers/aweber/hustle-aweber.php:407, inc/providers/campaignmonitor/hustle-campaignmonitor.php:231, inc/providers/convertkit/hustle-convertkit.php:197, inc/providers/e_newsletter/hustle-e-newsletter.php:199, inc/providers/getresponse/hustle-get-response.php:197, inc/providers/icontact/hustle-icontact.php:223, inc/providers/infusionsoft/hustle-infusion-soft.php:218, inc/providers/mailchimp/hustle-mailchimp.php:305, inc/providers/mailerlite/hustle-mailerlite.php:174, inc/providers/mailpoet/class-hustle-mailpoet.php:216, inc/providers/mailpoet/class-hustle-mailpoet.php:271, inc/providers/mailster/class-hustle-mailster.php:193, inc/providers/mailster/class-hustle-mailster.php:245, inc/providers/mautic/hustle-mautic.php:218, inc/providers/sendgrid/hustle-sendgrid.php:189, inc/providers/sendinblue/hustle-sendinblue.php:190, inc/providers/sendy/hustle-sendy-form-settings.php:67, inc/providers/sendy/hustle-sendy.php:201, inc/providers/zapier/hustle-zapier.php:200, views/admin/dialogs/modal-preview.php:30
 msgid "Close"
 msgstr ""
 
@@ -3443,7 +3451,7 @@ msgstr ""
 msgid "%1$s image commonly %1$s-Man doing something fun"
 msgstr ""
 
-#: views/admin/settings.php:11, views/admin/settings/tab-general.php:13, views/admin/settings/dialogs/palettes-edit-palette.php:251, views/admin/commons/sui-wizard/dialogs/visibility-options.php:32, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:27, views/admin/commons/sui-wizard/tab-appearance/row-typography/options-container.php:177, views/admin/commons/sui-wizard/tab-appearance/row-advanced/border-spacing-shadow/options-container.php:181
+#: views/admin/settings.php:11, views/admin/settings/tab-general.php:13, views/admin/settings/dialogs/palettes-edit-palette.php:256, views/admin/commons/sui-wizard/dialogs/visibility-options.php:32, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:27, views/admin/commons/sui-wizard/tab-appearance/row-typography/options-container.php:177, views/admin/commons/sui-wizard/tab-appearance/row-advanced/border-spacing-shadow/options-container.php:181
 msgid "General"
 msgstr ""
 
@@ -3837,7 +3845,7 @@ msgid "Failed to process request, make sure your API URL and API KEY are correct
 msgstr ""
 
 #. translators: error message
-#: inc/providers/activecampaign/hustle-activecampaign-api.php:99, inc/providers/campaignmonitor/hustle-campaignmonitor-api.php:206, inc/providers/madmimi/hustle-mad-mimi-api.php:204, inc/providers/mautic/hustle-mautic-api.php:241, inc/providers/sendinblue/hustle-sendinblue-api.php:230
+#: inc/providers/activecampaign/hustle-activecampaign-api.php:99, inc/providers/campaignmonitor/hustle-campaignmonitor-api.php:206, inc/providers/mautic/hustle-mautic-api.php:241, inc/providers/sendinblue/hustle-sendinblue-api.php:230
 msgid "Failed to processing request : %s"
 msgstr ""
 
@@ -3854,11 +3862,11 @@ msgstr ""
 msgid "Unexpected error occurred."
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:58, inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:251, inc/providers/aweber/hustle-aweber-form-hooks.php:53, inc/providers/aweber/hustle-aweber-form-hooks.php:301, inc/providers/campaignmonitor/hustle-campaignmonitor-form-hooks.php:57, inc/providers/campaignmonitor/hustle-campaignmonitor-form-hooks.php:233, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:53, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:207, inc/providers/convertkit/hustle-convertkit-form-hooks.php:60, inc/providers/convertkit/hustle-convertkit-form-hooks.php:254, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:53, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:210, inc/providers/getresponse/hustle-get-response-form-hooks.php:61, inc/providers/getresponse/hustle-get-response-form-hooks.php:286, inc/providers/hubspot/hustle-hubspot-form-hooks.php:53, inc/providers/hubspot/hustle-hubspot-form-hooks.php:250, inc/providers/icontact/hustle-icontact-form-hooks.php:52, inc/providers/icontact/hustle-icontact-form-hooks.php:278, inc/providers/infusionsoft/hustle-infusion-soft-form-hooks.php:69, inc/providers/infusionsoft/hustle-infusion-soft-form-hooks.php:285, inc/providers/madmimi/hustle-mad-mimi-form-hooks.php:51, inc/providers/madmimi/hustle-mad-mimi-form-hooks.php:242, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:104, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:428, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:52, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:234, inc/providers/mailpoet/class-hustle-mailpoet-form-hooks.php:46, inc/providers/mailpoet/class-hustle-mailpoet-form-hooks.php:207, inc/providers/mailster/class-hustle-mailster-form-hooks.php:29, inc/providers/mailster/class-hustle-mailster-form-hooks.php:162, inc/providers/mautic/hustle-mautic-form-hooks.php:53, inc/providers/mautic/hustle-mautic-form-hooks.php:251, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:52, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:226, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:51, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:251, inc/providers/sendy/hustle-sendy-form-hooks.php:43, inc/providers/sendy/hustle-sendy-form-hooks.php:178
+#: inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:58, inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:251, inc/providers/aweber/hustle-aweber-form-hooks.php:53, inc/providers/aweber/hustle-aweber-form-hooks.php:301, inc/providers/campaignmonitor/hustle-campaignmonitor-form-hooks.php:57, inc/providers/campaignmonitor/hustle-campaignmonitor-form-hooks.php:233, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:53, inc/providers/constantcontact/hustle-constantcontact-form-hooks.php:207, inc/providers/convertkit/hustle-convertkit-form-hooks.php:60, inc/providers/convertkit/hustle-convertkit-form-hooks.php:254, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:53, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:210, inc/providers/getresponse/hustle-get-response-form-hooks.php:61, inc/providers/getresponse/hustle-get-response-form-hooks.php:286, inc/providers/hubspot/hustle-hubspot-form-hooks.php:53, inc/providers/hubspot/hustle-hubspot-form-hooks.php:250, inc/providers/icontact/hustle-icontact-form-hooks.php:52, inc/providers/icontact/hustle-icontact-form-hooks.php:278, inc/providers/infusionsoft/hustle-infusion-soft-form-hooks.php:69, inc/providers/infusionsoft/hustle-infusion-soft-form-hooks.php:285, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:104, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:428, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:52, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:234, inc/providers/mailpoet/class-hustle-mailpoet-form-hooks.php:46, inc/providers/mailpoet/class-hustle-mailpoet-form-hooks.php:207, inc/providers/mailster/class-hustle-mailster-form-hooks.php:29, inc/providers/mailster/class-hustle-mailster-form-hooks.php:162, inc/providers/mautic/hustle-mautic-form-hooks.php:53, inc/providers/mautic/hustle-mautic-form-hooks.php:251, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:52, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:226, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:51, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:251, inc/providers/sendy/hustle-sendy-form-hooks.php:43, inc/providers/sendy/hustle-sendy-form-hooks.php:178
 msgid "Required Field \"email\" was not filled by the user."
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:166, inc/providers/aweber/hustle-aweber-form-hooks.php:126, inc/providers/convertkit/hustle-convertkit-form-hooks.php:73, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:150, inc/providers/getresponse/hustle-get-response-form-hooks.php:106, inc/providers/hubspot/hustle-hubspot-form-hooks.php:61, inc/providers/icontact/hustle-icontact-form-hooks.php:67, inc/providers/madmimi/hustle-mad-mimi-form-hooks.php:65, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:321, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:108, inc/providers/mailster/class-hustle-mailster-form-hooks.php:251, inc/providers/mautic/hustle-mautic-form-hooks.php:77, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:64, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:63
+#: inc/providers/activecampaign/hustle-activecampaign-form-hooks.php:166, inc/providers/aweber/hustle-aweber-form-hooks.php:126, inc/providers/convertkit/hustle-convertkit-form-hooks.php:73, inc/providers/e_newsletter/hustle-e-newsletter-form-hooks.php:150, inc/providers/getresponse/hustle-get-response-form-hooks.php:106, inc/providers/hubspot/hustle-hubspot-form-hooks.php:61, inc/providers/icontact/hustle-icontact-form-hooks.php:67, inc/providers/mailchimp/hustle-mailchimp-form-hooks.php:321, inc/providers/mailerlite/hustle-mailerlite-form-hooks.php:108, inc/providers/mailster/class-hustle-mailster-form-hooks.php:251, inc/providers/mautic/hustle-mautic-form-hooks.php:77, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:64, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:63
 msgid "Member could not be subscribed."
 msgstr ""
 
@@ -3870,7 +3878,7 @@ msgstr ""
 msgid "ActiveCampaign Forms or Lists"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:127, inc/providers/activecampaign/hustle-activecampaign.php:329, inc/providers/aweber/hustle-aweber-form-settings.php:100, inc/providers/aweber/hustle-aweber.php:500, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:98, inc/providers/campaignmonitor/hustle-campaignmonitor.php:353, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:118, inc/providers/constantcontact/hustle-constantcontact.php:215, inc/providers/convertkit/hustle-convertkit-form-settings.php:100, inc/providers/convertkit/hustle-convertkit.php:310, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:96, inc/providers/e_newsletter/hustle-e-newsletter.php:263, inc/providers/getresponse/hustle-get-response-form-settings.php:100, inc/providers/getresponse/hustle-get-response.php:289, inc/providers/hubspot/hustle-hubspot-form-settings.php:103, inc/providers/hubspot/hustle-hubspot.php:194, inc/providers/icontact/hustle-icontact-form-settings.php:104, inc/providers/icontact/hustle-icontact.php:362, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:102, inc/providers/infusionsoft/hustle-infusion-soft.php:334, inc/providers/local-list/hustle-local-list-form-settings.php:109, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:105, inc/providers/madmimi/hustle-mad-mimi.php:318, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:194, inc/providers/mailchimp/hustle-mailchimp.php:399, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:103, inc/providers/mailerlite/hustle-mailerlite.php:264, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:98, inc/providers/mailpoet/class-hustle-mailpoet.php:278, inc/providers/mailster/class-hustle-mailster-form-settings.php:97, inc/providers/mailster/class-hustle-mailster.php:252, inc/providers/mautic/hustle-mautic-form-settings.php:100, inc/providers/mautic/hustle-mautic.php:356, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:100, inc/providers/sendgrid/hustle-sendgrid.php:295, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:100, inc/providers/sendinblue/hustle-sendinblue.php:282, inc/providers/sendy/hustle-sendy-form-settings.php:60, inc/providers/sendy/hustle-sendy.php:334, inc/providers/zapier/hustle-zapier-form-settings.php:116, inc/providers/zapier/hustle-zapier.php:234
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:127, inc/providers/activecampaign/hustle-activecampaign.php:329, inc/providers/aweber/hustle-aweber-form-settings.php:100, inc/providers/aweber/hustle-aweber.php:500, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:98, inc/providers/campaignmonitor/hustle-campaignmonitor.php:353, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:118, inc/providers/constantcontact/hustle-constantcontact.php:215, inc/providers/convertkit/hustle-convertkit-form-settings.php:100, inc/providers/convertkit/hustle-convertkit.php:310, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:96, inc/providers/e_newsletter/hustle-e-newsletter.php:263, inc/providers/getresponse/hustle-get-response-form-settings.php:100, inc/providers/getresponse/hustle-get-response.php:289, inc/providers/hubspot/hustle-hubspot-form-settings.php:103, inc/providers/hubspot/hustle-hubspot.php:194, inc/providers/icontact/hustle-icontact-form-settings.php:104, inc/providers/icontact/hustle-icontact.php:362, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:102, inc/providers/infusionsoft/hustle-infusion-soft.php:334, inc/providers/local-list/hustle-local-list-form-settings.php:109, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:194, inc/providers/mailchimp/hustle-mailchimp.php:399, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:103, inc/providers/mailerlite/hustle-mailerlite.php:264, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:98, inc/providers/mailpoet/class-hustle-mailpoet.php:278, inc/providers/mailster/class-hustle-mailster-form-settings.php:97, inc/providers/mailster/class-hustle-mailster.php:252, inc/providers/mautic/hustle-mautic-form-settings.php:100, inc/providers/mautic/hustle-mautic.php:356, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:100, inc/providers/sendgrid/hustle-sendgrid.php:295, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:100, inc/providers/sendinblue/hustle-sendinblue.php:282, inc/providers/sendy/hustle-sendy-form-settings.php:60, inc/providers/sendy/hustle-sendy.php:334, inc/providers/zapier/hustle-zapier-form-settings.php:116, inc/providers/zapier/hustle-zapier.php:234
 msgid "Disconnect"
 msgstr ""
 
@@ -3886,7 +3894,7 @@ msgstr ""
 msgid "The form is required."
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:226, inc/providers/aweber/hustle-aweber-form-settings.php:82, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:80, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:83, inc/providers/convertkit/hustle-convertkit-form-settings.php:82, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:74, inc/providers/getresponse/hustle-get-response-form-settings.php:82, inc/providers/hubspot/hustle-hubspot-form-settings.php:83, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:82, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:83, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:174, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:82, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:78, inc/providers/mailster/class-hustle-mailster-form-settings.php:199, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:82, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:82
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:226, inc/providers/aweber/hustle-aweber-form-settings.php:82, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:80, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:83, inc/providers/convertkit/hustle-convertkit-form-settings.php:82, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:74, inc/providers/getresponse/hustle-get-response-form-settings.php:82, inc/providers/hubspot/hustle-hubspot-form-settings.php:83, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:82, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:174, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:82, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:78, inc/providers/mailster/class-hustle-mailster-form-settings.php:199, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:82, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:82
 msgid "The email list is required."
 msgstr ""
 
@@ -3902,7 +3910,7 @@ msgstr ""
 msgid "Choose your list"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:233, inc/providers/aweber/hustle-aweber-form-settings.php:87, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:85, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:106, inc/providers/convertkit/hustle-convertkit-form-settings.php:87, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:81, inc/providers/getresponse/hustle-get-response-form-settings.php:87, inc/providers/hubspot/hustle-hubspot-form-settings.php:88, inc/providers/icontact/hustle-icontact-form-settings.php:92, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:89, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:91, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:224, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:89, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:87, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:87
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:233, inc/providers/aweber/hustle-aweber-form-settings.php:87, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:85, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:106, inc/providers/convertkit/hustle-convertkit-form-settings.php:87, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:81, inc/providers/getresponse/hustle-get-response-form-settings.php:87, inc/providers/hubspot/hustle-hubspot-form-settings.php:88, inc/providers/icontact/hustle-icontact-form-settings.php:92, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:89, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:224, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:89, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:87, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:87
 msgid "Choose the list you want to send form data to."
 msgstr ""
 
@@ -3910,11 +3918,11 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:254, inc/providers/activecampaign/hustle-activecampaign.php:337, inc/providers/aweber/hustle-aweber-form-settings.php:108, inc/providers/aweber/hustle-aweber.php:508, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:106, inc/providers/campaignmonitor/hustle-campaignmonitor.php:361, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:128, inc/providers/convertkit/hustle-convertkit-form-settings.php:108, inc/providers/convertkit/hustle-convertkit.php:318, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:104, inc/providers/e_newsletter/hustle-e-newsletter.php:271, inc/providers/getresponse/hustle-get-response-form-settings.php:108, inc/providers/getresponse/hustle-get-response.php:297, inc/providers/hubspot/hustle-hubspot-form-settings.php:113, inc/providers/icontact/hustle-icontact-form-settings.php:304, inc/providers/icontact/hustle-icontact.php:370, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:105, inc/providers/infusionsoft/hustle-infusion-soft.php:342, inc/providers/local-list/hustle-local-list-form-settings.php:112, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:113, inc/providers/madmimi/hustle-mad-mimi.php:326, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:398, inc/providers/mailchimp/hustle-mailchimp.php:403, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:111, inc/providers/mailerlite/hustle-mailerlite.php:272, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:229, inc/providers/mailster/class-hustle-mailster-form-settings.php:277, inc/providers/mautic/hustle-mautic-form-settings.php:108, inc/providers/mautic/hustle-mautic.php:364, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:108, inc/providers/sendgrid/hustle-sendgrid.php:303, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:108, inc/providers/sendinblue/hustle-sendinblue.php:290, inc/providers/sendy/hustle-sendy.php:342, inc/providers/zapier/hustle-zapier-form-settings.php:126, inc/providers/zapier/hustle-zapier.php:242
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:254, inc/providers/activecampaign/hustle-activecampaign.php:337, inc/providers/aweber/hustle-aweber-form-settings.php:108, inc/providers/aweber/hustle-aweber.php:508, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:106, inc/providers/campaignmonitor/hustle-campaignmonitor.php:361, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:128, inc/providers/convertkit/hustle-convertkit-form-settings.php:108, inc/providers/convertkit/hustle-convertkit.php:318, inc/providers/e_newsletter/hustle-e-newsletter-form-settings.php:104, inc/providers/e_newsletter/hustle-e-newsletter.php:271, inc/providers/getresponse/hustle-get-response-form-settings.php:108, inc/providers/getresponse/hustle-get-response.php:297, inc/providers/hubspot/hustle-hubspot-form-settings.php:113, inc/providers/icontact/hustle-icontact-form-settings.php:304, inc/providers/icontact/hustle-icontact.php:370, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:105, inc/providers/infusionsoft/hustle-infusion-soft.php:342, inc/providers/local-list/hustle-local-list-form-settings.php:112, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:398, inc/providers/mailchimp/hustle-mailchimp.php:403, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:111, inc/providers/mailerlite/hustle-mailerlite.php:272, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:229, inc/providers/mailster/class-hustle-mailster-form-settings.php:277, inc/providers/mautic/hustle-mautic-form-settings.php:108, inc/providers/mautic/hustle-mautic.php:364, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:108, inc/providers/sendgrid/hustle-sendgrid.php:303, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:108, inc/providers/sendinblue/hustle-sendinblue.php:290, inc/providers/sendy/hustle-sendy.php:342, inc/providers/zapier/hustle-zapier-form-settings.php:126, inc/providers/zapier/hustle-zapier.php:242
 msgid "Save"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:358, inc/providers/aweber/hustle-aweber-form-settings.php:204, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:177, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:197, inc/providers/convertkit/hustle-convertkit-form-settings.php:176, inc/providers/getresponse/hustle-get-response-form-settings.php:177, inc/providers/icontact/hustle-icontact-form-settings.php:196, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:172, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:197, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:609, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:189, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:156, inc/providers/mailster/class-hustle-mailster-form-settings.php:151, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:178, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:200
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:358, inc/providers/aweber/hustle-aweber-form-settings.php:204, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:177, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:197, inc/providers/convertkit/hustle-convertkit-form-settings.php:176, inc/providers/getresponse/hustle-get-response-form-settings.php:177, inc/providers/icontact/hustle-icontact-form-settings.php:196, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:172, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:609, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:189, inc/providers/mailpoet/class-hustle-mailpoet-form-settings.php:156, inc/providers/mailster/class-hustle-mailster-form-settings.php:151, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:178, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:200
 msgid "Email List"
 msgstr ""
 
@@ -3922,7 +3930,7 @@ msgstr ""
 msgid "Choose Form"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:376, inc/providers/aweber/hustle-aweber-form-settings.php:222, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:195, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:215, inc/providers/convertkit/hustle-convertkit-form-settings.php:194, inc/providers/getresponse/hustle-get-response-form-settings.php:195, inc/providers/hubspot/hustle-hubspot-form-settings.php:198, inc/providers/icontact/hustle-icontact-form-settings.php:214, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:190, inc/providers/madmimi/hustle-mad-mimi-form-settings.php:215, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:627, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:207, inc/providers/mautic/hustle-mautic-form-settings.php:205, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:196, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:218
+#: inc/providers/activecampaign/hustle-activecampaign-form-settings.php:376, inc/providers/aweber/hustle-aweber-form-settings.php:222, inc/providers/campaignmonitor/hustle-campaignmonitor-form-settings.php:195, inc/providers/constantcontact/hustle-constantcontact-form-settings.php:215, inc/providers/convertkit/hustle-convertkit-form-settings.php:194, inc/providers/getresponse/hustle-get-response-form-settings.php:195, inc/providers/hubspot/hustle-hubspot-form-settings.php:198, inc/providers/icontact/hustle-icontact-form-settings.php:214, inc/providers/infusionsoft/hustle-infusion-soft-form-settings.php:190, inc/providers/mailchimp/hustle-mailchimp-form-settings.php:627, inc/providers/mailerlite/hustle-mailerlite-form-settings.php:207, inc/providers/mautic/hustle-mautic-form-settings.php:205, inc/providers/sendgrid/hustle-sendgrid-form-settings.php:196, inc/providers/sendinblue/hustle-sendinblue-form-settings.php:218
 msgid "Refresh"
 msgstr ""
 
@@ -3934,7 +3942,7 @@ msgstr ""
 msgid "You don't have any form added to your account to sync here."
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:204, inc/providers/aweber/hustle-aweber.php:395, inc/providers/campaignmonitor/hustle-campaignmonitor.php:220, inc/providers/convertkit/hustle-convertkit.php:186, inc/providers/getresponse/hustle-get-response.php:186, inc/providers/icontact/hustle-icontact.php:212, inc/providers/infusionsoft/hustle-infusion-soft.php:207, inc/providers/madmimi/hustle-mad-mimi.php:194, inc/providers/mailchimp/hustle-mailchimp.php:294, inc/providers/mautic/hustle-mautic.php:207, inc/providers/sendgrid/hustle-sendgrid.php:178, inc/providers/sendinblue/hustle-sendinblue.php:179, inc/providers/sendy/hustle-sendy.php:190, inc/providers/zapier/hustle-zapier.php:185
+#: inc/providers/activecampaign/hustle-activecampaign.php:204, inc/providers/aweber/hustle-aweber.php:395, inc/providers/campaignmonitor/hustle-campaignmonitor.php:220, inc/providers/convertkit/hustle-convertkit.php:186, inc/providers/getresponse/hustle-get-response.php:186, inc/providers/icontact/hustle-icontact.php:212, inc/providers/infusionsoft/hustle-infusion-soft.php:207, inc/providers/mailchimp/hustle-mailchimp.php:294, inc/providers/mautic/hustle-mautic.php:207, inc/providers/sendgrid/hustle-sendgrid.php:178, inc/providers/sendinblue/hustle-sendinblue.php:179, inc/providers/sendy/hustle-sendy.php:190, inc/providers/zapier/hustle-zapier.php:185
 msgid "Provider couldn't be activated."
 msgstr ""
 
@@ -3942,11 +3950,11 @@ msgstr ""
 msgid "Activecampaign Added"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:212, inc/providers/aweber/hustle-aweber.php:404, inc/providers/campaignmonitor/hustle-campaignmonitor.php:228, inc/providers/convertkit/hustle-convertkit.php:194, inc/providers/e_newsletter/hustle-e-newsletter.php:196, inc/providers/getresponse/hustle-get-response.php:194, inc/providers/icontact/hustle-icontact.php:220, inc/providers/infusionsoft/hustle-infusion-soft.php:215, inc/providers/madmimi/hustle-mad-mimi.php:202, inc/providers/mailchimp/hustle-mailchimp.php:302, inc/providers/mailerlite/hustle-mailerlite.php:171, inc/providers/mailpoet/class-hustle-mailpoet.php:213, inc/providers/mailster/class-hustle-mailster.php:190, inc/providers/mautic/hustle-mautic.php:215, inc/providers/sendgrid/hustle-sendgrid.php:186, inc/providers/sendinblue/hustle-sendinblue.php:187, inc/providers/sendy/hustle-sendy.php:198, inc/providers/zapier/hustle-zapier.php:197
+#: inc/providers/activecampaign/hustle-activecampaign.php:212, inc/providers/aweber/hustle-aweber.php:404, inc/providers/campaignmonitor/hustle-campaignmonitor.php:228, inc/providers/convertkit/hustle-convertkit.php:194, inc/providers/e_newsletter/hustle-e-newsletter.php:196, inc/providers/getresponse/hustle-get-response.php:194, inc/providers/icontact/hustle-icontact.php:220, inc/providers/infusionsoft/hustle-infusion-soft.php:215, inc/providers/mailchimp/hustle-mailchimp.php:302, inc/providers/mailerlite/hustle-mailerlite.php:171, inc/providers/mailpoet/class-hustle-mailpoet.php:213, inc/providers/mailster/class-hustle-mailster.php:190, inc/providers/mautic/hustle-mautic.php:215, inc/providers/sendgrid/hustle-sendgrid.php:186, inc/providers/sendinblue/hustle-sendinblue.php:187, inc/providers/sendy/hustle-sendy.php:198, inc/providers/zapier/hustle-zapier.php:197
 msgid "You can now go to your pop-ups, slide-ins and embeds and assign them to this integration"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:222, inc/providers/aweber/hustle-aweber.php:414, inc/providers/campaignmonitor/hustle-campaignmonitor.php:238, inc/providers/convertkit/hustle-convertkit.php:204, inc/providers/e_newsletter/hustle-e-newsletter.php:206, inc/providers/getresponse/hustle-get-response.php:204, inc/providers/icontact/hustle-icontact.php:230, inc/providers/infusionsoft/hustle-infusion-soft.php:225, inc/providers/madmimi/hustle-mad-mimi.php:212, inc/providers/mailchimp/hustle-mailchimp.php:312, inc/providers/mailerlite/hustle-mailerlite.php:181, inc/providers/mautic/hustle-mautic.php:225, inc/providers/sendgrid/hustle-sendgrid.php:196, inc/providers/sendinblue/hustle-sendinblue.php:197, inc/providers/sendy/hustle-sendy.php:208, inc/providers/zapier/hustle-zapier.php:207
+#: inc/providers/activecampaign/hustle-activecampaign.php:222, inc/providers/aweber/hustle-aweber.php:414, inc/providers/campaignmonitor/hustle-campaignmonitor.php:238, inc/providers/convertkit/hustle-convertkit.php:204, inc/providers/e_newsletter/hustle-e-newsletter.php:206, inc/providers/getresponse/hustle-get-response.php:204, inc/providers/icontact/hustle-icontact.php:230, inc/providers/infusionsoft/hustle-infusion-soft.php:225, inc/providers/mailchimp/hustle-mailchimp.php:312, inc/providers/mailerlite/hustle-mailerlite.php:181, inc/providers/mautic/hustle-mautic.php:225, inc/providers/sendgrid/hustle-sendgrid.php:196, inc/providers/sendinblue/hustle-sendinblue.php:197, inc/providers/sendy/hustle-sendy.php:208, inc/providers/zapier/hustle-zapier.php:207
 msgid "Successfully connected"
 msgstr ""
 
@@ -3962,11 +3970,11 @@ msgstr ""
 msgid "Please enter a valid ActiveCampaign URL"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:261, inc/providers/campaignmonitor/hustle-campaignmonitor.php:253, inc/providers/convertkit/hustle-convertkit.php:219, inc/providers/getresponse/hustle-get-response.php:219, inc/providers/madmimi/hustle-mad-mimi.php:250, inc/providers/mailchimp/hustle-mailchimp.php:327, inc/providers/mailerlite/hustle-mailerlite.php:196, inc/providers/sendgrid/hustle-sendgrid.php:211, inc/providers/sendinblue/hustle-sendinblue.php:212, inc/providers/sendy/hustle-sendy.php:247
+#: inc/providers/activecampaign/hustle-activecampaign.php:261, inc/providers/campaignmonitor/hustle-campaignmonitor.php:253, inc/providers/convertkit/hustle-convertkit.php:219, inc/providers/getresponse/hustle-get-response.php:219, inc/providers/mailchimp/hustle-mailchimp.php:327, inc/providers/mailerlite/hustle-mailerlite.php:196, inc/providers/sendgrid/hustle-sendgrid.php:211, inc/providers/sendinblue/hustle-sendinblue.php:212, inc/providers/sendy/hustle-sendy.php:247
 msgid "API Key"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:267, inc/providers/campaignmonitor/hustle-campaignmonitor.php:260, inc/providers/campaignmonitor/hustle-campaignmonitor.php:285, inc/providers/getresponse/hustle-get-response.php:225, inc/providers/madmimi/hustle-mad-mimi.php:256, inc/providers/mailchimp/hustle-mailchimp.php:333, inc/providers/mailerlite/hustle-mailerlite.php:202, inc/providers/sendgrid/hustle-sendgrid.php:217, inc/providers/sendinblue/hustle-sendinblue.php:218, inc/providers/sendy/hustle-sendy.php:253
+#: inc/providers/activecampaign/hustle-activecampaign.php:267, inc/providers/campaignmonitor/hustle-campaignmonitor.php:260, inc/providers/campaignmonitor/hustle-campaignmonitor.php:285, inc/providers/getresponse/hustle-get-response.php:225, inc/providers/mailchimp/hustle-mailchimp.php:333, inc/providers/mailerlite/hustle-mailerlite.php:202, inc/providers/sendgrid/hustle-sendgrid.php:217, inc/providers/sendinblue/hustle-sendinblue.php:218, inc/providers/sendy/hustle-sendy.php:253
 msgid "Enter Key"
 msgstr ""
 
@@ -3974,15 +3982,15 @@ msgstr ""
 msgid "Please enter a valid ActiveCampaign API key"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:285, inc/providers/aweber/hustle-aweber.php:453, inc/providers/campaignmonitor/hustle-campaignmonitor.php:306, inc/providers/convertkit/hustle-convertkit.php:267, inc/providers/getresponse/hustle-get-response.php:243, inc/providers/icontact/hustle-icontact.php:317, inc/providers/infusionsoft/hustle-infusion-soft.php:288, inc/providers/madmimi/hustle-mad-mimi.php:273, inc/providers/mailchimp/hustle-mailchimp.php:351, inc/providers/mailerlite/hustle-mailerlite.php:220, inc/providers/mautic/hustle-mautic.php:312, inc/providers/sendgrid/hustle-sendgrid.php:251, inc/providers/sendinblue/hustle-sendinblue.php:236, inc/providers/sendy/hustle-sendy.php:295
+#: inc/providers/activecampaign/hustle-activecampaign.php:285, inc/providers/aweber/hustle-aweber.php:453, inc/providers/campaignmonitor/hustle-campaignmonitor.php:306, inc/providers/convertkit/hustle-convertkit.php:267, inc/providers/getresponse/hustle-get-response.php:243, inc/providers/icontact/hustle-icontact.php:317, inc/providers/infusionsoft/hustle-infusion-soft.php:288, inc/providers/mailchimp/hustle-mailchimp.php:351, inc/providers/mailerlite/hustle-mailerlite.php:220, inc/providers/mautic/hustle-mautic.php:312, inc/providers/sendgrid/hustle-sendgrid.php:251, inc/providers/sendinblue/hustle-sendinblue.php:236, inc/providers/sendy/hustle-sendy.php:295
 msgid "Identifier"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:291, inc/providers/aweber/hustle-aweber.php:459, inc/providers/campaignmonitor/hustle-campaignmonitor.php:312, inc/providers/convertkit/hustle-convertkit.php:273, inc/providers/getresponse/hustle-get-response.php:249, inc/providers/icontact/hustle-icontact.php:323, inc/providers/infusionsoft/hustle-infusion-soft.php:294, inc/providers/madmimi/hustle-mad-mimi.php:279, inc/providers/mailchimp/hustle-mailchimp.php:357, inc/providers/mailerlite/hustle-mailerlite.php:226, inc/providers/mautic/hustle-mautic.php:318, inc/providers/sendgrid/hustle-sendgrid.php:257, inc/providers/sendinblue/hustle-sendinblue.php:242, inc/providers/sendy/hustle-sendy.php:301
+#: inc/providers/activecampaign/hustle-activecampaign.php:291, inc/providers/aweber/hustle-aweber.php:459, inc/providers/campaignmonitor/hustle-campaignmonitor.php:312, inc/providers/convertkit/hustle-convertkit.php:273, inc/providers/getresponse/hustle-get-response.php:249, inc/providers/icontact/hustle-icontact.php:323, inc/providers/infusionsoft/hustle-infusion-soft.php:294, inc/providers/mailchimp/hustle-mailchimp.php:357, inc/providers/mailerlite/hustle-mailerlite.php:226, inc/providers/mautic/hustle-mautic.php:318, inc/providers/sendgrid/hustle-sendgrid.php:257, inc/providers/sendinblue/hustle-sendinblue.php:242, inc/providers/sendy/hustle-sendy.php:301
 msgid "E.g. Business Account"
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:296, inc/providers/aweber/hustle-aweber.php:464, inc/providers/campaignmonitor/hustle-campaignmonitor.php:317, inc/providers/convertkit/hustle-convertkit.php:278, inc/providers/getresponse/hustle-get-response.php:254, inc/providers/icontact/hustle-icontact.php:328, inc/providers/infusionsoft/hustle-infusion-soft.php:299, inc/providers/madmimi/hustle-mad-mimi.php:284, inc/providers/mailchimp/hustle-mailchimp.php:362, inc/providers/mailerlite/hustle-mailerlite.php:231, inc/providers/mautic/hustle-mautic.php:323, inc/providers/sendgrid/hustle-sendgrid.php:262, inc/providers/sendinblue/hustle-sendinblue.php:247, inc/providers/sendy/hustle-sendy.php:306
+#: inc/providers/activecampaign/hustle-activecampaign.php:296, inc/providers/aweber/hustle-aweber.php:464, inc/providers/campaignmonitor/hustle-campaignmonitor.php:317, inc/providers/convertkit/hustle-convertkit.php:278, inc/providers/getresponse/hustle-get-response.php:254, inc/providers/icontact/hustle-icontact.php:328, inc/providers/infusionsoft/hustle-infusion-soft.php:299, inc/providers/mailchimp/hustle-mailchimp.php:362, inc/providers/mailerlite/hustle-mailerlite.php:231, inc/providers/mautic/hustle-mautic.php:323, inc/providers/sendgrid/hustle-sendgrid.php:262, inc/providers/sendinblue/hustle-sendinblue.php:247, inc/providers/sendy/hustle-sendy.php:306
 msgid "Helps to distinguish your integrations if you have connected to the multiple accounts of this integration."
 msgstr ""
 
@@ -3995,7 +4003,7 @@ msgstr ""
 msgid "Log in to your %1$sActiveCampaign account%2$s to get your URL and API Key."
 msgstr ""
 
-#: inc/providers/activecampaign/hustle-activecampaign.php:348, inc/providers/aweber/hustle-aweber.php:519, inc/providers/campaignmonitor/hustle-campaignmonitor.php:372, inc/providers/convertkit/hustle-convertkit.php:329, inc/providers/getresponse/hustle-get-response.php:308, inc/providers/icontact/hustle-icontact.php:381, inc/providers/infusionsoft/hustle-infusion-soft.php:353, inc/providers/madmimi/hustle-mad-mimi.php:337, inc/providers/mailchimp/hustle-mailchimp.php:414, inc/providers/mailerlite/hustle-mailerlite.php:283, inc/providers/mautic/hustle-mautic.php:375, inc/providers/sendgrid/hustle-sendgrid.php:314, inc/providers/sendinblue/hustle-sendinblue.php:301, inc/providers/sendy/hustle-sendy.php:353
+#: inc/providers/activecampaign/hustle-activecampaign.php:348, inc/providers/aweber/hustle-aweber.php:519, inc/providers/campaignmonitor/hustle-campaignmonitor.php:372, inc/providers/convertkit/hustle-convertkit.php:329, inc/providers/getresponse/hustle-get-response.php:308, inc/providers/icontact/hustle-icontact.php:381, inc/providers/infusionsoft/hustle-infusion-soft.php:353, inc/providers/mailchimp/hustle-mailchimp.php:414, inc/providers/mailerlite/hustle-mailerlite.php:283, inc/providers/mautic/hustle-mautic.php:375, inc/providers/sendgrid/hustle-sendgrid.php:314, inc/providers/sendinblue/hustle-sendinblue.php:301, inc/providers/sendy/hustle-sendy.php:353
 msgid "Connect"
 msgstr ""
 
@@ -4068,7 +4076,7 @@ msgstr ""
 msgid "Missing required API Key"
 msgstr ""
 
-#: inc/providers/campaignmonitor/hustle-campaignmonitor-api.php:186, inc/providers/madmimi/hustle-mad-mimi-api.php:180, inc/providers/sendinblue/hustle-sendinblue-api.php:206, inc/providers/aweber/lib/class-aweber-oauth2.php:223
+#: inc/providers/campaignmonitor/hustle-campaignmonitor-api.php:186, inc/providers/sendinblue/hustle-sendinblue-api.php:206, inc/providers/aweber/lib/class-aweber-oauth2.php:223
 msgid "Failed to process request, make sure your Webhook URL is correct and your server has internet connection."
 msgstr ""
 
@@ -4296,7 +4304,7 @@ msgstr ""
 msgid "Successfully added or updated member on Get_Response list"
 msgstr ""
 
-#: inc/providers/getresponse/hustle-get-response-form-hooks.php:217, inc/providers/hubspot/hustle-hubspot-form-hooks.php:137, inc/providers/hubspot/hustle-hubspot-form-hooks.php:160, inc/providers/madmimi/hustle-mad-mimi-form-hooks.php:165, inc/providers/mautic/hustle-mautic-form-hooks.php:150, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:155, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:179
+#: inc/providers/getresponse/hustle-get-response-form-hooks.php:217, inc/providers/hubspot/hustle-hubspot-form-hooks.php:137, inc/providers/hubspot/hustle-hubspot-form-hooks.php:160, inc/providers/mautic/hustle-mautic-form-hooks.php:150, inc/providers/sendgrid/hustle-sendgrid-form-hooks.php:155, inc/providers/sendinblue/hustle-sendinblue-form-hooks.php:179
 msgid "OK"
 msgstr ""
 
@@ -4443,7 +4451,7 @@ msgstr ""
 msgid "iContact Added"
 msgstr ""
 
-#: inc/providers/icontact/hustle-icontact.php:251, inc/providers/madmimi/hustle-mad-mimi.php:233, inc/providers/mautic/hustle-mautic.php:270
+#: inc/providers/icontact/hustle-icontact.php:251, inc/providers/mautic/hustle-mautic.php:270
 msgid "Enter Email"
 msgstr ""
 
@@ -4577,43 +4585,6 @@ msgstr ""
 
 #: inc/providers/local-list/hustle-local-list-form-settings.php:164
 msgid "This will be visible to the visitors while unsubscribing."
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi-api.php:65, inc/providers/mautic/hustle-mautic-api.php:66, inc/providers/mautic/hustle-mautic-api.php:89
-msgid "Missing required API Credentials"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi-form-hooks.php:166
-msgid "Successfully added or updated member on Mad Mimi list"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi-form-settings.php:90
-msgid "Mad Mimi List"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi.php:202
-msgid "Mad Mimi Added"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi.php:239
-msgid "Please add a valid email address registered on Mad Mimi"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi.php:262
-msgid "Please enter a valid Mad Mimi API key"
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi.php:301
-msgid "Configure Mad Mimi"
-msgstr ""
-
-#. translators: 1. opening 'a' tag to MadMimi site, 2. closing 'a' tag
-#: inc/providers/madmimi/hustle-mad-mimi.php:304
-msgid "Log in to your %1$sMad Mimi account%2$s to get your API Key."
-msgstr ""
-
-#: inc/providers/madmimi/hustle-mad-mimi.php:376
-msgid "Invalid Mad Mimi API key or username."
 msgstr ""
 
 #: inc/providers/mailchimp/hustle-mailchimp-api.php:391
@@ -4893,6 +4864,10 @@ msgstr ""
 #. translators: 1. opening 'a' tag to the Mailster's wp page, 2. closing 'a' tag, 3. opening 'b' tag, 4. closing 'b' tag
 #: inc/providers/mailster/class-hustle-mailster.php:224
 msgid "This integration requires the %1$sMailster Newsletter Plugin%2$s, %3$sversion 2.2%4$s or newer. Install and activate it and try again."
+msgstr ""
+
+#: inc/providers/mautic/hustle-mautic-api.php:66, inc/providers/mautic/hustle-mautic-api.php:89
+msgid "Missing required API Credentials"
 msgstr ""
 
 #: inc/providers/mautic/hustle-mautic-api.php:219, inc/providers/aweber/lib/class-wp-aweber-api.php:274
@@ -5402,6 +5377,10 @@ msgstr ""
 msgid "Filters"
 msgstr ""
 
+#: views/admin/email-lists/emails-list.php:61
+msgid "Number of hidden fields"
+msgstr ""
+
 #: views/admin/email-lists/emails-list.php:370
 msgid "No entries were found."
 msgstr ""
@@ -5510,19 +5489,24 @@ msgstr ""
 msgid "Embeds allow you to insert promotions or newsletter signups directly into your content automatically or with shortcodes."
 msgstr ""
 
-#: views/admin/integrations/integration-row.php:16, views/admin/integrations/integration-row.php:110, views/admin/integrations/integration-row.php:91, views/admin/integrations/integration-row.php:65, views/admin/integrations/integration-row.php:46
+#: views/admin/integrations/integration-row.php:16, views/admin/integrations/integration-row.php:102, views/admin/integrations/integration-row.php:85, views/admin/integrations/integration-row.php:63, views/admin/integrations/integration-row.php:46
 msgid "Configure Integration"
 msgstr ""
 
-#: views/admin/integrations/integration-row.php:115, views/admin/integrations/integration-row.php:102, views/admin/integrations/integration-row.php:70, views/admin/integrations/integration-row.php:57
+#: views/admin/integrations/integration-row.php:107, views/admin/integrations/integration-row.php:96, views/admin/integrations/integration-row.php:68, views/admin/integrations/integration-row.php:57
 msgid "Add Integration"
 msgstr ""
 
-#: views/admin/integrations/integration-row.php:227
+#: views/admin/integrations/integration-row.php:220
 msgid "Icon"
 msgstr ""
 
-#: views/admin/integrations/integration-row.php:189
+#. translators: 1. Action name 2. Integration name
+#: views/admin/integrations/integration-row.php:230, views/admin/integrations/integration-row.php:187
+msgid "%1$s for %2$s"
+msgstr ""
+
+#: views/admin/integrations/integration-row.php:180
 msgid "View Docs"
 msgstr ""
 
@@ -5703,7 +5687,7 @@ msgstr ""
 msgid "Delete Palette"
 msgstr ""
 
-#: views/admin/settings/tab-palettes.php:89, views/admin/settings/dialogs/palettes-edit-palette.php:224
+#: views/admin/settings/tab-palettes.php:89, views/admin/settings/dialogs/palettes-edit-palette.php:229
 msgid "Create Custom Palette"
 msgstr ""
 
@@ -5884,7 +5868,7 @@ msgstr ""
 msgid "By default, the Unsubscribe form allows users to unsubscribe from all modules, but you can specify the modules you want to enable the unsubscribe option for."
 msgstr ""
 
-#: views/admin/commons/sui-listing/listing.php:48, views/admin/dashboard/dialogs/fresh-install.php:166, views/admin/dashboard/dialogs/migrate-data.php:292, views/admin/dashboard/templates/widget-modules.php:134, views/admin/dashboard/templates/widget-pages.php:93, views/admin/commons/sui-listing/elements/empty-message.php:52
+#: views/admin/commons/sui-listing/listing.php:48, views/admin/dashboard/dialogs/fresh-install.php:166, views/admin/dashboard/dialogs/migrate-data.php:292, views/admin/dashboard/templates/widget-modules.php:132, views/admin/dashboard/templates/widget-pages.php:93, views/admin/commons/sui-listing/elements/empty-message.php:52
 msgid "Create"
 msgstr ""
 
@@ -6150,12 +6134,12 @@ msgstr ""
 msgid "Review Modules"
 msgstr ""
 
-#: views/admin/dashboard/templates/widget-modules.php:82
+#: views/admin/dashboard/templates/widget-modules.php:79, views/admin/dashboard/templates/widget-modules.php:80
 msgid "View Stats"
 msgstr ""
 
 #. translators: widget's module type
-#: views/admin/dashboard/templates/widget-modules.php:144, views/admin/dashboard/templates/widget-pages.php:101
+#: views/admin/dashboard/templates/widget-modules.php:142, views/admin/dashboard/templates/widget-pages.php:101
 msgid "View all %s"
 msgstr ""
 
@@ -6277,55 +6261,55 @@ msgstr ""
 msgid "Base Palette"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:68
+#: views/admin/settings/dialogs/palettes-edit-palette.php:70
 msgid "Default Palettes"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:87
+#: views/admin/settings/dialogs/palettes-edit-palette.php:91
 msgid "Import From A Module"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:104
+#: views/admin/settings/dialogs/palettes-edit-palette.php:108
 msgid "Choose one of the default color palettes and click on the next button to start customizing it."
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:108
+#: views/admin/settings/dialogs/palettes-edit-palette.php:112
 msgid "Color Palette"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:131
+#: views/admin/settings/dialogs/palettes-edit-palette.php:135
 msgid "Import colors from one of your existing modules and click on the next button to start customizing the base palette."
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:135
+#: views/admin/settings/dialogs/palettes-edit-palette.php:139
 msgid "Module Type"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:156
+#: views/admin/settings/dialogs/palettes-edit-palette.php:160
 msgid "Module Name"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:164
+#: views/admin/settings/dialogs/palettes-edit-palette.php:168
 msgid "Fallback Color Palette"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:172
+#: views/admin/settings/dialogs/palettes-edit-palette.php:176
 msgid "We will use this palette to import colors which are not available in your chosen module."
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:205
+#: views/admin/settings/dialogs/palettes-edit-palette.php:210
 msgid "Next"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:208
+#: views/admin/settings/dialogs/palettes-edit-palette.php:213
 msgid "Save Palette"
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:240
+#: views/admin/settings/dialogs/palettes-edit-palette.php:245
 msgid "Customize your base palette as per your liking and click on the “Create Palette“ button to add this to your palettes list."
 msgstr ""
 
-#: views/admin/settings/dialogs/palettes-edit-palette.php:259, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:35, views/admin/commons/sui-wizard/tab-appearance/row-typography/options-container.php:189, views/admin/commons/sui-wizard/tab-appearance/row-advanced/border-spacing-shadow/options-container.php:193
+#: views/admin/settings/dialogs/palettes-edit-palette.php:264, views/admin/commons/sui-wizard/tab-appearance/row-colors/customize-palette.php:35, views/admin/commons/sui-wizard/tab-appearance/row-typography/options-container.php:189, views/admin/commons/sui-wizard/tab-appearance/row-advanced/border-spacing-shadow/options-container.php:193
 msgid "Opt-in"
 msgstr ""
 
@@ -6369,6 +6353,14 @@ msgstr ""
 #. translators: Plugin name
 #: views/admin/settings/general/dashboard.php:43
 msgid "Choose the number of modules and the preferred status you want to see on your %s dashboard for each module type."
+msgstr ""
+
+#: views/admin/settings/general/dashboard.php:48
+msgid "Show less tabs"
+msgstr ""
+
+#: views/admin/settings/general/dashboard.php:51
+msgid "Show more tabs"
 msgstr ""
 
 #: views/admin/settings/general/dashboard.php:81
@@ -6795,20 +6787,20 @@ msgstr ""
 msgid "Use shortcode to display unsubscribe form anywhere you want to."
 msgstr ""
 
-#: views/admin/settings/unsubscribe/shortcode.php:26, views/admin/sshare/display-options/tpl--shortcode.php:55, views/admin/commons/sui-wizard/tab-display-options/display-options.php:182, views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:81
+#: views/admin/settings/unsubscribe/shortcode.php:27, views/admin/sshare/display-options/tpl--shortcode.php:57, views/admin/commons/sui-wizard/tab-display-options/display-options.php:183, views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:84
 msgid "Copy shortcode"
 msgstr ""
 
-#: views/admin/settings/unsubscribe/shortcode.php:31
+#: views/admin/settings/unsubscribe/shortcode.php:32
 msgid "By default, the Unsubscribe form works for all the modules. If you want to let visitors unsubscribe from specific modules only, add the comma separated module ids in the id attribute."
 msgstr ""
 
 #. translators: example of where to find the id in the url
-#: views/admin/settings/unsubscribe/shortcode.php:35
+#: views/admin/settings/unsubscribe/shortcode.php:36
 msgid "You can find the module's ID in the URL of the module's wizard page: %s."
 msgstr ""
 
-#: views/admin/sshare/appearance/template.php:20, views/admin/sshare/display-options/tpl--floating-social.php:14, views/admin/commons/sui-wizard/tab-visibility/conditions.php:88
+#: views/admin/sshare/appearance/template.php:20, views/admin/sshare/display-options/tpl--floating-social.php:14, views/admin/commons/sui-wizard/tab-visibility/conditions.php:98
 msgid "Floating Social"
 msgstr ""
 
@@ -7069,7 +7061,7 @@ msgstr ""
 msgid "Enabling this will add a floating social bar to your website when visitors are  on a mobile device."
 msgstr ""
 
-#: views/admin/sshare/display-options/tpl--inline-content.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:41, views/admin/commons/sui-wizard/tab-visibility/conditions.php:105
+#: views/admin/sshare/display-options/tpl--inline-content.php:14, views/admin/commons/sui-wizard/tab-display-options/display-options.php:41, views/admin/commons/sui-wizard/tab-visibility/conditions.php:115
 msgid "Inline Content"
 msgstr ""
 
@@ -7156,7 +7148,7 @@ msgstr ""
 msgid "Counter type"
 msgstr ""
 
-#: views/admin/sshare/services/platform-row.php:67, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:18, views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:77
+#: views/admin/sshare/services/platform-row.php:67, views/admin/commons/sui-wizard/tab-behaviour/trigger.php:18, views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:78
 msgid "Click"
 msgstr ""
 
@@ -7470,7 +7462,7 @@ msgid "Active %s"
 msgstr ""
 
 #. translators: module type
-#: views/admin/commons/sui-listing/elements/summary.php:42
+#: views/admin/commons/sui-listing/elements/summary.php:41, views/admin/commons/sui-listing/elements/summary.php:42
 msgid "Search %s..."
 msgstr ""
 
@@ -7600,7 +7592,7 @@ msgstr ""
 msgid "Show your pop-up for 24hrs on each scheduled day"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/dialogs/add-schedule.php:410, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1155
+#: views/admin/commons/sui-wizard/dialogs/add-schedule.php:410, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1166
 msgid "From"
 msgstr ""
 
@@ -8042,7 +8034,7 @@ msgstr ""
 msgid "Choose the visibility conditions which you want to apply on the %s."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/dialogs/visibility-options.php:157, views/admin/commons/sui-wizard/tab-visibility/conditions.php:156
+#: views/admin/commons/sui-wizard/dialogs/visibility-options.php:157, views/admin/commons/sui-wizard/tab-visibility/conditions.php:167
 msgid "Add Conditions"
 msgstr ""
 
@@ -8102,7 +8094,7 @@ msgstr ""
 msgid "Pick a unit from the options list"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/elements/image-fitting.php:204, views/admin/commons/sui-wizard/tab-appearance/row-customize-elements/background-image/background-position.php:137
+#: views/admin/commons/sui-wizard/elements/image-fitting.php:204, views/admin/commons/sui-wizard/elements/image-fitting.php:214, views/admin/commons/sui-wizard/tab-appearance/row-customize-elements/background-image/background-position.php:137
 msgid "Custom value for horizontal position"
 msgstr ""
 
@@ -9304,419 +9296,423 @@ msgstr ""
 msgid "Apply on"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:69
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:71, views/admin/commons/sui-wizard/tab-visibility/conditions.php:80
 msgid "Choose the display options to apply these visibility conditions on. Note that the visibility rules will only affect the options which are active on the Display Options page."
 msgstr ""
 
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:74
+msgid "Information about apply on options"
+msgstr ""
+
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:139
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:150
 msgid "By default, the shortcode displays your %1$s wherever you add it. However, you can apply visibility rules on your %1$s shortcode for better control. For example, you can use visibility rules to show your %1$s to logged-in users only or visitors from a specific country only."
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:161
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:172
 msgid "No visibility condition added yet. Currently, your %s will appear everywhere on your website."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:186
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:197
 msgid "Delete visibility rule"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:193
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:204
 msgid "Open visibility rule"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:205
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:216
 msgid "Choose posts"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:219
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:230
 msgid "All posts except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:230
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:241
 msgid "Only these posts"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:245
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:256
 msgid "Start typing the name of posts..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:267
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:278
 msgid "Choose pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:281
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:292
 msgid "All pages except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:292
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:303
 msgid "Only these pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:307
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:318
 msgid "Start typing the name of pages..."
 msgstr ""
 
 #. translators: custom post type label
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:329
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:340
 msgid "Choose %s"
 msgstr ""
 
 #. translators: custom post type label
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:344
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:355
 msgid "All %s except"
 msgstr ""
 
 #. translators: custom post type label
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:356
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:367
 msgid "Only these %s"
 msgstr ""
 
 #. translators: custom post type label
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:372
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:383
 msgid "Start typing the name of %s..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:394
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:405
 msgid "Choose categories"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:408
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:419
 msgid "All categories except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:419
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:430
 msgid "Only these categories"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:434
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:445
 msgid "Start typing the name of categories..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:444
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:455
 msgid "Note that this condition affects the posts with selected categories and doesn't include category archives."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:457
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:468
 msgid "Choose tags"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:471
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:482
 msgid "All tags except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:482
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:493
 msgid "Only these tags"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:497
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:508
 msgid "Start typing the name of tags..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:507
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:518
 msgid "Note that this condition affects the posts with selected tags and doesn't include tag archives."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:520
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:531
 msgid "Visitor's status"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:563
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:574
 msgid "Condition"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:577
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:588
 msgid "If seen less than"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:588
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:599
 msgid "If seen more than"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:598
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:609
 msgid "Number of views"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:606
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:617
 msgid "E.g. 10"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:616
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:627
 msgid "Reset cookie through"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:644
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:655
 msgid "Choose device"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:694
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:705
 msgid "Mobile devices include both Phone and Tablet."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:711
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:722
 msgid "Choose referrer"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:725
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:736
 msgid "Specific referrer"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:736
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:747
 msgid "Not a specific referrer"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:745
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:756
 msgid "Enter the referrer URL"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:749
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:760
 msgid "It can be a full URL or a pattern like “.website.com”. You can use wildcards in URLs. Enter one pattern/URL per line."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:762
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:773
 msgid "Choose source of arrival"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:773
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:784
 msgid "Direct"
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:778
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:789
 msgid "Visitor enters the URL of the page containing this %s directly inside the browser's address bar."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:791
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:802
 msgid "An external page"
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:796
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:807
 msgid "Visitor arrives on the page containing this %s from another website."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:809
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:820
 msgid "An internal page"
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:814
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:825
 msgid "Visitor arrives on the page containing this %s from another page on your website."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:827
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:838
 msgid "A search engine"
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:832
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:843
 msgid "Visitor arrives on the page containing this %s from a search engine result."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:845
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:856
 msgid "Not a search engine"
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:850
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:861
 msgid "Visitor arrives on the page containing this %s from anywhere except a search engine result."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:863
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:874
 msgid "Choose specific urls"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:877
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:888
 msgid "All URLs except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:888
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:899
 msgid "Only these URLs"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:897
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:908
 msgid "Enter the URLs"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:901
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:912
 msgid "Enter only one URL per line. You can use wildcards in URLs. Ensure the correct protocol - \"http://\" or \"https://\" - is used, or do not include the protocol at all so the URL will apply for both protocols."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:914
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:925
 msgid "Choose visitor’s browser"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:928
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:939
 msgid "All browser except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:939
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:950
 msgid "Only these browsers"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:952
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:963
 msgid "Start typing the name of browsers..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:976
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:987
 msgid "If the visitor has ever commented before is"
 msgstr ""
 
 #. translators: 1. opening 'strong' tag, 2. closing 'strong' tag
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1018
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1029
 msgid "You might also want to combine this condition along with %1$sVisitor's logged in status%2$s."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1029
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1040
 msgid "Choose visitor’s country"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1043
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1054
 msgid "Any country except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1054
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1065
 msgid "Only these countries"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1067
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1078
 msgid "Start typing the name of countries..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1091
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1102
 msgid "Choose user roles"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1105, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1209, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1269, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1432, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1495, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1558, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1617
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1116, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1220, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1280, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1443, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1506, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1569, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1628
 msgid "All except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1116, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1220, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1280, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1443, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1506, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1569, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1628
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1127, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1231, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1291, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1454, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1517, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1580, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1639
 msgid "Only these"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1126
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1137
 msgid "Start typing the user roles..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1151
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1162
 msgid "day(s) past the registration day"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1172
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1183
 msgid "Up to"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1187
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1198
 msgid "Note: \"0\" in the From field means immediately after registration and \"0\" in the Up to field means forever."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1195
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1206
 msgid "Choose page templates"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1230
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1241
 msgid "Start typing the name of page templates..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1255
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1266
 msgid "Choose static pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1291
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1302
 msgid "Start typing the name of static pages..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1314
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1325
 msgid "Choose archive pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1328
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1339
 msgid "All archives except"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1339
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1350
 msgid "Only these archives"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1350
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1361
 msgid "Start typing the name of archives..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1385
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1396
 msgid "All WooCommerce pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1405
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1416
 msgid "Use this condition to affect either all or none of the WooCommerce pages."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1418
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1429
 msgid "Choose WooCommerce categories"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1458
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1469
 msgid "Start typing the name of WooCommerce categories..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1468
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1479
 msgid "Note that this condition affects the products with selected categories and doesn't include product category archives."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1481
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1492
 msgid "Choose WooCommerce tags"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1521
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1532
 msgid "Start typing the name of WooCommerce tags..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1531
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1542
 msgid "Note that this condition affects the products with selected tags and doesn't include product tag archives."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1544
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1555
 msgid "Choose WooCommerce archives"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1580
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1591
 msgid "Start typing the name of WooCommerce archives..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1603
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1614
 msgid "Choose WooCommerce static pages"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1639
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1650
 msgid "Start typing the name of WooCommerce static pages..."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1662
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1673
 msgid "If a browser cookie"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1676
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1687
 msgid "Exists"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1687
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1698
 msgid "Doesn't exist"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1698, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1779
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1709, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1790
 msgid "Cookie name"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1703, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1784
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1714, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1795
 msgid "Enter cookie name"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1714
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1725
 msgid "Value"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1747, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1762
+#: views/admin/commons/sui-wizard/tab-visibility/conditions.php:1758, views/admin/commons/sui-wizard/tab-visibility/conditions.php:1773
 msgid "Enter cookie value"
 msgstr ""
 
@@ -10284,19 +10280,19 @@ msgid "For example .element-class, #element-id"
 msgstr ""
 
 #. translators: module type in smallcaps and in singular
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:45
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:46
 msgid "You can add multiple selectors separated by a comma to trigger your %s from multiple elements."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:63
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:64
 msgid "Render a trigger button"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:72
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:73
 msgid "Button shortcode"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:85
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/click.php:88
 msgid "Copy the button shortcode and paste it wherever you want to render this trigger button."
 msgstr ""
 
@@ -10315,32 +10311,32 @@ msgid "Enabling this will trigger the %s only for the first time user tries to l
 msgstr ""
 
 #. translators: module type in small caps and in singular
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-percentage.php:14
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-percentage.php:17
 msgid "Page scrolled by"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:13
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:16
 msgid "Element’s CSS selector"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:19
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:22
 msgid "E.g. .element-class or #element-id"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:25
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector.php:29
 msgid "Enter the class starting with a “.” and id with a “#”."
 msgstr ""
 
 #. translators: module type smallcaps and in singular
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:27
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:29
 msgid "Trigger your %s when a visitor has scrolled down a certain percentage or scrolled passed an element on the page."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:41
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:43
 msgid "Scroll percentage"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:45
+#: views/admin/commons/sui-wizard/tab-behaviour/trigger/scroll.php:47
 msgid "Scroll to element"
 msgstr ""
 
@@ -10696,11 +10692,11 @@ msgstr ""
 msgid "Choose whether your %s form should be inline or stacked."
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/letter-spacing.php:21
+#: views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/letter-spacing.php:21, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/letter-spacing.php:44
 msgid "Letter Spacing"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/line-height.php:21
+#: views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/line-height.php:21, views/admin/commons/sui-wizard/tab-appearance/row-typography/advanced/line-height.php:46
 msgid "Line Height"
 msgstr ""
 
@@ -10752,7 +10748,7 @@ msgstr ""
 msgid "Text Transform"
 msgstr ""
 
-#: views/admin/commons/sui-wizard/tab-appearance/row-typography/basic/font-size.php:21
+#: views/admin/commons/sui-wizard/tab-appearance/row-typography/basic/font-size.php:21, views/admin/commons/sui-wizard/tab-appearance/row-typography/basic/font-size.php:45
 msgid "Font Size"
 msgstr ""
 

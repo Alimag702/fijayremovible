@@ -22,7 +22,7 @@ class SettingsModel extends \ShortPixel\Model
         'resizeWidth' => ['s' => 'int' , 'default' => 0], // int
         'resizeHeight' => ['s' => 'int', 'default' => 0], // int
         'processThumbnails' => ['s' => 'boolean', 'default' => true], // checkbox
-				'useSmartcrop' => ['s' => 'boolean', 'default' => false],
+	'useSmartcrop' => ['s' => 'boolean', 'default' => false],
         'smartCropIgnoreSizes' => ['s' => 'boolean', 'default' => false],
         'backupImages' => ['s' => 'boolean', 'default' => true], // checkbox
     //    'keepExif' => ['s' => 'int', 'default' => 0], // checkbox
@@ -63,7 +63,34 @@ class SettingsModel extends \ShortPixel\Model
         'redirectedSettings' => ['s' => 'int', 'default' => 0],
         'exif' => ['s' => 'int', 'default' => 1],
         'exif_ai' => ['s' => 'int', 'default' => 0],
-        'cdn_purge_version' => ['s' => 'int', 'default' => 1, 'export' => false], 
+        'cdn_purge_version' => ['s' => 'int', 'default' => 1, 'export' => false],
+        'enable_ai' => ['s' => 'boolean', 'default' => true],
+        'autoAI' => ['s' => 'boolean', 'default' => false],
+        'autoAIBulk' => ['s' => 'boolean', 'default' => false],
+        'aiPreserve' => ['s' => 'boolean', 'default' => false ],
+        'ai_general_context' => ['s' => 'string', 'default' => 'callback', 'maxlength' => 500],
+        'ai_use_post' => ['s' => 'boolean', 'default' => true],
+        'ai_gen_alt' => ['s' => 'boolean', 'default' => true],
+        'ai_gen_caption' => ['s' => 'boolean', 'default' => true],
+        'ai_gen_description' => ['s' => 'boolean', 'default' => true],
+        'ai_gen_post_title' => ['s' => 'boolean', 'default' => true], 
+        'ai_filename_prefercurrent' => ['s' => 'boolean', 'default' => false],
+        'ai_limit_alt_chars' => ['s' => 'int', 'default' => 100, 'max' => 200],
+        'ai_alt_context' => ['s' => 'string', 'default' => '', 'maxlength' => 200],
+        'ai_limit_description_chars' => ['s' => 'int', 'default' => 200, 'max' => 500],
+        'ai_description_context' => ['s' => 'string', 'default' => '', 'maxlength' => 200],
+        'ai_limit_caption_chars' => ['s' => 'int', 'default' => 150, 'max' => 250],
+        'ai_caption_context' => ['s' => 'string', 'default' => '', 'maxlength' => 200],
+        'ai_post_title_context' => ['s' => 'string',  'default' => '', 'maxlength' => 200], 
+        'ai_limit_post_title_chars' => ['s' => 'string', 'default' => 50, 'max' => 100],
+        'ai_gen_filename' => ['s' => 'boolean', 'default' => false],
+        'ai_limit_filename_chars' => ['s' => 'int', 'default' => 30, 'max' => 200],
+        'ai_filename_context' => ['s' => 'string', 'default' => '', 'maxlength' => 200],
+        'ai_use_exif' => ['s' => 'boolean', 'default' => true],
+        'ai_language' => ['s' => 'string', 'default' => 'callback'],
+     
+ 
+
     );
 
   //  const EXIF_REMOVE = 0;
@@ -72,13 +99,13 @@ class SettingsModel extends \ShortPixel\Model
   //  const ALLOW_AI = 2;
   //  const DENY_AI = 2;
 
-
-
-
 		private $settings;
 
 		public function __construct()
 		{
+       $this->model['ai_general_context']['default'] = array($this, 'generateContextDefault');
+       $this->model['ai_language']['default'] = array($this, 'returnSiteLanguage');
+
 			 $this->load();
 		}
 
@@ -123,12 +150,42 @@ class SettingsModel extends \ShortPixel\Model
 			 }
        elseif (isset($this->model[$name]))
        {
-          return $this->model[$name]['default'];
+          if (isset($this->model[$name]['default']))
+          {
+              $default = $this->model[$name]['default']; 
+              if (is_array($default))
+              {
+                  if (is_callable($default))                 
+                  {
+                    return call_user_func($default);
+                  }
+              }
+              else
+              {
+                return $default; 
+              }
+
+          }
+
        }
 			 else {
 			 	Log::addWarn('Call for non-existing setting: ' . $name);
 			 }
 		}
+
+    protected function generateContextDefault()
+    {
+       $site_title = get_bloginfo('name'); 
+       $wp_url = get_bloginfo('url');
+
+       $string = sprintf('Act like an SEO expert and generate an SEO-friendly ALT tag, caption, and description for the images from %s, titled %s, focusing on keywords and relevance for optimal image SEO.', $wp_url, $site_title);
+       return $string;
+    }
+
+    protected function returnSiteLanguage()
+    {
+       return get_locale();
+    }
 
     // This function is meant for version checks ( settings removed / added ) and filter overrides for specific use-cases.
     protected function check($settings)

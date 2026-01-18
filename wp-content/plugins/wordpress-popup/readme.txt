@@ -1,6 +1,6 @@
 === Hustle - Email Marketing, Lead Generation, Optins, Popups ===
 Plugin Name: Hustle - Email Marketing, Lead Generation, Opt-ins, Popups
-Version: 7.8.7
+Version: 7.8.9.2
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
@@ -8,7 +8,7 @@ Tags: marketing, popup, optin, newsletter, subscription form, email, advertise, 
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 7.8.7
+Stable tag: 7.8.9.2
 
 Setup email optin forms, popups, newsletter forms & subscription forms to generate email leads with the best marketing popup builder
 
@@ -21,7 +21,7 @@ Hustle lets you easily grow your mailing list or display targeted ads across you
 
 **Access unlimited pop-ups, slide-ins, and social shares from the start with [Hustle Pro](https://wpmudev.com/project/hustle/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=hustle-readme-above-the-fold&utm_content=hustle_pro).**
 
-Level up immediately with unlimited campaign creation + access to the full suite of WPMU DEV performance and marketing plugins. [Learn more about Pro](https://wpmudev.com/project/hustle/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=hustle-readme-above-the-fold&utm_content=learn_more).
+Level up immediately with unlimited campaign creation + access to the full suite of WPMU DEV performance and marketing plugins. [Learn more about Pro](https://wpmudev.com/project/hustle/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=hustle-readme-above-the-fold&utm_content=learn_more). 
 
 [youtube https://www.youtube.com/watch?v=oKgRSUdjcNg&feature=youtu.be]
 
@@ -181,26 +181,46 @@ No! Hustle gives you all the same settings and options as Hustle Pro. The only d
 We take plugin security incredibly seriously; if you have a bug or vulnerability to report, you can do so through the Patchstack Vulnerability Disclosure Program. It’s fast, easy, and you will be notified when the issue is fixed. [Report a vulnerability](https://patchstack.com/database/vdp/wordpress-popup).
 == Screenshots ==
 
-1. Create and Customize Popups
-2. Use Pre-designed Templates
-3. Customize Appearance
-4. Set Visibility Conditions & Triggers
-5. Integrate with 1000+ Apps & Tools
-6. Schema Type Builder
+1. Easily customize the look of your campaigns using the in-built appearance settings.
+2. Create amazing looking pop-ups, slide-ins, and embeds using our designer made templates.
+3. All the display conditions you need for targeted marketing.
+4. Quickly create and display a floating social sharing icon bar.
+5. Build beautiful pop-ups with any of the 4 included layouts.
 
 == Changelog ==
 
-= 7.8.7 ( 2025-04-25 )
+= 7.8.9.2 ( 2026-01-14 ) =
+ 
+- Fix: Security vulnerability - Sensitive Data Exposure
+ 
+= 7.8.9.1 ( 2025-12-16 ) =
+
+- Miscellaneous improvements
+
+= 7.8.9 ( 2025-11-20 ) =
+
+- Miscellaneous improvements
+
+= 7.8.8 ( 2025-09-08 ) =
+
+- Improve: Accessibility enhancements across plugin admin screens for better screen reader support.
+- Improve: Adjusted color contrast on UI elements to meet WCAG 2 AA standards.
+- Fix: Corrected ARIA attributes on form fields and buttons.
+- Fix: Conversion tracking not working when only a CTA button is present.
+- Fix: "Never see this again" cookie expiration date incorrectly tied to Closing behavior setting.
+
+
+= 7.8.7 ( 2025-04-25 ) =
 
 - Enhance: Compatibility with WordPress 6.8
 - Enhance: Add a new menu item to help you discover other free plugins by WPMU DEV and more
 
-= 7.8.6 ( 2024-11-25 )
+= 7.8.6 ( 2024-11-25 ) =
 
 - Fix: Notice for _load_textdomain_just_in_time called incorrectly
 - Fix: Security hardening
 
-= 7.8.5 ( 2024-08-05 )
+= 7.8.5 ( 2024-08-05 ) =
 
 - Fix: XSS Security vulnerability
 
@@ -212,46 +232,12 @@ We take plugin security incredibly seriously; if you have a bug or vulnerability
 
 = 7.8.3 ( 2024-01-17 ) =
 
- - Aligned Pro and Free version numbers to ensure consistency and simplify version management.
- - Enhance: Compatibility with PHP 8.3
- - Enhance: Twitter rebranding
- - Fix: Scroll issue on Pop-ups and Slide-ins preview when content is lengthy
- - Fix: Size of summary box logo
+- Aligned Pro and Free version numbers to ensure consistency and simplify version management.
+- Enhance: Compatibility with PHP 8.3
+- Enhance: Twitter rebranding
+- Fix: Scroll issue on Pop-ups and Slide-ins preview when content is lengthy
+- Fix: Size of summary box logo
 
-
-= 10.8.2 ( 2023-10-03 ) =
-
- - Fix: ConstantContact authentification.
- - Fix: Cannot edit or add hyperlink
- - Fix: Click triggers not working for elements loaded after Hustle has loaded
- - Fix: Popup on exit intent is triggered when select box option is changed
- - Fix: Text Field error message apostrophe is converted to &#039;
- - Fix: Deprecated notice for PHP 8.2
- - Enhance: Update the "Sendinblue" brand name to "Brevo"
- - Enhance: Remove mascot images
-
-
-= 10.8.1 ( 2023-08-24 ) =
-
-- Enhance: Set up a redirect URL for Hubspot
-- Fix: Issues with Hustle ActiveCampaign integration
-- Fix: Bullet Points are not showing on the success message
-
-
-= 10.8.0 ( 2023-06-27 ) =
-
-- Enhance: Require PHP 7.4 as the minimum supported version
-- Enhance: Prevent XSS vulnerability in translations
-- Enhance: Update the "InfusionSoft" brand name to "Keap"
-- Fix: Prevent page scroll to a Hustle Embed when a Pop-Up is closed
-- Fix: Custom Margin, Padding, and Border do not work for Slide-ins
-- Fix: Social Sharing module and Static Server Cache causing critical error
-- Fix: Issue with Close button on iOS
-
-
-= 10.7.1 ( 2023-06-07 ) =
-
-- Enhance: Performance improvements.
 
 [Changelog for previous versions](https://wpmudev.com/project/hustle/#view-changelog).
 

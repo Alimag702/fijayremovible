@@ -58,7 +58,7 @@
 
 				<?php endforeach; ?>
 
-				<th data-num-hidden-fields="<?php echo esc_attr( $fields_left ); ?>"></th>
+				<th data-num-hidden-fields="<?php echo esc_attr( $fields_left ); ?>"><span class="sui-screen-reader-text"><?php esc_html_e( 'Number of hidden fields', 'hustle' ); ?></span></th>
 
 			</tr>
 

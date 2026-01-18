@@ -21,8 +21,8 @@ $class .= ( isset( $flushed ) && true === $flushed ) ? ' sui-accordion-flushed' 
 
 				<div class="sui-accordion-item-title">
 					<?php echo esc_html( $option['title'] ); ?>
-					<?php echo ! empty( $option['notes'] ) ? '<span style="margin-left: 5px; color: #888;" aria-hidden="true">|</span>' : ''; ?>
-					<?php echo ! empty( $option['notes'] ) ? '<span class="sui-accordion-note" style="margin-left: 5px; color: #888;">' . esc_html( $option['notes'] ) . '</span>' : ''; ?>
+					<?php echo ! empty( $option['notes'] ) ? '<span class="sui-accordion-text-separator" aria-hidden="true">|</span>' : ''; ?>
+					<?php echo ! empty( $option['notes'] ) ? '<span class="sui-accordion-note">' . esc_html( $option['notes'] ) . '</span>' : ''; ?>
 					<button type="button" class="sui-button-icon sui-accordion-open-indicator" aria-label="<?php esc_html_e( 'Open item', 'hustle' ); ?>"><span class="sui-icon-chevron-down" aria-hidden="true"></span></button>
 				</div>
 

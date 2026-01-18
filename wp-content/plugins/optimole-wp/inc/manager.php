@@ -69,6 +69,8 @@ final class Optml_Manager {
 	 * @var array Integrations classes.
 	 */
 	private $possible_compatibilities = [
+		'kadence_blocks',
+		'essential_blocks',
 		'shortcode_ultimate',
 		'foogallery',
 		'envira',
@@ -100,6 +102,19 @@ final class Optml_Manager {
 		'otter_blocks',
 		'spectra',
 		'wpsp',
+		'jetengine',
+		'jetpack',
+		'wp_rocket',
+		'wp_super_cache',
+		'breeze',
+		'litespeed_cache',
+		'autoptimize_cache',
+		'endurance_cache',
+		'rocketnet',
+		'speedycache',
+		'hummingbird',
+		'aruba_hsc',
+		'spc',
 	];
 	/**
 	 * The current state of the buffer.
@@ -214,7 +229,7 @@ final class Optml_Manager {
 			$css .= $key . ':' . $value . ';';
 		}
 
-		$output = '<a style="' . esc_attr( $css ) . '" href="' . esc_url( $link ) . '" rel="nofollow" target="_blank">';
+		$output = '<a style="' . esc_attr( $css ) . '" href="' . esc_url( $link ) . '" aria-label="' . esc_html( $string ) . '" rel="nofollow" target="_blank">';
 		$output .= '
 	<svg style="margin-right:6px" width="20" height="20" viewBox="0 0 251 250" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M217.696 99.0926C240.492 152.857 211.284 215.314 153.249 239.999C95.2141 264.683 30.4436 242.239 7.64869 188.474C-15.1462 134.71 14.8767 75.1972 72.9116 50.4991C130.947 25.8007 194.902 45.3142 217.696 99.0926Z" fill="#EDF0FF"/>
@@ -406,19 +421,31 @@ final class Optml_Manager {
 	}
 
 	/**
+	 * Check if we should load the profiler.
+	 *
+	 * @param bool $default_value Default value.
+	 *
+	 * @return bool Should load the profiler.
+	 */
+	public static function should_load_profiler( $default_value = false ) {
+		return ! $default_value && apply_filters( 'optml_page_profiler_disable', false ) === false;
+	}
+	/**
 	 * Filter raw HTML content for urls.
 	 *
 	 * @param string $html HTML to filter.
+	 * @param bool   $partial If this is a partial content replacement and not a full page. It matters when we are are doing full page optimization like viewport lazyload.
 	 *
 	 * @return mixed Filtered content.
 	 */
-	public function replace_content( $html ) {
+	public function replace_content( $html, $partial = false ) {
 
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST && is_user_logged_in() && ( apply_filters( 'optml_force_replacement', false ) !== true ) ) {
 			return $html;
 		}
-		if ( $this->settings->is_lazyload_type_viewport() ) {
+		if ( self::should_load_profiler( $partial ) ) {
 			$profile_id = Profile::generate_id( $html );
+			$should_show_comment = false;
 			// We disable the optimizer for logged in users.
 			if ( ! is_user_logged_in() || ! apply_filters( 'optml_force_page_profiler', false ) !== true ) {
 				$js_optimizer = Optml_Admin::get_optimizer_script( false );
@@ -426,23 +453,30 @@ final class Optml_Manager {
 				if ( ! $this->page_profiler->exists_all( $profile_id ) ) {
 					$missing = $this->page_profiler->missing_devices( $profile_id );
 					$time = time();
-					$hmac = wp_hash( $profile_id . $time, 'nonce' );
+					$hmac = wp_hash( $profile_id . $time . $this->get_current_url(), 'nonce' );
 					$js_optimizer = str_replace(
-						[ Profile::PLACEHOLDER, Profile::PLACEHOLDER_MISSING, Profile::PLACEHOLDER_TIME, Profile::PLACEHOLDER_HMAC ],
-						[ $profile_id, implode( ',', $missing ), $time, $hmac ],
+						[ Profile::PLACEHOLDER, Profile::PLACEHOLDER_MISSING, Profile::PLACEHOLDER_TIME, Profile::PLACEHOLDER_HMAC, Profile::PLACEHOLDER_URL ],
+						[ $profile_id, implode( ',', $missing ), strval( $time ), $hmac, $this->get_current_url() ],
 						$js_optimizer
 					);
 					$html = str_replace( Optml_Admin::get_optimizer_script( true ), $js_optimizer, $html );
 					if ( ! headers_sent() ) {
 						header( 'Cache-Control: max-age=300' ); // Attempt to cache the page just for 5 mins until the optimizer is done. Once the optimizer is done, the page will load optimized.
 					}
+				} else {
+					$should_show_comment = isset( $_GET['optml_debug'] ) && $_GET['optml_debug'] === 'true';
 				}
 			}
 
 			Profile::set_current_profile_id( $profile_id );
 			$this->page_profiler->set_current_profile_data();
+			if ( $should_show_comment ) {
+				$html = str_replace( '</html>', '</html>' . $this->page_profiler->get_current_profile_html_comment(), $html );
+			}
 		}
-		$html = $this->add_html_class( $html );
+		if ( ! $partial ) {
+			$html = $this->add_html_class( $html );
+		}
 
 		$html = $this->process_images_from_content( $html );
 
@@ -457,7 +491,7 @@ final class Optml_Manager {
 			}
 		}
 
-		if ( $this->settings->is_lazyload_type_viewport() ) {
+		if ( $this->settings->is_lazyload_type_viewport() && ! $partial ) {
 			$personalized_bg_css = Lazyload::get_current_personalized_css();
 			if ( OPTML_DEBUG ) {
 				do_action( 'optml_log', 'viewport_bgselectorsdata: ' . print_r( $personalized_bg_css, true ) );
@@ -475,14 +509,16 @@ final class Optml_Manager {
 				}
 			}
 		}
-		// WE need this last since during bg personalized CSS we collect preload urls
-		if ( Links::get_links_count() > 0 ) {
-			if ( OPTML_DEBUG ) {
-				do_action( 'optml_log', 'preload_links: ' . print_r( Links::get_links(), true ) );
+		if ( ! $partial ) {
+			// WE need this last since during bg personalized CSS we collect preload urls
+			if ( Links::get_links_count() > 0 ) {
+				if ( OPTML_DEBUG ) {
+					do_action( 'optml_log', 'preload_links: ' . print_r( Links::get_links(), true ) );
+				}
+				$html = str_replace( Optml_Admin::get_preload_links_placeholder(), Links::get_links_html(), $html );
+			} else {
+				$html = str_replace( Optml_Admin::get_preload_links_placeholder(), '', $html );
 			}
-			$html = str_replace( Optml_Admin::get_preload_links_placeholder(), Links::get_links_html(), $html );
-		} else {
-			$html = str_replace( Optml_Admin::get_preload_links_placeholder(), '', $html );
 		}
 
 		$html = apply_filters( 'optml_url_pre_process', $html );
@@ -490,12 +526,21 @@ final class Optml_Manager {
 		$html = $this->process_urls_from_content( $html );
 
 		$html = apply_filters( 'optml_url_post_process', $html );
-		if ( $this->settings->is_lazyload_type_viewport() ) {
+		if ( self::should_load_profiler( $partial ) ) {
 			Profile::reset_current_profile();
 		}
 		return $html;
 	}
 
+	/**
+	 * Get the current url.
+	 *
+	 * @return string The current url.
+	 */
+	private function get_current_url() {
+		global $wp;
+		return home_url( add_query_arg( [], $wp->request ) );
+	}
 	/**
 	 * Adds a filter that allows adding classes to the HTML tag.
 	 *
@@ -587,11 +632,14 @@ final class Optml_Manager {
 	public static function parse_images_from_html( $content ) {
 		$images = [];
 
+		if ( OPTML_DEBUG ) {
+			do_action( 'optml_log', 'Content to parse images from: ' . $content );
+		}
 		$regex = '/(?:<a[^>]+?href=["|\'](?P<link_url>[^\s]+?)["|\'][^>]*?>\s*)?(?P<img_tag>(?:<noscript\s*>\s*)?<img[^>]*?\s?(?:' . implode( '|', array_merge( [ 'src' ], Optml_Tag_Replacer::possible_src_attributes() ) ) . ')=["\'\\\\]*?(?P<img_url>[' . Optml_Config::$chars . ']{10,}).*?>(?:\s*<\/noscript\s*>)?){1}(?:\s*<\/a>)?/ismu';
 
 		if ( preg_match_all( $regex, $content, $images, PREG_OFFSET_CAPTURE ) ) {
 			if ( OPTML_DEBUG ) {
-				do_action( 'optml_log', 'images parased: ' . print_r( $images, true ) );
+				do_action( 'optml_log', 'Image tags parsed: ' . print_r( $images, true ) );
 			}
 			foreach ( $images as $key => $unused ) {
 				// Simplify the output as much as possible, mostly for confirming test results.
@@ -639,8 +687,7 @@ final class Optml_Manager {
 	public function process_urls_from_content( $html ) {
 		$extracted_urls = $this->extract_urls_from_content( $html );
 		if ( OPTML_DEBUG ) {
-			do_action( 'optml_log', 'matched urls' );
-			do_action( 'optml_log', $extracted_urls );
+			do_action( 'optml_log', 'Extracted image urls from content: ' . print_r( $extracted_urls, true ) );
 		}
 		return $this->do_url_replacement( $html, $extracted_urls );
 	}
@@ -752,7 +799,20 @@ final class Optml_Manager {
 		remove_filter( 'the_content', [ $this, 'process_images_from_content' ], PHP_INT_MAX );
 
 		ob_start(
-			[ &$this, 'replace_content' ]
+			function ( $content ) {
+					/*
+					* Wrap the call to replace_content() so that PHP’s output-buffering system
+					* does not pass its own second argument ($phase bitmask) to our method.
+					*
+					* replace_content() expects the second parameter to be a boolean $partial,
+					* indicating whether the content is a partial replacement (e.g. for
+					* viewport lazy-load) or a full page. If PHP’s $phase integer is passed
+					* directly, it would be misinterpreted as $partial and break the logic.
+					*
+					* This closure filters the call, forwarding only the captured HTML buffer.
+					*/
+				return $this->replace_content( $content, self::is_ajax_request() );
+			}
 		);
 	}
 

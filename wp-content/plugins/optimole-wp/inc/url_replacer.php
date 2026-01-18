@@ -59,7 +59,7 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 	 *
 	 * @param string $url The url which should be signed.
 	 * @param array  $args Dimension params; Supports `width` and `height`.
-	 *
+	 * @param bool   $retried Whether the url has been retried.
 	 * @return string
 	 */
 	public function build_url(
@@ -67,12 +67,16 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 		$args = [
 			'width'  => 'auto',
 			'height' => 'auto',
-		]
+		],
+		$retried = false
 	) {
 		if ( apply_filters( 'optml_dont_replace_url', false, $url ) ) {
 			return $url;
 		}
 
+		if ( OPTML_DEBUG ) {
+			do_action( 'optml_log', 'building url: ' . $url . ' args: ' . print_r( $args, true ) );
+		}
 		$original_url = $url;
 
 		$is_slashed = strpos( $url, '\/' ) !== false;
@@ -112,7 +116,18 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 				$url = $unoptimized_url;
 			}
 		}
-		if ( strpos( $url, Optml_Config::$service_url ) !== false && ! $this->url_has_dam_flag( $url ) ) {
+		if ( isset( $args['force'] ) && $args['force'] === true && strpos( $url, Optml_Config::$service_url ) !== false && ! $this->url_has_dam_flag( $url ) ) {
+			if ( OPTML_DEBUG ) {
+				do_action( 'optml_log', 'url is already using optimole: ' . $url );
+			}
+			if ( $retried === true ) {
+				return $original_url;
+			}
+			// We retry because the url is already using optimole, but we need to rebuild it because the args might be different.
+			$pos = strpos( $url, 'http', 8 ); // skip 'https://' or 'http://'
+			if ( $pos !== false ) {
+				return $this->build_url( substr( $url, $pos ), $args, true );
+			}
 			return $original_url;
 		}
 
@@ -226,6 +241,22 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 			$args['resize']['gravity'] = GravityProperty::SMART;
 		}
 
+		$is_retina_enabled = $this->settings->get( 'retina_images' ) !== 'disabled';
+		if ( ! $is_retina_enabled ) {
+			$max_dimension = max( $args['width'], $args['height'] );
+			$should_apply_dpr = false;
+
+			if ( $max_dimension > 0 && $max_dimension < 150 ) {
+				$should_apply_dpr = true;
+			}
+
+			$should_apply_dpr = apply_filters( 'optml_should_apply_dpr', $should_apply_dpr, $args, $url );
+
+			if ( $should_apply_dpr && ! isset( $args['dpr'] ) ) {
+				$args['dpr'] = 2;
+			}
+		}
+
 		$args = apply_filters( 'optml_image_args', $args, $original_url );
 		$image = Optimole::image( apply_filters( 'optml_processed_url', $url ), self::get_active_cache_booster( $url, $this->active_cache_buster ) );
 
@@ -236,6 +267,9 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 
 		if ( ! empty( $args['resize'] ) ) {
 			$this->apply_resize( $image, $args['resize'] );
+		} elseif ( $this->settings->is_smart_cropping() ) {
+			// If smart cropping is enabled and no resize is set, we apply smart focus since the resize can be triggered from the JS library.
+			$image->smartFocus();
 		}
 
 		if ( apply_filters( 'optml_apply_watermark_for', true, $url ) ) {
@@ -375,16 +409,6 @@ final class Optml_Url_Replacer extends Optml_App_Replacer {
 		return $url;
 	}
 
-	/**
-	 * Check if this contains the DAM flag.
-	 *
-	 * @param string $url The URL to check.
-	 *
-	 * @return bool
-	 */
-	private function is_dam_url( $url ) {
-		return is_string( $url ) && strpos( $url, Optml_Dam::URL_DAM_FLAG ) !== false;
-	}
 
 	/**
 	 * Check if the URL is offloaded.

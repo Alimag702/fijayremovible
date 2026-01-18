@@ -211,7 +211,7 @@ $units = array(
 								<?php
 								$attributes = array(
 									'data-attribute'       => $horizontal_value,
-									'aria-labelledby'      => 'hustle-' . $horizontal_value . '-label',
+									'aria-label'           => esc_html_e( 'Custom value for horizontal position', 'hustle' ),
 									'data-disable-content' => $horizontal_position,
 									'data-disable-off'     => 'custom',
 								);

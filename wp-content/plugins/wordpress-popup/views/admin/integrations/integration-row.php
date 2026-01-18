@@ -57,70 +57,61 @@ if ( ! empty( $module_id ) ) {
 				$tooltip           = __( 'Add Integration', 'hustle' );
 
 			}
+		} elseif ( $provider['is_form_connected'] ) {
+
+			$icon_class_action = 'sui-icon-widget-settings-config';
+			$tooltip           = __( 'Configure Integration', 'hustle' );
+
 		} else {
 
-			if ( $provider['is_form_connected'] ) {
+			$icon_class_action = 'sui-icon-plus';
+			$tooltip           = __( 'Add Integration', 'hustle' );
 
-				$icon_class_action = 'sui-icon-widget-settings-config';
-				$tooltip           = __( 'Configure Integration', 'hustle' );
-
-			} else {
-
-				$icon_class_action = 'sui-icon-plus';
-				$tooltip           = __( 'Add Integration', 'hustle' );
-
-			}
 		}
 	}
-} else {
+} elseif (
+	isset( $provider['is_settings_available'] ) &&
+	! empty( $provider['is_settings_available'] ) &&
+	true === $provider['is_settings_available']
+) {
 
-	// On integrations page.
-	if (
-		isset( $provider['is_settings_available'] ) &&
-		! empty( $provider['is_settings_available'] ) &&
-		true === $provider['is_settings_available']
-	) {
+	$show_action = true;
 
-		$show_action = true;
+	if ( $provider['is_multi_on_global'] ) {
 
-		if ( $provider['is_multi_on_global'] ) {
+		if ( isset( $provider['multi_name'] ) ) {
 
-			if ( isset( $provider['multi_name'] ) ) {
+			$icon_class_action = 'sui-icon-widget-settings-config';
+			$tooltip           = __( 'Configure Integration', 'hustle' );
+			$global_multi_id   = $provider['global_multi_id'];
+			$multi_name        = $provider['multi_name'];
 
-				$icon_class_action = 'sui-icon-widget-settings-config';
-				$tooltip           = __( 'Configure Integration', 'hustle' );
-				$global_multi_id   = $provider['global_multi_id'];
-				$multi_name        = $provider['multi_name'];
-
-			} else {
-
-				if ( isset( $provider['global_multi_id'] ) ) {
-					$global_multi_id = $provider['global_multi_id'];
-				}
-
-				$icon_class_action = 'sui-icon-plus';
-				$tooltip           = __( 'Add Integration', 'hustle' );
-
-			}
 		} else {
 
-			if ( $provider['is_connected'] ) {
-
-				$icon_class_action = 'sui-icon-widget-settings-config';
-				$tooltip           = __( 'Configure Integration', 'hustle' );
-
-			} else {
-
-				$icon_class_action = 'sui-icon-plus';
-				$tooltip           = __( 'Add Integration', 'hustle' );
-
-				if ( 'zapier' === $provider['slug'] ) {
-					$advertising = true;
-				}
+			if ( isset( $provider['global_multi_id'] ) ) {
+				$global_multi_id = $provider['global_multi_id'];
 			}
+
+			$icon_class_action = 'sui-icon-plus';
+			$tooltip           = __( 'Add Integration', 'hustle' );
+
+		}
+	} elseif ( $provider['is_connected'] ) {
+
+		$icon_class_action = 'sui-icon-widget-settings-config';
+		$tooltip           = __( 'Configure Integration', 'hustle' );
+
+	} else {
+
+		$icon_class_action = 'sui-icon-plus';
+		$tooltip           = __( 'Add Integration', 'hustle' );
+
+		if ( 'zapier' === $provider['slug'] ) {
+			$advertising = true;
 		}
 	}
-} ?>
+}
+?>
 
 <tr
 <?php
@@ -191,17 +182,19 @@ if ( true === $advertising ) {
 
 						<?php if ( $show_action ) : ?>
 
-							<button class="sui-button-icon sui-tooltip sui-tooltip-top-right connect-integration"
-								data-tooltip="<?php echo esc_html( $tooltip ); ?>"
-								data-slug="<?php echo esc_attr( $provider['slug'] ); ?>"
-								data-image="<?php echo esc_attr( $provider['logo_2x'] ); ?>"
-								data-module_id="<?php echo esc_attr( $module_id ); ?>"
-								data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
-								data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
-								data-action="<?php echo esc_attr( $providers_action ); ?>"
-								data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
-								<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>
-							</button>
+						<button class="sui-button-icon sui-tooltip sui-tooltip-top-right connect-integration"
+							type="button"
+							aria-label="<?php echo esc_attr( sprintf( /* translators: 1. Action name 2. Integration name */ __( '%1$s for %2$s', 'hustle' ), $tooltip, $provider['title'] ) ); ?>"
+							data-tooltip="<?php echo esc_html( $tooltip ); ?>"
+							data-slug="<?php echo esc_attr( $provider['slug'] ); ?>"
+							data-image="<?php echo esc_attr( $provider['logo_2x'] ); ?>"
+							data-module_id="<?php echo esc_attr( $module_id ); ?>"
+							data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
+							data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
+							data-action="<?php echo esc_attr( $providers_action ); ?>"
+							data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
+							<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>
+						</button>
 
 						<?php endif; ?>
 
@@ -232,17 +225,19 @@ if ( true === $advertising ) {
 
 				<?php if ( $show_action ) : ?>
 
-					<button class="sui-button-icon sui-tooltip sui-tooltip-top-right connect-integration"
-						data-tooltip="<?php echo esc_html( $tooltip ); ?>"
-						data-slug="<?php echo esc_attr( $provider['slug'] ); ?>"
-						data-image="<?php echo esc_attr( $provider['logo_2x'] ); ?>"
-						data-module_id="<?php echo esc_attr( $module_id ); ?>"
-						data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
-						data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
-						data-action="<?php echo esc_attr( $providers_action ); ?>"
-						data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
-						<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>
-					</button>
+				<button class="sui-button-icon sui-tooltip sui-tooltip-top-right connect-integration"
+					type="button"
+					aria-label="<?php echo esc_attr( sprintf( /* translators: 1. Action name 2. Integration name */ __( '%1$s for %2$s', 'hustle' ), $tooltip, $provider['title'] ) ); ?>"
+					data-tooltip="<?php echo esc_html( $tooltip ); ?>"
+					data-slug="<?php echo esc_attr( $provider['slug'] ); ?>"
+					data-image="<?php echo esc_attr( $provider['logo_2x'] ); ?>"
+					data-module_id="<?php echo esc_attr( $module_id ); ?>"
+					data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
+					data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
+					data-action="<?php echo esc_attr( $providers_action ); ?>"
+					data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
+					<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>
+				</button>
 
 				<?php endif; ?>
 

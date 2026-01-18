@@ -13,7 +13,7 @@ if ( ! class_exists( 'rsssl_installer' ) ) {
 	class rsssl_installer {
 		private $slug = '';
 		public function __construct( $slug ) {
-			if ( ! current_user_can( 'install_plugins' ) ) {
+			if ( ! wp_doing_cron() && ! current_user_can( 'install_plugins' ) ) {
 				return;
 			}
 
@@ -63,6 +63,7 @@ if ( ! class_exists( 'rsssl_installer' ) ) {
 			$slugs = [
 				'complianz-gdpr'             => 'complianz-gdpr/complianz-gpdr.php',
 				'complianz-terms-conditions' => 'complianz-terms-conditions/complianz-terms-conditions.php',
+				'simplybook'                 => 'simplybook/simplybook.php',
 			];
 			return $slugs[ $this->slug ];
 		}
@@ -75,6 +76,7 @@ if ( ! class_exists( 'rsssl_installer' ) ) {
 			$prefixes = [
 				'complianz-gdpr'             => 'cmplz',
 				'complianz-terms-conditions' => 'cmplz_tc',
+				'simplybook'                 => 'simplybook',
 			];
 			$prefix   = $prefixes[ $this->slug ];
 			update_site_option( $prefix . '_tour_started', false );
@@ -88,7 +90,7 @@ if ( ! class_exists( 'rsssl_installer' ) ) {
 		 * @return bool
 		 */
 		public function download_plugin() {
-			if ( ! current_user_can( 'install_plugins' ) ) {
+			if ( ! wp_doing_cron() && ! current_user_can( 'install_plugins' ) ) {
 				return false;
 			}
 
@@ -127,7 +129,7 @@ if ( ! class_exists( 'rsssl_installer' ) ) {
 		 * @return bool
 		 */
 		public function activate_plugin() {
-			if ( ! current_user_can( 'install_plugins' ) ) {
+			if ( ! wp_doing_cron() && ! current_user_can( 'install_plugins' ) ) {
 				return false;
 			}
 

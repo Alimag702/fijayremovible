@@ -30,7 +30,7 @@
 
 	<div style="margin-left: 26px;" data-toggle-content="enable_on_click_element">
 
-		<label class="sui-label"><?php esc_html_e( 'CSS selector(s)', 'hustle' ); ?></label>
+		<label class="sui-label" id="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-css-selector-label"><?php esc_html_e( 'CSS selector(s)', 'hustle' ); ?></label>
 
 		<input
 			type="text"
@@ -39,6 +39,7 @@
 			placeholder="<?php esc_attr_e( 'For example .element-class, #element-id', 'hustle' ); ?>"
 			class="sui-form-control"
 			data-attribute="triggers.on_click_element"
+			aria-labelledby="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-css-selector-label"
 		/>
 
 		<?php /* translators: module type in smallcaps and in singular */ ?>
@@ -69,13 +70,15 @@
 
 	<div style="margin-left: 26px;" data-toggle-content="enable_on_click_shortcode">
 
-		<label class="sui-label"><?php esc_html_e( 'Button shortcode', 'hustle' ); ?></label>
+		<label class="sui-label" id="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-button-shortcode-label"><?php esc_html_e( 'Button shortcode', 'hustle' ); ?></label>
 
 		<div class="sui-with-button sui-with-button-inside">
 			<input type="text"
 				class="sui-form-control"
 				value='[wd_hustle id="<?php echo esc_attr( $shortcode_id ); ?>" type="<?php echo esc_attr( $this->admin->module_type ); ?>"]<?php esc_attr_e( 'Click', 'hustle' ); ?>[/wd_hustle]'
-				readonly="readonly">
+				readonly="readonly"
+				aria-labelledby="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-button-shortcode-label"
+			/>
 			<button class="sui-button-icon hustle-copy-shortcode-button">
 				<span aria-hidden="true" class="sui-icon-copy"></span>
 				<span class="sui-screen-reader-text"><?php esc_html_e( 'Copy shortcode', 'hustle' ); ?></span>

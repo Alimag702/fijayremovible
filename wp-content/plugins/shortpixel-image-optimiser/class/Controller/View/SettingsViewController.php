@@ -23,8 +23,10 @@ use ShortPixel\Controller\AdminNoticesController as AdminNoticesController;
 use ShortPixel\Controller\QueueController as QueueController;
 
 use ShortPixel\Controller\CacheController as CacheController;
+use ShortPixel\Controller\Optimizer\OptimizeAiController;
 use ShortPixel\Controller\View\BulkViewController as BulkViewController;
 use ShortPixel\External\Offload\Offloader;
+use ShortPixel\Model\AiDataModel;
 use ShortPixel\NextGenController as NextGenController;
 
 class SettingsViewController extends \ShortPixel\ViewController
@@ -33,7 +35,7 @@ class SettingsViewController extends \ShortPixel\ViewController
      //env
      protected $is_nginx;
      protected $is_htaccess_writable;
-		 protected $is_gd_installed;
+		 protected $has_image_library;
 		 protected $is_curl_installed;
      protected $is_multisite;
      protected $is_mainsite;
@@ -50,7 +52,7 @@ class SettingsViewController extends \ShortPixel\ViewController
      );
 
      protected $display_part = 'overview';
-     protected $all_display_parts = array('overview', 'optimisation','exclusions', 'processing', 'webp', 'integrations', 'debug', 'tools', 'help');
+     protected $all_display_parts = array('overview', 'optimisation','exclusions', 'processing', 'webp','ai', 'integrations', 'debug', 'tools', 'help');
      protected $form_action = 'save-settings';
      protected $view_mode = 'simple'; // advanced or simple
 		 protected $is_ajax_save = false; // checker if saved via ajax ( aka no redirect / json return )
@@ -224,6 +226,8 @@ class SettingsViewController extends \ShortPixel\ViewController
 
         $setting_name =  isset($_POST['edit_setting']) ? sanitize_text_field($_POST['edit_setting']) : false;
         $new_value = isset($_POST['new_value']) ? sanitize_text_field($_POST['new_value']) : false;
+        $submit_name = isset($_POST['Submit']) ? sanitize_text_field($_POST['Submit']) : false; 
+
       //  $apiKeyModel = (isset($_POST['apiKeySettings']) && 'true' == $_POST['apikeySettings'])  ? true : false;
 
       // @todo ApiKeyModel will not really work, for no autosave/ public save, only via keychecks. Will be an issue when updating redirectedSettings, probably move back to settings where it was.
@@ -233,9 +237,18 @@ class SettingsViewController extends \ShortPixel\ViewController
             $model = $this->model;
             if ($model->exists($setting_name))
             {
-               $this->model->$setting_name = $new_value;
+              if ('remove' == $submit_name)
+              {
+                 $this->model->deleteOption($setting_name);
+              }
+              else
+              {
+                 $this->model->$setting_name = $new_value;
+              }
+              
             }
         }
+        
 
         $this->doRedirect();
       }
@@ -248,16 +261,19 @@ class SettingsViewController extends \ShortPixel\ViewController
 
 				$action = isset($_REQUEST['bulk']) ? sanitize_text_field($_REQUEST['bulk']) : null;
 
-				if ($action == 'migrate')
+				if ('migrate' == $action)
 				{
 					$this->doRedirect('bulk-migrate');
 				}
-
-				if ($action == 'restore')
+				elseif ('restore' == $action)
 				{
 					$this->doRedirect('bulk-restore');
 				}
-				if ($action == 'removeLegacy')
+        elseif ('restoreAI' == $action)
+        {
+          $this->doRedirect('bulk-restoreAI');
+        }
+				elseif ('removeLegacy' == $action)
 				{
 					 $this->doRedirect('bulk-removeLegacy');
 				}
@@ -410,7 +426,7 @@ class SettingsViewController extends \ShortPixel\ViewController
           {
               $nextgen = NextGenController::getInstance();
               $previous = $this->model->includeNextGen;
-              $nextgen->enableNextGen(true);
+          //    $nextgen->enableNextGen(true);
 
               // Reset any integration notices when updating settings.
               AdminNoticesController::resetIntegrationNotices();
@@ -434,9 +450,16 @@ class SettingsViewController extends \ShortPixel\ViewController
 					foreach($data as $name => $value)
 					{
 							$type = $this->model->getType($name);
-							if ('boolean' === $type && ! isset($this->postData[$name]))
+							if ('boolean' === $type )
 							{
-								 $this->model->{$name} = false;
+                if( ! isset($this->postData[$name]))
+                {
+								  $this->model->{$name} = false;
+                }
+                else
+                {
+                   $this->model->{$name} = true; 
+                }
 							}
 					}
 
@@ -495,6 +518,22 @@ class SettingsViewController extends \ShortPixel\ViewController
          $this->view->cloudflare_constant = defined('SHORTPIXEL_CFTOKEN') ? true : false;
          $this->view->is_unlimited =  (!is_null($this->quotaData) && $this->quotaData->unlimited) ? true : false;
          $this->view->is_wpoffload = $offLoader->isActive('wp-offload');
+
+         require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+         $this->view->languages = wp_get_available_translations();
+        
+         $this->view->hide_banner = false; 
+         $bool = apply_filters('shortpixel/settings/no_banner', false);
+         if (true === $bool )
+            $this->view->hide_banner = true; 
+
+         if ( defined('SHORTPIXEL_NO_BANNER') && SHORTPIXEL_NO_BANNER == true)
+         {
+           $this->view->hide_banner = true; 
+         }
+          
+
+         //$this->view->latest_ai = $this->getLatestAIExamples();
 
          $settings = \wpSPIO()->settings();
 
@@ -649,7 +688,7 @@ class SettingsViewController extends \ShortPixel\ViewController
           $env = wpSPIO()->env();
 
           $this->is_nginx = $env->is_nginx;
-          $this->is_gd_installed = $env->is_gd_installed;
+          $this->has_image_library = ($env->is_gd_installed || $env->is_imagick_installed); // Any library 
           $this->is_curl_installed = $env->is_curl_installed;
 
           $this->is_htaccess_writable = $this->HTisWritable();
@@ -845,9 +884,19 @@ class SettingsViewController extends \ShortPixel\ViewController
               }
           }
 
-          
+        if (false === isset($post['enable_ai']))
+        {
+             if (isset($post['autoAI']))
+             {
+                unset($post['autoAI']);
+             }
+             if (isset($post['autoAIBulk']))
+             {
+                unset($post['autoAIBulk']);
+             }
+        }
 
-
+        
 				// Field that are in form for other purpososes, but are not part of model and should not be saved.
 					$ignore_fields = array(
 							'display_part',
@@ -879,6 +928,8 @@ class SettingsViewController extends \ShortPixel\ViewController
               'form-nonce',
               'request_url', 
               'login_apiKey',
+              'ajaxSave',
+              'ai_preview_image_id',
 
 					);
 
@@ -967,7 +1018,7 @@ class SettingsViewController extends \ShortPixel\ViewController
         {
           $pattern = $pair['value'];
           $type = $pair['type'];
-          //$first = substr($pattern, 0,1);
+
           if ($type == 'regex-name' || $type == 'regex-path')
           {
             if ( @preg_match($pattern, false) === false)
@@ -976,50 +1027,25 @@ class SettingsViewController extends \ShortPixel\ViewController
                Notice::addWarning(sprintf(__('Regular Expression Pattern %s returned an error. Please check if the expression is correct. %s * Special characters should be escaped. %s * A regular expression must be contained between two slashes  ', 'shortpixel-image-optimiser'), $pattern, "<br>", "<br>" ));
             }
           }
+          if ('date' === $type)
+          { 
+             try {
+              $date = new \DateTime($pattern);
+             }
+             catch (\Exception $e)
+             {
+               Notice::addWarning(sprintf(__('Date format %s return an error %s . Accepted are formats that are valid for PHP dateFormat', 'shortpixel-image-optimiser'), 
+                 $pattern, $e->getMessage()
+             ));
+             }
+          }
         }
 
         $post['excludePatterns'] = $accepted;
 
 
-        return $post; // @todo The switch to check regex patterns or not.
+        return $post; 
 
-        if(isset($post['excludePatterns']) && strlen($post['excludePatterns'])) {
-            $items = explode(',', $post['excludePatterns']);
-            foreach($items as $pat) {
-                $parts = explode(':', $pat);
-                if (count($parts) == 1)
-                {
-                  $type = 'name';
-                  $value = str_replace('\\\\','\\', trim($parts[0]));
-                }
-                else
-                {
-                  $type = trim($parts[0]);
-                  $value = str_replace('\\\\','\\',trim($parts[1]));
-                }
-
-                if (strlen($value) > 0)  // omit faulty empty statements.
-                  $patterns[] = array('type' => $type, 'value' => $value);
-
-            }
-
-        }
-
-
-			  foreach($patterns as $pair)
-				{
-						$pattern = $pair['value'];
-						//$first = substr($pattern, 0,1);
-						if ($type == 'regex-name' || $type == 'regex-path')
-						{
-						  if ( @preg_match($pattern, false) === false)
-							{
-								 Notice::addWarning(sprintf(__('Regular Expression Pattern %s returned an error. Please check if the expression is correct. %s * Special characters should be escaped. %s * A regular expression must be contained between two slashes  ', 'shortpixel-image-optimiser'), $pattern, "<br>", "<br>" ));
-							}
-						}
-				}
-        $post['excludePatterns'] = $patterns;
-        return $post;
       }
 
 
@@ -1045,19 +1071,23 @@ class SettingsViewController extends \ShortPixel\ViewController
             $url = remove_query_arg('sp-action', $url); // has url
           }
         }
-        elseif($redirect == 'bulk')
+        elseif('bulk' == $redirect )
         {
           $url = admin_url("upload.php?page=wp-short-pixel-bulk");
         }
-				elseif($redirect == 'bulk-migrate')
+				elseif('bulk-migrate' == $redirect)
 				{
 					 $url = admin_url('upload.php?page=wp-short-pixel-bulk&panel=bulk-migrate');
 				}
-				elseif ($redirect == 'bulk-restore')
+				elseif ('bulk-restore' == $redirect)
 				{
 						$url = admin_url('upload.php?page=wp-short-pixel-bulk&panel=bulk-restore');
 				}
-				elseif ($redirect == 'bulk-removeLegacy')
+        elseif ('bulk-restoreAI' == $redirect)
+        {
+            $url = admin_url('upload.php?page=wp-short-pixel-bulk&panel=bulk-restoreAI');
+        }
+				elseif ('bulk-removeLegacy' == $redirect)
 				{
 						$url = admin_url('upload.php?page=wp-short-pixel-bulk&panel=bulk-removeLegacy');
 				}
@@ -1104,6 +1134,7 @@ class SettingsViewController extends \ShortPixel\ViewController
 						wp_send_json($json);
 						exit();
 			}
+
 
 
 }

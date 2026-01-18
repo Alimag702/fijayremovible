@@ -119,7 +119,7 @@ $size_options = array(
 									'id'         => 'hustle-' . $width_name,
 									'attributes' => array(
 										'data-attribute'  => $width_name,
-										'aria-labelledby' => '',
+										'aria-labelledby' => 'hustle-feature_image_width_option-label',
 									),
 								),
 							)

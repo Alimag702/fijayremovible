@@ -1,9 +1,9 @@
 === Contact Form 7 - Dynamic Text Extension ===
-Contributors: sevenspark, tessawatkinsllc
+Contributors: tessawatkinsllc, sevenspark
 Donate link: https://just1voice.com/donate/
 Tags: Contact Form 7, autofill, prepopulate, dynamic form, form field
-Tested up to: 6.7
-Stable tag: 5.0.3
+Tested up to: 6.9
+Stable tag: 5.0.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -390,12 +390,22 @@ This method is the most involved as it requires you to be familiar with the proc
 
 Please check out the [FAQ on our website](https://aurisecreative.com/docs/contact-form-7-dynamic-text-extension/frequently-asked-questions/?utm_source=wordpress.org&utm_medium=link&utm_campaign=contact-form-7-dynamic-text-extension&utm_content=readme).
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of _Contact Form 7 - Dynamic Text Extension_ WordPress plugin through the [Wordfence Intelligence Vulnerability Submission Form](https://www.wordfence.com/threat-intel/vulnerabilities/submit). Alternatively, you can report them through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/56e65af9-b50c-4307-b670-7d69463bd829). Both platforms will assist you with verification, CVE assignment, and notify me.
+
 == Upgrade Notice ==
 
-= 5.0.3 =
-Hopefully addressed the `Function _load_textdomain_just_in_time was called incorrectly` notice added in WordPress core version 6.7 triggered by this plugin. See [the changelog](https://plugins.trac.wordpress.org/browser/contact-form-7-dynamic-text-extension/trunk/changelog.txt) for more details.
+= 5.0.4 =
+Addressed security vulnerability responsibly reported by NosleeP++ to Wordfence. See [the changelog](https://plugins.trac.wordpress.org/browser/contact-form-7-dynamic-text-extension/trunk/changelog.txt) for more details.
 
 == Changelog ==
+
+= 5.0.4 =
+
+**Release Date: 01/01/2026**
+
+* Security: Addressed security vulnerability CVE-2025-13146 responsibly reported by NosleeP++ to Wordfence. Thank you NosleeP++! The JavaScript Fetch/AJAX request now includes nonce verification.
 
 = 5.0.3 =
 
@@ -414,11 +424,6 @@ Hopefully addressed the `Function _load_textdomain_just_in_time was called incor
 = 5.0.0 =
 
 * Update: The form tag generator has been upgraded to version 2 to be compatible with [version 6.0 of Contact Form 7](https://contactform7.com/2024/11/03/contact-form-7-60/). Related prefixed functions have been replaced with a class. [See support thread](https://wordpress.org/support/topic/getting-deprecated-error-after-recent-update/).
-
-= 4.5.1 =
-
-* Security: Addressed security vulnerability #352992 responsibly reported by Francesco Carlucci to Wordfence. Thank you Carlucci. All built-in shortcodes now check for appropriate access and user permissions before returning information from any post.
-* Translation: Added I18N improvements by alexclassroom, thanks!
 
 = Older Releases =
 

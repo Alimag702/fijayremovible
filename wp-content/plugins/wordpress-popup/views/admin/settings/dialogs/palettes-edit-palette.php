@@ -52,6 +52,8 @@ ob_start();
 					id="hustle-palette-default-label"
 					for="hustle-palette-base-source-palette"
 					class="sui-tab-item active"
+					role="tab"
+					aria-controls="hustle-palette-default"
 				>
 					<input
 						tabindex="-1"
@@ -72,6 +74,8 @@ ob_start();
 					id="hustle-palette-import-label"
 					for="hustle-palette-base-source-module"
 					class="sui-tab-item"
+					role="tab"
+					aria-controls="hustle-palette-import"
 				>
 					<input
 						tabindex="-1"
@@ -200,6 +204,7 @@ ob_start();
 	data-hustle-action="go-to-step"
 	data-form-id="hustle-edit-palette-form"
 	data-step="2"
+	aria-labelledby="hustle-step-button-text"
 >
 	<span id="hustle-step-button-text" class="sui-loading-text">
 		<?php esc_attr_e( 'Next', 'hustle' ); ?>

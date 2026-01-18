@@ -135,7 +135,15 @@ class FontAwesome_Config_Controller extends WP_REST_Controller {
 				$db_item
 			);
 
-			FontAwesome_SVG_Styles_Manager::instance()->fetch_svg_styles( fa(), $this->release_provider() );
+			/**
+			 * The admin notices will not be shown as a consequence of any failure in this
+			 * function call, since this is a REST controller.
+			 * However, this will allow us attempt the fetch, without it causing a fatal error
+			 * if it fails.
+			 */
+			if ( fa()->is_block_editor_support_enabled() ) {
+				FontAwesome_SVG_Styles_Manager::ensure_svg_styles_with_admin_notice_warning( fa(), $this->release_provider() );
+			}
 
 			$return_data = $this->build_item( fa() );
 			return new FontAwesome_REST_Response( $return_data, 200 );
@@ -234,7 +242,7 @@ class FontAwesome_Config_Controller extends WP_REST_Controller {
 		 */
 		if ( isset( $given_options['kitToken'] ) && is_string( $given_options['kitToken'] ) && $version_is_symbolic_latest ) {
 			$item['version'] = 'latest';
-		} elseif ( $version_is_concrete || '5.x' === $given_options['version'] || '6.x' === $given_options['version'] ) {
+		} elseif ( $version_is_concrete || '5.x' === $given_options['version'] || '6.x' === $given_options['version'] || '7.x' === $given_options['version'] ) {
 			$item['version'] = $given_options['version'];
 		} else {
 			throw ConfigSchemaException::concrete_version_expected();

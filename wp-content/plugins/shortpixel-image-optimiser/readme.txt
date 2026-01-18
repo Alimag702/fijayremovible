@@ -2,9 +2,9 @@
 Contributors: ShortPixel
 Tags: convert webp, optimize images, image optimization, resize, compress images
 Requires at least: 4.8.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.2.0
+Stable tag: 6.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,17 +28,35 @@ Make an instant <a href="https://shortpixel.com/image-compression-test" target="
 
 == 💡 Why is ShortPixel the best choice for image optimization or PDF compression? ==
 
-### 🆕 New! Freshly added features ###
+### 🆕 New! Brand new AI features ###
+
+* AI Image Upscale (2x, 3x, 4x) - Upscale smaller images with high-quality AI upscaling, perfect for retina displays and crisp visuals.
+* AI Background Removal – Instantly remove background from your images with one click, ideal for creating clean product photos. After the background is removed, your image can have a transparent background or be filled with a single solid color.
+* AI Image Titles - In addition to ALT text, captions, and descriptions, you can now generate smart image titles using AI for better SEO.
+* Bulk Remove AI Data - Easily clear all AI-generated image SEO data in one go.
+
+### 🆕 New! Freshly added AI Image SEO features ###
+
+* AI-powered image SEO – Automatically generate ALT text, captions, and image descriptions for all your images.
+* Bulk mode – Mass-generate and update details for all your images.
+* Preview mode – Test and fine-tune AI results before applying new ALT texts and descriptions in bulk.
+* Multilingual – Support for 100+ languages.
+* WooCommerce – Seamless support for WooCommerce product images.
+* Unlimited credits – AI-generate image titles, captions, and more with our Unlimited plan.
+* Accessibility – Improve website accessibility by generating all the necessary metadata for each image.
+
+### Freshly added features ###
 
 * Compress WebP images – ShortPixel now also <a href="https://shortpixel.com/blog/introducing-smartcompress/" target="_blank">smartly compresses</a> all your existing WebP images.
-* Image captioning – Using our AI model, you can automatically add "alternative text" to your images (BETA).
-* Added support for serving CSS and JS from our global CDN.
+* Added support for serving CSS, JS and fonts from our global CDN.
 * Save & Restore option for all settings – ideal for agencies and users managing multiple websites.
 * Decide whether AI bots can use your images for machine learning (ML) training, or <a href="https://shortpixel.com/blog/prevent-ai-data-mining-on-images/" target="_blank">block them entirely</a>.
+* You can now exclude images from optimization based on their upload date, perfect for skipping older or already optimized media.
+* Filter and select images in bulk using date-based criteria, giving you precise control over what gets optimized and when.
 
 ### 🌍 Faster Websites for Global Audiences ###
 
-The ShortPixel plugin now includes a built-in global Content Delivery Network (CDN). This powerful feature ensures that ShortPixel-optimized WebP and AVIF images are delivered quickly and efficiently to any location worldwide, minimizing delays and improving load times.
+The ShortPixel plugin now includes a built-in global Content Delivery Network (CDN). This powerful feature ensures that ShortPixel-optimized WebP and AVIF images, as well as your website’s CSS and JavaScript files, are delivered quickly and efficiently to any location worldwide, minimizing delays and improving load times.
 
 By leveraging this built-in solution, you enhance the user experience, reduce server strain, boost SEO performance, and simplify website management — all with minimal effort.
 
@@ -111,6 +129,8 @@ With ShortPixel, you can now add images in Apple's HEIC format directly from you
 
 * Safe to test and use: original images are backed up locally and can be restored with a single click (either individually or in bulk).
 * No credits are used for images optimized by less than 5%
+* Save & Restore option for all settings – ideal for agencies and users managing multiple websites.
+* Decide whether AI bots can use your images for machine learning (ML) training, or block them entirely
 
 ### 📊 Reporting, Analytics, Compliance and Customer Support ###
 
@@ -294,6 +314,11 @@ where `APIKEY` is the API Key received upon sign up.
 = Where do I report security bugs found in this plugin? =
 Please report security bugs found in the source code of the ShortPixel Image Optimizer plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/shortpixel-image-optimiser). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
+= Does the plugin use any external services =
+This plugin integrates with Chatbase ([https://www.chatbase.co](https://www.chatbase.co/)) to provide AI-powered chat support directly within the plugin interface. This integration allows plugin users to ask questions and receive automated assistance. The only data collected is the Country(no city and no exact location) and the message itself.
+
+Chatbase [ToS](https://www.chatbase.co/legal/terms).
+
 = I’m stuck. What do I do? =
 
 The ShortPixel team is here to help. <a href="https://shortpixel.com/contact">Contact us</a>!
@@ -463,34 +488,274 @@ Add HTTP basic authentication credentials by defining these constants in wp-conf
 
 == Changelog ==
 
+= 6.4.2 =
+
+📊 The Optimization Update
+
+Release Date: January 15, 2026
+
+🛠️ Fixes & Improvements
+
+* Media Library Optimization Display: Fixed an issue where optimized images were always shown as "bonus optimization" — the stats now reflect actual results.
+* Bulk UI Improvements: Cleaned up the layout of the bulk processing screen when only a few options are selected, for a more focused experience.
+* Percentace Hidden for Non-Optimization Actions: Removed the optimization percentage display when running bulk operations like restore or data migration (that don't involve actual image optimization).
+* AVIF via .htaccess for WebPs: Added support for AVIF delivery using the .htaccess method for images added directly in the WebP format.
+* AI SEO Preview Fix: Prevented display of incorrect data in the AI SEO Preview section within plugin settings.
+* SmartCrop Percentage Display: Fixed the issue where SmartCrop could show a negative improvement percentage if the cropped image ended up larger in size.
+* JPG to PNG Conversion Fix: Resolved a rare error when JPG files saved as PNG conflicted with the PNG-to-JPG conversion setting.
+* PHP 8.5 Deprecation Fix: Fixed a deprecation warning added in PHP 8.5, thanks to @mondalaci.
+* Text & Typo Corrections: Polished various texts and corrected typos on the Bulk and Settings pages.
+
+Update now for clearer stats, smarter previews, and a smoother optimization experience across the board! 🚀
+
+= 6.4.1 =
+
+🎄 The Christmas Update
+
+Release Date: December 18, 2025
+
+🎁 Fixes & Improvements
+
+* Temporary File Cleanup: Introduced a mechanism to automatically clean up temporary files after optimization, keeping your server tidy.
+* Zero-Byte File Protection: Prevents copying of 0-byte files from the /tmp/ folder in cases of permission errors or low tmp disk space.
+* IIS Compatibility Fix: Resolved a timestamp-related warning on IIS servers using 32-bit PHP environments.
+* Download Timeout Limit: Added a 25-second cap on item downloads to prevent conflicts with PHP's 30-second timeout.
+* Manual Mode Debug Fix: Fixed an issue in the debug menu from the plugin settings when using manual debug mode.
+* Custom CDN Field Fix: Corrected a conflict where the custom CDN field was hidden if the "Premium Add-ons for Elementor" plugin was active.
+* Wording Improvements: Made several small text updates for better clarity throughout the plugin.
+
+Update now and enjoy a smoother, more festive ShortPixel experience! 🎅🚀
+
+= 6.4.0 =
+
+🧠 The Ultimate AI Update
+
+Release Date: November 20, 2025
+
+✨ New Features
+
+* AI Image Upscale (2x, 3x, 4x): Upscale smaller images with high-quality AI upscaling, perfect for retina displays and crisp visuals.
+* AI Background Removal: Instantly remove image backgrounds with one click, great for clean product photos or transparent assets.
+* AI Image Titles: In addition to ALT text, captions, and descriptions, you can now generate smart image titles using AI for better SEO.
+* Date-Based Exclusions: Easily exclude images from processing based on their upload date.
+* Bulk Optimization by Date Interval: Run bulk optimization on a selected date range for precise control over what gets optimized and when.
+
+🔄 Compatibility Updates
+
+* Infinite Uploads Integration: ShortPixel now works seamlessly with the Infinite Uploads plugin.
+* SliceWP Fix: Fixed an error triggered when the REST API of SliceWP was active.
+
+🛠️ Fixes & Improvements
+
+* Bulk UI Redesign: The bulk processing interface has been reworked for a smoother, more intuitive experience.
+* Help Links Fixed: Resolved broken links in help pop-ups throughout the settings.
+* SmartCrop Logic Tweaked: Thumbnails cropped with SmartCrop no longer trigger unnecessary size checks.
+* Notification Scope Limited: Offer-related notifications now only appear on ShortPixel-specific pages like Settings and Bulk.
+* Banner Visibility Control: All banners in the settings can now be hidden using a simple filter, cleaner UI for advanced users.
+* File Conversion Stability: Fixed potential infinite conversion loops when uploading HEIC, TIFF, or BMP files.
+* WP-CLI AI Data Fix: Added checks to prevent regenerating AI image data via WP-CLI when it already exists, saving time and resources.
+
+Update now to unlock powerful new AI features, refined bulk controls, and a cleaner, smarter interface! 🚀
+
+= 6.3.5 =
+
+🔐 The SmartCrop & Security Fix Update
+
+Release Date: October 16, 2025
+
+🛠️ Fixes & Improvements
+
+* SmartCrop Re-Optimization Fix: The “Re-optimize with/without SmartCrop” feature now correctly follows the selected action instead of always applying the saved setting.
+* AI SEO Preview Credit Message: A clear message is now displayed in the AI SEO preview (from Settings) when you’re out of credits.
+* French Locale Compatibility: Fixed an issue that prevented plugin deactivation when WordPress was set to French due to a language-related error.
+* AI SEO Limits Save Fix: The limits for AI-generated SEO text fields are now properly saved in the settings.
+* Bulk Background Mode Stability: Addressed intermittent failures of background processing in specific cron configurations.
+* Security Fix – Settings Import/Export: Patched a vulnerability that could allow contributor-level users to import/export plugin settings. Thanks to the WordFence team for the responsible disclosure!
+* CDN Link Fix for Inline Backgrounds: Inline background images using single quotes are now correctly replaced with CDN links.
+* Nonce Validation Improvement: Added checks for key form fields to prevent "nonce failed" errors when other plugins modify form data.
+* Inline Background-Image Fix: Ensured that all inline background-image styles end with a semicolon (;) when using the PICTURE tag to deliver next-generation images.
+
+Update now for stronger security, improved SmartCrop behavior, and a smoother image SEO experience! 🚀
+
+= 6.3.4 =
+
+🤖 The Smarter AI Control Update
+
+Release Date: September 18, 2025
+
+✨ New Features & Improvements
+
+* Preserve Existing SEO Data: Added an option to keep your existing ALT, caption, and description fields untouched when using AI-generated image SEO — your manual work is safe!
+* Better Block Editor Integration: AI-generated SEO data and image optimization now work flawlessly when uploading images directly from the block editor.
+* AI Support Chatbot: Meet our new AI-powered support assistant — here to help you faster, 24/7.
+
+🛠️ Fixes & Behavioral Improvements
+
+* Full AI Deactivation: Disabling AI Image SEO now also disables auto-generation and hides all related options from WP Admin, including the Bulk Processing section.
+* EXIF-Based AI Training Block: If AI training is blocked via EXIF data, the plugin now shows a clear message and prevents the image from being sent for processing.
+* Re-Optimize Logic Fixed: The "Re-optimize with/without SmartCrop" buttons now respect the selected option instead of always using the saved setting.
+* Inline Font Handling: Inline fonts will no longer be replaced with CDN links if the CSS option is disabled.
+* AI SEO for Excluded Items: Bulk AI SEO generation now skips excluded items as expected.
+
+Update now for smarter AI behavior, more control over your data, and an improved support experience! 🚀
+
+= 6.3.3 =
+
+🧠 The Smarter ALT Tags Update
+
+Release Date: August 21, 2025
+
+🛠️ Fixes & Improvements
+
+* Reliable ALT Tag Replacement: The replacer module now ensures AI-generated ALT tags are updated correctly in all scenarios.
+* Cache Purge for Visibility: Automatically clears the cache after ALT tag replacement, ensuring changes show up even when object caching is enabled.
+* AI Settings Limits: Added max values for AI context and output fields to prevent excessive input and ensure consistent results.
+* UI & Wording Tweaks: Minor text and layout improvements on the settings and bulk processing pages for a cleaner experience.
+
+Update now for smoother AI integration and more accurate image SEO handling! 🚀
+
+= 6.3.2 =
+
+🧠 The AI SEO Compatibility Update
+
+Release Date: August 20, 2025
+
+🛠️ Fixes & Improvements
+
+* Yoast SEO + Classic Editor Fix: Resolved a JavaScript error that occurred when using Yoast SEO alongside the Classic Editor.
+* Improved AI Data Layout: The display of AI-generated image SEO data in the Media Library has been refined for better clarity and usability.
+* Accurate Undo Function: Undoing AI-generated data from the Media Library popup now correctly reverts all related fields.
+
+Update now for a smoother, more reliable SEO and editing experience! 🚀
+
+= 6.3.1 =
+
+🔥 The Quick Fix Update
+
+Release Date: August 19, 2025
+
+🛠️ Fixes & Improvements
+
+* Draft Content Preservation: AI Image SEO data generation now respects and preserves content from draft posts.
+* Cleaner Media Library Display: ShortPixel info is now shown only in the designated column, so no more unexpected placements.
+* Classic Editor Compatibility: Resolved JavaScript errors appearing in the post editor when using the Classic Editor.
+
+A focused hotfix to ensure a smoother experience after the latest major release. Update now! 🚀
+
+= 6.3.0 =
+
+✨ The AI Image SEO Update
+
+Release Date: August 18, 2025
+
+🌟 New Features
+
+* Faster AI Model: We've upgraded to a better, faster AI model for generating image SEO data more accurately and efficiently.
+* Expanded SEO Tags: In addition to ALT tags, you can now automatically generate image captions and descriptions to enhance SEO and accessibility.
+* Auto-Generate on Upload: Image SEO data can now be generated automatically for newly uploaded images.
+* Bulk SEO Generation: Easily generate image SEO data in bulk, perfect for optimizing existing media libraries.
+* Language Selection: Choose the language used for image SEO generation directly from the plugin settings.
+
+🛠️ Fixes & Improvements
+
+* Cache-Control Headers: WebP and AVIF images now include cache-control headers when delivered via .htaccess, improving cache behavior.
+* Thumbnail Handling: If a main image in a special format (like BMP/TIFF) is excluded from optimization, its JPG thumbnails are no longer excluded incorrectly.
+* WooCommerce SVG Fix: Fixed an issue where certain SVG icons for payment methods weren’t correctly replaced with CDN links on the WooCommerce cart.
+
+Update now to take full advantage of smarter image SEO with AI and better compatibility across your site! 🚀
+
+= 6.2.2 =
+
+🧠 The Smart Media Update
+
+Release Date: July 29, 2025
+
+⚙️ Improvements
+
+* Enhanced REST API Support: Two new parameters added to the WordPress REST API for media items — source_url_webp and source_url_avif — making it easier to access next-gen image formats programmatically.
+* Media Library Filter: Introduced a new filter to hide the ShortPixel box from specific areas in the Media Library — perfect for a cleaner UI when needed.
+
+🛠️ Fixes
+
+* 404 Page Styling: Fixed an issue where CSS was broken on 404 pages when CDN delivery was enabled.
+* Large PNG Restore Fix: Resolved errors that occurred when restoring backups of large PNGs with scaled versions generated by WordPress.
+* Improved CDN Replacement: Images using data-srcset are now correctly replaced with CDN links when delivery is enabled.
+* SmartCropping Upload Issue: Fixed a bug where SmartCropping didn’t work correctly when automatic optimization on upload was turned off.
+* Queue Stability: Added a safeguard for rare cases involving old items in the processing queue that could trigger errors.
+
+Update now for better REST API support, improved CDN handling, and a smoother media optimization experience! 🚀
+
+
+= 6.2.1 =
+
+🚀 The CDN & AI Control Update
+
+Release Date: May 27, 2025
+
+⚙️ Improvements
+
+* AI Feature Control: Added a filter to easily disable AI-powered features if needed.
+
+CDN Delivery Enhancements:
+* Now supports background images inside inline style blocks.
+* Delivers inline SVGs through the CDN for consistent asset performance.
+* Fallback for Missing WebP/AVIF: If WebP or AVIF images aren't generated locally, they’ll now be created on-the-fly and served directly from the CDN.
+* Broken Image Protection: Added checks to ensure the CDN doesn't store or deliver broken images.
+
+* Improved Timestamp Handling: Timestamps are now added whenever images are sent for optimization, helping prevent unwanted caching.
+* PNG Conversion via ImageMagick: Added fallback support for PNG conversion using ImageMagick when the GD extension isn’t available.
+* Punctuation Tweak for AI Texts: AI-generated alternative texts now end with a trailing dot for readability (can be disabled via filter).
+
+🛠️ Fixes
+
+CDN Delivery:
+* Fixed multiple edge cases where image URLs with single/double quotes were not parsed correctly.
+* Corrected issues with relative paths not resolving to the proper CDN URL.
+* Resolved an issue where CDN links were accidentally duplicated in specific situations.
+
+* Settings Import: Fixed import functionality for older PHP versions.
+* WebP/AVIF Count Fix: Image counts in bulk processing now display correctly again.
+* S3 Uploads Compatibility: Fixed an error triggered by a missing method when using the S3 Uploads plugin (thanks @matthewgrzegorczyk! 🙌).
+* WP-CLI Message Bug: Corrected a misleading WP-CLI message shown when thumbnails were unwritable but main images were optimized.
+* Custom Media Folder Fix: Resolved errors in the folders list when performing specific actions.
+
+🌍 Language Updates
+
+* Added 2 new strings and updated 2, to enhance global translation support.
+
+Update now to take full advantage of smarter CDN handling, more control over AI features, and improved compatibility across the board! 🚀
+
+
 = 6.2.0 =
 
 🚀 The Power Tools Update
 
+Release Date: May 8, 2025
+
 🌟 New Features
 
-- Smart WebP Compression: ShortPixel now compresses your existing WebP images to save even more space without sacrificing quality.
-- AI-Powered Image Captioning (BETA): Automatically generate meaningful “*alternative text(ALT)”* for your images using our AI model—great for SEO and accessibility!
-- Global CDN for CSS & JS: Your CSS, JS, and even background images can now be served via ShortPixel's global CDN for faster page loads.
-- CDN Cache Purge Controls: New buttons to purge cached CSS, JS, or the entire CDN cache with one click—right from your dashboard.
-- Save & Restore Settings: Export and import all settings effortlessly — ideal for agencies managing multiple sites.
+* Smart WebP Compression: ShortPixel now compresses your existing WebP images to save even more space without sacrificing quality.
+* AI-Powered Image Captioning (BETA): Automatically generate meaningful “*alternative text(ALT)”* for your images using our AI model—great for SEO and accessibility!
+* Global CDN for CSS & JS: Your CSS, JS, and even background images can now be served via ShortPixel's global CDN for faster page loads.
+* CDN Cache Purge Controls: New buttons to purge cached CSS, JS, or the entire CDN cache with one click—right from your dashboard.
+* Save & Restore Settings: Export and import all settings effortlessly — ideal for agencies managing multiple sites.
 
 ⚙️ Improvements
 
-- Cross-Tab Sync: Optimizations done in multiple browser tabs now stay in sync using browser broadcasting.
-- Automatic Association to ShortPixel Account: Your site domain is now automatically associated to your ShortPixel account when enabling CDN delivery.
-- CDN Domain Validation: Prevent misconfigurations with smart validation of your CDN domain format.
-- Cleaner Admin Bar: The ShortPixel icon is now hidden when restoring items to keep your admin interface tidy.
-- CDN Bypass Option: Append `?PageSpeed=off` to disable CDN replacement for debugging or testing.
-- WebP Limit Handling: Files that exceed WebP conversion limits are now properly managed to avoid errors.
+* Cross-Tab Sync: Optimizations done in multiple browser tabs now stay in sync using browser broadcasting.
+* Automatic Association to ShortPixel Account: Your site domain is now automatically associated to your ShortPixel account when enabling CDN delivery.
+* CDN Domain Validation: Prevent misconfigurations with smart validation of your CDN domain format.
+* Cleaner Admin Bar: The ShortPixel icon is now hidden when restoring items to keep your admin interface tidy.
+* CDN Bypass Option: Append `?PageSpeed=off` to disable CDN replacement for debugging or testing.
+* WebP Limit Handling: Files that exceed WebP conversion limits are now properly managed to avoid errors.
 
 🛠️ Fixes
 
-- Lossless Labeling Bug: Fixed an issue where images were incorrectly marked as "Lossless" if the main image wasn't optimized.
-- Sticky Notification: Resolved an issue where the API key notification couldn't be dismissed after saving it from settings.
-- Folder Creation Fix: The plugin no longer attempts to create month-based folders—it now leaves that job to WordPress.
-- File Format Conversions: Improved support for HEIC, TIFF, and BMP file conversion.
-- API Key Onboarding Fix: Pressing *Enter* now correctly saves your API key during onboarding.
+* Lossless Labeling Bug: Fixed an issue where images were incorrectly marked as "Lossless" if the main image wasn't optimized.
+* Sticky Notification: Resolved an issue where the API key notification couldn't be dismissed after saving it from settings.
+* Folder Creation Fix: The plugin no longer attempts to create month-based folders—it now leaves that job to WordPress.
+* File Format Conversions: Improved support for HEIC, TIFF, and BMP file conversion.
+* API Key Onboarding Fix: Pressing *Enter* now correctly saves your API key during onboarding.
 
 🌍 Language Updates
 
@@ -685,122 +950,6 @@ Release date: November 21, 2024
 * Fix: The comparator in the NextGen Gallery now looks better;
 * Fix: When using WPML, random optimization errors occurred with some images;
 * Language: Many of the plugin strings have been updated or changed and we thank the translation teams for their efforts..
-
-= 5.6.4 =
-Release date: October 9, 2024
-* Fix: A Broken Access Control vulnerability has been fixed (safely disclosed by the PatchStack team - thanks!);
-* Fix: An SQL injection vulnerability has been patched (also safely disclosed by the PatchStack team);
-* Fix: Moved loading of the plugin text domain to the init hook to increase compatibility;
-* Language: 2 new strings added, 0 updated, 0 fuzzed, and 0 deprecated.
-
-= 5.6.3 =
-Release date: July 16, 2024
-* Compat: Integration with Polylang Pro is fixed;
-* Fix: Some bulk actions in the list view of the Media Library did not work;
-* Fix: PHP warning was displayed when an existing Custom Media folder was no longer present on the disk;
-* Language: 0 new strings added, 0 updated, 0 fuzzed, and 0 deprecated.
-
-= 5.6.2 =
-Release date: May 23, 2024
-* Fix: The Cover or Contain setting for resizing was not retained when saving;
-* Language: 0 new strings added, 0 updated, 0 fuzzed, and 0 deprecated.
-
-= 5.6.1 =
-Release date: May 21, 2024
-* Fix: Folders from the uploads folder can now be selected as Custom Media even if the year/month structure is not used;
-* Fix: In certain cases PHP errors were generated when trying to optimize or even upload images;
-* Fix: Some typos caused warnings in some cases;
-* Fix: Fixed a typo regarding the number of seconds in a day (kudos to @JusGu for pointing this out);
-* Fix: Images with a size of 0Kb are no longer processed;
-* Compat: The integration with Formidable Forms now works directly in the Media Library (no need for Custom Media anymore);
-* Language: 5 new strings added, 2 updated, 1 fuzzed, and 2 deprecated.
-
-= 5.6.0 =
-Release date: May 2, 2024
-* New: Added background mode that uses cron jobs to perform optimizations without having to keep the browser open;
-* New: Custom media folders are now automatically checked for new images in the background with cron jobs;
-* New: The bulk actions from the list view of the media library have been moved to JS;
-* New: BMP and TIFF files are automatically converted to JPG;
-* Compat: Added integration for images uploaded via Formidable Forms;
-* Compat: Improved performance of PICTURE tag delivery mode when offload is enabled;
-* Compat: The images generated by the Uncode theme are now automatically optimized;
-* Compat: PNG conversion has been improved to better handle images with alpha channel but without transparent pixels;
-* Compat: Added a filter to disable the PHP basedir constraints check;
-* Compat: Added filter to allow generation of WebP/AVIF even if they are larger than JPG/PNG;
-* Compat: Added new hooks for Regenerate Thumbnails Advanced;
-* Compat: Added notification to enable double WebP extension when WebP delivery is enabled in Litespeed Cache;
-* Compat: Fixed a conflict with the Getty Images plugin (thanks @pintofbeer);
-* Compat: Fixed Photo Engine/WpLr integration when republishing images from Adobe Lightroom;
-* Fix: PDF files are now correctly excluded from processing when the option is disabled in the advanced settings;
-* Fix: Styling corrected when deactivating the plugin;
-* Fix: Added additional checks for silent mode when errors occurred in some cases;
-* Fix: Some PHP warnings were displayed under PHP 8.3;
-* Fix: The warning about Imagify could not be dismissed;
-* Language: 27 new strings added, 6 updated, 0 fuzzed, and 0 deprecated.
-
-= 5.5.5 =
-Release date: February 13, 2024
-* Compat: Added new hooks to be used by the Regenerate Thumbnails Advanced plugin;
-* Compat: Adjusted the settings limitations for the new Unlimited plans;
-* Fix: Added an additional check to prevent database table errors when the plugin is removed;
-* Language: 0 new strings added, 1 updated, 0 fuzzed and 0 deprecated.
-
-= 5.5.4 =
-Release date: January 22, 2024
-* Tweak: The messages displayed when executing WP-CLI "auto" commands have been improved;
-* Tweak: More options and flexibility for the filter used when creating the `.htaccess` rules (for WebP delivery);
-* Tweak: Added a check and mechanism to prevent running out of memory if the bulk process preparation fails due to lack of memory;
-* Tweak: Added back the "Optimize" option in the "Bulk actions" section in the list view of the Media Library;
-* Compat: Added integration with the "Media File Renamer" plugin;
-* Fix: Under PHP 8.1+, a notice was displayed when re-optimizations were performed;
-* Fix: A PHP warning was displayed converting optimization metadata via WP-CLI;
-* Fix: Multiple exclusion checkboxes in the plugin settings can now be selected with the SHIFT key;
-* Fix: Converting optimization metadata without backups could cause the main images to be incorrectly set to unprocessed;
-* Language: 4 new strings added, 0 updated, 0 fuzzed, and 0 deprecated.
-
-= 5.5.3 =
-Release date: January 3, 2024
-* Fix: In some cases, an error was displayed when adding a folder to Custom Media, even if the folder was added correctly;
-* Fix: For WebP files uploaded directly to the Media Library, the plugin could remove the wrong files during certain operations;
-* Fix: Bulk processing of Custom Media could lead to errors in some cases;
-* Fix: A PHP Warning was displayed on the Custom Media page if no items were present;
-* Language: 0 new strings added, 0 updated, 0 fuzzed and 0 deprecated.
-
-= 5.5.2 =
-Release date: November 24, 2023
-* Fix: The excluded thumbnails are no longer checked out when saving the settings;
-* Fix: Adding new exclusions is now fixed;
-* Fix: Updated the wording of exclusions to make them consistent;
-* Fix: An error was displayed in the logs if an image could not be loaded at all;
-* Fix: An error is now displayed when a Custom Media folder cannot be added instead of silently crashing the page;
-* Fix: If WP_CONTENT_DIR does not contain wp-content, adding a Custom Media folder failed;
-* Language: 8 new strings added, 2 updated, 0 fuzzed and 7 deprecated.
-
-= 5.5.1 =
-Release date: November 17, 2023
-* New: Added a filter to change the parameters sent to the API (e.g. for granular resizing);
-* Fix: Some PHP notices were displayed in the logs when no exclusions were set;
-* Fix: when using the Media Library Grid view, a request for a non-existent image resulted in an Ajax error;
-* Fix: Add checks to prevent errors when WebP files cannot be copied to their destination;
-* Tweak: Removed notification about HEIC files;
-* Language: 0 new strings added, 0 updated, 0 fuzzed and 2 deprecated.
-
-= 5.5.0 =
-Release date: November 8, 2023
-* New: The Custom Media folders have been redesigned, more features have been added and everything has been moved to Media -> Custom Media;
-* New: The exclusions have been redesigned to provide a simpler and more flexible mechanism;
-* New: The ability to override exclusions and manually optimize excluded images has been added;
-* New: The ability to mark images as completed (optimized) has been added;
-* New: Added migration of optimization data to WP-CLI;
-* New: Added constant to disable the feedback survey when the plugin is deactivated;
-* Compat: Added proper validation and integration for the Swift AI plugin;
-* Compat: Added filter to suppress cache clearing for various cache plugins (useful for large websites);
-* Fix: If an image has been excluded, it can now be restored from the backup;
-* Fix: Envira and Soliloquy have been added to the list of pages where processing is performed automatically;
-* Fix: Websites with many Custom Media folders and/or NextGen galleries should no longer hang;
-* Fix: Added some checks and validations to avoid `open_basedir` warnings;
-* Fix: Updated wording and banners throughout the plugin;
-* Language: 94 new strings added, 3 updated, 5 fuzzed and 33 deprecated.
 
 = EARLIER VERSIONS =
 * please refer to the <a href="https://github.com/short-pixel-optimizer/shortpixel-image-optimiser/blob/master/changelog.txt" target="_blank">changelog.txt</a> file inside the plugin archive.

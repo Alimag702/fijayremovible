@@ -21,7 +21,7 @@ class Opt_In_Geo {
 	 *
 	 * @var DEFAULT_GEOIP_PROVIDER
 	 */
-	const DEFAULT_GEOIP_PROVIDER = 'geoplugin';
+	const DEFAULT_GEOIP_PROVIDER = 'ipwhois';
 
 	/**
 	 * Tries to get the public IP address of the current user.
@@ -66,6 +66,11 @@ class Opt_In_Geo {
 		foreach ( $ip_fields as $key ) {
 			if ( true === array_key_exists( $key, $_SERVER ) ) {
 				$ips = filter_input( INPUT_SERVER, $key );
+				if ( ! $ips ) {
+					// Skip empty or invalid values.
+					continue;
+				}
+
 				foreach ( explode( ',', $ips ) as $ip ) {
 					$ip = trim( $ip );
 
@@ -241,17 +246,18 @@ class Opt_In_Geo {
 		if ( null === $geo_service ) {
 			$geo_service = array();
 
-			$geo_service['hostip'] = (object) array(
-				'label' => 'Host IP',
-				'url'   => 'http://api.hostip.info/country.php?ip=%ip%',
-				'type'  => 'text',
+			$geo_service['freeip'] = (object) array(
+				'label' => 'Free IP API',
+				'url'   => 'https://free.freeipapi.com/api/json/%ip%',
+				'type'  => 'json',
+				'field' => array( 'country_code' ),
 			);
 
-			$geo_service['geoplugin'] = (object) array(
-				'label' => 'GeoPlugin',
-				'url'   => 'http://www.geoplugin.net/json.gp?ip=%ip%',
+			$geo_service['ipwhois'] = (object) array(
+				'label' => 'IPWhois',
+				'url'   => 'https://ipwho.is/%ip%',
 				'type'  => 'json',
-				'field' => array( 'geoplugin_countryCode' ),
+				'field' => array( 'country_code' ),
 			);
 
 			// Deprecated.

@@ -12,9 +12,10 @@ use ShortPixel\Helper\UtilHelper as UtilHelper;
 
 
 use ShortPixel\Controller\ApiKeyController as ApiKeyController;
+use ShortPixel\Controller\Optimizer\OptimizeAiController;
 use ShortPixel\Controller\QuotaController as QuotaController;
 use ShortPixel\Controller\QueueController as QueueController;
-
+use ShortPixel\Model\AiDataModel;
 use ShortPixel\Model\Image\ImageModel as ImageModel;
 use ShortPixel\Model\Image\MediaLibraryModel as MediaLibraryModel;
 
@@ -60,6 +61,7 @@ class ListMediaViewController extends \ShortPixel\ViewController
   {
     $defaults['wp-shortPixel'] = __('ShortPixel Compression', 'shortpixel-image-optimiser');
 
+
     return $defaults;
   }
 
@@ -70,9 +72,12 @@ class ListMediaViewController extends \ShortPixel\ViewController
        $this->view = new \stdClass; // reset every row
        $this->view->id = $id;
        $this->loadItem($id);
-
-	     $this->loadView(null, false);
+       $this->loadView(null, false);
+      
      }
+
+
+
   }
 
   protected function loadItem($id)
@@ -91,9 +96,21 @@ class ListMediaViewController extends \ShortPixel\ViewController
      $actions = array();
      $list_actions = array();
 
+     $optimizeAiController = OptimizeAiController::getInstance(); 
+
+
+     if (true === $optimizeAiController->isAiEnabled())
+     {
+        $aiDataModel = $this->loadAiItem($id);
+     }
+     else
+     {
+        $aiDataModel = null; 
+     }
+
     $this->view->text = UiHelper::getStatusText($mediaItem);
 
-		$list_actions = UiHelper::getListActions($mediaItem);
+		$list_actions = UiHelper::getListActions($mediaItem, $aiDataModel);
     $this->view->list_actions = $list_actions;
 
     if ( count($this->view->list_actions) > 0)
@@ -125,6 +142,11 @@ class ListMediaViewController extends \ShortPixel\ViewController
 				$checkBoxActions[] = 'is-restorable';
 		}
 
+    if (array_key_exists('shortpixel-generateai', $allActions))
+    {
+       $checkBoxActions[] = 'ai-action'; 
+    }
+
 		$infoData  = array(); // stuff to write as data-tag.
 
 		if ($mediaItem->isOptimized())
@@ -147,6 +169,36 @@ class ListMediaViewController extends \ShortPixel\ViewController
       $this->view->actions = array();
       $this->view->list_actions = '';
     }
+
+  }
+
+  protected function loadAiItem($item_id)
+  {
+     $AiDataModel = AiDataModel::getModelByAttachment($item_id); 
+     $this->view->item_id = $item_id;
+
+     $generated_data = $AiDataModel->getGeneratedData(); 
+     if ($AiDataModel->isSomeThingGenerated())
+     {
+        if (isset($generated_data['filebase']))
+        {
+           unset($generated_data['filebase']);
+        }
+        $generated_fields = implode(',', array_keys(array_filter($generated_data)));
+        $this->view->ai_icon = 'ai'; 
+        $this->view->ai_title = sprintf(__('AI-generated image SEO data: %s', 'shortpixel-image-optimiser'), $generated_fields); 
+
+     }
+     else
+     {
+       $this->view->ai_icon = 'no-ai'; 
+       $this->view->ai_title = __('No AI-generated SEO data for this image', 'shortpixel-image-optimiser'); 
+
+     }
+
+     return $AiDataModel;
+
+
   }
 
   public function loadComparer()

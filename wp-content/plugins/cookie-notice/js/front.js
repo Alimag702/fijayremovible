@@ -408,7 +408,8 @@
 
 			var cookieButtons = document.getElementsByClassName( 'cn-set-cookie' ),
 				revokeButtons = document.getElementsByClassName( 'cn-revoke-cookie' ),
-				closeIcon = document.getElementById( 'cn-close-notice' );
+				linkButton = document.getElementById( 'cn-more-info' ),
+				closeButton = document.getElementById( 'cn-close-notice' );
 
 			// add effect class
 			this.noticeContainer.classList.add( 'cn-effect-' + cnArgs.hideEffect );
@@ -453,13 +454,41 @@
 					_this.setStatus( this.dataset.cookieSet );
 				} );
 			}
+			
+		// handle link button
+		if ( linkButton !== null ) {
+			linkButton.addEventListener( 'click', function ( e ) {
+				var linkUrl = this.dataset.linkUrl || this.getAttribute( 'href' );
+				var linkTarget = this.dataset.linkTarget || this.getAttribute( 'target' ) || '_self';
 
-			// handle close icon
-			if ( closeIcon !== null ) {
-				closeIcon.addEventListener( 'click', function ( e ) {
+				// only intercept when we have a destination
+				if ( ! linkUrl )
+					return;
+
+				e.preventDefault();
+				// Chrome double click event fix
+				e.stopPropagation();
+
+				window.open( linkUrl, linkTarget );
+			} );
+		}
+
+		// handle close button
+		if ( closeButton !== null ) {
+			closeButton.addEventListener( 'keydown', function ( e ) {
+				if ( e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 13 || e.keyCode === 32 ) {
 					e.preventDefault();
 					// Chrome double click event fix
 					e.stopPropagation();
+
+					_this.setStatus( 'reject' );
+				}
+			} );
+
+			closeButton.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				// Chrome double click event fix
+				e.stopPropagation();
 
 					_this.setStatus( 'reject' );
 				} );

@@ -90,33 +90,45 @@ class Cookie_Notice_Settings {
 	public function load_modules() {
 		// caching compatibility enabled?
 		if ( $this->is_caching_compatibility() && Cookie_Notice()->get_status() === 'active' ) {
-			// wp fastest cache compatibility
-			if ( cn_is_plugin_active( 'wpfastestcache' ) )
-				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-fastest-cache/wp-fastest-cache.php' );
+			// autoptimize
+			if ( cn_is_plugin_active( 'autoptimize' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/autoptimize/autoptimize.php' );
 
-			// wp-optimize compatibility
-			if ( cn_is_plugin_active( 'wpoptimize' ) )
-				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-optimize/wp-optimize.php' );
-
-			// hummingbird compatibility
-			if ( cn_is_plugin_active( 'hummingbird' ) )
-				include_once( COOKIE_NOTICE_PATH . 'includes/modules/hummingbird/hummingbird.php' );
-
-			// wp rocket compatibility
-			if ( cn_is_plugin_active( 'wprocket' ) )
-				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-rocket/wp-rocket.php' );
-
-			// breeze compatibility
+			// breeze
 			if ( cn_is_plugin_active( 'breeze' ) )
 				include_once( COOKIE_NOTICE_PATH . 'includes/modules/breeze/breeze.php' );
 
-			// speedycache compatibility
+			// hummingbird
+			if ( cn_is_plugin_active( 'hummingbird' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/hummingbird/hummingbird.php' );
+
+			// litespeed cache
+			if ( cn_is_plugin_active( 'litespeed' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/litespeed-cache/litespeed-cache.php' );
+
+			// speedycache
 			if ( cn_is_plugin_active( 'speedycache' ) )
 				include_once( COOKIE_NOTICE_PATH . 'includes/modules/speedycache/speedycache.php' );
 
-			// speed optimizer compatibility
+			// speed optimizer
 			if ( cn_is_plugin_active( 'speedoptimizer' ) )
 				include_once( COOKIE_NOTICE_PATH . 'includes/modules/speed-optimizer/speed-optimizer.php' );
+
+			// wp fastest cache
+			if ( cn_is_plugin_active( 'wpfastestcache' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-fastest-cache/wp-fastest-cache.php' );
+
+			// wp-optimize
+			if ( cn_is_plugin_active( 'wpoptimize' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-optimize/wp-optimize.php' );
+
+			// wp rocket
+			if ( cn_is_plugin_active( 'wprocket' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-rocket/wp-rocket.php' );
+
+			// wp super cache
+			if ( cn_is_plugin_active( 'wpsupercache' ) )
+				include_once( COOKIE_NOTICE_PATH . 'includes/modules/wp-super-cache/wp-super-cache.php' );
 		}
 	}
 
@@ -648,7 +660,7 @@ class Cookie_Notice_Settings {
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sUnlimited%s visits', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sUnlimited%s privacy consents', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sLifetime%s consent storage', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
-								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sGoogle & Facebook%s consent modes', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
+								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sGoogle, Microsoft & Facebook%s consent modes', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sGeolocation%s support', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sUnlimited%s languages', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
 								<p class="' . ( $subscription === 'pro' ? 'cn-active' : 'cn-inactive' ) . '"><span class="cn-icon"></span>' . sprintf( esc_html__( '%sPriority%s Support', 'cookie-notice' ), '<b>', '</b>' ) . '</p>
@@ -2851,7 +2863,11 @@ class Cookie_Notice_Settings {
 	 * @return void
 	 */
 	public function get_group_rule_values() {
-		if ( isset( $_POST['action'], $_POST['cn_param'], $_POST['cn_nonce'] ) && wp_verify_nonce( $_POST['cn_nonce'], 'cn-get-group-values' ) !== false ) {
+		if (
+			isset( $_POST['action'], $_POST['cn_param'], $_POST['cn_nonce'] )
+			&& wp_verify_nonce( $_POST['cn_nonce'], 'cn-get-group-values' ) !== false
+			&& current_user_can( apply_filters( 'cn_manage_cookie_notice_cap', 'manage_options' ) )
+		) {
 			echo wp_json_encode(
 				[
 					'select'	=> $this->prepare_values( sanitize_key( $_POST['cn_param'] ) )

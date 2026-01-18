@@ -44,11 +44,11 @@ $types = array(
 
 		<div class="sui-tabs sui-tabs-overflow" style="margin-top: 10px;">
 
-			<div tabindex="-1" class="sui-tabs-navigation" aria-hidden="true">
-				<button type="button" class="sui-button-icon sui-tabs-navigation--left">
+			<div class="sui-tabs-navigation">
+				<button type="button" class="sui-button-icon sui-tabs-navigation--left" aria-label="<?php esc_attr_e( 'Show less tabs', 'hustle' ); ?>">
 					<span class="sui-icon-chevron-left"></span>
 				</button>
-				<button type="button" class="sui-button-icon sui-tabs-navigation--right">
+				<button type="button" class="sui-button-icon sui-tabs-navigation--right" aria-label="<?php esc_attr_e( 'Show more tabs', 'hustle' ); ?>">
 					<span class="sui-icon-chevron-right"></span>
 				</button>
 			</div>

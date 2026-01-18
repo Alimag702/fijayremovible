@@ -61,7 +61,7 @@ $settings = $settings[ $name ];
 				id="tab-<?php echo esc_attr( $name ); ?>--disable"
 				class="sui-tab-item"
 				data-label-for="hustle-<?php echo esc_attr( $name ); ?>--disable"
-				aria-controls="tab-content-<?php echo esc_attr( $name ); ?>--disable"
+				aria-controls="tab-content-<?php echo esc_attr( $name ); ?>--enable"
 			>
 				<?php esc_html_e( 'Disable', 'hustle' ); ?>
 			</button>

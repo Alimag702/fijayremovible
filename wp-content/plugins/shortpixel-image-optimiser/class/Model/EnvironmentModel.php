@@ -17,6 +17,7 @@ class EnvironmentModel extends \ShortPixel\Model
     public $is_nginx;
     public $is_apache;
     public $is_gd_installed;
+    public $is_imagick_installed;
     public $is_curl_installed;
     private $disabled_functions = array();
 
@@ -211,6 +212,8 @@ class EnvironmentModel extends \ShortPixel\Model
     $this->is_nginx = ! empty($_SERVER["SERVER_SOFTWARE"]) && strpos(strtolower(wp_unslash($_SERVER["SERVER_SOFTWARE"])), 'nginx') !== false ? true : false;
     $this->is_apache = ! empty($_SERVER["SERVER_SOFTWARE"]) && strpos(strtolower(wp_unslash($_SERVER["SERVER_SOFTWARE"])), 'apache') !== false ? true : false;
     $this->is_gd_installed = function_exists('imagecreatefrompng') && function_exists('imagejpeg');
+    $this->is_imagick_installed = (extension_loaded('imagick')) ? true : false; 
+
     $this->is_curl_installed = function_exists('curl_init');
 
     $this->memoryLimit = $this->unitToInt(ini_get('memory_limit'));
@@ -236,6 +239,8 @@ class EnvironmentModel extends \ShortPixel\Model
 
     if (\wpSPIO()->settings()->autoMediaLibrary == 1)
       $this->is_autoprocess = true;
+
+    
 
   }
 
@@ -273,10 +278,10 @@ class EnvironmentModel extends \ShortPixel\Model
     }
 
     // Our pages.
-    $pages = \wpSPIO()->get_admin_pages();
+    $admin_pages = \wpSPIO()->get_admin_pages();
     // the main WP pages where SPIO hooks a lot of functions into, our operating area.
     $wp_pages = array('upload', 'attachment');
-    $pages = array_merge($pages, $wp_pages);
+    $pages = array_merge($admin_pages, $wp_pages);
 
     /* pages can be null in certain cases i.e. plugin activation.
     * treat those cases as improper screen set.
@@ -290,8 +295,10 @@ class EnvironmentModel extends \ShortPixel\Model
     if ( in_array($screen->id, $pages))
     {
        $this->is_screen_to_use = true;
+       if (in_array($screen->id, $admin_pages))
+       {
        $this->is_our_screen = true;
-
+       }
 			 // Strpos instead of full screen id, because the first page (media_page) is not reliable and can change.
        if ( strpos($screen->id, 'wp-short-pixel-bulk') !== false)
         $this->is_bulk_page = true;
@@ -309,9 +316,6 @@ class EnvironmentModel extends \ShortPixel\Model
       
     }
     
-    
-    
-
     $this->screen_is_set = true;
   }
 

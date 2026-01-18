@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitda98371940d11703c56dee923bbb392f
+class ComposerStaticInitd45a15be3ceca75ee1c0c2f87d2b07c1
 {
     public static $fallbackDirsPsr4 = array (
         0 => __DIR__ . '/../..' . '/inc',
@@ -83,6 +83,7 @@ class ComposerStaticInitda98371940d11703c56dee923bbb392f
         'Hustle_Aweber' => __DIR__ . '/../..' . '/inc/providers/aweber/hustle-aweber.php',
         'Hustle_Aweber_Form_Hooks' => __DIR__ . '/../..' . '/inc/providers/aweber/hustle-aweber-form-hooks.php',
         'Hustle_Aweber_Form_Settings' => __DIR__ . '/../..' . '/inc/providers/aweber/hustle-aweber-form-settings.php',
+        'Hustle_Black_Friday_Campaign' => __DIR__ . '/../..' . '/inc/class-hustle-black-friday-campaign.php',
         'Hustle_Campaignmonitor' => __DIR__ . '/../..' . '/inc/providers/campaignmonitor/hustle-campaignmonitor.php',
         'Hustle_Campaignmonitor_API' => __DIR__ . '/../..' . '/inc/providers/campaignmonitor/hustle-campaignmonitor-api.php',
         'Hustle_Campaignmonitor_Form_Hooks' => __DIR__ . '/../..' . '/inc/providers/campaignmonitor/hustle-campaignmonitor-form-hooks.php',
@@ -140,10 +141,6 @@ class ComposerStaticInitda98371940d11703c56dee923bbb392f
         'Hustle_Local_List' => __DIR__ . '/../..' . '/inc/providers/local-list/hustle-local-list.php',
         'Hustle_Local_List_Form_Hooks' => __DIR__ . '/../..' . '/inc/providers/local-list/hustle-local-list-form-hooks.php',
         'Hustle_Local_List_Form_Settings' => __DIR__ . '/../..' . '/inc/providers/local-list/hustle-local-list-form-settings.php',
-        'Hustle_Mad_Mimi' => __DIR__ . '/../..' . '/inc/providers/madmimi/hustle-mad-mimi.php',
-        'Hustle_Mad_Mimi_Api' => __DIR__ . '/../..' . '/inc/providers/madmimi/hustle-mad-mimi-api.php',
-        'Hustle_Mad_Mimi_Form_Hooks' => __DIR__ . '/../..' . '/inc/providers/madmimi/hustle-mad-mimi-form-hooks.php',
-        'Hustle_Mad_Mimi_Form_Settings' => __DIR__ . '/../..' . '/inc/providers/madmimi/hustle-mad-mimi-form-settings.php',
         'Hustle_Mail' => __DIR__ . '/../..' . '/inc/hustle-mail.php',
         'Hustle_Mailchimp' => __DIR__ . '/../..' . '/inc/providers/mailchimp/hustle-mailchimp.php',
         'Hustle_Mailchimp_Api' => __DIR__ . '/../..' . '/inc/providers/mailchimp/hustle-mailchimp-api.php',
@@ -228,7 +225,6 @@ class ComposerStaticInitda98371940d11703c56dee923bbb392f
         'Hustle_Time_Helper' => __DIR__ . '/../..' . '/inc/helpers/class-hustle-time-helper.php',
         'Hustle_Tracking_Model' => __DIR__ . '/../..' . '/inc/hustle-tracking-model.php',
         'Hustle_Tutorials_Page' => __DIR__ . '/../..' . '/inc/class-hustle-tutorials-page.php',
-        'Hustle_Upsell_Page' => __DIR__ . '/../..' . '/inc/class-hustle-upsell-page.php',
         'Hustle_Wp_Dashboard_Page' => __DIR__ . '/../..' . '/inc/class-hustle-wp-dashboard-page.php',
         'Hustle_Zapier' => __DIR__ . '/../..' . '/inc/providers/zapier/hustle-zapier.php',
         'Hustle_Zapier_API' => __DIR__ . '/../..' . '/inc/providers/zapier/hustle-zapier-api.php',
@@ -270,8 +266,8 @@ class ComposerStaticInitda98371940d11703c56dee923bbb392f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->fallbackDirsPsr4 = ComposerStaticInitda98371940d11703c56dee923bbb392f::$fallbackDirsPsr4;
-            $loader->classMap = ComposerStaticInitda98371940d11703c56dee923bbb392f::$classMap;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitd45a15be3ceca75ee1c0c2f87d2b07c1::$fallbackDirsPsr4;
+            $loader->classMap = ComposerStaticInitd45a15be3ceca75ee1c0c2f87d2b07c1::$classMap;
 
         }, null, ClassLoader::class);
     }

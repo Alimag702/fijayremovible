@@ -93,7 +93,7 @@ $units = array(
 		<?php // FIELD: Field's proximity. ?>
 		<div class="sui-form-field">
 
-			<label class="sui-label"><?php esc_html_e( "Field's proximity", 'hustle' ); ?></label>
+			<label class="sui-label" id="hustle-<?php echo esc_attr( $proximity_value ); ?>-label"><?php esc_html_e( "Field's proximity", 'hustle' ); ?></label>
 
 			<div class="sui-tabs sui-side-tabs hui-content-right">
 
@@ -169,8 +169,8 @@ $units = array(
 									'value'      => $settings[ $proximity_value ],
 									'id'         => 'hustle-' . $proximity_value,
 									'attributes' => array(
-										'data-attribute' => $proximity_value,
-										'aria-label'     => '',
+										'data-attribute'  => $proximity_value,
+										'aria-labelledby' => 'hustle-' . esc_attr( $proximity_value ) . '-label',
 									),
 								),
 							)

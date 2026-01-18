@@ -105,12 +105,24 @@ class Hustle_Module_Front_Ajax {
 	 * Check the schedule
 	 */
 	public function module_display_despite_static_cache() {
+		// Verify nonce for security.
+		$nonce = filter_input( INPUT_POST, '_nonce', FILTER_SANITIZE_SPECIAL_CHARS );
+		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'hustle_display_check' ) ) {
+			wp_send_json_error( __( 'Invalid security token.', 'hustle' ) );
+		}
+
 		$module_id = filter_input( INPUT_POST, 'module_id', FILTER_VALIDATE_INT );
 		if ( ! $module_id ) {
 			wp_send_json_error( __( 'Invalid module ID!', 'hustle' ) );
 		}
 		$module = Hustle_Module_Collection::instance()->return_model_from_id( $module_id );
-		if ( is_wp_error( $module ) ) {
+		if (
+			is_wp_error( $module ) ||
+			(
+				$module instanceof Hustle_Module_Model &&
+				1 !== (int) $module->active
+			)
+		) {
 			wp_send_json_error( __( 'Invalid module!', 'hustle' ) );
 		}
 		$is_scheduled = true;
@@ -1040,6 +1052,12 @@ class Hustle_Module_Front_Ajax {
 		if ( ! is_array( $data ) || empty( $data ) ) {
 			return;
 		}
+
+		// Verify nonce for security.
+		if ( empty( $data['_nonce'] ) || ! wp_verify_nonce( $data['_nonce'], 'hustle_log_conversion' ) ) {
+			wp_send_json_error( __( 'Invalid security token.', 'hustle' ) );
+		}
+
 		$module_id = $data['module_id'];
 
 		if ( empty( $module_id ) ) {

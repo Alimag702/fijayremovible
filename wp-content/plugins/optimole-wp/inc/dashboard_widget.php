@@ -35,7 +35,7 @@ class Optml_Dashboard_Widget {
 			return;
 		}
 
-		wp_add_dashboard_widget( $this->handle, sprintf( 'Optimole - %s', __( 'Image Optimization Stats', 'optimole' ) ), [ $this, 'render_widget' ] );
+		wp_add_dashboard_widget( $this->handle, sprintf( 'Optimole - %s', __( 'Image Optimization Stats', 'optimole-wp' ) ), [ $this, 'render_widget' ] );
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Optml_Dashboard_Widget {
 			'billingURL' => tsdk_translate_link( 'https://dashboard.optimole.com/settings/billing', 'query' ),
 			'serviceData' => $this->get_service_data(),
 			'assetsURL' => OPTML_URL . 'assets/',
-			'adminPageURL' => esc_url( admin_url( 'admin.php?page=optimole' ) ),
+			'dashboardMetricsURL' => esc_url( 'https://dashboard.optimole.com/metrics' ),
 			'dashboardURL' => esc_url( tsdk_translate_link( 'https://dashboard.optimole.com' ) ),
 		];
 	}

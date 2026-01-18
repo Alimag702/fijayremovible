@@ -12,7 +12,7 @@ if ( empty( $button_text ) ) {
 
 <div class="sui-form-field">
 
-	<label class="sui-label"><?php echo esc_html( $field_title ); ?></label>
+	<label class="sui-label" id="hustle-choose-<?php echo esc_attr( $attribute ); ?>-label"><?php echo esc_html( $field_title ); ?></label>
 
 	<div id="hustle-choose-<?php echo esc_attr( $attribute ); ?>" class="sui-upload <?php echo empty( $image_url ) ? '' : 'sui-has_file'; ?>">
 
@@ -22,6 +22,7 @@ if ( empty( $button_text ) ) {
 			value="<?php echo esc_attr( $image_url ); ?>"
 			data-attribute="<?php echo esc_attr( $attribute ); ?>"
 			readonly="readonly"
+			aria-labelledby="hustle-choose-<?php echo esc_attr( $attribute ); ?>-label"
 		/>
 
 		<div class="sui-upload-image" aria-hidden="true">

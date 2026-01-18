@@ -3,10 +3,10 @@ Contributors: gn_themes
 License: GPLv3
 Donate link: https://getshortcodes.com/pricing/
 Tags: posts, carousel, shortcode, toggle, columns
-Stable tag: 7.3.5
+Stable tag: 7.4.8
 Requires PHP: 5.4
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 
 
 A comprehensive collection of visual components for your site
@@ -139,6 +139,63 @@ Upgrade normally
 
 == Changelog ==
 
+
+= 7.4.8
+
+Security update for the Lightbox shortcode
+
+
+= 7.4.7
+
+Tested with WordPress 6.9 (scheduled for release on December 2, 2025)
+
+
+= 7.4.6
+
+This update features security improvements and is recommended for all users
+Updated Freemius SDK
+
+
+= 7.4.5
+
+This update features security improvements and is recommended for all users
+
+If you're experiencing any issues with the premium add-ons, please visit the [Restore Purchase](https://getshortcodes.com/account/restore-purchase/) page to download the latest versions. Most likely, the issue has already been fixed.
+
+
+= 7.4.4
+
+This update features security improvements and is recommended for all users
+
+
+= 7.4.3
+
+This update features security improvements and is recommended for all users
+
+- Security patch
+- Updated Freemius SDK
+
+
+= 7.4.2
+
+This update fixes an issue where widgets might not display correctly in the classic interface, and some shortcodes could appear as plain text. This update is recommended for all users
+
+
+= 7.4.1
+
+This update features security improvements and is recommended for all users
+
+- Fixed `_load_plugin_textdomain()` PHP warning
+
+
+= 7.4.0
+
+This update features security improvements and is recommended for all users
+
+- Added a new `bold` option to the `su_button` shortcode, which makes the button text bold
+- Added a new `max_width` option to the `su_box` shortcode, allowing you to change the box width
+- Fixed a conflict with the Social Login plugin; [Details](https://wordpress.org/support/topic/css-conflict-with-social-login-wordpress-woocommerce-plugin/)
+- Updated Freemius SDK
 
 
 = 7.3.5

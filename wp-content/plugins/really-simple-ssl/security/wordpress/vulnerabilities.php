@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpComposerExtensionStubsInspection */
+<?php
 
 use security\wordpress\vulnerabilities\Rsssl_File_Storage;
 
@@ -191,9 +191,11 @@ if (!class_exists("rsssl_vulnerabilities")) {
 		    if ( ! rsssl_admin_logged_in() ) {
 			    return;
 		    }
+
 		    \security\wordpress\vulnerabilities\Rsssl_File_Storage::DeleteOldFiles();
 
-		    if ( isset($_GET['rsssl_check_vulnerabilities']) || get_option('rsssl_reload_vulnerability_files') ) {
+		    if ( get_option('rsssl_reload_vulnerability_files') ) {
+
 			    delete_option('rsssl_reload_vulnerability_files');
 			    $this->reload_files_on_update();
 			    update_option('rsssl_clear_vulnerability_notices', true, false);
@@ -881,7 +883,6 @@ if (!class_exists("rsssl_vulnerabilities")) {
          * @param string $url
          *
          * @return mixed|null
-         * @noinspection PhpComposerExtensionStubsInspection
          */
         private function download(string $url)
         {
@@ -1571,7 +1572,7 @@ if (!class_exists("rsssl_vulnerabilities")) {
                 'message' => $message . ' ' .
                              __('Based on your settings, Really Simple Security will take appropriate action, or you will need to solve it manually.','really-simple-ssl') .' '.
                              sprintf(__('Get more information from the Really Simple Security dashboard on %s'), $this->domain() ),
-                'url' => rsssl_admin_url( [], '#settings/vulnerabilities_notifications'),
+                'url' => rsssl_admin_url( [], '#settings/vulnerabilities/vulnerabilities-overview'),
             ];
         }
 

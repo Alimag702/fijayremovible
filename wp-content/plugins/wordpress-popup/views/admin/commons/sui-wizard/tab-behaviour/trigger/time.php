@@ -11,7 +11,7 @@
 <?php /* translators: module type smallcaps and in singular */ ?>
 <p class="sui-description" style="margin-bottom: 20px;"><?php printf( esc_html__( 'By default, the %1$s appears as soon as the page finishes loading. However, you can delay triggering your %1$s below.', 'hustle' ), esc_html( $smallcaps_singular ) ); ?></p>
 
-<label class="sui-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
+<label class="sui-label" id="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
 
 	<div class="sui-row">
 
@@ -24,6 +24,7 @@
 				value="<?php echo esc_attr( $triggers['on_time_delay'] ); ?>"
 				class="sui-form-control"
 				data-attribute="triggers.on_time_delay"
+				aria-labelledby="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"
 			/>
 
 		</div>

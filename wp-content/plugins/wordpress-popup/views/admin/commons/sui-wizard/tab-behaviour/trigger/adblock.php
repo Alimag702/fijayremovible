@@ -13,7 +13,7 @@
 
 <div class="sui-form-field">
 
-	<label class="sui-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
+	<label class="sui-label" id="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
 
 	<div class="sui-row">
 
@@ -24,7 +24,9 @@
 				min="0"
 				class="sui-form-control"
 				name="triggers.on_adblock_delay"
-				data-attribute="triggers.on_adblock_delay" />
+				data-attribute="triggers.on_adblock_delay"
+				aria-labelledby="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"
+			/>
 
 		</div>
 

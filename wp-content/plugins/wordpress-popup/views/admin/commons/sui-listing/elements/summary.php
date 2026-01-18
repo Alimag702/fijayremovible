@@ -38,7 +38,7 @@ $search_keyword = filter_input( INPUT_GET, 'q' );
 						<div class="sui-form-field">
 
 							<div class="sui-control-with-icon">
-								<button class="hustle-search-submit"><i class="sui-icon-magnifying-glass-search"></i></button>
+								<button class="hustle-search-submit" aria-label="<?php /* translators: module type */ echo esc_attr( sprintf( __( 'Search %s...', 'hustle' ), $capitalize_singular ) ); ?>"><i class="sui-icon-magnifying-glass-search"></i></button>
 								<input type="text" name="q" value="<?php echo esc_attr( $search_keyword ); ?>" placeholder="<?php /* translators: module type */ echo esc_attr( sprintf( __( 'Search %s...', 'hustle' ), $capitalize_singular ) ); ?>" id="hustle-module-search" class="sui-form-control">
 							</div>
 							<?php if ( $search_keyword ) { ?>

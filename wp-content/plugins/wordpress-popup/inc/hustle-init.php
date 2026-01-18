@@ -56,16 +56,15 @@ if ( ! class_exists( 'Hustle_Init' ) ) {
 				if ( ! $hide_docs ) {
 					new Hustle_Tutorials_Page();
 				}
+			}
 
-				if ( Opt_In_Utils::is_free() ) {
-					new Hustle_Upsell_Page();
-				}
-
+			if ( is_admin() || wp_doing_cron() ) {
 				new Hustle_General_Data_Protection();
 			}
 
 			if ( Opt_In_Utils::is_free() ) {
 				new Hustle_Cross_Sell();
+				new Hustle_Black_Friday_Campaign();
 			}
 
 			// Front.

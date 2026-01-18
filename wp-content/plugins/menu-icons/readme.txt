@@ -2,7 +2,7 @@
 Contributors: codeinwp, themeisle
 Tags: menu, nav-menu, icons, navigation
 Requires at least: 4.7
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -221,6 +221,21 @@ add_filter( 'menu_icons_menu_settings', 'my_menu_icons_menu_settings', 10, 2 );
 Read [this blog post](http://kucrut.org/add-custom-image-sizes-right-way/).
 
 == Changelog ==
+
+##### [Version 0.13.20](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.19...v0.13.20) (2025-12-15)
+
+- Fixed compatibility with PHP 8.1+ versions
+- Updated dependencies
+
+
+
+
+##### [Version 0.13.19](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.18...v0.13.19) (2025-09-05)
+
+- Updated dependencies
+
+
+
 
 ##### [Version 0.13.18](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.17...v0.13.18) (2025-05-23)
 

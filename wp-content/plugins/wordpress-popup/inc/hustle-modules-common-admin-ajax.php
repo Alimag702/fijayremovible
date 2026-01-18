@@ -485,20 +485,43 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				}
 				$target_mode = sanitize_key( $target_mode );
 
+				/**
+				 * Import schedules
+				 */
+				if ( ! isset( $data['meta']['settings'] ) ) {
+					$data['meta']['settings'] = array();
+				}
+
+				if ( ! isset( $data['meta']['settings']['schedule'] ) ) {
+
+					$data['meta']['settings']['schedule'] = array();
+					// We don't have any schedules.
+					$data['meta']['settings']['is_schedule'] = 0;
+				}
+
 				// validate Schedule start/end date and replace it with empty if is invalid.
 				// ======================================================================.
-				$schedule_start_date = $data['meta']['settings']['schedule']['start_date'];
-				$schedule_end_date   = $data['meta']['settings']['schedule']['end_date'];
-				// Unset start_date & Set start immediately if start_date is invalid.
-				if ( date( 'n/j/Y', strtotime( $schedule_start_date ) ) !== $schedule_start_date ) : // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-					unset( $data['meta']['settings']['schedule']['start_date'] );
-					$data['meta']['settings']['schedule']['not_schedule_start'] = 1;
-				endif;
-				// Unset end_date & Set never end if end_date is invalid.
-				if ( date( 'n/j/Y', strtotime( $schedule_end_date ) ) !== $schedule_end_date ) : // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-					unset( $data['meta']['settings']['schedule']['end_date'] );
-					$data['meta']['settings']['schedule']['not_schedule_end'] = 1;
-				endif;
+				if ( isset( $data['meta']['settings']['schedule']['start_date'] ) ) {
+
+					$schedule_start_date = $data['meta']['settings']['schedule']['start_date'];
+
+					// Unset start_date & Set start immediately if start_date is invalid.
+					if ( date( 'n/j/Y', strtotime( $schedule_start_date ) ) !== $schedule_start_date ) { // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						unset( $data['meta']['settings']['schedule']['start_date'] );
+						$data['meta']['settings']['schedule']['not_schedule_start'] = 1;
+					}
+				}
+
+				if ( isset( $data['meta']['settings']['schedule']['end_date'] ) ) {
+
+					$schedule_end_date = $data['meta']['settings']['schedule']['end_date'];
+
+					// Unset end_date & Set never end if end_date is invalid.
+					if ( date( 'n/j/Y', strtotime( $schedule_end_date ) ) !== $schedule_end_date ) { // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+						unset( $data['meta']['settings']['schedule']['end_date'] );
+						$data['meta']['settings']['schedule']['not_schedule_end'] = 1;
+					}
+				}
 				// ==================================================================.
 
 				// Import a new module.

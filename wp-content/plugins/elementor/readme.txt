@@ -1,11 +1,11 @@
 === Elementor Website Builder - More Than Just a Page Builder ===
 Contributors: elemntor
 Tags: page builder, editor, landing page, drag-and-drop, elementor,
-Requires at least: 6.5
-Tested up to: 6.7
+Requires at least: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.28.4
-Beta tag: 3.28.0-beta3
+Stable tag: 3.34.1
+Beta tag: 3.34.0-beta3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -349,49 +349,35 @@ You can also add a new language via [translate.wordpress.org](https://go.element
 
 == Changelog ==
 
-= 3.28.4 - 2025-04-22 =
+= 3.34.1 - 2026-01-07 =
 
-* Tweak: Added Site Planner as an option in the onboarding wizard
-* Tweak: Changed the default theme to Hello Biz in the onboarding wizard
-* Tweak: Added inline editing support for controls using multiple repeaters
+* Fix: RTL issues in Icon Box widget ([#33963](https://github.com/elementor/elementor/issues/33963))
+* Fix: Incorrect `space_between_widgets` spacing in columns ([#34033](https://github.com/elementor/elementor/issues/34033))
+* Fix: User settings not applied correctly ([#34065](https://github.com/elementor/elementor/issues/34065))
+* Fix: Flex Grow is not applied correctly to child containers in the Flexbox element - Editor V4
+* Fix: Deleting a Tab breaks the content–tab relationship in Tabs element - Editor V4
+* Fix: Appearance badge in Site Templates is misaligned and not centered
 
-= 3.28.3 - 2025-04-01 =
+= 3.34.0 - 2025-12-22 =
 
-* Tweak: Added Isolate object tool to Elementor AI image editing capabilities
-* Fix: Third dropdown in template display conditions not working in Theme Builder ([#30729](https://github.com/elementor/elementor/issues/30729), [#30732](https://github.com/elementor/elementor/issues/30732))
-
-= 3.28.2 - 2025-03-30 =
-
-* New: Generate logo with AI
-* Tweak: Adjusted supported attributes and elements in SVG files ([#29340](https://github.com/elementor/elementor/issues/29340), [#30132](https://github.com/elementor/elementor/issues/30132))
-* Fix: "Create a page" button is not working in Elementor Home
-* Fix: Icons in Button widgets are not vertically aligned when changing the text line-height ([#30606](https://github.com/elementor/elementor/issues/30606))
-
-= 3.28.1 - 2025-03-23 =
-
-* Fix: Font URL is not updating after domain change when "Load Google Fonts Locally" feature is activated
-
-= 3.28.0 - 2025-03-17 =
-
-* New: Added a Clear Files & Data button to the WordPress frontend admin bar for quick and easy cache clearing ([#21642](https://github.com/elementor/elementor/issues/21642))
-* Tweak: Added a note clarifying that the Image Resolution control doesn't support dynamic background images ([#21359](https://github.com/elementor/elementor/issues/21359), [#22055](https://github.com/elementor/elementor/issues/22055))
-* Tweak: Added hover state Box Shadow controls to Button widget ([#4859](https://github.com/elementor/elementor/issues/4859), [#30210](https://github.com/elementor/elementor/issues/30210), [#17509](https://github.com/elementor/elementor/issues/17509))
-* Tweak: Renamed "Regenerate CSS & Data" to "Elementor Cache" in Elementor Tools for better clarity
-* Tweak: Hide Landing Page feature when no landing page posts exist on the site
-* Tweak: Promoted Load Google Fonts Locally feature to Stable status and enabled it by default for all websites
-* Tweak: Improved rendering functionality when updating CSS ID control to enhance editing performance in Accordion widget
-* Tweak: Improved rendering functionality when updating CSS ID control to enhance editing performance in Tabs widget
-* Tweak: Removed unused deprecated methods from `elementorCommon.helpers`
-* Tweak: Optimized style loading for the Text Editor widget by applying styles at the control level ensuring Drop Cap styles load only when enabled
-* Tweak: Updated Drop Cap controls to use CSS logical properties in Text Editor widget
-* Tweak: Updated minimum required WordPress version to 6.5
-* Tweak: Removed Modest Branding control from Video widget
-* Tweak: Promoted Optimized Markup feature to Beta status
-* Tweak: Added link color controls in Text Editor widget
-* Tweak: Applied hover color on focus for keyboard users in the Heading widget
-* Fix: Button icon alignment breaks when Inline Font Icons feature is activated ([#16077](https://github.com/elementor/elementor/issues/16077), [#16511](https://github.com/elementor/elementor/issues/16511), [#17692](https://github.com/elementor/elementor/issues/17692), [#17922](https://github.com/elementor/elementor/issues/17922), [#19253](https://github.com/elementor/elementor/issues/19253), [#19370](https://github.com/elementor/elementor/issues/19370), [#21236](https://github.com/elementor/elementor/issues/21236), [#21844](https://github.com/elementor/elementor/issues/21844), [#28080](https://github.com/elementor/elementor/issues/28080))
-* Fix: Editor fails to load in some edge cases when ACF Term fields are used as Dynamic Tags ([#29160](https://github.com/elementor/elementor/issues/29160))
-* Fix: Improved sanitization of titles to ensure consistent handling for Admin users in the Heading widget
-* Fix: Hover link color transition duration is not being applied in Heading widget
+* New: Introducing Atomic Tabs - enabling flexible and fully customizable tab layouts with nested Atomic Elements - Editor V4
+* New: Introducing Entrance Interactions to add lightweight motion and bring elements to life as they appear - Editor V4
+* Tweak: Replaced the legacy V3 container wrapper with the optimized V4 wrapper for improved markup - Editor V4
+* Tweak: Improved frontend link control output to ensure consistent rendering - Editor V4 ([#32233](https://github.com/elementor/elementor/issues/32233))
+* Tweak: Added reset option inside popovers - Editor V4
+* Tweak: Updated Border control layout for a clearer and more consistent editing workflow - Editor V4
+* Tweak: Added `span` option inside the Paragraph atom - Editor V4
+* Tweak: Improved transitions to better support logical properties - Editor V4
+* Tweak: Improved dropdown folder behavior and resolved related UI issues in Template Library
+* Tweak: Merged "Import/Export Customization" feature into the version
+* Tweak: Added `builder_content_data` filter for extending Template Library and Global Widget content (props [@dgwatkins](https://github.com/dgwatkins))
+* Tweak: Applied CSS logical properties in Icon Box widget
+* Tweak: Applied CSS logical properties in Icon List widget
+* Tweak: Applied CSS logical properties in text alignment controls and fixed RTL rendering in the Editor
+* Fix: Local Transform values overridden Class-level Transform defaults even when unchanged - Editor V4
+* Fix: Fatal error when opening pages containing atomic elements while the V4 experiment is deactivated - Editor V4
+* Fix: Hover Scale transform set through Class did not save correctly - Editor V4
+* Fix: PHP 8.4 deprecation notices related to deprecated `E_STRICT` constant
+* Fix: Missing CSS regeneration after clearing cached files on pages containing dynamic tags
 
 [See changelog for all versions.](https://go.elementor.com/full-changelog/)

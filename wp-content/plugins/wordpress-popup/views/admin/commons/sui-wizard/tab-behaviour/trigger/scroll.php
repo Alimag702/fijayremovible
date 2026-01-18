@@ -9,7 +9,8 @@
 $percentage_content = $this->render(
 	'admin/commons/sui-wizard/tab-behaviour/trigger/scroll-percentage',
 	array(
-		'triggers' => $triggers,
+		'triggers'           => $triggers,
+		'smallcaps_singular' => $smallcaps_singular,
 	),
 	true
 );
@@ -17,7 +18,8 @@ $percentage_content = $this->render(
 $selector_content = $this->render(
 	'admin/commons/sui-wizard/tab-behaviour/trigger/scroll-selector',
 	array(
-		'triggers' => $triggers,
+		'triggers'           => $triggers,
+		'smallcaps_singular' => $smallcaps_singular,
 	),
 	true
 );

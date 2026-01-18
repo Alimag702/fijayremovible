@@ -7,6 +7,7 @@ if (! defined('ABSPATH')) {
 }
 
 use ShortPixel\Controller\ApiKeyController;
+use ShortPixel\Helper\UtilHelper;
 use ShortPixel\ShortPixelLogger\ShortPixelLogger as Log;
 use ShortPixel\Model\FrontImage as FrontImage;
 use ShortPixel\Model\Image\ImageModel as ImageModel;
@@ -256,7 +257,7 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		
 
 		if (false === $this->checkPreProcess()) {
-			return;
+			return $src;
 		}
 
 
@@ -297,11 +298,11 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		$checkExtensions = []; 
 		$fonts = ['.ttf', '.woff', '.woff2', '.otf']; 
 
-		if (true == $settings->cdn_js) {
+		if (true === $settings->cdn_js) {
 			$checkExtensions[] = '.js'; 
 			
 		}
-		if (true == $settings->cdn_css)
+		if (true === $settings->cdn_css)
 		{	
 			$checkExtensions[] = '.css'; 
 			$checkExtensions = array_merge($checkExtensions, $fonts);
@@ -341,34 +342,94 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		$original_content = $content;
 		$content = $this->checkContent($content);
 
+		$background_inline_found = false; 
+		
 		$args = [];
+
+		// *** DO INLINE BACKGROUND FIRST *** 
+		$replaceBlocks = $this->fetchInlineBackground($content, $args);
+
+		$replaceBlocks = $this->filterEmptyURLS($replaceBlocks);
+		$replaceBlocks = $this->filterRegexExclusions($replaceBlocks);
+		$replaceBlocks = $this->filterOtherDomains($replaceBlocks);
+		$replaceBlocks = $this->filterFonts($replaceBlocks);
+
+		if (count($replaceBlocks) > 0) {
+			$replaceBlocks = $this->createReplacements($replaceBlocks);
+			$replaceBlocks = $this->filterDoubles($replaceBlocks);
+			$content = $this->pregReplaceContent($content, $replaceBlocks);
+			$background_inline_found = true; 
+		}
+
+		// ** DO IMAGE MATCHES **/
 		$image_matches = $this->fetchImageMatches($content, $args);
 		$replaceBlocks = $this->extractImageMatches($image_matches);
-
-		//	$document_matches = $this->fetchDocumentMatches($content, $args);
-		//	$urls = array_merge($url, $this->extraDocumentMatches($document_matches));
 
 		$replaceBlocks = $this->filterEmptyURLS($replaceBlocks);
 		$replaceBlocks = $this->filterRegexExclusions($replaceBlocks);
 		$replaceBlocks = $this->filterOtherDomains($replaceBlocks);
 
+
 		// If the items didn't survive the filters.
 		if (count($replaceBlocks) == 0) {
-			return $original_content;
+			if (true === $background_inline_found)
+			{
+				 return $content; 
+			}
+			else
+			{
+				return $original_content;
+			}
+			
 		}
 
 		$replaceBlocks = $this->createReplacements($replaceBlocks);
 
+		// FilterDoubles should prob. be off if we are doing a own htmlReplace only. 
+	//	$replaceBlocks = $this->filterDoubles($replaceBlocks);
+
 		//  $replace_function = ($this->replace_method == 'preg') ? 'pregReplaceContent' : 'stringReplaceContent';
-		$replace_function = 'stringReplaceContent'; // undercooked, will defer to next version
 
-		$urls = array_column($replaceBlocks, 'raw_url');
-		$replace_urls = array_column($replaceBlocks, 'replace_url');
+		$replace_function = 'pregReplaceByString'; // undercooked, will defer to next version
+	//	$replace_function = 'stringReplaceContent';
+		$imageIndexes = array_column($replaceBlocks, 'imageId');
 
-		$content = $this->$replace_function($original_content, $urls, $replace_urls);
+		array_multisort($imageIndexes, SORT_ASC, $replaceBlocks); 
+
+		$sortedBlocks = []; 
+		foreach($replaceBlocks as $replaceBlock)
+		{
+			 $sortedBlocks[$replaceBlock->imageId][] = $replaceBlock; 
+		}
+
+		foreach($sortedBlocks as $sortedBlock)
+		{
+			$urls = array_column($sortedBlock, 'raw_url');
+			$replace_urls = array_column($sortedBlock, 'replace_url'); 
+			$original_block_content = $sortedBlock[0]->htmlMatch;
+
+			if ($this->content_is_json) // add slashes here to the replace URLS
+			{
+				 $urls = array_merge($urls, array_map([$this, 'encodeForJson'], $urls));
+				 $replace_urls = array_merge($replace_urls, array_map([$this, 'encodeForJson'], $replace_urls));
+			}			
+
+			$replaced_block_content = $this->$replace_function($original_block_content, $urls, $replace_urls);
+			
+			$content = str_replace($original_block_content, $replaced_block_content, $content, $count); 
+		}
+		
 
 		return $content;
 	}
+
+	private function encodeForJSON($url)
+	{
+		 $url = json_encode($url);
+		 $url = str_replace('"', '', $url); 
+		 return $url;
+	}
+
 
 	protected function loadCDNDomain($CDNDomain = false)
 	{
@@ -407,6 +468,38 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 
 	}
 
+	/** The image check on inline CSS might also catch inline fonts.  Check against settings if they should be processed or not. 
+	 * 
+	 * @param mixed $replaceBlocks 
+	 * @return mixed 
+	 */
+	protected function filterFonts($replaceBlocks)
+	{
+		$settings = \wpSPIO()->settings();
+
+		if (true === $settings->cdn_css)
+		{
+			return $replaceBlocks; 
+		}
+
+		$replaceBlocks = array_filter($replaceBlocks, function ($replaceBlock)
+		{
+			 $fonts = ['.ttf', '.woff', '.woff2', '.otf']; 
+			 foreach($fonts as $extcheck)
+			 {
+				  if (strpos($replaceBlock->url, $extcheck) !== false)
+				  {	
+						return false; 
+				  }
+			 }
+			 return true; 
+
+		});
+   
+		return $replaceBlocks;
+
+	}
+
 	public function validateCDNDomain($CDNDomain)
 	{
 		
@@ -421,14 +514,32 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 			return $resultDomain;
 		}
 
-		 //return $this->cdn_domain;
 	}
 
 	protected function fetchImageMatches($content, $args = [])
 	{
-		$number = preg_match_all('/<img[^>]*>/i', $content, $matches);
+		$number = preg_match_all('/<img[^>]*>|<source srcset="[^>]*">/i', $content, $matches);
 		$matches = $matches[0];
 		return $matches;
+	}
+
+	protected function fetchInlineBackground($content, $args = [])
+	{
+		$number = preg_match_all('/url(\(((?:[^()]+|(?1))+)\))/m', $content, $matches); 
+		$matches = $matches[2]; 
+		
+		//$matches = str_replace('\'', '', $matches);
+	//	Log::addTemp('Inline Matches', $matches);
+
+		$replaceBlocks = []; 
+		foreach($matches as $url)
+		{
+			$block = $this->getReplaceBlock($url);
+			$block->args = $this->createArguments();
+			$replaceBlocks[] = $block; 
+		}
+
+		return $replaceBlocks;
 	}
 
 	protected function fetchDocumentMatches($content, $args = [])
@@ -441,12 +552,21 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 	{
 
 		$imageData = $blockData = [];
-		foreach ($matches as $match) {
+		
+		foreach ($matches as $index => $match) {
+
+			$raw_match = $match; 
+			if ($this->content_is_json)
+			{
+				$match = stripslashes($match);
+			}
 			$imageObj = new FrontImage($match);
 			$src = $imageObj->src;
-
+			
 			if (! is_null($src)) {
 				$imageBlock = $this->getReplaceBlock($src);
+				$imageBlock->htmlMatch = $raw_match; 
+				$imageBlock->imageId = 'image' . $index; 
 				$imageBlock->args = $this->createArguments();
 				$blockData[] = $imageBlock;
 				$imageData[] = $imageBlock->url;
@@ -457,8 +577,10 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 
 			foreach ($images as $image) {
 				$imageBlock = $this->getReplaceBlock($image);
+				$imageBlock->htmlMatch = $match;
+				$imageBlock->imageId = 'image' . $index; 
 				$imageBlock->args = $this->createArguments();
-				if (! in_array($image, $imageData)) {
+				if ($src !== $imageBlock->url) {
 					$blockData[] = $imageBlock;
 					$imageData[] = $imageBlock->url;
 				}
@@ -532,7 +654,6 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 
 	private function checkScheme($replaceBlock)
 	{
-		//$this->setCDNArgument('scheme', null);
 		if (isset($replaceBlock->parsed['scheme']) && 'http' == $replaceBlock->parsed['scheme']) {
 			$replaceBlock->args['scheme'] = 'p_h'; 
 		}
@@ -543,47 +664,92 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		}
 	}
 
+	/** Simple string replace using the replacer ( current unused ) 
+	 * 
+	 * @param mixed $content 
+	 * @param array $urls 
+	 * @param array $new_urls 
+	 * @return mixed 
+	 */
 	protected function stringReplaceContent($content, $urls, $new_urls)
 	{
-
-		//	$count = 0;
-		//	$content = str_replace($urls, $new_urls, $content, $count);
-
 		$replacer = new Replacer();
 		$content = $replacer->replaceContent($content, $urls, $new_urls);
 
-
 		return $content;
 	}
 
-	protected function pregReplaceContent($content, $urls, $new_urls)
+	/** Do a regex replace on the found strings. Try to prevent it picking up relative paths / doubling the CDN path. 
+	 * 
+	 * @param mixed $content 
+	 * @param array $urls 
+	 * @param array $new_urls 
+	 * @return string|string[]|null 
+	 */
+	protected function pregReplaceByString($content, $urls, $new_urls)
 	{
+		/* 
+		Pattern:  Negative lookback to / a-z and 0-9 ( URL components / not image closers ) - URL Match - Negative lookforward (same pattern)
+		*/
 		$count = 0;
-		$patterns = [];
+		$patterns = array_map(function ($url) {
+			return '/(?<!(\/|[a-z]|[0-9]))' . preg_quote($url, '/') . '(?!(\/|[a-z]|[0-9]))/mi'; 
+		}, $urls);
 
-		// Create pattern for each URL to search.
-		foreach ($urls as $index => $url) {
-			//$replacement = $new_urls[$index];
-			$patterns[] = '/("|\'| )(' . preg_quote($url, '/') . ')("|\'| )/mi';
-		}
+		//Log::addTemp('Patterns X replacecount ', $patterns );
+		$content = preg_replace($patterns, $new_urls, $content);
 
-		foreach ($new_urls as $index => $url) {
-			$new_urls[$index] = '$1' . $url . '$1';
-		}
-
-		$content = preg_replace($patterns, $new_urls, $content, -1, $count);
 		return $content;
 	}
 
+	/** Preg replace the background URL on content.
+	 * 
+	 * @param mixed $content 
+	 * @param array $replaceBlocks 
+	 * @return string|string[]|null 
+	 */
+	protected function pregReplaceContent($content, $replaceBlocks)
+	{
 
+		$pattern = '/url(\(%%replace%%\))/m';
+		$raw_urls = $replace_urls = $patterns = []; 
+
+		foreach($replaceBlocks as $replaceBlock)
+		{
+			 $raw_url = $replaceBlock->raw_url; 
+			
+			 // @TODO . Check on Raw_URL if there is " or '  and add that, if none, add none. 
+			 if (true === str_contains($raw_url, '"'))
+			 {
+				$delim = '"'; 
+			 }
+			 elseif (true === str_contains($raw_url, "'"))
+			 {
+				 $delim = "'";
+			 }
+			 else 
+			 	$delim = '';
+			 // Rebuild the matches url: pattern ( easier than $1 getting it back )
+			 $replace_urls[] = 'url(' . $delim . $replaceBlock->replace_url . $delim . ')'; 
+			 $patterns[] = str_replace('%%replace%%', "" . preg_quote($raw_url, '/') . "", $pattern); 
+
+		}
+
+		$content =preg_replace($patterns, $replace_urls, $content);
+		return $content;
+
+	}
 
 	protected function checkContent($content)
 	{
-
 		if (true === $this->checkJson($content)) {
 			// Slashes in json content can interfere with detection of images and formats. Set flag to re-add slashes on the result so it hopefully doesn't break.
-			$content = stripslashes($content);
+		
 			$this->content_is_json = true;
+		}
+		else
+		{
+			$this->content_is_json = false;
 		}
 		return $content;
 	}
@@ -592,22 +758,9 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 	// Could in time be replaced by json_validate proper. (PHP 8.3)
 	protected function checkJson($json, $depth = 512, $flags = 0)
 	{
-		if (false === is_string($json)) {
-			return false;
-		}
+		$bool = UtilHelper::validateJSON($json); 
+		return $bool;
 
-		// Try to simpler bail out without checking for the decode.
-		if (strpos($json, '{' ) === false && strpos($json, ':') === false)
-		{
-			return false; 
-		}
-
-		try {
-			json_decode($json, false, $depth, $flags | JSON_THROW_ON_ERROR);
-			return true;
-		} catch (\JsonException $e) {
-			return false;
-		}
 	}
 
 	protected function listenFlush()
@@ -659,7 +812,7 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		$full_cdn_url = $this->getURLBase($replaceBlocks->replace_url);
 
 		$flush_url = $domain . $full_cdn_url; 
-		Log::addDebug('Flush URL : ' . $flush_url);
+		//Log::addDebug('Flush URL : ' . $flush_url);
 
 		$getArgs = [
 			'timeout'=> 8,

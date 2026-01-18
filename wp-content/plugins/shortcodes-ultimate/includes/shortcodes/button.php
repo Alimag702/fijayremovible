@@ -145,6 +145,12 @@ su_add_shortcode(
 				'desc' => __('Additional CSS class name(s) separated by space(s)', 'shortcodes-ultimate'),
 				'default' => '',
 			),
+			'bold' => array(
+				'type' => 'bool',
+				'default' => 'no',
+				'name' => __('Bold', 'shortcodes-ultimate'),
+				'desc' => __('Make button text bold', 'shortcodes-ultimate'),
+			),
 		),
 		'content' => __('Button text', 'shortcodes-ultimate'),
 		'desc' => __('Styled button', 'shortcodes-ultimate'),
@@ -181,6 +187,7 @@ function su_shortcode_button($atts = null, $content = null)
 			'title' => '',
 			'id' => '',
 			'class' => '',
+			'bold' => 'no',
 		),
 		$atts,
 		'button'
@@ -353,6 +360,10 @@ function su_shortcode_button($atts = null, $content = null)
 		$content = $icon . ' ' . $content;
 	}
 
+	if ($atts['bold'] === 'yes') {
+		$content = '<strong>' . $content . '</strong>';
+	}
+
 	// Prepare onclick action
 	if ($atts['onclick'] && !su_is_unsafe_features_enabled()) {
 
@@ -394,6 +405,6 @@ function su_shortcode_button($atts = null, $content = null)
 
 	su_query_asset('css', 'su-shortcodes');
 
-	return $before . '<a href="' . esc_url(su_do_attribute($atts['url'])) . '" class="' . esc_attr(implode(' ', $classes)) . '" style="' . esc_attr(implode(';', $a_css)) . '" target="_' . esc_attr($atts['target']) . '"' . $atts['onclick'] . $atts['rel'] . $atts['title'] . $atts['id'] . $atts['download'] . '><span style="' . esc_attr(implode(';', $span_css)) . '">' . do_shortcode(stripcslashes($content)) . $desc . '</span></a>' . $after;
+	return $before . '<a href="' . esc_url(su_do_attribute($atts['url'])) . '" class="' . esc_attr(implode(' ', $classes)) . '" style="' . esc_attr(implode(';', $a_css)) . '" target="_' . esc_attr($atts['target']) . '"' . $atts['onclick'] . $atts['rel'] . $atts['title'] . $atts['id'] . $atts['download'] . '><span style="' . esc_attr(implode(';', $span_css)) . '">' . wp_kses_post(do_shortcode(stripcslashes($content))) . $desc . '</span></a>' . $after;
 
 }

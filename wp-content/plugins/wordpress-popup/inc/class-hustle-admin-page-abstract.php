@@ -336,6 +336,15 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 
 			$classes .= ' sui-' . $formatted_version;
 
+			/**
+			 * Add high contrast mode.
+			 */
+			$accessibility         = Hustle_Settings_Admin::get_hustle_settings( 'accessibility' );
+			$is_high_contrast_mode = ! empty( $accessibility['accessibility_color'] );
+			if ( $is_high_contrast_mode ) {
+				$classes .= ' sui-elements-accessible';
+			}
+
 			return $classes;
 		}
 
@@ -459,6 +468,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			add_filter( 'tiny_mce_before_init', array( $this, 'set_tinymce_settings' ), 10, 2 );
 			add_filter( 'wp_default_editor', array( $this, 'set_editor_to_tinymce' ) );
 			add_filter( 'tiny_mce_plugins', array( $this, 'remove_despised_editor_plugins' ) );
+			add_filter( 'mce_buttons', array( $this, 'remove_readmore_tag' ) );
 		}
 
 		/**
@@ -496,6 +506,17 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			}
 			$plugins[] = 'paste';
 			return $plugins;
+		}
+
+		/**
+		 * Removes the "Read more" tag from the editor.
+		 *
+		 * @param array $mce_buttons Array of TinyMCE buttons.
+		 * @return array
+		 */
+		public function remove_readmore_tag( $mce_buttons ) {
+			$remove = array( 'wp_more' );
+			return array_diff( $mce_buttons, $remove );
 		}
 
 		/**

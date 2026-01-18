@@ -57,14 +57,14 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 				if ( 'center' !== $display['float_desktop_position'] ) {
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"] { %s: %spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positionx="%1$s"] { %1$s: %2$spx }',
 						esc_html( $display['float_desktop_position'] ),
 						esc_attr( $desktop_x_offset )
 					);
 				}
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"] { %s: %spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positiony="%1$s"] { %1$s: %2$spx }',
 						esc_html( $display['float_desktop_position_y'] ),
 						esc_attr( $desktop_y_offset )
 					);
@@ -83,14 +83,14 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 				if ( 'center' !== $display['float_mobile_position'] ) {
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"] { %s: %spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positionx="%1$s"] { %1$s: %2$spx }',
 						esc_html( $display['float_mobile_position'] ),
 						esc_attr( $mobile_x_offset )
 					);
 				}
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"] { %s: %spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positiony="%1$s"] { %1$s: %2$spx }',
 						esc_html( $display['float_mobile_position_y'] ),
 						esc_attr( $mobile_y_offset )
 					);

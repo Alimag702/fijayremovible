@@ -42,8 +42,8 @@ $unit_name  = $property_key . '_line_height_unit' . $device_suffix;
 				'value'      => $settings[ $value_name ],
 				'id'         => 'hustle-' . $value_name,
 				'attributes' => array(
-					'data-attribute'  => $value_name,
-					'aria-labelledby' => 'hustle-' . $value_name . '-label',
+					'data-attribute' => $value_name,
+					'aria-label'     => esc_html__( 'Line Height', 'hustle' ),
 				),
 			),
 		)

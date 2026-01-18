@@ -490,7 +490,7 @@ abstract class Optml_App_Replacer {
 	/**
 	 * Extract domains and use them as keys for fast processing.
 	 *
-	 * @param array $urls Input urls.
+	 * @param array|null $urls Input urls.
 	 *
 	 * @return array Array of domains as keys.
 	 */
@@ -529,7 +529,7 @@ abstract class Optml_App_Replacer {
 	/**
 	 * Check if we can replace the url.
 	 *
-	 * @param string $url Url to change.
+	 * @param string|mixed $url Url to change.
 	 *
 	 * @return bool Either we can replace this url or not.
 	 */
@@ -654,16 +654,19 @@ abstract class Optml_App_Replacer {
 	/**
 	 * Get the optimized image url for the image url.
 	 *
-	 * @param string $url    The image URL.
-	 * @param mixed  $width  The image width.
-	 * @param mixed  $height The image height.
-	 * @param array  $resize The resize properties.
+	 * @param string                     $url    The image URL.
+	 * @param mixed                      $width  The image width.
+	 * @param mixed                      $height The image height.
+	 * @param array<string, mixed>|mixed $resize The resize properties.
 	 *
 	 * @return string
 	 */
 	protected function get_optimized_image_url( $url, $width, $height, $resize = [] ) {
 		$width  = is_int( $width ) ? $width : 'auto';
 		$height = is_int( $height ) ? $height : 'auto';
+		// If the image is already using Optimole URL, we extract the source to rebuild it.
+		$url = $this->get_unoptimized_url( $url );
+
 		$optimized_image = Optimole::image( $url, $this->settings->get( 'cache_buster' ) )
 			->width( $width )
 			->height( $height );
@@ -685,7 +688,7 @@ abstract class Optml_App_Replacer {
 	 *
 	 * @return int
 	 */
-	protected function get_id_by_url( $url ) {
+	public function get_id_by_url( $url ) {
 		$url = $this->get_unoptimized_url( $url );
 		srand( crc32( $url ) );
 		$random_id = rand();

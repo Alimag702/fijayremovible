@@ -1,4 +1,7 @@
 <?php
+
+use RSSSL\Security\RSSSL_Htaccess_File_Manager;
+
 defined( 'ABSPATH' ) or die();
 
 add_action( 'plugins_loaded', 'rsssl_upgrade', 20 );
@@ -17,11 +20,12 @@ function rsssl_upgrade() {
 	}
 	//dismiss notices that should be dismissed on plugin upgrade
 	if ( $prev_version && version_compare( $prev_version, rsssl_version, '!=' ) ) {
-		$dismiss_options = RSSSL()->admin->get_notices_list(
-			array(
-				'dismiss_on_upgrade' => true,
-			)
-		);
+		// $dismiss_options = RSSSL()->admin->get_notices_list(
+		// 	array(
+		// 		'dismiss_on_upgrade' => true,
+		// 	)
+		// );
+		$dismiss_options = ['mixed_content_scan']; // Temporary fix for translation issues on plugins_loaded.
 		foreach ( $dismiss_options as $dismiss_option ) {
 			if ( !is_string($dismiss_option) ) continue;
 			update_option( 'rsssl_' . $dismiss_option . '_dismissed', true, false );
@@ -39,13 +43,21 @@ function rsssl_upgrade() {
 	}
 
 	if ( $prev_version && version_compare( $prev_version, '5.3.0', '<=' ) ) {
-		if ( file_exists( RSSSL()->admin->htaccess_file() ) && is_writable( RSSSL()->admin->htaccess_file() ) ) {
-			$htaccess      = file_get_contents( RSSSL()->admin->htaccess_file() );
-			$pattern_start = '/rlrssslReallySimpleSSL rsssl_version\[.*.]/';
-			if ( preg_match_all( $pattern_start, $htaccess ) ) {
-				$htaccess = preg_replace( $pattern_start, 'Really Simple Security Redirect ' . rsssl_version, $htaccess );
-				$htaccess = str_replace( 'rlrssslReallySimpleSSL', 'Really Simple Security Redirect', $htaccess );
-				file_put_contents( RSSSL()->admin->htaccess_file(), $htaccess );
+		$fileManager = RSSSL_Htaccess_File_Manager::get_instance();
+		if ( $fileManager->validate_htaccess_file_path() ) {
+			$htaccess =$fileManager->get_htaccess_content();
+
+			// Safely match the legacy pattern: rlrssslReallySimpleSSL rsssl_version[...]
+			$pattern = '/rlrssslReallySimpleSSL\s+rsssl_version\[[^]]+]/';
+			$replacement = 'Really Simple Security Redirect ' . rsssl_version;
+
+			$updated = preg_replace( $pattern, $replacement, $htaccess );
+			$updated = str_replace( 'rlrssslReallySimpleSSL', 'Really Simple Security Redirect', $updated );
+
+			// Only write if the updated content differs from the current content and is not empty.
+			if ( $updated !== $htaccess && ! empty( trim( $updated ) ) ) {
+				// Use an exclusive lock when writing to avoid race conditions with other writers.
+				file_put_contents( $fileManager->htaccess_file_path, $updated, LOCK_EX );
 			}
 		}
 	}
@@ -172,7 +184,12 @@ function rsssl_upgrade() {
 	}
 
 	if ( $prev_version && version_compare( $prev_version, '6.2.3', '<' ) ) {
-		rsssl_update_option( 'send_notifications_email', 1 );
+		//rsssl_update_option( 'send_notifications_email', 1 );
+		//do not use rsssl_update_option as it will load all fields, causing translation issues on plugins_loaded hook.
+		$options = get_option('rsssl_options', []);
+		if ( !is_array($options) ) $options = [];
+			$options['send_notifications_email'] = 1;
+		update_option( 'rsssl_options', $options);
 	}
 
 	if ( $prev_version && version_compare( $prev_version, '6.2.4', '<' ) ) {
@@ -227,6 +244,52 @@ function rsssl_upgrade() {
     if ( $prev_version && version_compare( $prev_version, '9.1.1.1', '<=' ) ) {
         update_option('rsssl_reset_fix', true, false);
     }
+
+	// Fetch Google crawler IP's when Geo Block is enabled
+	if ( $prev_version && version_compare( $prev_version, '9.3.6', '<=' ) ) {
+		if ( class_exists( '\RSSSL\Pro\Security\WordPress\Rsssl_Geo_Block' ) ) {
+			// Trigger action to update rules
+			do_action( 'rsssl_update_rules' );
+			$geo_block = \RSSSL\Pro\Security\WordPress\Rsssl_Geo_Block::get_instance();
+			$geo_block->fetch_google_crawler_ips();
+		}
+	}
+
+	// Upgrade .htaccess rules for sites using LiteSpeed cache
+	if ( $prev_version && version_compare( $prev_version, '9.4.2.1', '<=' ) ) {
+		// Check for LiteSpeed Cache plugin
+		if ( defined( 'LSCWP_V' ) && LSCWP_V ) {
+			do_action('rsssl_update_rules');
+		}
+	}
+
+	// Delete the ajax fallback option as it is no longer used.
+	if ( $prev_version && version_compare( $prev_version, '9.4.2.1', '<=' ) ) {
+		delete_option('rsssl_ajax_fallback_active');
+	}
+
+	// Upgrade .htaccess rules for sites using LiteSpeed cache
+	if ( $prev_version && version_compare( $prev_version, '9.4.2.1', '<=' ) ) {
+		// Check for LiteSpeed Cache plugin
+		if ( defined( 'LSCWP_V' ) && LSCWP_V ) {
+			do_action('rsssl_update_rules');
+		}
+	}
+
+	// Clean up old "No Index" marker and replace with clearer
+	// "Disable directory indexing" marker
+	if ( $prev_version && version_compare( $prev_version, '9.5.3.1', '<=' ) ) {
+		$fileManager = RSSSL_Htaccess_File_Manager::get_instance();
+		if ( $fileManager->validate_htaccess_file_path() ) {
+			// Remove the old "No Index" marker if it exists
+			$fileManager->clear_legacy_rule( 'Really Simple Security No Index' );
+			// If the disable_indexing option is enabled, the new marker will be
+			// added automatically when settings are saved or rules are updated
+			if ( rsssl_get_option( 'disable_indexing', false ) ) {
+				do_action('rsssl_update_rules');
+			}
+		}
+	}
 
 	//don't clear on each update.
 	//RSSSL()->admin->clear_admin_notices_cache();

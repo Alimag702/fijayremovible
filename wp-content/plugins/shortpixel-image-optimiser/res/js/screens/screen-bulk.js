@@ -21,6 +21,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
 		// Hook up the button and all.
 			this.LoadPanels();
 			this.LoadActions();
+      this.LoadDatePicker(); 
 
 			window.addEventListener('shortpixel.processor.paused', this.TogglePauseNotice.bind(this));
 			window.addEventListener('shortpixel.processor.responseHandled', this.CheckPanelData.bind(this));
@@ -94,6 +95,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
 			{
 				 this.SwitchPanel(shortPixelScreen.panel);
 			}
+
 	}
 
   LoadPanels()
@@ -131,20 +133,44 @@ class ShortPixelScreen extends ShortPixelScreenBase
       });
   }
 
+  LoadDatePicker()
+  {
+    // Used -https://thedatepicker.github.io/thedatepicker/
+    let containers = document.querySelectorAll('.date-picker-container');
+      for (let i = 0; i < containers.length; i++)
+      {
+        let container = containers[i]; 
+        let input = container.querySelector('input'); 
+
+        let datepicker = new TheDatepicker.Datepicker(input);
+        datepicker.options.setMaxDate(new Date());
+
+        datepicker.options.onSelect(function (ev)
+        {
+          let formatDate = datepicker.getSelectedDateFormatted('Y/m/d'); 
+          input.dataset.formatteddate = formatDate; 
+        }); 
+
+        datepicker.render();
+
+      }
+  }
+
 	DoActionEvent(event)
 	{
-		var element = event.target;
-		var action = element.getAttribute('data-action');
+		var element = event.target; 
+
 
 		// Might be the child
 		if (element.getAttribute('data-action') == null)
 		{
-			var element = element.parentElement;
+			var element = event.currentTarget; // Should perhaps be default when checking action event? 
 		}
 		if (element.disabled == true) // disabled button still register events, prevent going.
 		{
 			return false;
 		}
+    
 		var actionName = element.getAttribute('data-action');
 		var isPanelAction = (actionName == 'open-panel');
 
@@ -200,7 +226,6 @@ class ShortPixelScreen extends ShortPixelScreenBase
   }
   SwitchPanel(targetName)
   {
-     console.trace('Switching Panel ' + targetName);
 
       this.ToggleLoading(false);
       if (! this.panels[targetName])
@@ -261,12 +286,42 @@ class ShortPixelScreen extends ShortPixelScreenBase
      data.customActive = (document.getElementById('custom_checkbox').checked) ? true : false;
      data.webpActive = (document.getElementById('webp_checkbox').checked) ? true : false;
      data.avifActive = (document.getElementById('avif_checkbox').checked) ? true : false;
+     
+     if (null !== document.getElementById('autoai_checkbox'))
+     {
+        data.aiActive = (document.getElementById('autoai_checkbox').checked) ? true : false;
+        data.aiPreserve = (document.getElementById('aipreserve_checkbox').checked) ? true : false;
+     }
+     else
+     {
+       data.aiActive = false; 
+     //  data.aiPreserve = false; 
+     }
      data.backgroundProcess = (document.getElementById('background_checkbox').checked) ? true : false;
 
 
 		 if (document.getElementById('thumbnails_checkbox') !== null)
+      {
 		 		data.thumbsActive = (document.getElementById('thumbnails_checkbox').checked) ? true : false;
+      } 
 
+    let startDate = document.getElementById('bulk-start-date'); 
+    if (startDate !== null && startDate.dataset.formatteddate !== null && typeof startDate.dataset.formatteddate !== 'undefined')
+    {
+      data.filter_startdate = startDate.dataset.formatteddate;
+    }
+
+    let endDate = document.getElementById('bulk-end-date'); 
+    if (endDate !== null && endDate.dataset.formatteddate && typeof endDate.dataset.formatteddate !== 'undefined')
+    {
+       data.filter_enddate = endDate.dataset.formatteddate; 
+    }
+    
+
+/*
+    data.doLimitItems = (document.getElementById('limit_items').checked) ? true : false; 
+    data.limitItems = document.getElementById('limit_numitems').value;
+*/
      this.UpdatePanelStatus('loading', 'selection');
 
      // Prepare should happen after selecting what the optimize.
@@ -339,42 +394,108 @@ class ShortPixelScreen extends ShortPixelScreenBase
   HandleImage(resultItem, type)
   {
 
-     // var result = resultItem.result;
+    var apiName = (typeof resultItem.apiName !== 'undefined') ? resultItem.apiName : 'optimize'; 
+    var aiPreviewElement = document.querySelector('.ai-preview-wrapper'); 
+    var imagePreviewSection = document.querySelector('.image-preview-section');
+
+    if (false === aiPreviewElement.classList.contains('hidden'))
+    {
+       aiPreviewElement.classList.add('hidden');
+    }
+
+
       if ( this.processor.fStatus[resultItem.fileStatus] == 'FILE_DONE')
       {
-          this.UpdateData('result', resultItem);
 
-          if (document.querySelector('.image-preview-section').classList.contains('hidden')  )
-          {
-            document.querySelector('.image-preview-section').classList.remove('hidden');
-          }
+        if (imagePreviewSection.classList.contains('hidden'))
+        {
+             imagePreviewSection.classList.remove('hidden');
+        }
+        /*
+        if (false === resultItem.improvements)
+        {
+           imagePreviewSection.classList.add('hidden');
+        } */
+        
+        
+     //   if ('ai' !== apiName)
+      //  {
+            this.UpdateData('result', resultItem);
 
-					this.HandleImageEffect(resultItem.original, resultItem.optimized);
+            this.HandleImageEffect(resultItem.original, resultItem.optimized);
 
-          if (resultItem.improvements && resultItem.improvements.totalpercentage)
-          {
-							// Opt-Circle-Image is average of the file itself.
-              var circle = document.querySelector('.opt-circle-image');
+            var improvementItems = imagePreviewSection.querySelectorAll('.improvement-item');
+            var showImp = false; 
 
-              var total_circle = 289.027;
-              if(resultItem.improvements.totalpercentage >0 ) {
-                  total_circle = Math.round(total_circle-(total_circle*resultItem.improvements.totalpercentage/100));
-              }
+            if (resultItem.improvements && resultItem.improvements.totalpercentage)
+            {
+                // Opt-Circle-Image is average of the file itself.
+                var circle = imagePreviewSection.querySelector('.opt-circle-image');
 
-              for( var i = 0; i < circle.children.length; i++)
-              {
-                 var child = circle.children[i];
-                 if (child.classList.contains('path'))
-                 {
-                    child.style.strokeDashoffset = total_circle + 'px';
-                 }
-                 else if (child.classList.contains('text'))
-                 {
-                    child.textContent = resultItem.improvements.totalpercentage + '%';
-                 }
-              }
+                var total_circle = 289.027;
+                if(resultItem.improvements.totalpercentage >0 ) {
+                    total_circle = Math.round(total_circle-(total_circle*resultItem.improvements.totalpercentage/100));
+                }
 
-							this.AddAverageOptimization(resultItem.improvements.totalpercentage);
+                for( var i = 0; i < circle.children.length; i++)
+                {
+                  var child = circle.children[i];
+                  if (child.classList.contains('path'))
+                  {
+                      child.style.strokeDashoffset = total_circle + 'px';
+                  }
+                  else if (child.classList.contains('text'))
+                  {
+                      child.textContent = resultItem.improvements.totalpercentage + '%';
+                  }
+                }
+
+                this.AddAverageOptimization(resultItem.improvements.totalpercentage);
+                showImp = true; 
+            }
+            else
+            {
+              showImp = false; 
+            }
+
+            for( var i = 0; i < improvementItems.length; i++)
+            {
+                let item = improvementItems[i]; 
+                if (true === showImp && item.classList.contains('hidden'))
+                {
+                   item.classList.remove('hidden');
+                }
+                else if (false === showImp && false === item.classList.contains('hidden'))
+                {
+                  item.classList.add('hidden');
+                }
+            }
+
+     //     }
+          if ('ai' === apiName)
+          {            
+             if (aiPreviewElement.classList.contains('hidden'))
+             {
+                aiPreviewElement.classList.remove('hidden'); 
+             }
+
+          //   this.HandleImageEffect(resultItem.original, resultItem.optimized);
+
+
+             let ul = aiPreviewElement.querySelector('ul'); 
+             ul.innerHTML = ''; 
+
+             let labels = (resultItem.aiDataLabels) ? resultItem.aiDataLabels : {}; 
+             
+             for (var field in resultItem.aiData)
+             {  
+                let value = resultItem.aiData[field];
+                let li = document.createElement('li'); 
+                let label = (labels[field]) ? labels[field] : field; 
+                  
+                 li.innerHTML = '<strong>' + label + '</strong>: ' + value; 
+                 ul.append(li);
+             }
           }
 					return true; // This prevents flooding.
       }
@@ -446,6 +567,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
 
 			// There are circles on process and finished.
 			var circles = document.querySelectorAll('.opt-circle-average');
+      var elements = document.querySelectorAll('.average-optimization');
 
 			circles.forEach(function (circle)
 			{
@@ -467,23 +589,18 @@ class ShortPixelScreen extends ShortPixelScreenBase
 					 }
 				}
 			}); // circles;
+
+      // Show them only when a values enters. 
+      for(var i = 0; i < elements.length; elements++)
+      {
+          if (elements[i].classList.contains('shortpixel-hide'))
+          {
+             elements[i].classList.remove('shortpixel-hide');
+          }
+      }
+
 	}
-  DoSelection() // action to update response.
-  {
-      // @todo Check the future of this function, since checking this is now createBulk.
-      var data = {screen_action: 'applyBulkSelection'}; //
-      data.callback = 'shortpixel.applySelectionDone';
 
-      data.mediaActive = (document.getElementById('media_checkbox').checked) ? true : false;
-      data.customActive = (document.getElementById('custom_checkbox').checked) ? true : false;
-      data.webpActive = (document.getElementById('webp_checkbox').checked) ? true : false;
-      data.avifActive = (document.getElementById('avif_checkbox').checked) ? true : false;
-      data.backgroundProcess = (document.getElementById('background_checkbox').checked) ? true : false;
-
-      window.addEventListener('shortpixel.applySelectionDone', function (e) { this.SwitchPanel('summary'); }.bind(this) , {'once': true} );
-      this.processor.AjaxRequest(data);
-
-  }
 
   UpdateStats(stats, type)
   {
@@ -493,7 +610,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
   // dataName refers to domain of data i.e. stats, result. Those are mentioned in UI with data-stats-media="total" or data-result
   UpdateData(dataName, data, type)
   {
-      console.log('updating Data :',  dataName, data, type);
+      console.log('updating Data :',  dataName + ' ' + type, data);
 
       if (typeof type == 'undefined')
       {
@@ -656,15 +773,26 @@ class ShortPixelScreen extends ShortPixelScreenBase
 
 			errorBoxes.forEach(function(errorbox)
 			{
+				// Detect the previous div to cancel the border radius when errors are displayed
+				let prev = errorbox.previousElementSibling;
+
+				while (prev && !prev.classList.contains('bulk-summary')) {
+					prev = prev.previousElementSibling;
+				}
+
 				if (checked === true)
 				{
 				 	errorbox.style.opacity = 1;
 					errorbox.style.display = 'block';
+					prev.style.borderBottomRightRadius = '0px';
+					prev.style.borderBottomLeftRadius = '0px';
 				}
 				else
 				{
 					errorbox.opacity = 0;
 					errorbox.style.display = 'none';
+					prev.style.borderBottomRightRadius = '15px';
+					prev.style.borderBottomLeftRadius = '15px';
 				}
 			}); //foreach
 
@@ -724,8 +852,8 @@ class ShortPixelScreen extends ShortPixelScreenBase
 	SkipPreparing()
 	{
 		this.processor.StopProcess({ waiting: true });
-		this.SwitchPanel('summary');
-		this.UpdatePanelStatus('loaded', 'selection');
+		this.SwitchPanel('summary'); // switch to summary
+		this.UpdatePanelStatus('loaded', 'selection'); // move back previous screen one step.
 		this.processor.tooltip.ProcessEnd();
 		this.processor.SetInterval(-1); // back to default.
 	}
@@ -759,13 +887,13 @@ class ShortPixelScreen extends ShortPixelScreenBase
      {
         el.style.display = 'block';
         buttonPause.style.display = 'none';
-        buttonResume.style.display = 'inline-block';
+        buttonResume.style.display = 'flex';
 
      }
      else
      {
         el.style.display = 'none';
-        buttonPause.style.display = 'inline-block';
+        buttonPause.style.display = 'flex';
         buttonResume.style.display = 'none';
 
 				// in case this is overquota situation, on unpause, recheck situation, hide the thing.
@@ -955,7 +1083,6 @@ class ShortPixelScreen extends ShortPixelScreenBase
 
     this.RemovePanelFromURL(shortPixelScreen.panel);
 
-
     this.UpdatePanelStatus('loading', 'selection');
     this.SwitchPanel('selection');
 
@@ -964,6 +1091,21 @@ class ShortPixelScreen extends ShortPixelScreenBase
     window.addEventListener('shortpixel.startRestoreAll', this.PrepareBulk.bind(this), {'once': true} );
     window.addEventListener('shortpixel.bulk.onSwitchPanel', this.StartBulk.bind(this), {'once': true});
     this.processor.AjaxRequest(data);
+  }
+  BulkUndoAI(event)
+  {
+    var data = {screen_action: 'startBulkUndoAI', callback: 'shortpixel.startUndoAI'}; //
+
+		this.UpdatePanelStatus('loading', 'selection');
+		this.SwitchPanel('selection');
+
+  	//this.SwitchPanel('process');
+    this.RemovePanelFromURL(shortPixelScreen.panel);
+
+    // Prepare should happen after selecting what the optimize.
+    window.addEventListener('shortpixel.startUndoAI', this.PrepareBulk.bind(this), {'once': true} );
+    window.addEventListener('shortpixel.bulk.onSwitchPanel', this.StartBulk.bind(this), {'once': true});
+    this.processor.AjaxRequest(data);    
   }
 
   BulkMigrateAll(event)
@@ -1017,6 +1159,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
 
   }
 
+  /* Unused ? 
 	StartBulkOperation(event)
 	{
 		this.PrepareBulk();
@@ -1024,7 +1167,7 @@ class ShortPixelScreen extends ShortPixelScreenBase
 		this.UpdatePanelStatus('loading', 'selection');
 		this.SwitchPanel('selection');
 
-	}
+	} */
 
 	// Opening of Log files on the dashboard
 	OpenLog(event)

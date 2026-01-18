@@ -7,7 +7,7 @@ final class Optml_Main {
 	/**
 	 * Optml_Main The single instance of Starter_Plugin.
 	 *
-	 * @var    object
+	 * @var      Optml_Main|null
 	 * @access   private
 	 * @since    1.0.0
 	 */
@@ -106,6 +106,7 @@ final class Optml_Main {
 			add_filter( 'optimole_wp_feedback_review_message', [ __CLASS__, 'change_review_message' ] );
 			add_filter( 'optimole_wp_logger_heading', [ __CLASS__, 'change_review_message' ] );
 			add_filter( 'optml_register_conflicts', [ __CLASS__, 'register_conflicts' ] );
+			add_filter( 'optimole_wp_logger_data', [ __CLASS__, 'add_settings' ] );
 			self::$_instance          = new self();
 			self::$_instance->manager = Optml_Manager::instance();
 			self::$_instance->rest    = new Optml_Rest();
@@ -135,16 +136,33 @@ final class Optml_Main {
 			$conflicts_to_register,
 			[
 				'Optml_Jetpack_Photon',
-				'Optml_Jetpack_Lazyload',
 				'Optml_Wprocket',
 				'Optml_Divi',
 				'Optml_w3_total_cache_cdn',
+				'Optml_Smush',
+				'Optml_Litespeed',
+				'Optml_Autoptimize',
+				'Optml_Perfmatters',
 			]
 		);
 
 		return $conflicts_to_register;
 	}
 
+	/**
+	 * Add settings to the logger data.
+	 *
+	 * @param array $data Logger data.
+	 *
+	 * @return array
+	 */
+	public static function add_settings( $data ): array {
+		$saved_data = ( new Optml_Settings() )->get_raw_settings();
+		unset( $saved_data['service_data'] );
+		unset( $saved_data['api_key'] );
+
+		return array_merge( $data, $saved_data );
+	}
 	/**
 	 * Change review message.
 	 *

@@ -8,10 +8,12 @@
  *
  * It is not required to add all integration files here, this just provides
  * a common place for plugin authors to append their file to.
+ *
+ * @package    LiteSpeed
+ * @subpackage LiteSpeed_Cache/thirdparty
  */
-defined('WPINC') || exit();
 
-use LiteSpeed\API;
+defined('WPINC') || exit();
 
 $third_cls = array(
 	'Aelia_CurrencySwitcher',

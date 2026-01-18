@@ -16,21 +16,21 @@ use ShortPixel\Model\Converter\Converter as Converter;
 use ShortPixel\Controller\Optimizer\OptimizeController as OptimizeController;
 use ShortPixel\Controller\Optimizer\OptimizeAiController as OptimizeAiController;
 use ShortPixel\Controller\Optimizer\ActionController as ActionController;
+use ShortPixel\Helper\UiHelper;
+use ShortPixel\Model\AiDataModel;
 
 class QueueItem
 {
 
-   protected $imageModel;
-   protected $item_id;
-   //  protected $action = 'optimize'; // This must be in data!
+   protected $imageModel; // ImageModel 
+   protected $item_id; // Item Id 
    protected $queueItem; // Object coming from WPQ
 
-   protected $result;
+   protected $result; // Result object stores a viable customer response.
 
    protected $data; // something savable to dbase, for now object. This is the only thing persistent!
 
    protected $item_count; // counted images for the table.
-
 
    protected $debug_active = false; // prevent operations when it's debug view in edit media
 
@@ -42,7 +42,6 @@ class QueueItem
       } elseif (isset($args['item_id']) && is_numeric($args['item_id'])) {
          $this->item_id = intval($args['item_id']);
       }
-
 
       // Init defaults
       $this->data = new QueueItemData(); // init
@@ -177,7 +176,15 @@ class QueueItem
          $media_id = $this->imageModel->getParent();
       }
 
-      return ['id' => $item_id, 'value' => $value, 'item_count' => $this->item_count];
+      $enqueue = ['id' => $item_id, 'value' => $value, 'item_count' => $this->item_count];
+      
+      if (! is_null($this->data->queue_list_order))
+      {
+         $enqueue['order'] = $this->data->queue_list_order;
+      }
+
+      return $enqueue; 
+      
    }
 
    public function setDebug()
@@ -215,7 +222,7 @@ class QueueItem
 
        $this->data->action = 'reoptimize'; 
        $this->data->next_actions = ['optimize'];
-       $this->data->next_keepdata = ['compressionType', 'smartcrop']; // Each action it's own set of keep data.
+       $this->data->addKeepDataArgs(['compressionType', 'smartcrop']); // Each action it's own set of keep data.
        $this->item_count = 1;
 
        // Smartcrop setting (?) 
@@ -254,24 +261,25 @@ class QueueItem
          'fileStatus',
          'filename', // @todo figure out why this is here.
          'error',  // might in time better be called error_code or so
+         'new_attach_id', // new attach id for background remove.
          'success', // new
          'improvements',
          'original',
          'optimized',
+         'redirect', // Redirection for background remove etc 
          'queueType', // OptimizeController but (?) usage
          'kblink',
          'data', // Is returnDataList returned by apiController. (array)
-         'retrievedText', // Ai text returning from AIController 
+    //     'retrievedText', // Ai text returning from AIController  //  @todo Can probably be removed on release. 
          'apiName', // NAme of the handling api, for JS / Response to show different results.
          'remote_id', 
+         'aiData',   // Returning AI Data
 
       ];
-
 
       if (is_null($this->result)) {
          $this->result = new \stdClass;
       }
-
 
       foreach ($data as $name => $value) {
          if (false === in_array($name, $validation)) {
@@ -280,8 +288,8 @@ class QueueItem
 
          $this->result->$name = $value;
       }
-
    }
+
 
    /** Clean several aspects of this object ( result, other things ) before triggering a new action. 
     * 
@@ -292,7 +300,7 @@ class QueueItem
    {
        $this->result = new \stdClass; // new action, new results 
 
-       if ($this->data->hasNextAction()) // Keep this at all times / not optimal still
+       if ($this->data()->hasNextAction()) // Keep this at all times / not optimal still
        {
           $nextActions = $this->data()->next_actions; 
        } 
@@ -306,8 +314,6 @@ class QueueItem
        if (isset($nextActions))
        {
          $this->data()->next_actions = $nextActions;
-
-
        }
 
       // Always pass
@@ -323,6 +329,10 @@ class QueueItem
 
    }
 
+   /** Action for dunping (removing from cache) for image URLS's so optimization will be redone.
+    * 
+    * @return void 
+    */
    public function newDumpAction()
    {
       $this->newAction(); 
@@ -334,11 +344,17 @@ class QueueItem
 
    }
 
+   /** Start optimize action 
+    * 
+    * @param array $args  Arguments and settings
+    * @return void 
+    */
    public function newOptimizeAction($args = [])
    {
       $this->newAction(); 
 
       $imageModel = $this->imageModel;
+      $item_id = $imageModel->get('id');
 
       /*  $defaults = array(
             'debug_active' => false, // prevent write actions if called via debugger
@@ -374,6 +390,7 @@ class QueueItem
       $counts = new \stdClass;
       $counts->creditCount = $baseCount + $webpCount + $avifCount;  // count the used credits for this item.
       $counts->baseCount = $baseCount; // count the base images.
+      //$counts->thumbCount = 
       $counts->avifCount = $avifCount;
       $counts->webpCount = $webpCount;
 
@@ -409,6 +426,12 @@ class QueueItem
             $convertTo = implode('|', $convertTo);
             $optimizeData['params'][$sizeName]['convertto'] = $convertTo;
          }
+
+         if (isset($param['url']))
+         {
+            $url = $this->timestampURLS([$param['url']], $item_id);
+            $optimizeData['params'][$sizeName]['url'] = $url[0];
+         }
       }
 
       // CompressionType can be integer, but not empty string. In cases empty string might happen, causing lossless optimization, which is not correct.
@@ -418,7 +441,7 @@ class QueueItem
 
       // Former securi function, add timestamp to all URLS, for cache busting.
       $urls = $this->timestampURLS(array_values($urls), $imageModel->get('id'));
-      $this->data->urls = apply_filters('shortpixel_image_urls', $urls, $imageModel->get('id'));
+      $this->data->urls = apply_filters('shortpixel_image_urls', $urls, $item_id);
 
       if (count($optimizeData['params']) > 0) {
          $this->data->paramlist = array_values($optimizeData['params']);
@@ -428,7 +451,8 @@ class QueueItem
          $this->data->returndatalist = $optimizeData['returnParams'];
       }
 
-      $this->data->counts = $counts;
+      $this->data()->addCount($counts);
+     // $this->data->counts = $counts;
 
       // Converter can alter the data for this item, based on conversion needs
       $converter = Converter::getConverter($imageModel, true);
@@ -438,25 +462,222 @@ class QueueItem
 
    }
 
-   public function requestAltAction()
-   {
+   public function requestAltAction($args = [])
+   {   
       $this->newAction(); 
-      $this->data->url = $this->imageModel->getUrl();
+      $this->data->urls = [$this->imageModel->getUrl()];
       $this->data->tries = 0;
       $this->item_count = 1;
 
+      $item_id = $this->imageModel->get('id');
+
+      $paramlist = []; 
+
+      $preview_only = false; 
+      if (isset($args['preview_only']) && true == $args['preview_only'])
+      {
+         $paramlist['preview_only'] = true;
+         $preview_only = true; 
+      } 
+
+      $aiDataModel = new AiDataModel($item_id);
+      
+      $data = $aiDataModel->getOptimizeData($args);
+
+      if (isset($data['paramlist']))
+      {
+         $this->data()->paramlist = $data['paramlist'];
+      }
+      if (isset($data['returndatalist']))
+      {
+         $this->data()->returndatalist = $data['returndatalist'];
+         $this->data()->addKeepDataArgs('returndatalist');
+      }
+
+      $this->data->addCount(['aiCount' => 1]); // @todo Check if this is really a one credito operation.
+
       $this->data->action = 'requestAlt'; // For Queue
+
+      if ($this->data()->hasNextAction())
+      {
+          $next_actions = array_merge(['retrieveAlt'], $this->data()->next_actions);
+      }
+      else
+      {
+         $next_actions = ['retrieveAlt'];
+      }
+      
+      if (false === $preview_only)
+      {
+         $this->data->next_actions = $next_actions;
+      }
    }
 
-   public function retrieveAltAction($remote_id)
+   public function retrieveAltAction($args)
    {
       $this->newAction();
+
+      $remote_id = $args['remote_id'];
+      
+      if (isset($args['returndatalist']))
+      {
+         $this->data()->returndatalist = $args['returndatalist'];
+      }
+
       $this->data->remote_id = $remote_id;
       $this->data->tries = 0;
       $this->item_count = 1;
       $this->data->action = 'retrieveAlt';
 
    }
+
+   public function newRemoveBackgroundAction($args)
+   {
+       $this->newAction(); 
+
+       $defaults = [
+            'do_transparent' => true, 
+            'replace_color' => null, 
+            'replace_transparency' => '00', 
+            'url' => null, 
+            'is_preview' => false, 
+            'newFileName' => null, 
+            'newPostTitle' => '', 
+            'refresh' => false, 
+            'attached_post_id' => null,
+       ]; 
+
+       $paramlist = []; 
+       $args = wp_parse_args($args, $defaults);
+
+       $paramlist['preview_only'] = $args['is_preview'];
+
+       if (true === $args['is_preview'])
+       {
+          $originalFile = UIHelper::findBestPreview($this->imageModel, 600); // Speed up previews by using small image (?) 
+       }
+       else
+       {
+         $originalFile = $this->imageModel; 
+         if ($this->imageModel->isScaled())
+         {
+            $originalFile = $this->imageModel->getOriginalFile(); 
+         }
+      }
+       $url = $originalFile->getUrl(); 
+
+       if (true === $args['do_transparent'])
+       { 
+         $paramlist['bg_remove'] = 1; 
+       }
+       else
+       {
+         $color = $args['replace_color']; 
+         $transparency = $args['replace_transparency']; 
+
+         $paramlist['bg_remove'] = $color;
+         if ($transparency >= 0 && $transparency < 100)
+			{
+				if ($transparency == 100)
+					$transparency = 'FF';
+
+			  // Strpad for lower than 10 should add 09, 08 etc.
+				 $transparency = str_pad($transparency, 2, '0', STR_PAD_LEFT);
+             $paramlist['bg_remove'] .= $transparency;
+         }
+         
+       }
+
+       if (false === is_null($args['newFileName']) && strlen($args['newFileName']) > 0)
+       {
+          $paramlist['newFileName'] = $args['newFileName']; 
+       }
+       else
+       {
+          $paramlist['newFileName'] = $originalFile->getFileBase() . '_nobg' . $originalFile->getExtension(); 
+       }
+
+       if (! is_null($args['attached_post_id']) && $args['attached_post_id'] > 0)
+       {
+          $paramlist['attached_post_id'] = $args['attached_post_id'];
+       }
+
+       $paramlist['newPostTitle'] = $args['newPostTitle'];
+
+       $paramlist['refresh'] = $args['refresh']; // When sending item first, do the refresh. This is the mimc the tries = 0 refresh option we don't have here. 
+       
+       $returndatalist = [$this->imageModel->getImageKey() => $this->imageModel->getFileName()];
+       
+       $this->data->action = 'remove_background'; 
+       $this->data->compressionType = ImageModel::COMPRESSION_LOSSLESS;
+       $this->data->urls = [$url];
+       $this->data->returndatalist = $returndatalist;
+       
+       $this->data->paramlist = $paramlist; 
+       $this->data->tries = 0;
+       $this->item_count = 1;
+
+   }
+
+   public function newScaleImageAction($args = [])
+   {
+      $this->newAction(); 
+
+      $defaults = [
+           'url' => null, 
+           'is_preview' => false, 
+           'newFileName' => null, 
+           'newPostTitle' => '', 
+           'refresh' => false, 
+           'attached_post_id' => null,
+           'scale' => null, 
+      ]; 
+
+      $paramlist = []; 
+      $args = wp_parse_args($args, $defaults);
+
+      $paramlist['preview_only'] = $args['is_preview'];
+
+      $originalFile = $this->imageModel; 
+      if ($this->imageModel->isScaled())
+      {
+         $originalFile = $this->imageModel->getOriginalFile(); 
+      }
+      
+      $url = $originalFile->getUrl(); 
+
+      if (false === is_null($args['newFileName']) && strlen($args['newFileName']) > 0)
+      {
+         $paramlist['newFileName'] = $args['newFileName']; 
+      }
+      else
+      {
+         $paramlist['newFileName'] = $originalFile->getFileBase() . '_noscale' . $originalFile->getExtension(); 
+      }
+
+      $paramlist['newPostTitle'] = $args['newPostTitle'];
+
+      $paramlist['refresh'] = $args['refresh']; // When sending item first, do the refresh. This is the mimc the tries = 0 refresh option we don't have here. 
+      $paramlist['upscale'] = $args['scale'];
+
+      if (! is_null($args['attached_post_id']) && $args['attached_post_id'] > 0)
+      {
+         $paramlist['attached_post_id'] = $args['attached_post_id'];
+      }
+
+      $returndatalist = [$this->imageModel->getImageKey() => $this->imageModel->getFileName()];
+      
+      $this->data->action = 'scale_image'; 
+      $this->data->compressionType = ImageModel::COMPRESSION_LOSSLESS;
+      $this->data->urls = [$url];
+      $this->data->returndatalist = $returndatalist;
+      
+      $this->data->paramlist = $paramlist; 
+      $this->data->tries = 0;
+      $this->item_count = 1;
+      
+   }
+
 
    /**
     * Get the ApiController associated to the action performed
@@ -476,11 +697,15 @@ class QueueItem
          case 'optimize':
          case 'dumpItem':
          case 'convert_api':
+         case 'remove_background': 
+         case 'scale_image':
             $api = OptimizeController::getInstance();
          break;
          case 'requestAlt': // @todo Check if this is correct action name,
          case 'retrieveAlt':
          case 'getAltData': 
+         case 'undoAI': 
+         case 'redoAI': 
             $api = OptimizeAiController::getInstance();
             break;
          case 'restore':
@@ -494,11 +719,19 @@ class QueueItem
 
       return $api;
    }
-
+   
+   /**
+    * Add a timestamp to the URL for cache-prevention.
+    *
+    * @param array $urls  URL's to timestamp 
+    * @param int $id  Item_id to get post time for this.
+    * @return array
+    */
    protected function timestampURLS($urls, $id)
    {
       // https://developer.wordpress.org/reference/functions/get_post_modified_time/
       $time = get_post_modified_time('U', false, $id);
+
       foreach ($urls as $index => $url) {
          $urls[$index] = add_query_arg('ver', $time, $url); //has url
       }
@@ -506,7 +739,7 @@ class QueueItem
       return $urls;
    }
 
-
+   
    public function checkImageModelExists()
    {
       if (is_null($this->imageModel) || false === is_object($this->imageModel)) {

@@ -51,6 +51,15 @@ class Offloader
 			$this->offloadName = 's3-uploads-human';
 			return true;
 		}
+		elseif(defined('INFINITE_UPLOADS_VERSION'))   // infinite uploads
+		{
+			$this->offloadName = 'infinite-uploads'; 
+			if (function_exists('infinite_uploads_enabled') && true == \infinite_uploads_enabled())
+			{
+				 self::$offload_instance = new InfiniteUploads();
+			}
+			return true;
+		}	
 		/* (Doesn't work)
 				elseif (function_exists('ud_check_stateless_media'))
 				{

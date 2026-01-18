@@ -136,7 +136,7 @@ class FontAwesome {
 	 *
 	 * @since 4.0.0
 	 */
-	public const PLUGIN_VERSION = '5.0.1';
+	public const PLUGIN_VERSION = '5.1.3';
 	/**
 	 * The namespace for this plugin's REST API.
 	 *
@@ -328,6 +328,17 @@ class FontAwesome {
 	protected $old_remove_unregistered_clients = false;
 
 	/**
+	 * If true, features required for Block Editor support will be disabled.
+	 *
+	 * Internal use only, not part of this plugin's public API.
+	 *
+	 * @deprecated
+	 * @internal
+	 * @ignore
+	 */
+	protected $disable_block_editor_support = false;
+
+	/**
 	 * Returns the singleton instance of the FontAwesome plugin.
 	 *
 	 * @since 4.0.0
@@ -349,7 +360,13 @@ class FontAwesome {
 	 * @ignore
 	 */
 	private function __construct() {
-		/* noop */
+		/**
+		 * Determines whether to disable features required for supporting the Block Editor.
+		 *
+		 * @return bool if `true`, disable Block Editor support
+		 * @since 5.0.2
+		 */
+		$this->disable_block_editor_support = apply_filters( 'font_awesome_disable_block_editor_support', false );
 	}
 
 	/**
@@ -391,9 +408,18 @@ class FontAwesome {
 				array( $this, 'process_shortcode' )
 			);
 
-			FontAwesome_SVG_Styles_Manager::instance()->register_svg_styles( $this );
+			if ( $this->is_block_editor_support_enabled() ) {
+				FontAwesome_SVG_Styles_Manager::register_svg_styles( $this );
 
-			block_init();
+				block_init();
+
+				add_action(
+					'enqueue_block_assets',
+					function () {
+						wp_enqueue_style( FontAwesome_SVG_Styles_Manager::RESOURCE_HANDLE_SVG_STYLES );
+					}
+				);
+			}
 
 			try {
 				$this->gather_preferences();
@@ -413,13 +439,6 @@ class FontAwesome {
 			if ( function_exists( 'wp_set_script_translations' ) ) {
 				wp_set_script_translations( self::ADMIN_RESOURCE_HANDLE, 'font-awesome' );
 			}
-
-			add_action(
-				'enqueue_block_assets',
-				function () {
-					wp_enqueue_style( FontAwesome_SVG_Styles_Manager::RESOURCE_HANDLE_SVG_STYLES );
-				}
-			);
 
 			if ( $this->using_kit() ) {
 				if ( $this->skip_enqueue_kit() ) {
@@ -847,6 +866,19 @@ class FontAwesome {
 	}
 
 	/**
+	 * Returns the latest available version of Font Awesome 7 as a string,
+	 * or null if the releases metadata has not yet been successfully retrieved from the
+	 * API server.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @return null|string
+	 */
+	public function latest_version_7() {
+		return $this->release_provider()->latest_version_7();
+	}
+
+	/**
 	 * Queries the Font Awesome API to load releases metadata. Results are stored
 	 * in the wp database.
 	 *
@@ -1037,15 +1069,31 @@ class FontAwesome {
 			3
 		);
 
-		try {
-			$svg_styles_manager = FontAwesome_SVG_Styles_Manager::instance();
-			if ( ! $svg_styles_manager->is_svg_stylesheet_present( $this ) ) {
-				$svg_styles_manager->fetch_svg_styles( $this, $this->release_provider() );
+		add_action(
+			'admin_enqueue_scripts',
+			function ( $hook ) {
+				try {
+					if ( $hook === $this->screen_id ) {
+						$this->maybe_refresh_releases();
+					}
+				} catch ( Exception $e ) {
+					notify_admin_warning( $e );
+				} catch ( Error $e ) {
+					notify_admin_warning( $e );
+				}
 			}
-		} catch ( Exception $e ) {
-			notify_admin_fatal_error( $e );
-		} catch ( Error $e ) {
-			notify_admin_fatal_error( $e );
+		);
+
+		if ( $this->is_block_editor_support_enabled() ) {
+			try {
+				if ( ! FontAwesome_SVG_Styles_Manager::is_svg_stylesheet_present( $this ) ) {
+					FontAwesome_SVG_Styles_Manager::ensure_svg_styles_with_admin_notice_warning( $this, $this->release_provider() );
+				}
+			} catch ( Exception $e ) {
+				notify_admin_warning( $e );
+			} catch ( Error $e ) {
+				notify_admin_warning( $e );
+			}
 		}
 	}
 
@@ -1380,7 +1428,8 @@ class FontAwesome {
 					$options_for_comparison,
 					$client_preferences,
 					$this->latest_version_5(),
-					$this->latest_version_6()
+					$this->latest_version_6(),
+					$this->latest_version_7()
 				);
 				if ( count( $current_conflicts ) > 0 ) {
 					$conflicts[ $client_name ] = $current_conflicts;
@@ -1634,13 +1683,18 @@ class FontAwesome {
 					true
 				);
 
+				/** While this plugin's Classic Editor support does depend on tinymce
+				 * being loaded, the wp-tinymce dependency has intentionally been omitted
+				 * here due to compatibility problems with Toolset.
+				 * See: https://wordpress.org/support/topic/cant-edit-post_content-in-classic-editor-if-plugin-v5-0-1-or-v5-0-2-is-active/
+				 */
 				wp_register_script(
 					self::RESOURCE_HANDLE_CLASSIC_EDITOR,
 					trailingslashit( FONTAWESOME_DIR_URL ) . 'classic-editor/build/index.js',
 					array(
 						self::ADMIN_RESOURCE_HANDLE,
 						self::RESOURCE_HANDLE_ICON_CHOOSER,
-						'wp-tinymce',
+						'jquery',
 					),
 					self::PLUGIN_VERSION,
 					true
@@ -1652,8 +1706,6 @@ class FontAwesome {
 					}
 
 					if ( $hook === $this->screen_id ) {
-						$this->maybe_refresh_releases();
-
 						wp_localize_script(
 							self::ADMIN_RESOURCE_HANDLE,
 							self::ADMIN_RESOURCE_LOCALIZATION_NAME,
@@ -1667,6 +1719,7 @@ class FontAwesome {
 										'available'        => $this->release_provider()->versions(),
 										'latest_version_5' => $this->latest_version_5(),
 										'latest_version_6' => $this->latest_version_6(),
+										'latest_version_7' => $this->latest_version_7(),
 									),
 									'pluginVersion'       => FontAwesome::PLUGIN_VERSION,
 									'preferenceConflicts' => $this->conflicts_by_option(),
@@ -1709,14 +1762,17 @@ class FontAwesome {
 								'media_buttons',
 								function ( $editor_id ) {
 									printf(
-										/* translators: 1: open button tag, 2: editor id, 3: remaining button tag open and icon svg tag, 4: close button tag */
+										/* translators: 1: open button tag, 2: editor id value, 3: data attribute for editor id, 4: editor id value, 5: closing data attribute value quote, 6: remaining button tag open and icon svg tag, 7: close button tag */
 										esc_html__(
-											'%1$s%2$s%3$sAdd Font Awesome%4$s',
+											'%1$s%2$s%3$s%4$s%5$s%6$sAdd Font Awesome%7$s',
 											'font-awesome'
 										),
 										'<button type="button" id="fawp-tinymce-',
 										esc_html( $editor_id ),
-										'" class="button font-awesome-icon-chooser-media-button"><svg xmlns="http://www.w3.org/2000/svg" style="height: 1em; box-sizing: content-box; display: inline-block; vertical-align: -.125em;" viewBox="0 0 512 512"><path fill="currentColor" d="M91.7 96C106.3 86.8 116 70.5 116 52C116 23.3 92.7 0 64 0S12 23.3 12 52c0 16.7 7.8 31.5 20 41l0 3 0 352 0 64 64 0 0-64 373.6 0c14.6 0 26.4-11.8 26.4-26.4c0-3.7-.8-7.3-2.3-10.7L432 272l61.7-138.9c1.5-3.4 2.3-7 2.3-10.7c0-14.6-11.8-26.4-26.4-26.4L91.7 96z"/></svg> ',
+										'" data-fa-editor-id="',
+										esc_html( $editor_id ),
+										'" ',
+										'class="button font-awesome-icon-chooser-media-button"><svg xmlns="http://www.w3.org/2000/svg" style="height: 1em; box-sizing: content-box; display: inline-block; vertical-align: -.125em;" viewBox="0 0 512 512"><path fill="currentColor" d="M91.7 96C106.3 86.8 116 70.5 116 52C116 23.3 92.7 0 64 0S12 23.3 12 52c0 16.7 7.8 31.5 20 41l0 3 0 352 0 64 64 0 0-64 373.6 0c14.6 0 26.4-11.8 26.4-26.4c0-3.7-.8-7.3-2.3-10.7L432 272l61.7-138.9c1.5-3.4 2.3-7 2.3-10.7c0-14.6-11.8-26.4-26.4-26.4L91.7 96z"/></svg> ',
 										'</button>'
 									);
 								},
@@ -1824,7 +1880,7 @@ class FontAwesome {
 		 *
 		 * See: https://wordpress.org/support/topic/plugin-conflicts-with-rankmath
 		 */
-		if ( $enable_icon_chooser && is_gutenberg_page() ) {
+		if ( $enable_icon_chooser && is_gutenberg_page() && $this->is_block_editor_support_enabled() ) {
 			$deps = array_merge( $deps, array( 'wp-blocks', 'wp-editor', 'wp-rich-text', 'wp-block-editor' ) );
 		}
 
@@ -1858,6 +1914,7 @@ class FontAwesome {
 			'options'                       => $this->options(),
 			'webpackPublicPath'             => trailingslashit( FONTAWESOME_DIR_URL ) . 'admin/build/',
 			'disableRichTextIcons'          => $this->disable_rich_text_icons(),
+			'assetsBaseUrlOverride'         => FONTAWESOME_ASSETS_BASE_URL_OVERRIDE,
 		);
 	}
 
@@ -3072,6 +3129,8 @@ EOT;
 			$concrete_version = $this->latest_version_5();
 		} elseif ( '6.x' === $version ) {
 			$concrete_version = $this->latest_version_6();
+		} elseif ( '7.x' === $version ) {
+			$concrete_version = $this->latest_version_7();
 		} else {
 			$concrete_version = $version;
 		}
@@ -3127,6 +3186,21 @@ EOT;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Whether to enable Font Awesome support for the Block Editor.
+	 *
+	 * This can be disabled with the `font_awesome_disable_block_editor_support` filter,
+	 * like this:
+	 *
+	 * `add_filter( 'font_awesome_disable_block_editor_support', '__return_true' );`
+	 *
+	 * @since 5.0.2
+	 * @return bool
+	 */
+	public function is_block_editor_support_enabled() {
+		return ! $this->disable_block_editor_support;
 	}
 }
 

@@ -65,21 +65,19 @@
 										data-tooltip="<?php echo esc_html( $status_name ); ?>">
 										<span aria-hidden="true"></span>
 									</span>
-
-									<a href="
-										<?php
-										echo esc_url(
-											add_query_arg(
-												array(
-													'page' => $module->get_listing_page(),
-													'view-stats' => $module->module_id,
-												)
-											),
-											'admin.php'
-										);
-										?>
-										" class="sui-button-icon sui-tooltip"
-										data-tooltip="<?php esc_html_e( 'View Stats', 'hustle' ); ?>">
+									<?php
+									$stats_url = add_query_arg(
+										array(
+											'page'       => $module->get_listing_page(),
+											'view-stats' => $module->module_id,
+										),
+										'admin.php'
+									);
+									?>
+									<a href="<?php echo esc_url( $stats_url ); ?>"
+									class="sui-button-icon sui-tooltip"
+										data-tooltip="<?php esc_html_e( 'View Stats', 'hustle' ); ?>"
+										aria-label="<?php esc_attr_e( 'View Stats', 'hustle' ); ?>">
 										<span class="sui-icon-graph-line" aria-hidden="true"></span>
 									</a>
 

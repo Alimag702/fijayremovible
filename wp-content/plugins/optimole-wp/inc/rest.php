@@ -28,53 +28,66 @@ class Optml_Rest {
 	/**
 	 * Upload conflicts api.
 	 *
-	 * @var array upload_conflicts_api.
+	 * @var array{
+	 *     service_routes: RestRouteMap,
+	 *     image_routes: RestRouteMap,
+	 *     media_cloud_routes: RestRouteMap,
+	 *     conflict_routes: SimpleRouteMap,
+	 *     cache_routes: SimpleRouteMap,
+	 *     dam_routes: RestRouteMap,
+	 *     notification_dismiss_routes: RestRouteMap,
+	 *     optimization_routes: RestRouteMap
+	 * }
 	 */
 	public static $rest_routes = [
 		'service_routes' => [
-			'update_option' => 'POST', 'request_update' => 'GET', 'check_redirects' => 'POST_PUT_PATCH',
-				'connect' => [
-		'POST', 'args'  => [
-							'api_key' => [
-								'type'     => 'string',
-								'required' => true,
-							],
-						],
+			'update_option' => 'POST',
+			'request_update' => 'GET',
+			'connect' => [
+				'POST',
+				'args'  => [
+					'api_key' => [
+						'type'     => 'string',
+						'required' => true,
 					],
-				'select_application' => [
-			'POST', 'args'  => [
-						'api_key' => [
-							'type'     => 'string',
-							'required' => true,
-						],
-						'application' => [
-							'type'     => 'string',
-							'required' => true,
-						],
 				],
-				],
-				'register_service' => [
-			'POST', 'args' => [
-						'email' => [
-							'type'     => 'string',
-							'required' => true,
-						],
+			],
+			'select_application' => [
+				'POST',
+				'args'  => [
+					'api_key' => [
+						'type'     => 'string',
+						'required' => true,
 					],
-
+					'application' => [
+						'type'     => 'string',
+						'required' => true,
+					],
 				],
-				'disconnect' => 'GET',
+			],
+			'register_service' => [
+				'POST',
+				'args' => [
+					'email' => [
+						'type'     => 'string',
+						'required' => true,
+					],
+				],
+			],
+			'disconnect' => 'GET',
 		],
 		'image_routes' => [
 			'poll_optimized_images' => 'GET',
 			'get_sample_rate' => 'POST',
 			'upload_onboard_images' => [
-				'POST', 'args'  => [
-						'offset' => [
-							'type'     => 'number',
-							'required' => false,
-							'default'  => 0,
-						],
+				'POST',
+				'args'  => [
+					'offset' => [
+						'type'     => 'number',
+						'required' => false,
+						'default'  => 0,
 					],
+				],
 			],
 		],
 		'media_cloud_routes' => [
@@ -93,7 +106,7 @@ class Optml_Rest {
 						'required' => true,
 					],
 				],
-				'permission_callback' => 'upload_files',
+				'permission_callback' => [ __CLASS__, 'can_move_image' ],
 			],
 		],
 		'conflict_routes' => [
@@ -150,6 +163,8 @@ class Optml_Rest {
 
 	/**
 	 * Optml_Rest constructor.
+	 *
+	 * @return void
 	 */
 	public function __construct() {
 		$this->namespace = OPTML_NAMESPACE . '/v1';
@@ -158,47 +173,69 @@ class Optml_Rest {
 	}
 
 	/**
-	 * Method to register a specific rest route.
+	 * Method to register a specific REST route.
 	 *
-	 * @param string $route The route name.
-	 * @param string $method The route access method GET, POST, POST_PUT_PATCH.
-	 * @param array  $args Optional argument to include required args.
-	 * @param string $permission_callback Optional permission callback.
+	 * @param string          $route                The route name.
+	 * @param string          $method               The route access method: GET, POST, POST_PUT_PATCH.
+	 * @param array           $args                 Optional arguments for route parameters.
+	 * @param string|callable $permission_callback Permission callback function or capability.
+	 *
+	 * @phpstan-param RestArgs $args                 Optional arguments for route parameters.
+	 *
+	 * @throws \InvalidArgumentException If method is invalid.
+	 *
+	 * @return void
 	 */
-	private function reqister_route( $route, $method = 'GET', $args = [], $permission_callback = 'manage_options' ) {
-		$wp_method_constant = false;
-		if ( $method === 'GET' ) {
-			$wp_method_constant = \WP_REST_Server::READABLE;
+	private function register_route( $route, $method = 'GET', $args = [], $permission_callback = 'manage_options' ) {
+		if ( empty( $route ) ) {
+			return;
 		}
-		if ( $method === 'POST' ) {
-			$wp_method_constant = \WP_REST_Server::CREATABLE;
-		}
-		if ( $method === 'POST_PUT_PATCH' ) {
-			$wp_method_constant = \WP_REST_Server::EDITABLE;
-		}
-		if ( $wp_method_constant !== false ) {
-			$params = [
-				'methods'             => $wp_method_constant,
-				'permission_callback' => function_exists( $permission_callback ) ? $permission_callback : function () use ( $permission_callback ) {
-					return current_user_can( $permission_callback );
-				},
-				'callback'            => [ $this, $route ],
-			];
-			if ( ! empty( $args ) ) {
-				$params['args'] = $args;
-			}
-			register_rest_route(
-				$this->namespace,
-				'/' . $route,
-				[
-					$params,
-				]
+
+		$method_map = [
+			'GET'            => \WP_REST_Server::READABLE,
+			'POST'           => \WP_REST_Server::CREATABLE,
+			'POST_PUT_PATCH' => \WP_REST_Server::EDITABLE,
+		];
+
+		if ( ! isset( $method_map[ $method ] ) ) {
+			_doing_it_wrong(
+				__METHOD__,
+				sprintf( 'Invalid REST method: %s', esc_html( $method ) ),
+				'1.0.0'
 			);
+			return;
 		}
+
+		$permission = is_callable( $permission_callback )
+			? $permission_callback
+			: function () use ( $permission_callback ) {
+				if ( ! is_string( $permission_callback ) ) {
+					return false;
+				}
+				return current_user_can( $permission_callback );
+			};
+
+		$params = [
+			'methods'             => $method_map[ $method ],
+			'permission_callback' => $permission,
+			'callback'            => [ $this, $route ],
+		];
+
+		if ( ! empty( $args ) ) {
+			$params['args'] = $args;
+		}
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $route,
+			[ $params ]
+		);
 	}
 
 	/**
 	 * Register rest routes.
+	 *
+	 * @return void
 	 */
 	public function register() {
 
@@ -215,57 +252,67 @@ class Optml_Rest {
 
 	/**
 	 * Method to register service specific routes.
+	 *
+	 * @return void
 	 */
 	public function register_service_routes() {
 		foreach ( self::$rest_routes['service_routes'] as $route => $details ) {
 			if ( is_array( $details ) ) {
-				$this->reqister_route( $route, $details[0], $details['args'] );
+				$this->register_route( $route, $details[0], $details['args'] );
 			} else {
-				$this->reqister_route( $route, $details );
+				$this->register_route( $route, $details );
 			}
 		}
 	}
 
 	/**
 	 * Method to register image specific routes.
+	 *
+	 * @return void
 	 */
 	public function register_image_routes() {
 		foreach ( self::$rest_routes['image_routes'] as $route => $details ) {
 			if ( is_array( $details ) ) {
-				$this->reqister_route( $route, $details[0], $details['args'] );
+				$this->register_route( $route, $details[0], $details['args'] );
 			} else {
-				$this->reqister_route( $route, $details );
+				$this->register_route( $route, $details );
 			}
 		}
 	}
 	/**
 	 * Method to register media offload specific routes.
+	 *
+	 * @return void
 	 */
 	public function register_media_offload_routes() {
 		foreach ( self::$rest_routes['media_cloud_routes'] as $route => $details ) {
 
 			$permission = isset( $details['permission_callback'] ) ? $details['permission_callback'] : 'manage_options';
 			$args       = isset( $details['args'] ) ? $details['args'] : [];
-			$this->reqister_route( $route, is_array( $details ) ? $details[0] : $details, $args, $permission );
+			$this->register_route( $route, is_array( $details ) ? $details[0] : $details, $args, $permission );
 		}
 	}
 
 
 	/**
 	 * Method to register conflicts specific routes.
+	 *
+	 * @return void
 	 */
 	public function register_conflict_routes() {
 		foreach ( self::$rest_routes['conflict_routes'] as $route => $details ) {
-			$this->reqister_route( $route, $details );
+			$this->register_route( $route, $details );
 		}
 	}
 
 	/**
 	 * Method to register cache specific routes.
+	 *
+	 * @return void
 	 */
 	public function register_cache_routes() {
 		foreach ( self::$rest_routes['cache_routes'] as $route => $details ) {
-			$this->reqister_route( $route, $details );
+			$this->register_route( $route, $details );
 		}
 	}
 
@@ -278,7 +325,7 @@ class Optml_Rest {
 		foreach ( self::$rest_routes['dam_routes'] as $route => $details ) {
 			$permission = isset( $details['permission_callback'] ) ? $details['permission_callback'] : 'manage_options';
 			$args       = isset( $details['args'] ) ? $details['args'] : [];
-			$this->reqister_route( $route, $details[0], $args, $permission );
+			$this->register_route( $route, $details[0], $args, $permission );
 		}
 	}
 
@@ -289,7 +336,7 @@ class Optml_Rest {
 	 */
 	public function register_notification_routes() {
 		foreach ( self::$rest_routes['notification_dismiss_routes'] as $route => $details ) {
-			$this->reqister_route( $route, $details[0], isset( $details['args'] ) ? $details['args'] : [] );
+			$this->register_route( $route, $details[0], isset( $details['args'] ) ? $details['args'] : [] );
 		}
 	}
 
@@ -297,6 +344,7 @@ class Optml_Rest {
 	 * Clear Cache request.
 	 *
 	 * @param WP_REST_Request $request clear cache rest request.
+	 * @phpstan-param WP_REST_Request<array{type?: string}> $request
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -316,6 +364,7 @@ class Optml_Rest {
 	 * Connect to optimole service.
 	 *
 	 * @param WP_REST_Request $request connect rest request.
+	 * @phpstan-param WP_REST_Request<array{api_key: string, application?: string}> $request
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -358,6 +407,7 @@ class Optml_Rest {
 	 * Select application.
 	 *
 	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{api_key: string, application?: string}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -386,7 +436,8 @@ class Optml_Rest {
 	/**
 	 * Wrapper for api response.
 	 *
-	 * @param mixed $data data from api.
+	 * @param mixed      $data data from api.
+	 * @param string|int $code Response code.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -398,6 +449,7 @@ class Optml_Rest {
 	 * Connect to optimole service.
 	 *
 	 * @param WP_REST_Request $request connect rest request.
+	 * @phpstan-param WP_REST_Request<array{email: string, auto_connect?: string}> $request
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -476,6 +528,7 @@ class Optml_Rest {
 	 * Return image samples.
 	 *
 	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{quality?: int, force?: string}> $request
 	 *
 	 * @return WP_REST_Response Image urls.
 	 */
@@ -523,6 +576,9 @@ class Optml_Rest {
 
 	/**
 	 * Crawl & upload initial load.
+	 *
+	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{offset?: int}> $request
 	 *
 	 * @return WP_REST_Response If there are more posts left to receive.
 	 */
@@ -581,7 +637,7 @@ class Optml_Rest {
 	/**
 	 * Return sample image data.
 	 *
-	 * @return array Image data.
+	 * @return array{url: string, width: string|int, height: string|int, id: int} Image data.
 	 */
 	private function fetch_sample_image() {
 		$accepted_mimes = [ 'image/jpeg' ];
@@ -631,8 +687,9 @@ class Optml_Rest {
 	/**
 	 * Disconnect from optimole service.
 	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 * @param WP_REST_Request $request disconnect rest request.
+	 *
+	 * @return void
 	 */
 	public function disconnect( WP_REST_Request $request ) {
 		$settings = new Optml_Settings();
@@ -644,6 +701,7 @@ class Optml_Rest {
 	 * Get optimized images from API.
 	 *
 	 * @param WP_REST_Request $request rest request.
+	 * @phpstan-param WP_REST_Request<array{api_key?: string}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -699,6 +757,7 @@ class Optml_Rest {
 	 * Dismiss conflict.
 	 *
 	 * @param WP_REST_Request $request rest request.
+	 * @phpstan-param WP_REST_Request<array{conflictID?: string}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -737,6 +796,7 @@ class Optml_Rest {
 	 * Update options method.
 	 *
 	 * @param WP_REST_Request $request option update rest request.
+	 * @phpstan-param WP_REST_Request<array{settings?: array<string, mixed>}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -754,71 +814,10 @@ class Optml_Rest {
 	}
 
 	/**
-	 * Update options method.
-	 *
-	 * @param WP_REST_Request $request option update rest request.
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function check_redirects( WP_REST_Request $request ) {
-		if ( empty( $request->get_param( 'images' ) ) ) {
-			return $this->response( __( 'No images available on the current page.' ), 'noImagesFound' );
-		}
-		// 'ok' if no issues found, 'log' is there are issues we need to notify, 'deactivated' if the user's account is disabled
-		$status = 'ok';
-		$result = '';
-		foreach ( $request->get_param( 'images' ) as $domain => $value ) {
-			$args             = [
-				'method'      => 'GET',
-				'redirection' => 0,
-			];
-			$processed_images = 0;
-			if ( isset( $value['src'] ) ) {
-				$processed_images = count( $value['src'] );
-			}
-			if ( isset( $value['ignoredUrls'] ) && $value['ignoredUrls'] > $processed_images ) {
-				$result .= '<li>❌ ' . sprintf( /* translators: 1 is the domain name, 2 is starting anchor tag, 3 is the ending anchor tag. */__( 'The images from: %1$s are not optimized by Optimole. If you would like to do so, you can follow this: %2$sWhy Optimole does not optimize all the images from my site?%3$s.', 'optimole-wp' ), $domain, '<a target="_blank" href="https://docs.optimole.com/article/1290-how-to-optimize-images-using-optimole-from-my-domain">', '</a>' ) . '</li>';
-				$status = 'log';
-				continue;
-			}
-
-			if ( $processed_images > 0 ) {
-				$response = wp_remote_get( $value['src'][ rand( 0, $processed_images - 1 ) ], $args );
-				if ( ! is_wp_error( $response ) && is_array( $response ) ) {
-					$headers     = $response['headers']; // array of http header lines
-					$status_code = $response['response']['code'];
-					if ( $status_code === 301 ) {
-						$status = 'deactivated';
-						$result = '<li>❌ ' . sprintf( /* translators: 1 is starting anchor tag, 2 is the ending anchor tag. */ __( 'Your account is currently disabled due to exceeding quota and Optimole is no longer able to optimize the images. In order to fix this you will need to %1$supgrade%2$s.', 'optimole-wp' ), '<a target="_blank" href="' . esc_url( tsdk_translate_link( 'https://optimole.com/pricing' ) ) . '">', '</a>' ) . '</li>';
-						break;
-					}
-					if ( $status_code === 302 ) {
-						if ( isset( $headers['x-redirect-o'] ) ) {
-							$optimole_code = (int) $headers['x-redirect-o'];
-							if ( $optimole_code === 1 ) {
-								$status = 'log';
-								$result .= '<li>❌ ' . sprintf( /* translators: 1 is the domain, 2 is starting anchor tag, 3 is the ending anchor tag. */ __( 'The domain: %1$s is not allowed to optimize images using your Optimole account. You can add this to the allowed list %2$shere%3$s.', 'optimole-wp' ), '<b>' . $domain . '</b>', '<a target="_blank" href="' . esc_url( tsdk_translate_link( 'https://dashboard.optimole.com/whitelist', 'query' ) ) . '">', '</a>' ) . '</li>';
-							}
-							if ( $optimole_code === 4 ) {
-								$status = 'log';
-								$result .= '<li>❌ ' . sprintf( /* translators: 1 is the domain, 2 is starting anchor tag, 3 is the ending anchor tag. */ __( 'We are not able to download the images from %1$s. Please check %2$sthis%3$s document for a more advanced guide on how to solve this.', 'optimole-wp' ), '<b>' . $domain . '</b>', '<a target="_blank" href="https://docs.optimole.com/article/1291-why-optimole-is-not-able-to-download-the-images-from-my-site">', '</a>' ) . '<br />' . '</li>';
-							}
-						}
-					}
-				}
-			}
-		}
-		if ( $result === '' ) {
-			$result = __( 'No issues detected, everything is running smoothly.', 'optimole-wp' );
-		}
-
-		return $this->response( '<ul>' . $result . '</ul>', $status );
-	}
-
-	/**
 	 * Get total number of images.
 	 *
 	 * @param WP_REST_Request $request rest request object.
+	 * @phpstan-param WP_REST_Request<array{action?: string, refresh?: bool}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -879,6 +878,7 @@ class Optml_Rest {
 	 * Insert images request.
 	 *
 	 * @param WP_REST_Request $request insert images rest request.
+	 * @phpstan-param WP_REST_Request<array{images?: array<mixed>}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -898,6 +898,7 @@ class Optml_Rest {
 	 * Dismiss a notification (set the notification key to 'yes').
 	 *
 	 * @param WP_REST_Request $request the incoming request.
+	 * @phpstan-param WP_REST_Request<array{key?: string}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -921,41 +922,43 @@ class Optml_Rest {
 	 * Store optimization data.
 	 *
 	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{d: int, a: array<mixed>, u: string, t?: int, h?: string, pu?: string, b?: array<string, array<string, list<string>>>, l?: array{i?: string, s?: string, u?: list<string>}, m?: array<int, array{w: int, h: int}>, s?: array<int, list<array{w: int, h: int, d: int, s: string, b: int}>>, c?: array<int, bool>}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function optimizations( WP_REST_Request $request ) {
 		$settings = new Optml_Settings();
-		if ( ! $settings->is_lazyload_type_viewport() ) {
+		if ( ! Optml_Manager::should_load_profiler() ) {
 			return $this->response( 'Optimization is not enabled', 'error' );
 		}
 		$time = $request->get_param( 't' );
 		$hmac = $request->get_param( 'h' );
+		$current_url = $request->get_param( 'pu' );
 		if ( empty( $time ) || empty( $hmac ) ) {
 			return $this->response( 'Missing required parameters', 'error' );
 		}
 
-		$device_type = $request->get_param( 'd' );
+		$device_type = (int) $request->get_param( 'd' );
 		$above_fold_images = $request->get_param( 'a' );
 		$url = $request->get_param( 'u' );
 		if ( $time < time() - 300 ) {
 			return $this->response( 'Invalid Signature.', 'error' );
 		}
-		if ( wp_hash( $url . $time, 'nonce' ) !== $hmac ) {
+		if ( wp_hash( $url . $time . $current_url, 'nonce' ) !== $hmac ) {
 			return $this->response( 'Invalid Signature.', 'error' );
 		}
 		$bg_selectors = $request->get_param( 'b' );
 		$lcp_data = $request->get_param( 'l' );
+		$crop_status = $request->get_param( 'c' );
 		$origin = $request->get_header( 'origin' );
 		if ( empty( $origin ) || ! is_allowed_http_origin( $origin ) ) {
 			return $this->response( 'Invalid origin', 'error' );
 		}
-		if ( empty( $device_type ) || empty( $above_fold_images ) || empty( $url ) || ! is_array( $above_fold_images ) ) {
+		if ( empty( $device_type ) || empty( $url ) || ! is_array( $above_fold_images ) ) {
 			return $this->response( 'Missing required parameters', 'error' );
 		}
-		if ( count( $above_fold_images ) > 20 ) {
-			return $this->response( 'Above fold images limit exceeded', 'error' );
-		}
+		// save just the first 6 images, see https://github.com/Codeinwp/optimole-service/issues/1588#issuecomment-3357110865
+		$above_fold_images = array_slice( $above_fold_images, 0, 6 );
 		if ( count( $bg_selectors ) > 100 ) {
 			return $this->response( 'Background selectors limit exceeded', 'error' );
 		}
@@ -987,6 +990,31 @@ class Optml_Rest {
 				);
 			}
 		}
+		$missing_dimensions = $request->get_param( 'm' );
+		$sanitized_missing_dimensions = [];
+		if ( ! empty( $missing_dimensions ) ) {
+			foreach ( $missing_dimensions as $id => $dimension ) {
+				$sanitized_missing_dimensions[ intval( $id ) ] = [ 'w' => intval( $dimension['w'] ), 'h' => intval( $dimension['h'] ) ];
+			}
+		}
+		$missing_srcsets = $request->get_param( 's' );
+		$sanitized_missing_srcsets = [];
+		if ( ! empty( $missing_srcsets ) ) {
+			foreach ( $missing_srcsets as $id => $srcset ) {
+				foreach ( $srcset as $size ) {
+					if ( ! isset( $size['w'], $size['h'], $size['d'], $size['s'], $size['b'] ) ) {
+						continue;
+					}
+					$sanitized_missing_srcsets[ intval( $id ) ][ intval( $size['w'] ) ] = [ 'h' => intval( $size['h'] ), 'w' => intval( $size['w'] ), 'd' => intval( $size['d'] ), 's' => sanitize_text_field( $size['s'] ), 'b' => intval( $size['b'] ) ];
+				}
+			}
+		}
+		$sanitized_crop_status = [];
+		if ( ! empty( $crop_status ) ) {
+			foreach ( $crop_status as $id => $crop ) {
+				$sanitized_crop_status[ intval( $id ) ] = (bool) $crop;
+			}
+		}
 		$sanitized_lcp_data = [];
 		if ( ! empty( $lcp_data ) ) {
 			$sanitized_lcp_data['imageId'] = sanitize_text_field( $lcp_data['i'] ?? '' );
@@ -1005,19 +1033,30 @@ class Optml_Rest {
 		}
 
 		if ( OPTML_DEBUG ) {
-			do_action( 'optml_log', 'Storing: ' . $url . ' - ' . $device_type . ' - ' . print_r( $above_fold_images, true ) . print_r( $sanitized_selectors, true ) . print_r( $sanitized_lcp_data, true ) );
+			do_action( 'optml_log', 'Storing profile data: ' . $url . ' - ' . $device_type . ' - ' . print_r( $above_fold_images, true ) . print_r( $sanitized_selectors, true ) . print_r( $sanitized_lcp_data, true ) . print_r( $sanitized_missing_dimensions, true ) . print_r( $sanitized_missing_srcsets, true ) . print_r( $sanitized_crop_status, true ) );
 		}
 		$profile = new Profile();
-		$profile->store( $url, $device_type, $above_fold_images, $sanitized_selectors, $sanitized_lcp_data );
-		return $this->response( 'Above fold data stored successfully' );
+		$profile->store( $url, $device_type, $above_fold_images, $sanitized_selectors, $sanitized_lcp_data, $sanitized_missing_dimensions, $sanitized_missing_srcsets, $sanitized_crop_status );
+
+		if ( $profile->exists_all( $url ) ) {
+			/**
+			 * Clear cache when storing profile data.
+			 *
+			 * @var string $url The url to clear the cache for.
+			 */
+			do_action( 'optml_clear_cache', $current_url );
+		}
+		return $this->response( 'Optimization data stored successfully' );
 	}
 
 	/**
 	 * Method to register above fold data routes.
+	 *
+	 * @return void
 	 */
 	public function register_optimization_routes() {
 		foreach ( self::$rest_routes['optimization_routes'] as $route => $details ) {
-			$this->reqister_route( $route, $details[0], $details['args'], $details['permission_callback'] );
+			$this->register_route( $route, $details[0], $details['args'], $details['permission_callback'] );
 		}
 	}
 
@@ -1025,11 +1064,12 @@ class Optml_Rest {
 	 * Move image.
 	 *
 	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{id: int, action: string, status?: string}> $request
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function move_image( WP_REST_Request $request ) {
-		$id = $request->get_param( 'id' );
+		$id     = $request->get_param( 'id' );
 		$action = $request->get_param( 'action' );
 
 		if ( $request->get_param( 'status' ) === 'start' ) {
@@ -1052,5 +1092,30 @@ class Optml_Rest {
 		}
 
 		return $this->response( [ $id,$action ], $result );
+	}
+
+	/**
+	 * Check if user can move image to/from cloud.
+	 *
+	 * @param WP_REST_Request $request Rest request.
+	 * @phpstan-param WP_REST_Request<array{id: int, action: string}> $request Rest request.
+	 * @return bool True if user can move image, false otherwise.
+	 */
+	public static function can_move_image( WP_REST_Request $request ) {
+
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return false;
+		}
+
+		$id = $request->get_param( 'id' );
+
+		if (
+			get_post_type( $id ) !== 'attachment' ||
+			! current_user_can( 'edit_post', $id )
+		) {
+			return false;
+		}
+
+		return true;
 	}
 }

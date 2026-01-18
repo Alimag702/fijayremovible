@@ -93,6 +93,16 @@ class Image extends AbstractResource
     }
 
     /**
+     * Set the smart focus gravity of the optimized image.
+     */
+    public function smartFocus()
+    {
+        $this->addProperty(new ImageProperty\GravityProperty('sm'));
+
+        return $this;
+    }
+
+    /**
      * Whether to strip the original image metadata from the optimized image.
      */
     public function stripMetadata(bool $stripMetadata = true): self

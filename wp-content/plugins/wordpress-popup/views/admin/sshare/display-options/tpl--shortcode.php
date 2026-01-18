@@ -41,10 +41,12 @@
 
 				<div class="sui-border-frame">
 
-					<label class="sui-label"><?php esc_html_e( 'Shortcode to render your social bar', 'hustle' ); ?></label>
+					<label class="sui-label" id="hui-settings__shortcode-text-label" for="hui-settings__shortcode-text"><?php esc_html_e( 'Shortcode to render your social bar', 'hustle' ); ?></label>
 
 					<div class="sui-with-button sui-with-button-inside">
 						<input
+							id="hui-settings__shortcode-text"
+							aria-labelledby="hui-settings__shortcode-text-label"
 							type="text"
 							value="[wd_hustle id='<?php echo esc_attr( $shortcode_id ); ?>' type='social_sharing'/]"
 							class="sui-form-control"

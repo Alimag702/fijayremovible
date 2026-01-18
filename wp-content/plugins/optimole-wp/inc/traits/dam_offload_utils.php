@@ -4,6 +4,16 @@ trait Optml_Dam_Offload_Utils {
 	use Optml_Normalizer;
 
 	/**
+	 * Check if this contains the DAM flag.
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return bool
+	 */
+	private function is_dam_url( $url ) {
+		return strpos( $url, Optml_Dam::URL_DAM_FLAG ) !== false;
+	}
+	/**
 	 * Checks that the attachment is a DAM image.
 	 *
 	 * @param int $post_id The attachment ID.
@@ -49,7 +59,7 @@ trait Optml_Dam_Offload_Utils {
 	/**
 	 * Get all registered image sizes.
 	 *
-	 * @return array
+	 * @return array<string, array{width: int, height: int, crop: bool|array<int, string>}>
 	 */
 	private function get_all_image_sizes() {
 		$additional_sizes = wp_get_additional_image_sizes();
@@ -87,7 +97,7 @@ trait Optml_Dam_Offload_Utils {
 	 *
 	 * @param string $url The image url.
 	 *
-	 * @return array Contains the width and height values in this order.
+	 * @return array{0: string|false, 1: string|false} Contains the width and height values in this order.
 	 */
 	private function parse_dimension_from_optimized_url( $url ) {
 		$catch  = [];
@@ -153,10 +163,10 @@ trait Optml_Dam_Offload_Utils {
 	/**
 	 * Used to filter the image metadata. Adds optimized image url for all image sizes.
 	 *
-	 * @param array $metadata The attachment metadata.
-	 * @param int   $id The attachment id.
+	 * @param array<string, mixed> $metadata The attachment metadata.
+	 * @param int                  $id The attachment id.
 	 *
-	 * @return mixed
+	 * @return array<string, mixed>
 	 */
 	private function get_altered_metadata_for_remote_images( $metadata, $id ) {
 
@@ -240,6 +250,31 @@ trait Optml_Dam_Offload_Utils {
 		return false;
 	}
 	/**
+	 * Get the attachment ID from optimole ID.
+	 *
+	 * @param string $optimole_id The optimole ID.
+	 *
+	 * @return int
+	 */
+	private function get_attachement_id_from_optimole_id( string $optimole_id ): int {
+		global $wpdb;
+
+		$id  = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+			SELECT post_id
+			FROM {$wpdb->postmeta}
+			WHERE meta_key = %s
+			AND meta_value = %s
+			LIMIT 1
+			",
+				Optml_Dam::OM_DAM_IMPORTED_FLAG,
+				$optimole_id
+			)
+		);
+		return empty( $id ) ? 0 : (int) $id;
+	}
+	/**
 	 * Get the attachment ID from URL.
 	 *
 	 * @param string $input_url The attachment URL.
@@ -251,6 +286,19 @@ trait Optml_Dam_Offload_Utils {
 
 		if ( $cached !== false ) {
 			return (int) $cached;
+		}
+
+		if ( Optml_Media_Offload::is_uploaded_image( $input_url ) ) {
+			// The DAM are stored as attachments of format /id:<attachment_id>/<original_url>
+			$pattern = '#/' . Optml_Media_Offload::KEYS['uploaded_flag'] . '([^/]+)#';
+			if ( preg_match( $pattern, $input_url, $m ) ) {
+				$attachment_id = $this->get_attachement_id_from_optimole_id( $m[1] );
+				if ( $attachment_id !== 0 ) {
+					Optml_Attachment_Cache::set_cached_attachment_id( $input_url, $attachment_id );
+
+					return $attachment_id;
+				}
+			}
 		}
 
 		$url = $this->strip_image_size( $input_url );

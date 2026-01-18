@@ -6,6 +6,7 @@ use Elementor\Core\Base\Elements_Iteration_Actions\Base as Elements_Iteration_Ac
 use Elementor\Core\Behaviors\Interfaces\Lock_Behavior;
 use Elementor\Core\Files\CSS\Post as Post_CSS;
 use Elementor\Core\Settings\Page\Model as Page_Model;
+use Elementor\Core\Utils\Collection;
 use Elementor\Core\Utils\Exceptions;
 use Elementor\Includes\Elements\Container;
 use Elementor\Plugin;
@@ -19,6 +20,7 @@ use Elementor\Widget_Base;
 use Elementor\Core\Settings\Page\Manager as PageManager;
 use ElementorPro\Modules\Library\Widgets\Template;
 use Elementor\Core\Utils\Promotions\Filtered_Promotions_Manager;
+use Elementor\Modules\AtomicWidgets\Module as Atomic_Widgets_Module;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -40,6 +42,7 @@ abstract class Document extends Controls_Stack {
 	 */
 	const TYPE_META_KEY = '_elementor_template_type';
 	const PAGE_META_KEY = '_elementor_page_settings';
+	const ELEMENTOR_DATA_META_KEY = '_elementor_data';
 
 	const BUILT_WITH_ELEMENTOR_META_KEY = '_elementor_edit_mode';
 
@@ -637,7 +640,7 @@ abstract class Document extends Controls_Stack {
 	 *
 	 * @access public
 	 *
-	 * @param array    $actions An array of row action links.
+	 * @param array $actions An array of row action links.
 	 *
 	 * @return array An updated array of row action links.
 	 */
@@ -724,20 +727,14 @@ abstract class Document extends Controls_Stack {
 		do_action( 'elementor/document/before_get_config', $this );
 
 		if ( static::get_property( 'has_elements' ) ) {
-			$container_config = [];
-
-			if ( Plugin::$instance->experiments->is_feature_active( 'container' ) ) {
-				$container_config['container'] =
-					Plugin::$instance->elements_manager->get_element_types( 'container' )->get_config();
-			}
-
-			if ( Plugin::$instance->experiments->is_feature_active( 'atomic_widgets' ) ) {
-				$container_config['div-block'] =
-					Plugin::$instance->elements_manager->get_element_types( 'div-block' )->get_config();
-			}
+			$elements_config = Collection::make( Plugin::$instance->elements_manager->get_element_types() )
+				->filter( fn( $element ) => ( ! empty( $element->get_config()['include_in_widgets_config'] ) ) )
+				->map( fn( $element ) => $element->get_config() )
+				->all();
 
 			$config['elements'] = $this->get_elements_raw_data( null, true );
-			$config['widgets'] = $container_config + Plugin::$instance->widgets_manager->get_widget_types_config();
+			// `get_elements_raw_data` has to be called before `get_widget_types_config`, because it affects it.
+			$config['widgets'] = array_merge( $elements_config, Plugin::$instance->widgets_manager->get_widget_types_config() );
 		}
 
 		$additional_config = [];
@@ -837,7 +834,9 @@ abstract class Document extends Controls_Stack {
 		do_action( 'elementor/document/before_save', $this, $data );
 
 		if ( ! current_user_can( 'unfiltered_html' ) ) {
-			$data = wp_kses_post_deep( $data );
+			$data = map_deep( $data, function ( $value ) {
+				return is_bool( $value ) || is_null( $value ) ? $value : wp_kses_post( $value );
+			} );
 		}
 
 		if ( ! empty( $data['settings'] ) ) {
@@ -1051,6 +1050,8 @@ abstract class Document extends Controls_Stack {
 	 * @param bool $with_html_content
 	 *
 	 * @return array
+	 *
+	 * @throws \Exception If elements retrieval fails or data processing errors occur.
 	 */
 	public function get_elements_raw_data( $data = null, $with_html_content = false ) {
 		if ( ! static::get_property( 'has_elements' ) ) {
@@ -1103,7 +1104,7 @@ abstract class Document extends Controls_Stack {
 	 * @return array
 	 */
 	public function get_elements_data( $status = self::STATUS_PUBLISH ) {
-		$elements = $this->get_json_meta( '_elementor_data' );
+		$elements = $this->get_json_meta( self::ELEMENTOR_DATA_META_KEY );
 
 		if ( self::STATUS_DRAFT === $status ) {
 			$autosave = $this->get_newer_autosave();
@@ -1111,7 +1112,7 @@ abstract class Document extends Controls_Stack {
 			if ( is_object( $autosave ) ) {
 				$autosave_elements = Plugin::$instance->documents
 					->get( $autosave->get_post()->ID )
-					->get_json_meta( '_elementor_data' );
+					->get_json_meta( self::ELEMENTOR_DATA_META_KEY );
 			}
 		}
 
@@ -1350,7 +1351,7 @@ abstract class Document extends Controls_Stack {
 		$json_value = wp_slash( wp_json_encode( $editor_data ) );
 
 		// Don't use `update_post_meta` that can't handle `revision` post type
-		$is_meta_updated = update_metadata( 'post', $this->post->ID, '_elementor_data', $json_value );
+		$is_meta_updated = update_metadata( 'post', $this->post->ID, self::ELEMENTOR_DATA_META_KEY, $json_value );
 
 		/**
 		 * Before saving data.
@@ -1458,7 +1459,7 @@ abstract class Document extends Controls_Stack {
 	 * @access public
 	 *
 	 * @param string $key   Meta data key.
-	 * @param mixed $value Meta data value.
+	 * @param mixed  $value Meta data value.
 	 *
 	 * @return bool|int
 	 */
@@ -1621,6 +1622,8 @@ abstract class Document extends Controls_Stack {
 	public function get_export_data() {
 		$content = Plugin::$instance->db->iterate_data( $this->get_elements_data(), function( $element_data ) {
 			$element_data['id'] = Utils::generate_random_string();
+
+			$element_data = apply_filters( 'elementor/document/element/replace_id', $element_data );
 
 			$element = Plugin::$instance->elements_manager->create_element_instance( $element_data );
 
@@ -1793,10 +1796,10 @@ abstract class Document extends Controls_Stack {
 
 	/**
 	 * @since 2.1.3
-	 * @access protected
+	 * @access public
 	 */
-	protected function print_elements( $elements_data ) {
-		$is_element_cache_active = Plugin::$instance->experiments->is_feature_active( 'e_element_cache' ) && 'disable' !== get_option( 'elementor_element_cache_ttl', '' );
+	public function print_elements( $elements_data ) {
+		$is_element_cache_active = 'disable' !== get_option( 'elementor_element_cache_ttl', '' );
 		if ( ! $is_element_cache_active ) {
 			ob_start();
 

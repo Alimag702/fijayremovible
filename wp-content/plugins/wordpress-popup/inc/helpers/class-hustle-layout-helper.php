@@ -74,8 +74,14 @@ class Hustle_Layout_Helper {
 		// White label custom branding image.
 		$this->branding_image = apply_filters( 'wpmudev_branding_hero_image', null );
 
-		// init common config for tinymce editor.
-		$this->tinymce_init();
+		// Filter allowed HTML tags for the content.
+		$this->tinymce_quicktags = apply_filters(
+			'hustle_tinymce_quicktags',
+			array(
+				'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close',
+			)
+		);
+
 		/**
 		 * Sets the referer class as a property.
 		 * This allows us to access the referer class' properties if needed
@@ -198,7 +204,7 @@ class Hustle_Layout_Helper {
 			'placeholder'      => true,
 			'disabled'         => true,
 			'method'           => true,
-
+			'tabindex'         => true,
 		);
 		$allowed_html = wp_kses_allowed_html( 'post' );
 		$allowed_tags = array_merge(
@@ -362,24 +368,5 @@ class Hustle_Layout_Helper {
 
 		</div>';
 
-	}
-
-	/**
-	 * Common init config for tinymce editor.
-	 *
-	 * @since 4.4.7
-	 * @return void
-	 */
-	private function tinymce_init() {
-		// remove add more tag from visual tab.
-		add_filter(
-			'mce_buttons',
-			function( $mce_buttons ) {
-				$remove = array( 'wp_more' );
-				return array_diff( $mce_buttons, $remove );
-			}
-		);
-		// remove more tag from text tab.
-		$this->tinymce_quicktags = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' );
 	}
 }

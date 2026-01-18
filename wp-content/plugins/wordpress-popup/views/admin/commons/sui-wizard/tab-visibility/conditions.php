@@ -66,9 +66,19 @@
 				<div class="sui-builder-options sui-options-inline">
 
 					<span class="sui-builder-text"><?php esc_html_e( 'Apply on', 'hustle' ); ?>
-						<button class="sui-button-icon sui-tooltip sui-tooltip-constrained" data-tooltip="<?php esc_attr_e( 'Choose the display options to apply these visibility conditions on. Note that the visibility rules will only affect the options which are active on the Display Options page.', 'hustle' ); ?>" style="width: 22px; height: 22px;">
+						<button 
+							class="sui-button-icon sui-tooltip sui-tooltip-constrained" 
+							data-tooltip="<?php esc_attr_e( 'Choose the display options to apply these visibility conditions on. Note that the visibility rules will only affect the options which are active on the Display Options page.', 'hustle' ); ?>" 
+							style="width: 22px; height: 22px;"
+							type="button"
+							aria-label="<?php esc_attr_e( 'Information about apply on options', 'hustle' ); ?>"
+							aria-describedby="apply-on-tooltip-{{ groupId }}"
+							tabindex="0">
 							<span class="sui-icon-info" aria-hidden="true"></span>
 						</button>
+						<div id="apply-on-tooltip-{{ groupId }}" class="sui-screen-reader-text">
+							<?php esc_html_e( 'Choose the display options to apply these visibility conditions on. Note that the visibility rules will only affect the options which are active on the Display Options page.', 'hustle' ); ?>
+						</div>
 					</span>
 
 					<?php if ( 'social_sharing' === $module_type ) { ?>
@@ -136,6 +146,7 @@
 						<span aria-hidden="true"></span>
 						<span><?php esc_html_e( 'Shortcode', 'hustle' ); ?></span>
 						<button class="sui-button-icon sui-tooltip sui-tooltip-constrained"
+							role="presentation"
 							data-tooltip="<?php /* translators: module type in small caps and in singular */ printf( esc_attr__( 'By default, the shortcode displays your %1$s wherever you add it. However, you can apply visibility rules on your %1$s shortcode for better control. For example, you can use visibility rules to show your %1$s to logged-in users only or visitors from a specific country only.', 'hustle' ), esc_html( $smallcaps_singular ) ); ?>"
 							style="width: 22px; height: 22px;pointer-events:auto;margin-left: 2px;">
 							<span class="sui-icon-info" aria-hidden="true"></span>

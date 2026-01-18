@@ -1517,7 +1517,8 @@ _N2.d('SmartSliderAbstract', function () {
             layerAnimations: false,
             layerSplitTextAnimations: false,
             backgroundAnimations: false,
-            postBackgroundAnimations: false
+            postBackgroundAnimations: false,
+            webGLBackgroundAnimationImageSmoothing: false
         };
 
         if (n2const.isSamsungBrowser) {
@@ -1643,7 +1644,7 @@ _N2.d('SmartSliderAbstract', function () {
         this.load.start();
 
         _addEventListener(this.sliderElement, 'keydown', function (event) {
-            if (event.code === 'Space' || event.code === 'Enter') {
+            if (event.code === 'Space' || event.code === 'Enter' || event.code === 'NumpadEnter') {
                 if (event.target.matches('[role="button"],[tabindex]') && event.target.matches(':not(a,input,select,textarea)')) {
                     event.preventDefault();
 
@@ -1796,18 +1797,20 @@ _N2.d('SmartSliderAbstract', function () {
                     this.overrideStarterSlideIndex(window['ss' + this.id]);
                 }
             } else {
-                if (!this.isAdmin && this.parameters.maintainSession && window.localStorage !== undefined) {
+
+                if (this.parameters.maintainSession && window.localStorage !== undefined) {
 
                     var sessionIndex = window.localStorage.getItem('ss-' + this.id);
                     this.overrideStarterSlideIndex(sessionIndex);
-
-                    _addEventListener(this.sliderElement, 'mainAnimationComplete', (function (e) {
-                        window.localStorage.setItem('ss-' + this.id, e.detail.currentSlideIndex);
-                    }).bind(this));
                 } else {
-
                     this.finalizeStarterSlideComplete(realStarterSlide);
                 }
+            }
+
+            if (this.parameters.maintainSession && window.localStorage !== undefined) {
+                _addEventListener(this.sliderElement, 'mainAnimationComplete', (function (e) {
+                    window.localStorage.setItem('ss-' + this.id, e.detail.currentSlideIndex);
+                }).bind(this));
             }
         }
     };
@@ -2129,6 +2132,21 @@ _N2.d('SmartSliderAbstract', function () {
         }
 
         if (!this.next(isSystem, customAnimation)) {
+            return this.changeTo(this.getFirstSlide().index, false, isSystem, customAnimation)
+        }
+        return true;
+    };
+
+    SmartSliderAbstract.prototype.previousCarousel = function (isSystem, customAnimation) {
+        if (!this.parameters.carousel) {
+            /**
+             * When the Carousel option is disabled, we should stop on the last slide.
+             * @see SSDEV-3744
+             */
+            return this.previous(isSystem, customAnimation);
+        }
+
+        if (!this.previous(isSystem, customAnimation)) {
             return this.changeTo(this.getFirstSlide().index, false, isSystem, customAnimation)
         }
         return true;
@@ -3245,7 +3263,7 @@ _N2.d('Stages', function () {
 
                 _addEventListener(window, 'hashchange', (function () {
                     var anchorTarget = this.getAnchor();
-                    if (anchorTarget > 0) {
+                    if (anchorTarget && Number.isInteger(anchorTarget) && anchorTarget > 0) {
 
                         if (this.___slider.responsive.parameters.focusUser === 1) {
                             /**
@@ -3293,7 +3311,7 @@ _N2.d('Stages', function () {
     SmartSliderControlAlias.prototype.switchOnLoad = function () {
 
         var anchorTarget = this.getAnchor();
-        if (anchorTarget > 0) {
+        if (anchorTarget && Number.isInteger(anchorTarget) && anchorTarget > 0) {
             var slideIndex = anchorTarget - 1,
                 slider = window['n2-ss-' + this.___slider.id];
 
@@ -3308,6 +3326,11 @@ _N2.d('Stages', function () {
                 }
             } else {
                 window['ss' + this.___slider.id] = slideIndex;
+            }
+
+
+            if (this.___slider.parameters.maintainSession && window.localStorage !== undefined && slideIndex <= this.___slider.visibleSlides.length) {
+                window.localStorage.setItem('ss-' + this.___slider.id, slideIndex);
             }
 
             this.replaceHash();
@@ -3378,6 +3401,7 @@ _N2.d('Stages', function () {
             duration: 8000,
             autoplayLoop: 0,
             allowReStart: 0,
+            reverse: 0,
             pause: {
                 mouse: 'enter',
                 click: true,
@@ -3646,7 +3670,12 @@ _N2.d('Stages', function () {
                     }
                 }
             }
-            this.slider.nextCarousel(true);
+
+            if (this.parameters.reverse) {
+                this.slider.previousCarousel(true);
+            } else {
+                this.slider.nextCarousel(true);
+            }
         }
     };
 
@@ -7428,7 +7457,11 @@ _N2.d('FrontendItemVimeo', function () {
                     (document.exitFullscreen || document.webkitExitFullscreen).call(document);
                 }
 
-                this.slider.next(true);
+                if (this.slider.parameters.autoplay.enabled && this.slider.parameters.autoplay.reverse) {
+                    this.slider.previous(true);
+                } else {
+                    this.slider.next(true);
+                }
             }
 
         }).bind(this));
@@ -7571,6 +7604,25 @@ _N2.d('FrontendItemVimeo', function () {
             this.safeCallback((function (paused) {
                 if (paused) {
                     this.promise = this.player.play();
+                    if (this.promise && Promise !== undefined) {
+                        this.promise.catch((function (e) {
+                            if (e.name === 'NotAllowedError') {
+                                // Chrome: https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+                                // Firefox: https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/
+                                var autoplayFallbackcallback = (function () {
+                                        _removeEventListeners(eventListeners);
+                                        if (this.promise !== false) {
+                                            this.safePlay();
+                                        }
+                                    }).bind(this),
+                                    eventListeners = [
+                                        _addEventListenerWithRemover(body, 'click', autoplayFallbackcallback),
+                                        _addEventListenerWithRemover(body, 'n2click', autoplayFallbackcallback),
+
+                                    ];
+                            }
+                        }).bind(this));
+                    }
                 }
             }).bind(this));
         }).bind(this));
@@ -7613,7 +7665,8 @@ _N2.d('FrontendItemVimeo', function () {
      */
     function FrontendItemYouTube(slider, id, parameters, hasImage) {
         this.listeners = {
-            play: []
+            play: [],
+            autoplay: []
         };
 
         this.state = {
@@ -7654,6 +7707,8 @@ _N2.d('FrontendItemVimeo', function () {
         }
 
         this.shouldPlayWhenReady = false;
+
+        this.hasAutoplayFallback = false;
     }
 
     FrontendItemYouTube.prototype.whenLoaded = function () {
@@ -7814,13 +7869,14 @@ _N2.d('FrontendItemVimeo', function () {
                 onStateChange: (function (state) {
                     switch (state.data) {
                         case YT.PlayerState.PLAYING:
-                        case YT.PlayerState.BUFFERING:
                             if (!this.isStatic) {
                                 if (this.slide.isActiveWhen(this.slider.currentSlide)) {
                                     _dispatchCustomEventNoBubble(this.slider.sliderElement, 'mediaStarted', {id: this.playerId});
                                 }
                             }
                             _dispatchEventSimpleNoBubble(layerElement, 'n2play');
+
+                            _removeEventListeners(this.listeners.autoplay);
                             break;
                         case YT.PlayerState.PAUSED:
                             _dispatchEventSimpleNoBubble(layerElement, 'n2pause');
@@ -7847,7 +7903,11 @@ _N2.d('FrontendItemVimeo', function () {
                                         (document.exitFullscreen || document.webkitExitFullscreen).call(document);
                                     }
 
-                                    this.slider.next(true);
+                                    if (this.slider.parameters.autoplay.enabled && this.slider.parameters.autoplay.reverse) {
+                                        this.slider.previous(true);
+                                    } else {
+                                        this.slider.next(true);
+                                    }
                                 }
                             }
                             break;
@@ -8048,11 +8108,32 @@ _N2.d('FrontendItemVimeo', function () {
 
     FrontendItemYouTube.prototype.play = function () {
         if (this.isStopped()) {
-            if (this.coverFadedOut === undefined) {
-                setTimeout(this.fadeOutCover.bind(this), 200);
-            }
-            _dispatchCustomEventNoBubble(this.slider.sliderElement, 'mediaStarted', {id: this.playerId});
             this.player.playVideo();
+            if (this.player.getPlayerState() === YT.PlayerState.PLAYING) {
+                if (this.coverFadedOut === undefined) {
+                    setTimeout(this.fadeOutCover.bind(this), 200);
+                }
+                _dispatchCustomEventNoBubble(this.slider.sliderElement, 'mediaStarted', {id: this.playerId});
+            }
+
+
+            if (parseInt(this.parameters.autoplay) === 1 && !this.hasAutoplayFallback) {
+                if (this.player.getPlayerState() === YT.PlayerState.CUED) {
+                    this.hasAutoplayFallback = true;
+                    // Chrome: https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+                    // Firefox: https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/
+                    var autoplayFallbackcallback = (function () {
+                        _removeEventListeners(this.listeners.autoplay);
+                        this.play();
+                    }).bind(this);
+
+                    this.listeners.autoplay = [
+                        _addEventListenerWithRemover(body, 'click', autoplayFallbackcallback),
+                        _addEventListenerWithRemover(body, 'n2click', autoplayFallbackcallback),
+
+                    ];
+                }
+            }
         }
     };
 

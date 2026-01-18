@@ -83,6 +83,7 @@ $docs_section = Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module_type ? 'c
 				href="<?php echo esc_url( add_query_arg( $args, 'admin.php' ) ); ?>"
 				class="sui-button-icon sui-tooltip sui-tooltip-bottom"
 				data-tooltip="<?php echo esc_attr( $tooltip ); ?>"
+				aria-label="<?php echo esc_attr( $tooltip ); ?>"
 			>
 				<span class="sui-icon-plus sui-md" aria-hidden="true"></span>
 			</a>

@@ -170,10 +170,11 @@ $inline_both  = self::$plugin_url . 'assets/images/embed-position-both';
 
 			<div id="hustle-shortcode-toggle-wrapper" class="sui-toggle-content sui-border-frame" data-toggle-content="shortcode-enabled">
 
-				<span class="sui-description"><?php esc_html_e( 'Shortcode to render your embed', 'hustle' ); ?></span>
+				<span class="sui-description" id="hui-shortcode-description"><?php esc_html_e( 'Shortcode to render your embed', 'hustle' ); ?></span>
 
 				<div class="sui-with-button sui-with-button-inside">
 					<input type="text"
+						aria-labelledby="hui-shortcode-description"
 						class="sui-form-control"
 						value='[wd_hustle id="<?php echo esc_attr( $shortcode_id ); ?>" type="embedded"/]'
 						readonly="readonly">

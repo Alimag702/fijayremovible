@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Contact Form 7 - Dynamic Text Extension
  * Description: Extends Contact Form 7 by adding dynamic form fields that accepts shortcodes to prepopulate form fields with default values and dynamic placeholders.
- * Version: 5.0.3
+ * Version: 5.0.4
  * Text Domain: contact-form-7-dynamic-text-extension
  * Author: AuRise Creative, SevenSpark
  * Author URI: https://aurisecreative.com
@@ -14,8 +14,8 @@
  * Requires PHP: 7.4
  * Requires Plugins: contact-form-7
  *
- * @copyright Copyright (c) 2010-2024 Chris Mavricos, SevenSpark <https://sevenspark.com>
- * @copyright Copyright (c) 2022-2024 Tessa Watkins, AuRise Creative <https://aurisecreative.com>
+ * @copyright Copyright (c) 2010-2026 Chris Mavricos, SevenSpark <https://sevenspark.com>
+ * @copyright Copyright (c) 2022-2026 Tessa Watkins, AuRise Creative <https://aurisecreative.com>
  * @license http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License, version 3 or higher
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('WPCF7DTX_VERSION', '5.0.3'); // Define current version of DTX
+define('WPCF7DTX_VERSION', '5.0.4'); // Define current version of DTX
 define('WPCF7DTX_MINVERSION_MAILVALIDATION', '5.7'); // The minimum version of CF7 required to use mail validator
 define('WPCF7DTX_MINVERSION_TAGGEN', '6.0'); // The minimum version of CF7 required to use tag generator
 defined('WPCF7DTX_DIR') || define('WPCF7DTX_DIR', __DIR__); // Define root directory
@@ -363,7 +363,7 @@ function wpcf7dtx_enqueue_frontend_assets($hook = '')
     wp_localize_script(
         'wpcf7dtx', // Handle
         'dtx_obj', // Object
-        array('ajax_url' => admin_url('admin-ajax.php')) // Data
+        array('ajax_url' => admin_url('admin-ajax.php'),'n'=>wp_create_nonce('wpcf7dtx_ajax')) // Data
     );
 }
 add_action('wp_enqueue_scripts', 'wpcf7dtx_enqueue_frontend_assets');
@@ -764,6 +764,10 @@ function wpcf7dtx_label_shortcode_handler($tag)
  */
 function wpcf7dtx_js_handler()
 {
+
+    if (wp_verify_nonce(wpcf7dtx_array_has_key('n', $_POST), 'wpcf7dtx_ajax') !== 0) {
+        wp_die();
+    }
     $return = array();
     $queue = wpcf7dtx_array_has_key('shortcodes', $_POST);
     if (is_array($queue) && count($queue)) {

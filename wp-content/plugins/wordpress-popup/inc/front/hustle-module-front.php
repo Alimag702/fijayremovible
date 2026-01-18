@@ -307,6 +307,8 @@ class Hustle_Module_Front {
 				'page_slug'             => $slug, // Used in many places to decide whether to show the module and cookies on archive pages.
 				'is_upfront'            => class_exists( 'Upfront' ) && isset( $_GET['editmode'] ) && 'true' === $_GET['editmode'], // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				'script_delay'          => apply_filters( 'hustle_lazy_load_script_delay', 3000 ), // to lazyload script for later on added elements.
+				'display_check_nonce'   => wp_create_nonce( 'hustle_display_check' ),
+				'conversion_nonce'      => wp_create_nonce( 'hustle_log_conversion' ),
 			)
 		);
 

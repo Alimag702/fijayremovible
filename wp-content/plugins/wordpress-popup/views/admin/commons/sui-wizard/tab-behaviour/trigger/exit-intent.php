@@ -39,7 +39,7 @@
 <?php // SETTINGS: Add delay. ?>
 <div class="sui-form-field">
 
-	<label class="sui-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
+	<label class="sui-label" id="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"><?php esc_html_e( 'Delay', 'hustle' ); ?></label>
 
 	<div class="sui-row">
 
@@ -52,6 +52,7 @@
 				name="triggers.on_exit_intent_delayed_time"
 				class="sui-form-control"
 				data-attribute="triggers.on_exit_intent_delayed_time"
+				aria-labelledby="hustle-<?php echo esc_attr( $smallcaps_singular ); ?>-delay-label"
 			/>
 
 		</div>
