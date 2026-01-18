@@ -913,3 +913,51 @@ Stack trace:
 
 2025-09-25T21:58:40+02:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\front-end\feed-improvements.php on line 3
 
+2025-11-12T17:38:31+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\shortcodes-ultimate\includes\shortcodes\feed.php on line 3
+
+2025-11-12T17:38:31+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\shortcodes-ultimate\includes\shortcodes\feed.php on line 3
+
+2025-11-12T17:40:42+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\user-meta\user-interface\cleanup-integration.php on line 3
+
+2025-11-12T17:40:43+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\user-meta\user-interface\cleanup-integration.php on line 3
+
+2025-11-25T21:28:04+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\helpers\open-graph\image-helper.php on line 3
+
+2025-11-25T21:28:04+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\helpers\open-graph\image-helper.php on line 3
+
+2025-11-25T21:36:58+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:36:58+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:36:59+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:36:59+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:37:02+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:37:02+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:37:08+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:37:08+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php on line 6900
+
+2025-11-25T21:38:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\front-end\redirects.php on line 3
+
+2025-11-25T21:38:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\front-end\redirects.php on line 3
+
+2025-12-08T19:04:23+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\inc\class-wpseo-meta.php on line 178
+
+2025-12-08T19:04:24+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\inc\class-wpseo-meta.php on line 178
+
+2025-12-08T20:44:02+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\widgets\image-gallery.php on line 2
+
+2025-12-08T20:44:02+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\widgets\image-gallery.php on line 2
+
+2025-12-14T19:46:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\swv\php\rules\enum.php on line 58
+
+2025-12-14T19:46:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\contact-form-7\includes\swv\php\rules\enum.php on line 58
+
+2025-12-14T19:52:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\settings\settings-page.php on line 2
+
+2025-12-14T19:52:03+01:00 CRITICAL Maximum execution time of 120 seconds exceeded in C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\settings\settings-page.php on line 2
+
