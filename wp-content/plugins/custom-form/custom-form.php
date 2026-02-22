@@ -181,9 +181,15 @@ function save_form_works_register($contact_form)
 add_filter('wpcf7_skip_mail', 'skip_cf7_email_sending', 10, 2);
 function skip_cf7_email_sending($skip_mail, $contact_form)
 {
-    return true; // Esto evita que se envíe el correo
-}
+    $form_id = $contact_form->id();
 
+    // SOLO el formulario con ID 123 NO enviará email
+    if ($form_id == "5e94f23") {
+        return true;
+    }
+
+    return false;
+}
 // ============================
 // Personalizar mensaje de éxito
 // ============================
