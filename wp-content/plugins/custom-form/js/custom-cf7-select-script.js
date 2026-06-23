@@ -1,4 +1,12 @@
 jQuery(document).ready(function ($) {
+    function dispatchResizeSoon() {
+        try {
+            window.requestAnimationFrame(function () {
+                window.dispatchEvent(new Event('resize'));
+            });
+        } catch (e) {}
+    }
+
     function loadClinicas() {
         const selectClinica = $('select[name="select_clinica"]');
         const hiddenInput = $('input[name="idclinica"]');
@@ -66,6 +74,8 @@ jQuery(document).ready(function ($) {
         if (selectedOption === 'Fija' || selectedOption === 'Implante' || selectedOption === 'Removible' || selectedOption === 'Esqueléticos') {
             $('#' + selectedOption.toLowerCase() + 'Options').show();
         }
+        dispatchResizeSoon();
+        setTimeout(dispatchResizeSoon, 80);
     });
 
     // CÓDIGO GUÍA DE COLOR
@@ -75,6 +85,14 @@ jQuery(document).ready(function ($) {
         if (selectedOption === 'Vivodent' || selectedOption === 'Vita') {
             $('#' + selectedOption.toLowerCase() + 'Options').show();
         }
+        dispatchResizeSoon();
+        setTimeout(dispatchResizeSoon, 80);
+    });
+
+    // Elementor Tabs: al cambiar de pestaña, fuerza recalculo de alturas (evita que el formulario se "salga" del marco)
+    $(document).on('click', '.elementor-tab-title, .elementor-tabs-wrapper .elementor-tab-title', function () {
+        dispatchResizeSoon();
+        setTimeout(dispatchResizeSoon, 120);
     });
 
     console.log("Archivo JS cargado");

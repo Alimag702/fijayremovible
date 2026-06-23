@@ -18,10 +18,40 @@ function custom_cf7_select_script()
 {
 
     $custom_script_url = plugins_url('js/custom-cf7-select-script.js', __FILE__);
-    wp_enqueue_script('custom-cf7-select-script', $custom_script_url, array('jquery'), '1.0', true);
+    $custom_script_path = plugin_dir_path(__FILE__) . 'js/custom-cf7-select-script.js';
+    $custom_script_ver = file_exists($custom_script_path) ? filemtime($custom_script_path) : '1.0';
+    wp_enqueue_script('custom-cf7-select-script', $custom_script_url, array('jquery'), $custom_script_ver, true);
     wp_localize_script('custom-cf7-select-script', 'ajax_object', array(
         'ajax_url' => admin_url('admin-ajax.php')
     ));
+
+    // Mostrar los mensajes de validación dentro de los campos (placeholder) y ocultar el tip bajo el campo
+    $inline_errors_js = plugins_url('js/cf7-inline-errors.js', __FILE__);
+    $inline_errors_js_path = plugin_dir_path(__FILE__) . 'js/cf7-inline-errors.js';
+    $inline_errors_js_ver = file_exists($inline_errors_js_path) ? filemtime($inline_errors_js_path) : '1.0';
+    wp_enqueue_script('custom-cf7-inline-errors', $inline_errors_js, array(), $inline_errors_js_ver, true);
+
+    $inline_errors_css = plugins_url('css/cf7-inline-errors.css', __FILE__);
+    $inline_errors_css_path = plugin_dir_path(__FILE__) . 'css/cf7-inline-errors.css';
+    $inline_errors_css_ver = file_exists($inline_errors_css_path) ? filemtime($inline_errors_css_path) : '1.0';
+    wp_enqueue_style('custom-cf7-inline-errors', $inline_errors_css, array(), $inline_errors_css_ver);
+
+    // Mostrar wpcf7-response-output como popup (enviado / error)
+    $popup_js = plugins_url('js/cf7-popup-response.js', __FILE__);
+    $popup_js_path = plugin_dir_path(__FILE__) . 'js/cf7-popup-response.js';
+    $popup_js_ver = file_exists($popup_js_path) ? filemtime($popup_js_path) : '1.0';
+    wp_enqueue_script('custom-cf7-popup-response', $popup_js, array(), $popup_js_ver, true);
+
+    $popup_css = plugins_url('css/cf7-popup-response.css', __FILE__);
+    $popup_css_path = plugin_dir_path(__FILE__) . 'css/cf7-popup-response.css';
+    $popup_css_ver = file_exists($popup_css_path) ? filemtime($popup_css_path) : '1.0';
+    wp_enqueue_style('custom-cf7-popup-response', $popup_css, array(), $popup_css_ver);
+
+    // Ajustes responsive (especialmente útil dentro de pestañas de Elementor)
+    $responsive_css = plugins_url('css/cf7-responsive.css', __FILE__);
+    $responsive_css_path = plugin_dir_path(__FILE__) . 'css/cf7-responsive.css';
+    $responsive_css_ver = file_exists($responsive_css_path) ? filemtime($responsive_css_path) : '1.0';
+    wp_enqueue_style('custom-cf7-responsive', $responsive_css, array(), $responsive_css_ver);
 }
 
 // ============================
@@ -193,9 +223,20 @@ function skip_cf7_email_sending($skip_mail, $contact_form)
 // ============================
 // Personalizar mensaje de éxito
 // ============================
-add_filter('wpcf7_ajax_json_echo', 'custom_cf7_response_message', 10, 2);
+add_filter('wpcf7_feedback_response', 'custom_cf7_response_message', 10, 2);
 function custom_cf7_response_message($response, $result)
 {
+    if (!isset($result['status']) || $result['status'] !== 'mail_sent') {
+        return $response;
+    }
+
+    // Evita afectar a otros formularios CF7 del sitio: solo aplica si se detectan campos de este formulario
+    $submission = class_exists('WPCF7_Submission') ? WPCF7_Submission::get_instance() : null;
+    $posted_data = $submission ? $submission->get_posted_data() : null;
+    if (!is_array($posted_data) || (!isset($posted_data['select_clinica']) && !isset($posted_data['doctor']))) {
+        return $response;
+    }
+
     $response['message'] = '¡Formulario guardado correctamente en la base de datos!';
     return $response;
 }

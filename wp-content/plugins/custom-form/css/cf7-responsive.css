@@ -1,0 +1,41 @@
+.wpcf7,
+.wpcf7 * {
+    box-sizing: border-box;
+}
+
+.wpcf7,
+.wpcf7 form,
+.wpcf7 .wpcf7-form-control-wrap,
+.wpcf7 .wpcf7-form-control {
+    max-width: 100% !important;
+}
+
+.wpcf7 {
+    min-width: 0;
+}
+
+.wpcf7 input.wpcf7-form-control,
+.wpcf7 textarea.wpcf7-form-control,
+.wpcf7 select.wpcf7-form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.wpcf7 input[type="file"].wpcf7-form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Elementor Tabs: evita que el contenido del formulario se recorte/overflow cuando crece */
+.elementor-widget-tabs .elementor-tabs-content-wrapper,
+.elementor-widget-tabs .elementor-tab-content {
+    height: auto !important;
+    overflow: visible !important;
+}
+
+@media (max-width: 768px) {
+    .wpcf7 span.wpcf7-list-item {
+        display: block;
+        margin: 0 0 0.5em 0;
+    }
+}

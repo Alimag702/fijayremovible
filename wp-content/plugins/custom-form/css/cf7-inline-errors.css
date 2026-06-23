@@ -1,0 +1,57 @@
+.wpcf7 .cf7-inline-error {
+    border-color: #dc3232 !important;
+}
+
+.wpcf7 .wpcf7-form-control-wrap .cf7-inline-error ~ .wpcf7-not-valid-tip,
+.wpcf7 .wpcf7-form-control-wrap .cf7-inline-error ~ .wpcf7-not-valid-tip-no-ajax {
+    display: none !important;
+}
+
+.wpcf7 .wpcf7-form-control-wrap.cf7-inline-error-wrap {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.wpcf7 .wpcf7-form-control-wrap.cf7-inline-error-wrap .cf7-inline-error-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: #dc3232;
+    pointer-events: none;
+    font-size: 0.95em;
+    line-height: 1.2;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: inherit;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.wpcf7 .wpcf7-form-control-wrap.cf7-inline-error-wrap textarea.wpcf7-form-control + .cf7-inline-error-overlay {
+    align-items: flex-start;
+    padding-top: 10px;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.wpcf7 .cf7-inline-error::placeholder {
+    color: #dc3232;
+    opacity: 1;
+}
+
+.wpcf7 .cf7-inline-error::-ms-input-placeholder {
+    color: #dc3232;
+}
+
+.wpcf7 .cf7-inline-error::-webkit-input-placeholder {
+    color: #dc3232;
+}

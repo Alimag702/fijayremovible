@@ -1,0 +1,65 @@
+.cf7-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.cf7-popup-overlay[hidden] {
+    display: none;
+}
+
+.cf7-popup {
+    position: relative;
+    width: min(520px, calc(100% - 32px));
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+    border-top: 5px solid #2271b1;
+    color: #1d2327;
+}
+
+.cf7-popup.is-sent {
+    border-top-color: #46b450;
+}
+
+.cf7-popup.is-error {
+    border-top-color: #dc3232;
+}
+
+.cf7-popup-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #1d2327;
+    font-size: 26px;
+    line-height: 34px;
+    cursor: pointer;
+}
+
+.cf7-popup-close:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+.cf7-popup-content {
+    font-size: 16px;
+    line-height: 1.45;
+    padding-right: 30px;
+    word-break: break-word;
+}
+
+/* Oculta el mensaje por defecto de CF7 (lo mostramos como popup con JS) */
+.wpcf7 .wpcf7-response-output {
+    display: none !important;
+}
