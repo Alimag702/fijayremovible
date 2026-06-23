@@ -54,6 +54,26 @@ function custom_cf7_select_script()
     wp_enqueue_style('custom-cf7-responsive', $responsive_css, array(), $responsive_css_ver);
 }
 
+add_filter('wpcf7_form_class_attr', 'custom_cf7_form_class_attr');
+function custom_cf7_form_class_attr($class_attr)
+{
+    if (!function_exists('wpcf7_get_current_contact_form')) {
+        return $class_attr;
+    }
+
+    $contact_form = wpcf7_get_current_contact_form();
+    if (!$contact_form || !method_exists($contact_form, 'scan_form_tags')) {
+        return $class_attr;
+    }
+
+    $tag_names = wp_list_pluck($contact_form->scan_form_tags(), 'name');
+    if (in_array('select_clinica', $tag_names, true) || in_array('doctor', $tag_names, true)) {
+        $class_attr .= ' custom-work-register-form';
+    }
+
+    return trim($class_attr);
+}
+
 // ============================
 // Crear nuevo campo para Contact Form 7: select_clinica
 // ============================

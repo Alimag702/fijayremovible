@@ -38,18 +38,30 @@
     right: 10px;
     width: 34px;
     height: 34px;
-    border: 0;
+    border: 0 !important;
     border-radius: 999px;
-    background: transparent;
-    color: #1d2327;
+    background: transparent !important;
+    color: #1d2327 !important;
     font-size: 26px;
     line-height: 34px;
     cursor: pointer;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
-.cf7-popup-close:focus {
-    outline: 2px solid #2271b1;
-    outline-offset: 2px;
+.cf7-popup-close:hover,
+.cf7-popup-close:focus,
+.cf7-popup-close:focus-visible,
+.cf7-popup-close:active {
+    background: transparent !important;
+    color: #1d2327 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
 }
 
 .cf7-popup-content {

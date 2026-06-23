@@ -26,6 +26,177 @@
     max-width: 100% !important;
 }
 
+/* Estilo base del formulario de contacto dentro del plugin */
+.wpcf7 form.custom-work-register-form.contact-line,
+.contact-line .wpcf7 form.custom-work-register-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+}
+
+.wpcf7 form.custom-work-register-form.contact-line label,
+.contact-line .wpcf7 form.custom-work-register-form label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: -20px !important;
+    font-weight: 500;
+    color: #1b0f95;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line input[type="text"],
+.wpcf7 form.custom-work-register-form.contact-line input[type="email"],
+.wpcf7 form.custom-work-register-form.contact-line input[type="tel"],
+.wpcf7 form.custom-work-register-form.contact-line textarea,
+.contact-line .wpcf7 form.custom-work-register-form input[type="text"],
+.contact-line .wpcf7 form.custom-work-register-form input[type="email"],
+.contact-line .wpcf7 form.custom-work-register-form input[type="tel"],
+.contact-line .wpcf7 form.custom-work-register-form textarea {
+    width: 100%;
+    padding: 8px 5px 0 5px !important;
+    border: none;
+    border-bottom: 2px solid #1b0f95;
+    background: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    color: #1b0f95;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-top: 5px !important;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line input::placeholder,
+.wpcf7 form.custom-work-register-form.contact-line textarea::placeholder,
+.contact-line .wpcf7 form.custom-work-register-form input::placeholder,
+.contact-line .wpcf7 form.custom-work-register-form textarea::placeholder {
+    color: #1b0f95;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line input:focus,
+.wpcf7 form.custom-work-register-form.contact-line textarea:focus,
+.contact-line .wpcf7 form.custom-work-register-form input:focus,
+.contact-line .wpcf7 form.custom-work-register-form textarea:focus {
+    border-bottom-color: #1b0f95;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line textarea,
+.contact-line .wpcf7 form.custom-work-register-form textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line .btn-wrap,
+.contact-line .wpcf7 form.custom-work-register-form .btn-wrap {
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line input[type="submit"],
+.contact-line .wpcf7 form.custom-work-register-form input[type="submit"] {
+    background: #1b0f95;
+    color: #fff;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 25px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    width: auto;
+    max-width: 100%;
+    display: inline-block;
+}
+
+.wpcf7 form.custom-work-register-form.contact-line input[type="submit"]:hover,
+.contact-line .wpcf7 form.custom-work-register-form input[type="submit"]:hover {
+    background: #1b0f95;
+    transform: translateY(-2px);
+}
+
+/* Refuerza el layout del CF7 dentro de tabs de Elementor sin depender de Elementor Pro */
+.elementor-widget-tabs .elementor-tab-content,
+.elementor-widget-tabs .elementor-tab-content .elementor-widget-container,
+.elementor-widget-tabs .elementor-tab-content .elementor-shortcode,
+.elementor-widget-tabs .elementor-tab-content .wpcf7,
+.elementor-widget-tabs .elementor-tab-content .wpcf7 form.custom-work-register-form {
+    width: 100%;
+    max-width: 100% !important;
+    min-width: 0;
+}
+
+.elementor-widget-tabs .elementor-tab-content .wpcf7 form.custom-work-register-form,
+.elementor-widget-tabs .elementor-tab-content .wpcf7 form.custom-work-register-form * {
+    box-sizing: border-box;
+}
+
+.elementor-widget-tabs .elementor-tab-content .wpcf7 .wpcf7-form-control-wrap,
+.elementor-widget-tabs .elementor-tab-content .wpcf7 .wpcf7-form-control-wrap > * {
+    width: 100%;
+    max-width: 100% !important;
+    min-width: 0;
+}
+
+.elementor-widget-tabs .elementor-tab-content .wpcf7 input.wpcf7-form-control,
+.elementor-widget-tabs .elementor-tab-content .wpcf7 textarea.wpcf7-form-control,
+.elementor-widget-tabs .elementor-tab-content .wpcf7 select.wpcf7-form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+}
+
+.elementor-widget-tabs .contact-line {
+    width: 100%;
+    max-width: min(100%, 500px) !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding: clamp(12px, 3vw, 20px);
+}
+
+.elementor-widget-tabs .contact-line label,
+.elementor-widget-tabs .contact-line input[type="text"],
+.elementor-widget-tabs .contact-line input[type="email"],
+.elementor-widget-tabs .contact-line input[type="tel"],
+.elementor-widget-tabs .contact-line textarea,
+.elementor-widget-tabs .contact-line select {
+    width: 100%;
+    max-width: 100% !important;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.elementor-widget-tabs .contact-line textarea {
+    max-height: 40vh;
+}
+
+.elementor-widget-tabs .contact-line .btn-wrap {
+    width: 100%;
+}
+
+.elementor-widget-tabs .contact-line input[type="submit"] {
+    width: auto;
+    max-width: 100%;
+    display: inline-block;
+    white-space: normal;
+}
+
+/* Mantiene el mismo aspecto del boton en hover solo en el formulario de trabajos */
+.wpcf7 form.custom-work-register-form {
+    --primarybtnhoverbg: var(--primarybtnbg);
+    --primarybtnhovercolor: var(--primarybtncolor);
+}
+
+.wpcf7 form.custom-work-register-form .btn:hover,
+.wpcf7 form.custom-work-register-form .button.button-primary:hover,
+.wpcf7 form.custom-work-register-form .is-style-primary .wp-block-button__link:hover,
+.wpcf7 form.custom-work-register-form button:hover,
+.wpcf7 form.custom-work-register-form input[type="button"]:hover,
+.wpcf7 form.custom-work-register-form input[type="reset"]:hover,
+.wpcf7 form.custom-work-register-form input[type="submit"]:hover {
+    background: var(--primarybtnbg);
+    color: var(--primarybtncolor);
+    border-color: currentColor;
+}
+
 /* Elementor Tabs: evita que el contenido del formulario se recorte/overflow cuando crece */
 .elementor-widget-tabs .elementor-tabs-content-wrapper,
 .elementor-widget-tabs .elementor-tab-content {
@@ -33,9 +204,105 @@
     overflow: visible !important;
 }
 
+/* Utilidades simples para alternar versiones por dispositivo en Elementor */
+.resp-desktop,
+.versionxl {
+    display: block !important;
+}
+
+.resp-tablet,
+.resp-mobile,
+.versionlg,
+.versionxs {
+    display: none !important;
+}
+
+@media (max-width: 1024px) {
+    .elementor-widget-tabs .contact-line {
+        max-width: 100% !important;
+        padding: 16px;
+    }
+}
+
 @media (max-width: 768px) {
+    .elementor-widget-tabs .elementor-tab-content {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .elementor-widget-tabs .contact-line {
+        padding: 14px;
+    }
+
+    .elementor-widget-tabs .contact-line label,
+    .elementor-widget-tabs .contact-line input[type="text"],
+    .elementor-widget-tabs .contact-line input[type="email"],
+    .elementor-widget-tabs .contact-line input[type="tel"],
+    .elementor-widget-tabs .contact-line textarea,
+    .elementor-widget-tabs .contact-line select {
+        font-size: 12px;
+    }
+
+    .elementor-widget-tabs .contact-line label {
+        margin-bottom: 6px !important;
+        line-height: 1.35;
+    }
+
+    .elementor-widget-tabs .contact-line textarea {
+        min-height: 40px;
+    }
+
+    .resp-desktop,
+    .versionxl {
+        display: none !important;
+    }
+
+    .resp-tablet,
+    .versionlg {
+        display: block !important;
+    }
+
+    .resp-mobile,
+    .versionxs {
+        display: none !important;
+    }
+
     .wpcf7 span.wpcf7-list-item {
         display: block;
         margin: 0 0 0.5em 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .elementor-widget-tabs .elementor-tab-content {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .elementor-widget-tabs .contact-line {
+        padding: 12px;
+    }
+
+    .elementor-widget-tabs .contact-line label {
+        margin-bottom: 4px !important;
+    }
+
+    .elementor-widget-tabs .contact-line textarea {
+        min-height: 20px;
+    }
+
+    .elementor-widget-tabs .contact-line input[type="submit"] {
+        padding: 15px 24px;
+        font-size: 12px;
+    }
+
+    .resp-tablet,
+    .versionlg {
+        display: none !important;
+    }
+
+    .resp-mobile,
+    .versionxs {
+        display: block !important;
     }
 }
