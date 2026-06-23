@@ -28,6 +28,7 @@
 
 /* Estilo base del formulario de contacto dentro del plugin */
 .wpcf7 form.custom-work-register-form.contact-line,
+.wpcf7 form.custom-work-register-form .contact-line,
 .contact-line .wpcf7 form.custom-work-register-form {
     width: 100%;
     max-width: 500px;
@@ -37,6 +38,7 @@
 }
 
 .wpcf7 form.custom-work-register-form.contact-line label,
+.wpcf7 form.custom-work-register-form .contact-line label,
 .contact-line .wpcf7 form.custom-work-register-form label {
     display: block;
     font-size: 14px;
@@ -49,6 +51,10 @@
 .wpcf7 form.custom-work-register-form.contact-line input[type="email"],
 .wpcf7 form.custom-work-register-form.contact-line input[type="tel"],
 .wpcf7 form.custom-work-register-form.contact-line textarea,
+.wpcf7 form.custom-work-register-form .contact-line input[type="text"],
+.wpcf7 form.custom-work-register-form .contact-line input[type="email"],
+.wpcf7 form.custom-work-register-form .contact-line input[type="tel"],
+.wpcf7 form.custom-work-register-form .contact-line textarea,
 .contact-line .wpcf7 form.custom-work-register-form input[type="text"],
 .contact-line .wpcf7 form.custom-work-register-form input[type="email"],
 .contact-line .wpcf7 form.custom-work-register-form input[type="tel"],
@@ -67,6 +73,8 @@
 
 .wpcf7 form.custom-work-register-form.contact-line input::placeholder,
 .wpcf7 form.custom-work-register-form.contact-line textarea::placeholder,
+.wpcf7 form.custom-work-register-form .contact-line input::placeholder,
+.wpcf7 form.custom-work-register-form .contact-line textarea::placeholder,
 .contact-line .wpcf7 form.custom-work-register-form input::placeholder,
 .contact-line .wpcf7 form.custom-work-register-form textarea::placeholder {
     color: #1b0f95;
@@ -74,18 +82,22 @@
 
 .wpcf7 form.custom-work-register-form.contact-line input:focus,
 .wpcf7 form.custom-work-register-form.contact-line textarea:focus,
+.wpcf7 form.custom-work-register-form .contact-line input:focus,
+.wpcf7 form.custom-work-register-form .contact-line textarea:focus,
 .contact-line .wpcf7 form.custom-work-register-form input:focus,
 .contact-line .wpcf7 form.custom-work-register-form textarea:focus {
     border-bottom-color: #1b0f95;
 }
 
 .wpcf7 form.custom-work-register-form.contact-line textarea,
+.wpcf7 form.custom-work-register-form .contact-line textarea,
 .contact-line .wpcf7 form.custom-work-register-form textarea {
     min-height: 60px;
     resize: vertical;
 }
 
 .wpcf7 form.custom-work-register-form.contact-line .btn-wrap,
+.wpcf7 form.custom-work-register-form .contact-line .btn-wrap,
 .contact-line .wpcf7 form.custom-work-register-form .btn-wrap {
     text-align: center;
     margin-top: 10px;
@@ -93,6 +105,7 @@
 }
 
 .wpcf7 form.custom-work-register-form.contact-line input[type="submit"],
+.wpcf7 form.custom-work-register-form .contact-line input[type="submit"],
 .contact-line .wpcf7 form.custom-work-register-form input[type="submit"] {
     background: #1b0f95;
     color: #fff;
@@ -108,6 +121,7 @@
 }
 
 .wpcf7 form.custom-work-register-form.contact-line input[type="submit"]:hover,
+.wpcf7 form.custom-work-register-form .contact-line input[type="submit"]:hover,
 .contact-line .wpcf7 form.custom-work-register-form input[type="submit"]:hover {
     background: #1b0f95;
     transform: translateY(-2px);
@@ -205,11 +219,14 @@
 }
 
 /* Utilidades simples para alternar versiones por dispositivo en Elementor */
+.res-desktop,
 .resp-desktop,
 .versionxl {
     display: block !important;
 }
 
+.res-tablet,
+.res-mobile,
 .resp-tablet,
 .resp-mobile,
 .versionlg,
@@ -252,16 +269,19 @@
         min-height: 40px;
     }
 
+    .res-desktop,
     .resp-desktop,
     .versionxl {
         display: none !important;
     }
 
+    .res-tablet,
     .resp-tablet,
     .versionlg {
         display: block !important;
     }
 
+    .res-mobile,
     .resp-mobile,
     .versionxs {
         display: none !important;
@@ -296,11 +316,13 @@
         font-size: 12px;
     }
 
+    .res-tablet,
     .resp-tablet,
     .versionlg {
         display: none !important;
     }
 
+    .res-mobile,
     .resp-mobile,
     .versionxs {
         display: block !important;
