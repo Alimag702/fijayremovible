@@ -537,7 +537,7 @@ class Hustle_Entry_Model {
 	 * @return array
 	 */
 	public static function ignored_fields() {
-		return apply_filters( 'hustle_entry_ignored_fields', array( 'recaptcha', 'submit' ) );
+		return apply_filters( 'hustle_entry_ignored_fields', array( 'recaptcha', 'turnstile', 'submit' ) );
 	}
 
 	/**
@@ -650,7 +650,6 @@ class Hustle_Entry_Model {
 		wp_cache_delete( $module_id, 'hustle_subscribed_emails' );
 		wp_cache_delete( 'all_module_types', 'hustle_total_entries' );
 		wp_cache_delete( $entry_model->entry_type . '_module_type', 'hustle_total_entries' );
-
 	}
 
 	/**
@@ -724,11 +723,9 @@ class Hustle_Entry_Model {
 							$email = substr( $email, 0, $truncate ) . '...';
 						}
 						$string_value = '<a href="' . esc_url( 'mailto:' . $email ) . '" target="_blank" title="' . esc_attr__( 'Send Email', 'hustle' ) . '">' . esc_html( $email ) . '</a>';
-					} else {
+					} elseif ( strlen( $string_value ) > $truncate ) {
 						// truncate url.
-						if ( strlen( $string_value ) > $truncate ) {
-							$string_value = substr( $string_value, 0, $truncate ) . '...';
-						}
+						$string_value = substr( $string_value, 0, $truncate ) . '...';
 					}
 				} else {
 					$string_value = '';
@@ -747,11 +744,9 @@ class Hustle_Entry_Model {
 							$website = substr( $website, 0, $truncate ) . '...';
 						}
 						$string_value = '<a href="' . esc_url( $website ) . '" target="_blank" title="' . esc_attr__( 'View Website', 'hustle' ) . '">' . esc_html( $website ) . '</a>';
-					} else {
+					} elseif ( strlen( $string_value ) > $truncate ) {
 						// truncate url.
-						if ( strlen( $string_value ) > $truncate ) {
-							$string_value = substr( $string_value, 0, $truncate ) . '...';
-						}
+						$string_value = substr( $string_value, 0, $truncate ) . '...';
 					}
 				} else {
 					$string_value = '';
@@ -1201,7 +1196,7 @@ class Hustle_Entry_Model {
 		);
 		if ( ! empty( $in ) ) {
 			$formatted_in_array = array_map(
-				function( $a ) {
+				function ( $a ) {
 					return sprintf( '\'%s\'', $a );
 				},
 				$in
@@ -1217,5 +1212,4 @@ class Hustle_Entry_Model {
 		$query .= ' )';
 		$wpdb->query( $query );// phpcs:ignore
 	}
-
 }

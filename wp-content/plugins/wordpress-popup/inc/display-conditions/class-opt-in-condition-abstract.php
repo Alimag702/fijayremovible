@@ -26,7 +26,7 @@ abstract class Opt_In_Condition_Abstract {
 	 * Arguments for the condition.
 	 *
 	 * @since unkwnon
-	 * @var array
+	 * @var object
 	 */
 	protected $args;
 

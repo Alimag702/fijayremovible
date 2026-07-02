@@ -83,12 +83,12 @@ class Hustle_Provider_Utils {
 	 * Get the last received data and unset it.
 	 *
 	 * @since  4.0
-	 * @param bool $unset Either unset it or not.
+	 * @param bool $unset_value Either unset it or not.
 	 * @return string
 	 */
-	final public function get_last_data_received( $unset = true ) {
+	final public function get_last_data_received( $unset_value = true ) {
 		$last_data_received = $this->last_data_received;
-		if ( $unset ) {
+		if ( $unset_value ) {
 			$this->last_data_received = null;
 		}
 
@@ -150,18 +150,14 @@ class Hustle_Provider_Utils {
 					}
 				}
 				$not_connected_addons[] = $addon;
-			} else {
-				if ( $addon['is_connected'] ) {
+			} elseif ( $addon['is_connected'] ) {
 					$connected_addons[] = $addon;
-				} else {
-					if ( 'zapier' !== $key ) {
-						$not_connected_addons[] = $addon;
-					} else {
-						// Add Zapier at the top of the non-connected providers
-						// in order to promote it in a more noticeable way.
-						array_unshift( $not_connected_addons, $addon );
-					}
-				}
+			} elseif ( 'zapier' !== $key ) {
+					$not_connected_addons[] = $addon;
+			} else {
+				// Add Zapier at the top of the non-connected providers
+				// in order to promote it in a more noticeable way.
+				array_unshift( $not_connected_addons, $addon );
 			}
 		}
 
@@ -245,14 +241,12 @@ class Hustle_Provider_Utils {
 					}
 				}
 				$not_connected_addons[] = $provider->to_array_with_form( $module_id );
-			} else {
-				if ( $provider->is_connected() && $provider->is_form_connected( $module_id ) ) {
+			} elseif ( $provider->is_connected() && $provider->is_form_connected( $module_id ) ) {
 					$data               = $provider->to_array_with_form( $module_id );
 					$data               = $provider->maybe_add_multi_name( $data, $module_id );
 					$connected_addons[] = $data;
-				} else {
-					$not_connected_addons[] = $provider->to_array_with_form( $module_id );
-				}
+			} else {
+				$not_connected_addons[] = $provider->to_array_with_form( $module_id );
 			}
 		}
 
@@ -360,7 +354,7 @@ class Hustle_Provider_Utils {
 
 		foreach ( $modules_ids as $id ) {
 
-			$module = new Hustle_Module_Model( $id );
+			$module = Hustle_Module_Model::new_instance( $id );
 
 			if ( is_wp_error( $module ) ) {
 				continue;
@@ -450,7 +444,17 @@ class Hustle_Provider_Utils {
 	 */
 	public static function format_submitted_data_for_addon( $data ) {
 		$new_data = $data;
-		unset( $new_data['form'], $new_data['module_id'], $new_data['uri'], $new_data['hustle_module_id'], $new_data['post_id'], $new_data['g-recaptcha-response'], $new_data['hustle_sub_type'], $new_data['recaptcha-response'] );
+		unset(
+			$new_data['form'],
+			$new_data['module_id'],
+			$new_data['uri'],
+			$new_data['hustle_module_id'],
+			$new_data['post_id'],
+			$new_data['g-recaptcha-response'],
+			$new_data['hustle_sub_type'],
+			$new_data['recaptcha-response'],
+			$new_data['cf-turnstile-response']
+		);
 		$new_data = apply_filters( 'hustle_provider_form_formatted_submitted_data', $new_data, $data );
 
 		return $new_data;
@@ -518,14 +522,14 @@ class Hustle_Provider_Utils {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $title Integration wizard title.
-	 * @param string $subtitle Integration wizard subtitle.
-	 * @param string $class Title wrapper extra classes.
+	 * @param string $title      Integration wizard title.
+	 * @param string $subtitle   Integration wizard subtitle.
+	 * @param string $class_name Title wrapper extra classes.
 	 * @return string
 	 */
-	public static function get_integration_modal_title_markup( $title = '', $subtitle = '', $class = '' ) {
+	public static function get_integration_modal_title_markup( $title = '', $subtitle = '', $class_name = '' ) {
 
-		$html = '<div class="integration-header ' . esc_attr( $class ) . '">';
+		$html = '<div class="integration-header ' . esc_attr( $class_name ) . '">';
 
 		if ( ! empty( $title ) ) {
 			$html .= '<h3 class="sui-box-title sui-lg" id="dialogTitle2">' . esc_html( $title ) . '</h3>';
@@ -545,15 +549,15 @@ class Hustle_Provider_Utils {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $value Button text.
-	 * @param string $class Extra classes.
-	 * @param string $action next/prev/close/connect/disconnect. Action that this button triggers.
-	 * @param bool   $loading whether the button should have the 'loading' markup.
-	 * @param bool   $disabled Whether the button is disabled.
+	 * @param string $value      Button text.
+	 * @param string $class_name Extra classes.
+	 * @param string $action     next/prev/close/connect/disconnect. Action that this button triggers.
+	 * @param bool   $loading    whether the button should have the 'loading' markup.
+	 * @param bool   $disabled   Whether the button is disabled.
 	 * @param string $custom_url Url to which the button should take the user to, if any.
 	 * @return string
 	 */
-	public static function get_provider_button_markup( $value = '', $class = '', $action = '', $loading = false, $disabled = false, $custom_url = '' ) {
+	public static function get_provider_button_markup( $value = '', $class_name = '', $action = '', $loading = false, $disabled = false, $custom_url = '' ) {
 
 		$html         = '';
 		$action_class = '';
@@ -608,7 +612,7 @@ class Hustle_Provider_Utils {
 			$html         .= sprintf(
 				'<%1$s class="sui-button-icon sui-tooltip %2$s" data-tooltip="%3$s" %4$s >',
 				$tag,
-				esc_attr( $action_class . $class ),
+				esc_attr( $action_class . $class_name ),
 				esc_html__( 'Refresh list', 'hustle' ),
 				disabled( $disabled, true, false )
 			);
@@ -621,7 +625,7 @@ class Hustle_Provider_Utils {
 
 		} else {
 
-			$html     .= '<' . $tag . ' ' . $custom_attr . ' class="sui-button ' . esc_attr( $action_class ) . esc_attr( $class ) . '" ' . disabled( $disabled, true, false ) . '>';
+			$html     .= '<' . $tag . ' ' . $custom_attr . ' class="sui-button ' . esc_attr( $action_class ) . esc_attr( $class_name ) . '" ' . disabled( $disabled, true, false ) . '>';
 				$html .= $inner;
 			$html     .= '</' . $tag . '>';
 

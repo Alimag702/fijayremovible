@@ -528,5 +528,4 @@ class Hustle_Mailchimp_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 		return $submitted_data;
 	}
-
 }

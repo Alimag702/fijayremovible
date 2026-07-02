@@ -205,7 +205,6 @@ if ( ! class_exists( 'Hustle_HubSpot_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

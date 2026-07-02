@@ -202,7 +202,6 @@ if ( ! class_exists( 'Hustle_Get_Response_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

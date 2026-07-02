@@ -1,14 +1,14 @@
 === Hustle - Email Marketing, Lead Generation, Optins, Popups ===
 Plugin Name: Hustle - Email Marketing, Lead Generation, Opt-ins, Popups
-Version: 7.8.9.2
+Version: 7.8.13.1
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
 Tags: marketing, popup, optin, newsletter, subscription form, email, advertise, signup, mailing list, wordpress popup plugin, popup maker, pop-up, opt-in
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 7.8.9.2
+Stable tag: 7.8.13.1
 
 Setup email optin forms, popups, newsletter forms & subscription forms to generate email leads with the best marketing popup builder
 
@@ -188,6 +188,67 @@ We take plugin security incredibly seriously; if you have a bug or vulnerability
 5. Build beautiful pop-ups with any of the 4 included layouts.
 
 == Changelog ==
+
+= 7.8.13.1 ( 2026-05-25 ) =
+
+- Fix: Resolve Cloudflare Turnstile conflict with The Newsletter Plugin
+
+= 7.8.13 ( 2026-05-25 ) =
+
+- Enhancement: Add new Zoho CRM integration to connect forms with Zoho CRM contacts
+- Enhancement: Add integration with The Newsletter Plugin for WordPress
+- Enhancement: Add support for Cloudflare Turnstile CAPTCHA
+- Enhancement: Add hustle_get_cta_html filter for customizing CTA button HTML
+- Enhancement: Add Telegram sharing option for current pages
+- Enhancement: Allow custom API keys for HubSpot integration
+- Fix: CTA area not clickable when the CTA label is empty
+- Fix: Prevent JavaScript TypeError when a popup contains no focusable elements
+- Fix: Resolve embed module box shadow overlapping content below
+- Fix: Add missing South Sudan option to the Visitor’s Country display condition dropdown
+- Fix: Prevent form submission failures caused by stale browser cache
+- Fix: Correct integration status remaining connected after disconnection
+- Fix: Resolve Social Sharing module preview not rendering
+
+= 7.8.12.1 ( 2026-03-31 ) =
+
+- Fix: Security hardening for shortcode handling.
+
+= 7.8.12 ( 2026-03-19 ) =
+
+- Fix: Avoid repeated HubSpot token refresh requests to the WPMU DEV API when refresh fails.
+- Fix: Schedule settings not saving when schedule is expired.
+
+= 7.8.11 ( 2026-03-19 ) =
+
+- Enhancement: Allow multiple email blocks in automated emails.
+- Enhancement: Automated Email Subject field is now required to prevent sending incomplete emails.
+- Compatibility: Updated HubSpot integration to API v3.
+- Compatibility: Addressed MailPoet deprecated errors on PHP 8.2+.
+- Compatibility: PHP 8.4 compatibility improvements.
+- Compatibility: Upgraded Convert Kit integration to API v4.
+
+= 7.8.10.2 ( 2026-02-12 ) =
+
+- Fix: Security hardening for conversion tracking requests.
+
+= 7.8.10.1 ( 2026-01-27 ) =
+
+- Fix: HubSpot integration critical error
+
+= 7.8.10 ( 2026-01-26 ) =
+ 
+- Enhancement: Upgrade Constant Contact integration to API v3 with OAuth2 PKCE
+- Enhancement: Upgrade Keap (Infusionsoft) integration to API v2
+- Enhancement: Security hardening for AWeber integration
+- Fix: Cannot scroll the Divi page editor
+- Fix: CSS rules inside Media Queries breaking Custom CSS
+- Fix: Conflict between Hustle and The Events Calendar Filter Bar
+- Fix: Consent checkbox in Forminator not checked when triggering a Hustle popup
+- Fix: Multiple GeoIP requests
+
+= 7.8.9.3 ( 2026-01-19 ) =
+ 
+- Fix: Improved security around file uploads
 
 = 7.8.9.2 ( 2026-01-14 ) =
  

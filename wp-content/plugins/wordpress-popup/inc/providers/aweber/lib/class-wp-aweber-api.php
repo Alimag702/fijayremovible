@@ -8,10 +8,10 @@
 /**
  * Include dependent files
  */
-require_once dirname( __FILE__ ) . '/class-aweber-oauth.php';
-require_once dirname( __FILE__ ) . '/class-aweber-oauth2.php';
-require_once dirname( __FILE__ ) . '/class-wp-aweber-api-exception.php';
-require_once dirname( __FILE__ ) . '/class-wp-aweber-api-not-found-exception.php';
+require_once __DIR__ . '/class-aweber-oauth.php';
+require_once __DIR__ . '/class-aweber-oauth2.php';
+require_once __DIR__ . '/class-wp-aweber-api-exception.php';
+require_once __DIR__ . '/class-wp-aweber-api-not-found-exception.php';
 
 /**
  * Class Hustle_Addon_Aweber_Wp_Api
@@ -27,7 +27,6 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 	const OAUTH_VERSION               = '1.0';
 	const HUSTLE_ADDON_AWEBER_VERSION = '1.0';
 	const APIKEY                      = 'YObwFlhWC4sBoAkpmiY4vNsZKULJ8Yn9';
-	const CONSUMER_SECRET             = 'r8ky51g2n8F2lnkuTdsLfxAVNpVEOLJdT4bWGNGz';
 
 	const CLIENT_ID                 = '9253e5C3-28d6-48fd-c102-b92b8f250G1b';
 	const REFERER                   = 'hustle_aweber_referer';
@@ -236,16 +235,12 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 					$url             .= ( '?' . http_build_query( $oauth_url_params ) );
 				}
 			}
-		} else {
-			if ( 'PATCH' === $verb ) {
+		} elseif ( 'PATCH' === $verb ) {
 				$_args['body'] = wp_json_encode( $args );
-			} else {
-				if ( 'POST' === $verb ) {
-					$_args['body'] = wp_json_encode( $args );
-				} else {
-					$url .= ( '?' . http_build_query( $args ) );
-				}
-			}
+		} elseif ( 'POST' === $verb ) {
+				$_args['body'] = wp_json_encode( $args );
+		} else {
+			$url .= ( '?' . http_build_query( $args ) );
 		}
 
 		/**
@@ -271,7 +266,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 
 		if ( is_wp_error( $res ) || ! $res ) {
 			throw new Hustle_Addon_Aweber_Wp_Api_Exception(
-				__( 'Failed to process request, make sure your API URL is correct and your server has internet connection.', 'hustle' )
+				esc_html__( 'Failed to process request, make sure your API URL is correct and your server has internet connection.', 'hustle' )
 			);
 		}
 
@@ -293,7 +288,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 
 				if ( 404 === $status_code ) {
 					/* translators: error message */
-					throw new Hustle_Addon_Aweber_Wp_Api_Not_Found_Exception( sprintf( __( 'Failed processing the request : %s', 'hustle' ), $msg ) );
+					throw new Hustle_Addon_Aweber_Wp_Api_Not_Found_Exception( sprintf( esc_html__( 'Failed processing the request : %s', 'hustle' ), esc_html( $msg ) ) );
 				}
 			}
 		}
@@ -538,7 +533,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 		$args         = array_merge( $default_args, $args );
 
 		if ( empty( $args['name'] ) ) {
-			throw new Hustle_Addon_Aweber_Wp_Api_Exception( __( 'Name is required on add AWeber custom field.', 'hustle' ) );
+			throw new Hustle_Addon_Aweber_Wp_Api_Exception( esc_html__( 'Name is required on add AWeber custom field.', 'hustle' ) );
 		}
 
 		$api_url = $this->get_api_url(
@@ -577,7 +572,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 		$args         = array_merge( $default_args, $args );
 
 		if ( empty( $args['email'] ) ) {
-			throw new Hustle_Addon_Aweber_Wp_Api_Exception( __( 'Email is required on add AWeber subscriber.', 'hustle' ) );
+			throw new Hustle_Addon_Aweber_Wp_Api_Exception( esc_html__( 'Email is required on add AWeber subscriber.', 'hustle' ) );
 		}
 
 		$api_url = $this->get_api_url(
@@ -616,7 +611,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 		$args         = array_merge( $default_args, $args );
 
 		if ( empty( $args['email'] ) ) {
-			throw new Hustle_Addon_Aweber_Wp_Api_Exception( __( 'Email is required on update AWeber subscriber.', 'hustle' ) );
+			throw new Hustle_Addon_Aweber_Wp_Api_Exception( esc_html__( 'Email is required on update AWeber subscriber.', 'hustle' ) );
 		}
 
 		$api_url = $this->get_api_url(
@@ -758,7 +753,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 	 * @return string
 	 */
 	public function get_authorization_uri( $module_id = 0, $log_referrer = true, $page = 'hustle_integrations' ) {
-		$oauth = Hustle_Addon_Aweber_Oauth2::boot( self::APIKEY, self::CONSUMER_SECRET, 'test' );
+		$oauth = Hustle_Addon_Aweber_Oauth2::boot( self::APIKEY, 'test' );
 		if ( $log_referrer ) {
 
 			/**
@@ -790,7 +785,7 @@ class Hustle_Addon_Aweber_Wp_Api extends Opt_In_WPMUDEV_API {
 	 * @param bool   $migrate Migrate.
 	 */
 	public function get_access_token( $code, $migrate = false ) {
-		$oauth = Hustle_Addon_Aweber_Oauth2::boot( self::APIKEY, self::CONSUMER_SECRET, 'test' );
+		$oauth = Hustle_Addon_Aweber_Oauth2::boot( self::APIKEY, 'test' );
 
 		try {
 			$access_token = $oauth->get_access_token( $code );

@@ -26,7 +26,6 @@ class Hustle_Provider_Autoload {
 	 * @since 3.0.5
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -119,5 +118,4 @@ class Hustle_Provider_Autoload {
 
 		self::$is_initiated = true;
 	}
-
 }

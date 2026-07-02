@@ -76,7 +76,6 @@ if ( ! class_exists( 'Hustle_Sendy_Form_Settings' ) ) :
 
 			return $response;
 		}
-
 	} // Class end.
 
 endif;

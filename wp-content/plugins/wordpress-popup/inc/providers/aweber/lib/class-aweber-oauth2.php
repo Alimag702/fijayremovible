@@ -19,13 +19,6 @@ class Hustle_Addon_Aweber_Oauth2 {
 	public $client_id;
 
 	/**
-	 * Oauth Client Secret
-	 *
-	 * @var string
-	 */
-	public $client_secret;
-
-	/**
 	 * Redirect uri
 	 *
 	 * @var string
@@ -33,11 +26,11 @@ class Hustle_Addon_Aweber_Oauth2 {
 	public $redirect_uri;
 
 	/**
-	 * Instances
+	 * Instances of Hustle_Addon_Aweber_Oauth2
 	 *
-	 * @var array
+	 * @var Hustle_Addon_Aweber_Oauth2|null
 	 */
-	protected static $instances = array();
+	protected static $instance = null;
 
 	/**
 	 * ConstactContact Oauth Version
@@ -50,13 +43,11 @@ class Hustle_Addon_Aweber_Oauth2 {
 	 * Constructor
 	 *
 	 * @param string $client_id Client ID.
-	 * @param string $client_secret Client secret.
 	 * @param string $redirect_uri Redirect URI.
 	 */
-	private function __construct( $client_id, $client_secret, $redirect_uri ) {
-		$this->client_id     = $client_id;
-		$this->client_secret = $client_secret;
-		$this->redirect_uri  = $redirect_uri;
+	private function __construct( $client_id, $redirect_uri ) {
+		$this->client_id    = $client_id;
+		$this->redirect_uri = $redirect_uri;
 	}
 
 	/**
@@ -65,17 +56,16 @@ class Hustle_Addon_Aweber_Oauth2 {
 	 * @since 4.0.2
 	 *
 	 * @param string $client_id Client ID.
-	 * @param string $client_secret Client secret.
 	 * @param string $redirect_uri Redirect URI.
 	 *
 	 * @return Hustle_Campaignmonitor|null
 	 */
-	public static function boot( $client_id, $client_secret, $redirect_uri ) {
-		if ( ! isset( self::$instances[ md5( $client_secret ) ] ) ) {
-			self::$instances[ md5( $client_secret ) ] = new static( $client_id, $client_secret, $redirect_uri );
+	public static function boot( $client_id, $redirect_uri ) {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new static( $client_id, $redirect_uri );
 		}
 
-		return self::$instances[ md5( $client_secret ) ];
+		return self::$instance;
 	}
 
 	/**
@@ -107,7 +97,6 @@ class Hustle_Addon_Aweber_Oauth2 {
 		$url = $url . '?' . http_build_query( $params, '', '&', \PHP_QUERY_RFC3986 );
 
 		return $url;
-
 	}
 
 	/**
@@ -138,7 +127,6 @@ class Hustle_Addon_Aweber_Oauth2 {
 			set_transient( 'hustle_aweber_code_verifier', $code_verifier, DAY_IN_SECONDS );
 		}
 		return $code_verifier;
-
 	}
 
 	/**
@@ -220,7 +208,7 @@ class Hustle_Addon_Aweber_Oauth2 {
 
 		if ( is_wp_error( $response ) || ! $response ) {
 			throw new Exception(
-				__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
+				esc_html__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
 			);
 		}
 
@@ -250,7 +238,5 @@ class Hustle_Addon_Aweber_Oauth2 {
 		);
 
 		return $props['auth'][ $key ];
-
 	}
-
 }

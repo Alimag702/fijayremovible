@@ -54,11 +54,7 @@ $this->render( 'admin/dashboard/components/sui-summary', $summary );
 
 $this->render( 'admin/global/sui-components/sui-tutorials' );
 
-if ( $is_free ) {
-	$this->render( 'admin/dashboard/components/blocks-free', $blocks );
-} else {
-	$this->render( 'admin/dashboard/components/blocks-pro', $blocks );
-}
+$this->render( 'admin/dashboard/components/blocks', $blocks );
 
 $this->render( 'admin/global/sui-components/sui-footer', $footer );
 

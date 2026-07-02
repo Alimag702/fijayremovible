@@ -286,7 +286,7 @@ class Hustle_SShare_Model extends Hustle_Model {
 	public static function get_social_platform_names() {
 		$social_platform_names = array(
 			'facebook'      => esc_html__( 'Facebook', 'hustle' ),
-			'twitter'       => esc_html__( 'Twitter', 'hustle' ),
+			'twitter'       => esc_html__( 'X', 'hustle' ),
 			'pinterest'     => esc_html__( 'Pinterest', 'hustle' ),
 			'reddit'        => esc_html__( 'Reddit', 'hustle' ),
 			'linkedin'      => esc_html__( 'LinkedIn', 'hustle' ),
@@ -348,7 +348,7 @@ class Hustle_SShare_Model extends Hustle_Model {
 		if ( 0 !== $post_id ) {
 
 			// Don't use stored if we don't have anything stored in this post.
-			if ( ! get_post_meta( $post_id, self::COUNTER_META_KEY ) ) {
+			if ( ! get_post_meta( $post_id, self::COUNTER_META_KEY, true ) ) {
 				return false;
 			}
 
@@ -697,7 +697,17 @@ class Hustle_SShare_Model extends Hustle_Model {
 		if ( $networks_only ) {
 			return apply_filters(
 				'hustle_networks_with_share_enpoints',
-				array( 'facebook', 'twitter', 'pinterest', 'reddit', 'linkedin', 'vkontakte', 'whatsapp', 'email' )
+				array(
+					'facebook',
+					'twitter',
+					'pinterest',
+					'reddit',
+					'linkedin',
+					'vkontakte',
+					'whatsapp',
+					'email',
+					'telegram',
+				)
 			);
 
 		}
@@ -719,6 +729,7 @@ class Hustle_SShare_Model extends Hustle_Model {
 				'linkedin'  => 'https://www.linkedin.com/shareArticle?mini=true&url=' . $current_url,
 				'vkontakte' => 'https://vk.com/share.php?url=' . $current_url,
 				'whatsapp'  => 'https://api.whatsapp.com/send?text=' . $current_url,
+				'telegram'  => 'https://t.me/share/url?url=' . $current_url . '&text=' . $title,
 				'email'     => 'mailto:?subject=' . $title . '&body=' . $current_url,
 
 			),
@@ -734,5 +745,4 @@ class Hustle_SShare_Model extends Hustle_Model {
 	public function get_renderer() {
 		return new Hustle_Renderer_Sshare();
 	}
-
 }

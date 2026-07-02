@@ -48,5 +48,4 @@ class Opt_In_Condition_Wc_Archive_Pages extends Opt_In_Condition_Abstract {
 		}
 		return false;
 	}
-
 }

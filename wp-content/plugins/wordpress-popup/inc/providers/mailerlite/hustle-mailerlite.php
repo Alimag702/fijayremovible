@@ -348,16 +348,14 @@ if ( ! class_exists( 'Hustle_MailerLite' ) ) :
 			$member_groups = $api->get_subscriber( $email );
 			if ( is_wp_error( $member_groups ) ) {
 				return false;
-			} else {
-				if ( ! isset( $member_groups['error'] ) ) {
-					foreach ( $member_groups as $member_group => $group ) {
-						if ( $group['id'] === (int) $group_id ) {
-							return true;
-						}
+			} elseif ( ! isset( $member_groups['error'] ) ) {
+				foreach ( $member_groups as $member_group => $group ) {
+					if ( $group['id'] === (int) $group_id ) {
+						return true;
 					}
-				} else {
-					return false;
 				}
+			} else {
+				return false;
 			}
 			return false;
 		}

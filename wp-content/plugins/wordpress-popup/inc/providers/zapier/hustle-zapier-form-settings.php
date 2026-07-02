@@ -189,7 +189,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 */
 		private function get_sample_data() {
 			// Get default form fields.
-			$module   = new Hustle_Module_Model( $this->module_id );
+			$module   = Hustle_Module_Model::new_instance( $this->module_id );
 			$elements = $module->get_form_fields();
 
 			if ( ! $elements ) {
@@ -303,7 +303,6 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 				$this->save_form_settings_values( $addon_form_settings, true );
 			}
 		}
-
 	} // Class end.
 
 endif;

@@ -38,7 +38,7 @@ $types = array(
 			<?php
 			$i = 0;
 			foreach ( $types as $key => $text ) :
-				$i++;
+				++$i;
 				?>
 
 				<button
@@ -64,7 +64,7 @@ $types = array(
 			<?php
 			$i = 0;
 			foreach ( $types as $key => $text ) :
-				$i++;
+				++$i;
 				?>
 
 				<div

@@ -177,7 +177,7 @@ abstract class Hustle_Model {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var array $data
+	 * @var object $data
 	 */
 	protected $data;
 
@@ -186,7 +186,7 @@ abstract class Hustle_Model {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var $wpdb WPDB
+	 * @var \WPDB $wpdb
 	 * @access private
 	 */
 	protected $wpdb;
@@ -206,35 +206,41 @@ abstract class Hustle_Model {
 	public static $count_cookie_expiration = 30;
 
 	/**
-	 * Opt_In_Data constructor.
-	 *
-	 * @param int $id Module ID.
-	 * @return \WP_Error|null
+	 * Hustle_Model constructor. Hide constructor to force use of new_instance method.
 	 */
-	public function __construct( $id = null ) {
+	private function __construct() {
 		global $wpdb;
 		$this->wpdb = $wpdb;
-
-		if ( empty( $id ) ) {
-			return;
+	}
+	/**
+	 * Initialize the model.
+	 *
+	 * @param int $module_id Module ID.
+	 * @return \WP_Error|bool
+	 */
+	public function init( $module_id = null ) {
+		if ( empty( $module_id ) ) {
+			return new WP_Error( 'hustle-module', esc_html__( 'Module ID is required to initialize the model!', 'hustle' ) );
 		}
 
 		$cache_group = 'hustle_model_data';
-		$data        = wp_cache_get( $id, $cache_group );
-		$id          = (int) $id;
+		$data        = wp_cache_get( $module_id, $cache_group );
+		$module_id   = (int) $module_id;
 
 		if ( false === $data ) {
 			global $wpdb;
-			$data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'hustle_modules WHERE module_id = %d', $id ), OBJECT );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'hustle_modules WHERE module_id = %d', $module_id ), OBJECT );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			if ( empty( $data ) ) {
-				return new WP_Error( 'hustle-module', __( 'Module does not exist!', 'hustle' ) );
+				return new WP_Error( 'hustle-module', esc_html__( 'Module does not exist!', 'hustle' ) );
 			}
 
-			wp_cache_set( $id, $data, $cache_group );
+			wp_cache_set( $module_id, $data, $cache_group );
 		}
 
 		$this->data = $data;
 		$this->populate();
+
+		return true;
 	}
 
 	/**
@@ -251,9 +257,9 @@ abstract class Hustle_Model {
 		if ( empty( $module_type ) ) {
 			$module = new WP_Error( '404', 'Module not found' );
 		} elseif ( self::SOCIAL_SHARING_MODULE === $module_type ) {
-			$module = new Hustle_SShare_Model( $id );
+			$module = Hustle_SShare_Model::new_instance( $id );
 		} else {
-			$module = new Hustle_Module_Model( $id );
+			$module = Hustle_Module_Model::new_instance( $id );
 		}
 
 		return $module;
@@ -489,7 +495,6 @@ abstract class Hustle_Model {
 			$module_meta_group = 'hustle_module_meta';
 			wp_cache_delete( $id, $module_meta_group );
 		}
-
 	}
 
 	/**
@@ -583,7 +588,6 @@ abstract class Hustle_Model {
 		}
 
 		return $this->add_meta( $meta_key, $meta_value );
-
 	}
 
 	/**
@@ -603,11 +607,11 @@ abstract class Hustle_Model {
 	 * @since 4.0 param $get_cached added.
 	 *
 	 * @param string $meta_key Meta key.
-	 * @param mixed  $default Default value.
+	 * @param mixed  $default_value Default value.
 	 * @param bool   $get_cached Get cached.
 	 * @return null|string|$default
 	 */
-	public function get_meta( $meta_key, $default = null, $get_cached = true ) {
+	public function get_meta( $meta_key, $default_value = null, $get_cached = true ) {
 		$cache_group = 'hustle_module_meta';
 
 		$module_meta = wp_cache_get( $this->id, $cache_group );
@@ -624,7 +628,31 @@ abstract class Hustle_Model {
 
 		}
 
-		return is_null( $module_meta[ $meta_key ] ) ? $default : $module_meta[ $meta_key ];
+		return is_null( $module_meta[ $meta_key ] ) ? $default_value : $module_meta[ $meta_key ];
+	}
+
+	/**
+	 * Deletes meta for the current optin
+	 *
+	 * @since 7.8.13
+	 *
+	 * @param string $meta_key Meta key.
+	 * @return false|int
+	 */
+	public function delete_meta( $meta_key ) {
+		$this->clean_module_cache( 'meta' );
+
+		return $this->wpdb->delete(
+			Hustle_Db::modules_meta_table(),
+			array(
+				'module_id' => $this->id,
+				'meta_key'  => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			),
+			array(
+				'%d',
+				'%s',
+			)
+		);
 	}
 
 	/**
@@ -986,12 +1014,12 @@ abstract class Hustle_Model {
 	 * @since 2.0
 	 *
 	 * @param string $key Meta key.
-	 * @param array  $default Value to return if no meta was found.
+	 * @param array  $default_value Value to return if no meta was found.
 	 * @param bool   $get_cached Whether to use the value stored in cache.
 	 *
 	 * @return array
 	 */
-	protected function get_settings_meta( $key, $default = array(), $get_cached = true ) {
+	protected function get_settings_meta( $key, $default_value = array(), $get_cached = true ) {
 		$settings_json = $this->get_meta( $key, null, $get_cached );
 
 		if ( $settings_json ) {
@@ -1005,7 +1033,7 @@ abstract class Hustle_Model {
 			}
 		}
 
-		return $default;
+		return $default_value;
 	}
 
 	/**
@@ -1431,5 +1459,31 @@ abstract class Hustle_Model {
 		}
 
 		return $text;
+	}
+
+	/**
+	 * Opt_In_Data constructor.
+	 *
+	 * @param int $module_id Module ID.
+	 * @return \WP_Error|Hustle_Module_Model
+	 */
+	public static function new_instance( $module_id = null ) {
+		$module = new static();
+		// If no ID is provided, return an empty model.
+		// This is useful when creating a new module.
+		if ( is_null( $module_id ) ) {
+			return $module;
+		}
+
+		if ( ! is_numeric( $module_id ) || $module_id < 1 ) {
+			return new WP_Error( 'invalid_module_id', __( 'The provided module ID is invalid.', 'hustle' ) );
+		}
+
+		$result = $module->init( $module_id );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return $module;
 	}
 }

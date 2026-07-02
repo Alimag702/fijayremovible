@@ -112,28 +112,21 @@
 
 		<?php } ?>
 
-		<?php $query_array = array( 'page' => Hustle_Data::get_listing_page_by_module_type( $widget_type ) ); ?>
-
 		<?php if ( $capability['hustle_create'] ) { ?>
-			<a
-				href="
-					<?php
-					if ( ! Hustle_Data::was_free_limit_reached( $widget_type ) ) {
-						$args = array_merge( $query_array, array( 'create-module' => 'true' ) );
-					} else {
-						$args = array_merge( $query_array, array( 'requires-pro' => 'true' ) );
-					}
-					echo esc_url( add_query_arg( $args, 'admin.php' ) );
-					?>
-					"
-				class="sui-button sui-button-blue"
-			>
+			<?php
+			$args = array(
+				'page'          => Hustle_Data::get_listing_page_by_module_type( $widget_type ),
+				'create-module' => 'true',
+			);
+			?>
+			<a href="<?php echo esc_url( add_query_arg( $args, 'admin.php' ) ); ?>" class="sui-button sui-button-blue">
 				<span class="sui-icon-plus" aria-hidden="true"></span>
 				<?php esc_html_e( 'Create', 'hustle' ); ?>
 			</a>
 		<?php } ?>
 
 		<?php if ( count( $modules ) ) : ?>
+			<?php $query_array = array( 'page' => Hustle_Data::get_listing_page_by_module_type( $widget_type ) ); ?>
 
 			<div class="sui-actions-right">
 				<p><small><strong>

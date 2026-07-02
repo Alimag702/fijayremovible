@@ -69,7 +69,6 @@ abstract class Hustle_GHBlock_Abstract {
 				)
 			);
 		}
-
 	}
 
 	/**

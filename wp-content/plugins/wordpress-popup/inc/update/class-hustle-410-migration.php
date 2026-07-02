@@ -180,10 +180,14 @@ class Hustle_410_Migration {
 
 					foreach ( $types as $type ) {
 						if (
-							! empty( $conds[ $type ][ $type ] ) &&
-							in_array( 'all', $conds[ $type ][ $type ], true ) ||
-							! empty( $conds[ $type ]['selected_cpts'] ) &&
-							in_array( 'all', $conds[ $type ]['selected_cpts'], true )
+							(
+								! empty( $conds[ $type ][ $type ] ) &&
+								in_array( 'all', $conds[ $type ][ $type ], true )
+							) ||
+							(
+								! empty( $conds[ $type ]['selected_cpts'] ) &&
+								in_array( 'all', $conds[ $type ]['selected_cpts'], true )
+							)
 						) {
 							unset( $conds[ $type ][ $type ], $conds[ $type ]['selected_cpts'] );
 							$conds[ $type ]['filter_type'] = empty( $conds[ $type ]['filter_type'] ) || 'only' !== $conds[ $type ]['filter_type'] ? 'only' : 'except';

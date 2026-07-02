@@ -36,12 +36,6 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 
 			add_action( 'admin_init', array( $this, 'add_privacy_message' ) );
 
-			if ( Opt_In_Utils::is_free() ) {
-				add_action( 'admin_menu', array( $this, 'add_upsell_menu_item' ), 99 );
-				add_action( 'admin_print_styles', array( $this, 'print_upsell_menu_item_styles' ) );
-				add_action( 'admin_print_footer_scripts', array( $this, 'print_upsell_menu_item_script' ) );
-			}
-
 			add_filter( 'w3tc_save_options', array( $this, 'filter_w3tc_save_options' ), 10, 1 );
 			add_filter( 'plugin_action_links', array( $this, 'add_plugin_action_links' ), 10, 2 );
 			add_filter( 'network_admin_plugin_action_links', array( $this, 'add_plugin_action_links' ), 10, 2 );
@@ -68,57 +62,6 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 				$content  = $renderer->render( 'general/policy-text', $params, true );
 				wp_add_privacy_policy_content( 'Hustle', wp_kses_post( $content ) );
 			}
-		}
-
-		/**
-		 * Adds Upsell menu item.
-		 *
-		 * @since 7.8.8
-		 */
-		public function add_upsell_menu_item() {
-			add_submenu_page(
-				'hustle',
-				__( 'Get Hustle Pro', 'hustle' ),
-				__( 'Get Hustle Pro', 'hustle' ),
-				'hustle_menu',
-				'https://wpmudev.com/project/hustle/?utm_source=hustle&utm_medium=plugin&utm_campaign=hustle_submenu_upsell',
-			);
-		}
-
-		/**
-		 * Prints styles for Upsell menu item.
-		 *
-		 * @since 7.8.8
-		 */
-		public function print_upsell_menu_item_styles() {
-			?>
-			<style id="hustle-upsell">
-				#adminmenu #toplevel_page_hustle .wp-submenu li:last-child a[href^="https://wpmudev.com"] {
-					background-color: #8d00b1 !important; color: #fff !important; font-weight: 500 !important; letter-spacing: -0.2px;
-				}
-			</style>
-			<?php
-		}
-
-		/**
-		 * Prints scripts for Upsell menu item.
-		 *
-		 * @since 7.8.8
-		 */
-		public function print_upsell_menu_item_script() {
-			?>
-			<script>
-				jQuery( document ).ready( function ( $ ) {
-					/**
-					 * Open the upsell link in a new tab.
-					 */
-					$( '#toplevel_page_hustle .wp-submenu li:last-child a[href^="https://wpmudev.com"]' ).on( 'click', function ( e ) {
-						e.preventDefault();
-						window.open( $( this ).attr( 'href' ), '_blank' );
-					} );
-				} );
-			</script>
-			<?php
 		}
 
 		/**

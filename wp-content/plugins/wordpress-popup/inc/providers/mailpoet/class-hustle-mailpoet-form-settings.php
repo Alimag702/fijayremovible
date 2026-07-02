@@ -15,6 +15,14 @@
 class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstract {
 
 	/**
+	 * Cache for the lists fetched from the API, to avoid multiple calls when rendering the first step.
+	 *
+	 * @since 4.4.0
+	 * @var array
+	 */
+	private $available_lists = array();
+
+	/**
 	 * Options that must be set in order to consider the integration as "connected" to the form.
 	 *
 	 * @since 4.4.0
@@ -120,7 +128,7 @@ class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstra
 
 		// Save only after the step has been validated and there are no errors.
 		if ( $is_submit && empty( $error_message ) ) {
-			$current_data['list_name'] = $this->_lists[ $current_data['list_id'] ];
+			$current_data['list_name'] = $this->available_lists[ $current_data['list_id'] ];
 			$this->save_form_settings_values( $current_data );
 		}
 
@@ -144,7 +152,7 @@ class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstra
 		if ( is_array( $fetched_lists ) && ! empty( $fetched_lists ) ) {
 			$lists = wp_list_pluck( $fetched_lists, 'name', 'id' );
 
-			$this->_lists = $lists;
+			$this->available_lists = $lists;
 		}
 
 		$options = array(

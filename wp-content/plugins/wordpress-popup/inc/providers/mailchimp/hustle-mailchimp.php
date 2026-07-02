@@ -660,7 +660,7 @@ if ( ! class_exists( 'Hustle_Mailchimp' ) ) :
 				}
 			}
 			if ( ! empty( $new_fields ) ) {
-				$module = new Hustle_Module_Model( $module_id );
+				$module = Hustle_Module_Model::new_instance( $module_id );
 				if ( is_wp_error( $module ) ) {
 					return $module;
 				}
@@ -699,13 +699,13 @@ if ( ! class_exists( 'Hustle_Mailchimp' ) ) :
 		/**
 		 * Array has item?
 		 *
-		 * @param array $array Array.
+		 * @param array $source_array Array.
 		 * @param type  $keys Keys.
 		 * @return boolean
 		 */
-		private function array_has_items( $array, $keys ) {
+		private function array_has_items( $source_array, $keys ) {
 			foreach ( $keys as $key ) {
-				if ( ! isset( $array[ $key ] ) ) {
+				if ( ! isset( $source_array[ $key ] ) ) {
 					return false;
 				}
 			}

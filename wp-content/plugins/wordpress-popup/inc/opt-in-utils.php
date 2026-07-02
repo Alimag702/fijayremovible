@@ -48,8 +48,8 @@ class Opt_In_Utils {
 		$referrer = '';
 
 		$po_method = filter_input( INPUT_POST, '_po_method_', FILTER_SANITIZE_SPECIAL_CHARS );
-		$is_ajax   = defined( 'DOING_AJAX' ) && DOING_AJAX
-			|| 'raw' === $po_method;
+		$is_ajax   = ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
+			'raw' === $po_method;
 
 		$http_referer = filter_input( INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_SPECIAL_CHARS );
 		if ( isset( $_REQUEST['thereferrer'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -66,22 +66,22 @@ class Opt_In_Utils {
 	 * Tests if the current referrer is one of the referers of the list.
 	 * Current referrer has to be specified in the URL param "thereferer".
 	 *
-	 * @param  array $list List of referers to check.
+	 * @param  array $source_list List of referers to check.
 	 * @return bool
 	 */
-	public static function test_referrer( $list ) {
+	public static function test_referrer( $source_list ) {
 		$response = false;
-		if ( is_string( $list ) ) {
-			$list = preg_split( '/\r\n|\r|\n/', $list );
+		if ( is_string( $source_list ) ) {
+			$source_list = preg_split( '/\r\n|\r|\n/', $source_list );
 		}
-		if ( ! is_array( $list ) ) {
+		if ( ! is_array( $source_list ) ) {
 			return true;
 		}
 
 		$referrer = self::get_referrer();
 
 		if ( ! empty( $referrer ) ) {
-			foreach ( $list as $item ) {
+			foreach ( $source_list as $item ) {
 				$item = trim( $item );
 				$res  = stripos( $referrer, $item ) || fnmatch( $item, $referrer );
 				if ( false !== $res ) {
@@ -134,8 +134,8 @@ class Opt_In_Utils {
 			return '';
 		}
 
-		$host = filter_var( wp_unslash( $_SERVER['HTTP_HOST'] ), FILTER_SANITIZE_SPECIAL_CHARS );
-		$uri  = filter_var( wp_unslash( $_SERVER['REQUEST_URI'] ), FILTER_SANITIZE_SPECIAL_CHARS );
+		$host = filter_var( wp_unslash( $_SERVER['HTTP_HOST'] ), FILTER_SANITIZE_URL );
+		$uri  = filter_var( wp_unslash( $_SERVER['REQUEST_URI'] ), FILTER_SANITIZE_URL );
 
 		$url = $host . $uri;
 
@@ -143,7 +143,7 @@ class Opt_In_Utils {
 			return $url;
 		}
 
-		return esc_url( 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://' . $url );
+		return 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://' . $url;
 	}
 
 	/**
@@ -258,7 +258,7 @@ class Opt_In_Utils {
 		} else {
 
 			// If editing a module and the user isn't godish...
-			$module = new Hustle_Module_Model( $module_id );
+			$module = Hustle_Module_Model::new_instance( $module_id );
 
 			// If the module isn't valid, abort.
 			if ( is_wp_error( $module ) ) {
@@ -473,11 +473,11 @@ class Opt_In_Utils {
 			array_walk_recursive(
 				$value,
 				function ( &$val ) {
-					$val = sanitize_text_field( $val );
+					$val = sanitize_textarea_field( $val );
 				}
 			);
 		} else {
-			$value = sanitize_text_field( $value );
+			$value = sanitize_textarea_field( $value );
 		}
 
 		return $value;
@@ -689,10 +689,10 @@ class Opt_In_Utils {
 	 *
 	 * @since 4.0.4
 	 * @param string $property Requested post property.
-	 * @param string $default Fallback value.
+	 * @param string $default_value Fallback value.
 	 * @return string
 	 */
-	public static function get_post_data( $property, $default = '' ) {
+	public static function get_post_data( $property, $default_value = '' ) {
 		global $post;
 
 		if ( ! $post ) {
@@ -714,9 +714,9 @@ class Opt_In_Utils {
 		$post_data = (array) $post;
 		if ( isset( $post_data[ $property ] ) ) {
 			return $post_data[ $property ];
-		} else {
-			return $default;
 		}
+
+		return $default_value;
 	}
 
 	// ====================================
@@ -757,22 +757,22 @@ class Opt_In_Utils {
 	 *
 	 * @param string $old_key Old key.
 	 * @param string $new_key New key.
-	 * @param array  $array Array.
+	 * @param array  $source_array Array.
 	 * @return array
 	 */
-	public static function replace_array_key( $old_key, $new_key, $array ) {
+	public static function replace_array_key( $old_key, $new_key, $source_array ) {
 
 		// Replace the name without changing the array's order.
-		$keys_array = array_keys( $array );
+		$keys_array = array_keys( $source_array );
 		$index      = array_search( $old_key, $keys_array, true );
 
 		if ( false === $index ) {
-			return $array;
+			return $source_array;
 		}
 
 		$keys_array[ $index ] = $new_key;
 
-		$new_array = array_combine( $keys_array, array_values( $array ) );
+		$new_array = array_combine( $keys_array, array_values( $source_array ) );
 
 		return $new_array;
 	}
@@ -872,11 +872,11 @@ class Opt_In_Utils {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param array $array Array.
+	 * @param array $source_array Array.
 	 * @return mixed
 	 */
-	public static function array_key_first( array $array ) {
-		return $array ? array_keys( $array )[0] : null;
+	public static function array_key_first( array $source_array ) {
+		return $source_array ? array_keys( $source_array )[0] : null;
 	}
 
 	/**
@@ -917,12 +917,12 @@ class Opt_In_Utils {
 	 *
 	 * @since 4.0.3
 	 * @see Opt_In_Utils::replace_global_placeholders()
-	 * @param string $string String with placeholders to be replaced.
+	 * @param string $source_text String with placeholders to be replaced.
 	 * @return string
 	 */
-	public static function replace_global_placeholders( $string ) {
+	public static function replace_global_placeholders( $source_text ) {
 
-		preg_match_all( '/\{[^}]*\}/', $string, $matches );
+		preg_match_all( '/\{[^}]*\}/', $source_text, $matches );
 
 		if ( ! empty( $matches[0] ) && is_array( $matches[0] ) ) {
 
@@ -951,13 +951,13 @@ class Opt_In_Utils {
 
 					if ( $replacement !== $placeholder ) {
 						// Replace if we found something.
-						$string = str_replace( $placeholder, $replacement, $string );
+						$source_text = str_replace( $placeholder, $replacement, $source_text );
 					}
 				}
 			}
 		}
 
-		return $string;
+		return $source_text;
 	}
 
 	// Static stuff below.
@@ -997,254 +997,254 @@ class Opt_In_Utils {
 	public static function get_countries() {
 
 		$countries = array(
-			'AU' => __( 'Australia', 'hustle' ),
-			'AF' => __( 'Afghanistan', 'hustle' ),
-			'AL' => __( 'Albania', 'hustle' ),
-			'DZ' => __( 'Algeria', 'hustle' ),
-			'AS' => __( 'American Samoa', 'hustle' ),
-			'AD' => __( 'Andorra', 'hustle' ),
-			'AO' => __( 'Angola', 'hustle' ),
-			'AI' => __( 'Anguilla', 'hustle' ),
-			'AQ' => __( 'Antarctica', 'hustle' ),
-			'AG' => __( 'Antigua and Barbuda', 'hustle' ),
-			'AR' => __( 'Argentina', 'hustle' ),
-			'AM' => __( 'Armenia', 'hustle' ),
-			'AW' => __( 'Aruba', 'hustle' ),
-			'AT' => __( 'Austria', 'hustle' ),
-			'AZ' => __( 'Azerbaijan', 'hustle' ),
-			'BS' => __( 'Bahamas', 'hustle' ),
-			'BH' => __( 'Bahrain', 'hustle' ),
-			'BD' => __( 'Bangladesh', 'hustle' ),
-			'BB' => __( 'Barbados', 'hustle' ),
-			'BY' => __( 'Belarus', 'hustle' ),
-			'BE' => __( 'Belgium', 'hustle' ),
-			'BZ' => __( 'Belize', 'hustle' ),
-			'BJ' => __( 'Benin', 'hustle' ),
-			'BM' => __( 'Bermuda', 'hustle' ),
-			'BT' => __( 'Bhutan', 'hustle' ),
-			'BO' => __( 'Bolivia', 'hustle' ),
-			'BA' => __( 'Bosnia and Herzegovina', 'hustle' ),
-			'BW' => __( 'Botswana', 'hustle' ),
-			'BV' => __( 'Bouvet Island', 'hustle' ),
-			'BR' => __( 'Brazil', 'hustle' ),
-			'IO' => __( 'British Indian Ocean Territory', 'hustle' ),
-			'BN' => __( 'Brunei', 'hustle' ),
-			'BG' => __( 'Bulgaria', 'hustle' ),
-			'BF' => __( 'Burkina Faso', 'hustle' ),
-			'BI' => __( 'Burundi', 'hustle' ),
-			'KH' => __( 'Cambodia', 'hustle' ),
-			'CM' => __( 'Cameroon', 'hustle' ),
-			'CA' => __( 'Canada', 'hustle' ),
-			'CV' => __( 'Cape Verde', 'hustle' ),
-			'KY' => __( 'Cayman Islands', 'hustle' ),
-			'CF' => __( 'Central African Republic', 'hustle' ),
-			'TD' => __( 'Chad', 'hustle' ),
-			'CL' => __( 'Chile', 'hustle' ),
-			'CN' => __( 'China, People\'s Republic of', 'hustle' ),
-			'CX' => __( 'Christmas Island', 'hustle' ),
-			'CC' => __( 'Cocos Islands', 'hustle' ),
-			'CO' => __( 'Colombia', 'hustle' ),
-			'KM' => __( 'Comoros', 'hustle' ),
-			'CD' => __( 'Congo, Democratic Republic of the', 'hustle' ),
-			'CG' => __( 'Congo, Republic of the', 'hustle' ),
-			'CK' => __( 'Cook Islands', 'hustle' ),
-			'CR' => __( 'Costa Rica', 'hustle' ),
-			'CI' => __( 'Côte d\'Ivoire', 'hustle' ),
-			'HR' => __( 'Croatia', 'hustle' ),
-			'CU' => __( 'Cuba', 'hustle' ),
-			'CW' => __( 'Curaçao', 'hustle' ),
-			'CY' => __( 'Cyprus', 'hustle' ),
-			'CZ' => __( 'Czech Republic', 'hustle' ),
-			'DK' => __( 'Denmark', 'hustle' ),
-			'DJ' => __( 'Djibouti', 'hustle' ),
-			'DM' => __( 'Dominica', 'hustle' ),
-			'DO' => __( 'Dominican Republic', 'hustle' ),
-			'TL' => __( 'East Timor', 'hustle' ),
-			'EC' => __( 'Ecuador', 'hustle' ),
-			'EG' => __( 'Egypt', 'hustle' ),
-			'SV' => __( 'El Salvador', 'hustle' ),
-			'GQ' => __( 'Equatorial Guinea', 'hustle' ),
-			'ER' => __( 'Eritrea', 'hustle' ),
-			'EE' => __( 'Estonia', 'hustle' ),
-			'ET' => __( 'Ethiopia', 'hustle' ),
-			'FK' => __( 'Falkland Islands', 'hustle' ),
-			'FO' => __( 'Faroe Islands', 'hustle' ),
-			'FJ' => __( 'Fiji', 'hustle' ),
-			'FI' => __( 'Finland', 'hustle' ),
-			'FR' => __( 'France', 'hustle' ),
-			'FX' => __( 'France, Metropolitan', 'hustle' ),
-			'GF' => __( 'French Guiana', 'hustle' ),
-			'PF' => __( 'French Polynesia', 'hustle' ),
-			'TF' => __( 'French South Territories', 'hustle' ),
-			'GA' => __( 'Gabon', 'hustle' ),
-			'GM' => __( 'Gambia', 'hustle' ),
-			'GE' => __( 'Georgia', 'hustle' ),
-			'DE' => __( 'Germany', 'hustle' ),
-			'GH' => __( 'Ghana', 'hustle' ),
-			'GI' => __( 'Gibraltar', 'hustle' ),
-			'GR' => __( 'Greece', 'hustle' ),
-			'GL' => __( 'Greenland', 'hustle' ),
-			'GD' => __( 'Grenada', 'hustle' ),
-			'GP' => __( 'Guadeloupe', 'hustle' ),
-			'GU' => __( 'Guam', 'hustle' ),
-			'GT' => __( 'Guatemala', 'hustle' ),
-			'GN' => __( 'Guinea', 'hustle' ),
-			'GW' => __( 'Guinea-Bissau', 'hustle' ),
-			'GY' => __( 'Guyana', 'hustle' ),
-			'HT' => __( 'Haiti', 'hustle' ),
-			'HM' => __( 'Heard Island And Mcdonald Island', 'hustle' ),
-			'HN' => __( 'Honduras', 'hustle' ),
-			'HK' => __( 'Hong Kong', 'hustle' ),
-			'HU' => __( 'Hungary', 'hustle' ),
-			'IS' => __( 'Iceland', 'hustle' ),
-			'IN' => __( 'India', 'hustle' ),
-			'ID' => __( 'Indonesia', 'hustle' ),
-			'IR' => __( 'Iran', 'hustle' ),
-			'IQ' => __( 'Iraq', 'hustle' ),
-			'IE' => __( 'Ireland', 'hustle' ),
-			'IL' => __( 'Israel', 'hustle' ),
-			'IT' => __( 'Italy', 'hustle' ),
-			'JM' => __( 'Jamaica', 'hustle' ),
-			'JP' => __( 'Japan', 'hustle' ),
-			'JT' => __( 'Johnston Island', 'hustle' ),
-			'JO' => __( 'Jordan', 'hustle' ),
-			'KZ' => __( 'Kazakhstan', 'hustle' ),
-			'KE' => __( 'Kenya', 'hustle' ),
-			'XK' => __( 'Kosovo', 'hustle' ),
-			'KI' => __( 'Kiribati', 'hustle' ),
-			'KP' => __( 'Korea, Democratic People\'s Republic of', 'hustle' ),
-			'KR' => __( 'Korea, Republic of', 'hustle' ),
-			'KW' => __( 'Kuwait', 'hustle' ),
-			'KG' => __( 'Kyrgyzstan', 'hustle' ),
-			'LA' => __( 'Lao People\'s Democratic Republic', 'hustle' ),
-			'LV' => __( 'Latvia', 'hustle' ),
-			'LB' => __( 'Lebanon', 'hustle' ),
-			'LS' => __( 'Lesotho', 'hustle' ),
-			'LR' => __( 'Liberia', 'hustle' ),
-			'LY' => __( 'Libya', 'hustle' ),
-			'LI' => __( 'Liechtenstein', 'hustle' ),
-			'LT' => __( 'Lithuania', 'hustle' ),
-			'LU' => __( 'Luxembourg', 'hustle' ),
-			'MO' => __( 'Macau', 'hustle' ),
-			'MK' => __( 'Macedonia', 'hustle' ),
-			'MG' => __( 'Madagascar', 'hustle' ),
-			'MW' => __( 'Malawi', 'hustle' ),
-			'MY' => __( 'Malaysia', 'hustle' ),
-			'MV' => __( 'Maldives', 'hustle' ),
-			'ML' => __( 'Mali', 'hustle' ),
-			'MT' => __( 'Malta', 'hustle' ),
-			'MH' => __( 'Marshall Islands', 'hustle' ),
-			'MQ' => __( 'Martinique', 'hustle' ),
-			'MR' => __( 'Mauritania', 'hustle' ),
-			'MU' => __( 'Mauritius', 'hustle' ),
-			'YT' => __( 'Mayotte', 'hustle' ),
-			'MX' => __( 'Mexico', 'hustle' ),
-			'FM' => __( 'Micronesia', 'hustle' ),
-			'MD' => __( 'Moldova', 'hustle' ),
-			'MC' => __( 'Monaco', 'hustle' ),
-			'MN' => __( 'Mongolia', 'hustle' ),
-			'ME' => __( 'Montenegro', 'hustle' ),
-			'MS' => __( 'Montserrat', 'hustle' ),
-			'MA' => __( 'Morocco', 'hustle' ),
-			'MZ' => __( 'Mozambique', 'hustle' ),
-			'MM' => __( 'Myanmar', 'hustle' ),
-			'NA' => __( 'Namibia', 'hustle' ),
-			'NR' => __( 'Nauru', 'hustle' ),
-			'NP' => __( 'Nepal', 'hustle' ),
-			'NL' => __( 'Netherlands', 'hustle' ),
-			'AN' => __( 'Netherlands Antilles', 'hustle' ),
-			'NC' => __( 'New Caledonia', 'hustle' ),
-			'NZ' => __( 'New Zealand', 'hustle' ),
-			'NI' => __( 'Nicaragua', 'hustle' ),
-			'NE' => __( 'Niger', 'hustle' ),
-			'NG' => __( 'Nigeria', 'hustle' ),
-			'NU' => __( 'Niue', 'hustle' ),
-			'NF' => __( 'Norfolk Island', 'hustle' ),
-			'MP' => __( 'Northern Mariana Islands', 'hustle' ),
-			'MP' => __( 'Mariana Islands, Northern', 'hustle' ),
-			'NO' => __( 'Norway', 'hustle' ),
-			'OM' => __( 'Oman', 'hustle' ),
-			'PK' => __( 'Pakistan', 'hustle' ),
-			'PW' => __( 'Palau', 'hustle' ),
-			'PS' => __( 'Palestine, State of', 'hustle' ),
-			'PA' => __( 'Panama', 'hustle' ),
-			'PG' => __( 'Papua New Guinea', 'hustle' ),
-			'PY' => __( 'Paraguay', 'hustle' ),
-			'PE' => __( 'Peru', 'hustle' ),
-			'PH' => __( 'Philippines', 'hustle' ),
-			'PN' => __( 'Pitcairn Islands', 'hustle' ),
-			'PL' => __( 'Poland', 'hustle' ),
-			'PT' => __( 'Portugal', 'hustle' ),
-			'PR' => __( 'Puerto Rico', 'hustle' ),
-			'QA' => __( 'Qatar', 'hustle' ),
-			'RE' => __( 'Réunion', 'hustle' ),
-			'RO' => __( 'Romania', 'hustle' ),
-			'RU' => __( 'Russia', 'hustle' ),
-			'RW' => __( 'Rwanda', 'hustle' ),
-			'SH' => __( 'Saint Helena', 'hustle' ),
-			'KN' => __( 'Saint Kitts and Nevis', 'hustle' ),
-			'LC' => __( 'Saint Lucia', 'hustle' ),
-			'PM' => __( 'Saint Pierre and Miquelon', 'hustle' ),
-			'VC' => __( 'Saint Vincent and the Grenadines', 'hustle' ),
-			'WS' => __( 'Samoa', 'hustle' ),
-			'SM' => __( 'San Marino', 'hustle' ),
-			'ST' => __( 'Sao Tome and Principe', 'hustle' ),
-			'SA' => __( 'Saudi Arabia', 'hustle' ),
-			'SN' => __( 'Senegal', 'hustle' ),
-			'CS' => __( 'Serbia', 'hustle' ),
-			'SC' => __( 'Seychelles', 'hustle' ),
-			'SL' => __( 'Sierra Leone', 'hustle' ),
-			'SG' => __( 'Singapore', 'hustle' ),
-			'MF' => __( 'Sint Maarten', 'hustle' ),
-			'SK' => __( 'Slovakia', 'hustle' ),
-			'SI' => __( 'Slovenia', 'hustle' ),
-			'SB' => __( 'Solomon Islands', 'hustle' ),
-			'SO' => __( 'Somalia', 'hustle' ),
-			'ZA' => __( 'South Africa', 'hustle' ),
-			'GS' => __( 'South Georgia and the South Sandwich Islands', 'hustle' ),
-			'ES' => __( 'Spain', 'hustle' ),
-			'LK' => __( 'Sri Lanka', 'hustle' ),
-			'XX' => __( 'Stateless Persons', 'hustle' ),
-			'SD' => __( 'Sudan', 'hustle' ),
-			'SD' => __( 'Sudan, South', 'hustle' ),
-			'SR' => __( 'Suriname', 'hustle' ),
-			'SJ' => __( 'Svalbard and Jan Mayen', 'hustle' ),
-			'SZ' => __( 'Swaziland', 'hustle' ),
-			'SE' => __( 'Sweden', 'hustle' ),
-			'CH' => __( 'Switzerland', 'hustle' ),
-			'SY' => __( 'Syria', 'hustle' ),
-			'TW' => __( 'Taiwan, Republic of China', 'hustle' ),
-			'TJ' => __( 'Tajikistan', 'hustle' ),
-			'TZ' => __( 'Tanzania', 'hustle' ),
-			'TH' => __( 'Thailand', 'hustle' ),
-			'TG' => __( 'Togo', 'hustle' ),
-			'TK' => __( 'Tokelau', 'hustle' ),
-			'TO' => __( 'Tonga', 'hustle' ),
-			'TT' => __( 'Trinidad and Tobago', 'hustle' ),
-			'TN' => __( 'Tunisia', 'hustle' ),
-			'TR' => __( 'Turkey', 'hustle' ),
-			'TM' => __( 'Turkmenistan', 'hustle' ),
-			'TC' => __( 'Turks and Caicos Islands', 'hustle' ),
-			'TV' => __( 'Tuvalu', 'hustle' ),
-			'UG' => __( 'Uganda', 'hustle' ),
-			'UA' => __( 'Ukraine', 'hustle' ),
-			'AE' => __( 'United Arab Emirates', 'hustle' ),
-			'GB' => __( 'United Kingdom', 'hustle' ),
-			'US' => __( 'United States of America (USA)', 'hustle' ),
-			'UM' => __( 'US Minor Outlying Islands', 'hustle' ),
-			'UY' => __( 'Uruguay', 'hustle' ),
-			'UZ' => __( 'Uzbekistan', 'hustle' ),
-			'VU' => __( 'Vanuatu', 'hustle' ),
-			'VA' => __( 'Vatican City', 'hustle' ),
-			'VE' => __( 'Venezuela', 'hustle' ),
-			'VN' => __( 'Vietnam', 'hustle' ),
-			'VG' => __( 'Virgin Islands, British', 'hustle' ),
-			'VI' => __( 'Virgin Islands, U.S.', 'hustle' ),
-			'WF' => __( 'Wallis And Futuna', 'hustle' ),
-			'EH' => __( 'Western Sahara', 'hustle' ),
-			'YE' => __( 'Yemen', 'hustle' ),
-			'ZM' => __( 'Zambia', 'hustle' ),
-			'ZW' => __( 'Zimbabwe', 'hustle' ),
+			'AU'  => __( 'Australia', 'hustle' ),
+			'AF'  => __( 'Afghanistan', 'hustle' ),
+			'AL'  => __( 'Albania', 'hustle' ),
+			'DZ'  => __( 'Algeria', 'hustle' ),
+			'AS'  => __( 'American Samoa', 'hustle' ),
+			'AD'  => __( 'Andorra', 'hustle' ),
+			'AO'  => __( 'Angola', 'hustle' ),
+			'AI'  => __( 'Anguilla', 'hustle' ),
+			'AQ'  => __( 'Antarctica', 'hustle' ),
+			'AG'  => __( 'Antigua and Barbuda', 'hustle' ),
+			'AR'  => __( 'Argentina', 'hustle' ),
+			'AM'  => __( 'Armenia', 'hustle' ),
+			'AW'  => __( 'Aruba', 'hustle' ),
+			'AT'  => __( 'Austria', 'hustle' ),
+			'AZ'  => __( 'Azerbaijan', 'hustle' ),
+			'BS'  => __( 'Bahamas', 'hustle' ),
+			'BH'  => __( 'Bahrain', 'hustle' ),
+			'BD'  => __( 'Bangladesh', 'hustle' ),
+			'BB'  => __( 'Barbados', 'hustle' ),
+			'BY'  => __( 'Belarus', 'hustle' ),
+			'BE'  => __( 'Belgium', 'hustle' ),
+			'BZ'  => __( 'Belize', 'hustle' ),
+			'BJ'  => __( 'Benin', 'hustle' ),
+			'BM'  => __( 'Bermuda', 'hustle' ),
+			'BT'  => __( 'Bhutan', 'hustle' ),
+			'BO'  => __( 'Bolivia', 'hustle' ),
+			'BA'  => __( 'Bosnia and Herzegovina', 'hustle' ),
+			'BW'  => __( 'Botswana', 'hustle' ),
+			'BV'  => __( 'Bouvet Island', 'hustle' ),
+			'BR'  => __( 'Brazil', 'hustle' ),
+			'IO'  => __( 'British Indian Ocean Territory', 'hustle' ),
+			'BN'  => __( 'Brunei', 'hustle' ),
+			'BG'  => __( 'Bulgaria', 'hustle' ),
+			'BF'  => __( 'Burkina Faso', 'hustle' ),
+			'BI'  => __( 'Burundi', 'hustle' ),
+			'KH'  => __( 'Cambodia', 'hustle' ),
+			'CM'  => __( 'Cameroon', 'hustle' ),
+			'CA'  => __( 'Canada', 'hustle' ),
+			'CV'  => __( 'Cape Verde', 'hustle' ),
+			'KY'  => __( 'Cayman Islands', 'hustle' ),
+			'CF'  => __( 'Central African Republic', 'hustle' ),
+			'TD'  => __( 'Chad', 'hustle' ),
+			'CL'  => __( 'Chile', 'hustle' ),
+			'CN'  => __( 'China, People\'s Republic of', 'hustle' ),
+			'CX'  => __( 'Christmas Island', 'hustle' ),
+			'CC'  => __( 'Cocos Islands', 'hustle' ),
+			'CO'  => __( 'Colombia', 'hustle' ),
+			'KM'  => __( 'Comoros', 'hustle' ),
+			'CD'  => __( 'Congo, Democratic Republic of the', 'hustle' ),
+			'CG'  => __( 'Congo, Republic of the', 'hustle' ),
+			'CK'  => __( 'Cook Islands', 'hustle' ),
+			'CR'  => __( 'Costa Rica', 'hustle' ),
+			'CI'  => __( 'Côte d\'Ivoire', 'hustle' ),
+			'HR'  => __( 'Croatia', 'hustle' ),
+			'CU'  => __( 'Cuba', 'hustle' ),
+			'CW'  => __( 'Curaçao', 'hustle' ),
+			'CY'  => __( 'Cyprus', 'hustle' ),
+			'CZ'  => __( 'Czech Republic', 'hustle' ),
+			'DK'  => __( 'Denmark', 'hustle' ),
+			'DJ'  => __( 'Djibouti', 'hustle' ),
+			'DM'  => __( 'Dominica', 'hustle' ),
+			'DO'  => __( 'Dominican Republic', 'hustle' ),
+			'TL'  => __( 'East Timor', 'hustle' ),
+			'EC'  => __( 'Ecuador', 'hustle' ),
+			'EG'  => __( 'Egypt', 'hustle' ),
+			'SV'  => __( 'El Salvador', 'hustle' ),
+			'GQ'  => __( 'Equatorial Guinea', 'hustle' ),
+			'ER'  => __( 'Eritrea', 'hustle' ),
+			'EE'  => __( 'Estonia', 'hustle' ),
+			'ET'  => __( 'Ethiopia', 'hustle' ),
+			'FK'  => __( 'Falkland Islands', 'hustle' ),
+			'FO'  => __( 'Faroe Islands', 'hustle' ),
+			'FJ'  => __( 'Fiji', 'hustle' ),
+			'FI'  => __( 'Finland', 'hustle' ),
+			'FR'  => __( 'France', 'hustle' ),
+			'FX'  => __( 'France, Metropolitan', 'hustle' ),
+			'GF'  => __( 'French Guiana', 'hustle' ),
+			'PF'  => __( 'French Polynesia', 'hustle' ),
+			'TF'  => __( 'French South Territories', 'hustle' ),
+			'GA'  => __( 'Gabon', 'hustle' ),
+			'GM'  => __( 'Gambia', 'hustle' ),
+			'GE'  => __( 'Georgia', 'hustle' ),
+			'DE'  => __( 'Germany', 'hustle' ),
+			'GH'  => __( 'Ghana', 'hustle' ),
+			'GI'  => __( 'Gibraltar', 'hustle' ),
+			'GR'  => __( 'Greece', 'hustle' ),
+			'GL'  => __( 'Greenland', 'hustle' ),
+			'GD'  => __( 'Grenada', 'hustle' ),
+			'GP'  => __( 'Guadeloupe', 'hustle' ),
+			'GU'  => __( 'Guam', 'hustle' ),
+			'GT'  => __( 'Guatemala', 'hustle' ),
+			'GN'  => __( 'Guinea', 'hustle' ),
+			'GW'  => __( 'Guinea-Bissau', 'hustle' ),
+			'GY'  => __( 'Guyana', 'hustle' ),
+			'HT'  => __( 'Haiti', 'hustle' ),
+			'HM'  => __( 'Heard Island And Mcdonald Island', 'hustle' ),
+			'HN'  => __( 'Honduras', 'hustle' ),
+			'HK'  => __( 'Hong Kong', 'hustle' ),
+			'HU'  => __( 'Hungary', 'hustle' ),
+			'IS'  => __( 'Iceland', 'hustle' ),
+			'IN'  => __( 'India', 'hustle' ),
+			'ID'  => __( 'Indonesia', 'hustle' ),
+			'IR'  => __( 'Iran', 'hustle' ),
+			'IQ'  => __( 'Iraq', 'hustle' ),
+			'IE'  => __( 'Ireland', 'hustle' ),
+			'IL'  => __( 'Israel', 'hustle' ),
+			'IT'  => __( 'Italy', 'hustle' ),
+			'JM'  => __( 'Jamaica', 'hustle' ),
+			'JP'  => __( 'Japan', 'hustle' ),
+			'JT'  => __( 'Johnston Island', 'hustle' ),
+			'JO'  => __( 'Jordan', 'hustle' ),
+			'KZ'  => __( 'Kazakhstan', 'hustle' ),
+			'KE'  => __( 'Kenya', 'hustle' ),
+			'XK'  => __( 'Kosovo', 'hustle' ),
+			'KI'  => __( 'Kiribati', 'hustle' ),
+			'KP'  => __( 'Korea, Democratic People\'s Republic of', 'hustle' ),
+			'KR'  => __( 'Korea, Republic of', 'hustle' ),
+			'KW'  => __( 'Kuwait', 'hustle' ),
+			'KG'  => __( 'Kyrgyzstan', 'hustle' ),
+			'LA'  => __( 'Lao People\'s Democratic Republic', 'hustle' ),
+			'LV'  => __( 'Latvia', 'hustle' ),
+			'LB'  => __( 'Lebanon', 'hustle' ),
+			'LS'  => __( 'Lesotho', 'hustle' ),
+			'LR'  => __( 'Liberia', 'hustle' ),
+			'LY'  => __( 'Libya', 'hustle' ),
+			'LI'  => __( 'Liechtenstein', 'hustle' ),
+			'LT'  => __( 'Lithuania', 'hustle' ),
+			'LU'  => __( 'Luxembourg', 'hustle' ),
+			'MO'  => __( 'Macau', 'hustle' ),
+			'MK'  => __( 'Macedonia', 'hustle' ),
+			'MG'  => __( 'Madagascar', 'hustle' ),
+			'MW'  => __( 'Malawi', 'hustle' ),
+			'MY'  => __( 'Malaysia', 'hustle' ),
+			'MV'  => __( 'Maldives', 'hustle' ),
+			'ML'  => __( 'Mali', 'hustle' ),
+			'MT'  => __( 'Malta', 'hustle' ),
+			'MH'  => __( 'Marshall Islands', 'hustle' ),
+			'MQ'  => __( 'Martinique', 'hustle' ),
+			'MR'  => __( 'Mauritania', 'hustle' ),
+			'MU'  => __( 'Mauritius', 'hustle' ),
+			'YT'  => __( 'Mayotte', 'hustle' ),
+			'MX'  => __( 'Mexico', 'hustle' ),
+			'FM'  => __( 'Micronesia', 'hustle' ),
+			'MD'  => __( 'Moldova', 'hustle' ),
+			'MC'  => __( 'Monaco', 'hustle' ),
+			'MN'  => __( 'Mongolia', 'hustle' ),
+			'ME'  => __( 'Montenegro', 'hustle' ),
+			'MS'  => __( 'Montserrat', 'hustle' ),
+			'MA'  => __( 'Morocco', 'hustle' ),
+			'MZ'  => __( 'Mozambique', 'hustle' ),
+			'MM'  => __( 'Myanmar', 'hustle' ),
+			'NA'  => __( 'Namibia', 'hustle' ),
+			'NR'  => __( 'Nauru', 'hustle' ),
+			'NP'  => __( 'Nepal', 'hustle' ),
+			'NL'  => __( 'Netherlands', 'hustle' ),
+			'AN'  => __( 'Netherlands Antilles', 'hustle' ),
+			'NC'  => __( 'New Caledonia', 'hustle' ),
+			'NZ'  => __( 'New Zealand', 'hustle' ),
+			'NI'  => __( 'Nicaragua', 'hustle' ),
+			'NE'  => __( 'Niger', 'hustle' ),
+			'NG'  => __( 'Nigeria', 'hustle' ),
+			'NU'  => __( 'Niue', 'hustle' ),
+			'NF'  => __( 'Norfolk Island', 'hustle' ),
+			'MNP' => __( 'Northern Mariana Islands', 'hustle' ),
+			'MP'  => __( 'Mariana Islands, Northern', 'hustle' ),
+			'NO'  => __( 'Norway', 'hustle' ),
+			'OM'  => __( 'Oman', 'hustle' ),
+			'PK'  => __( 'Pakistan', 'hustle' ),
+			'PW'  => __( 'Palau', 'hustle' ),
+			'PS'  => __( 'Palestine, State of', 'hustle' ),
+			'PA'  => __( 'Panama', 'hustle' ),
+			'PG'  => __( 'Papua New Guinea', 'hustle' ),
+			'PY'  => __( 'Paraguay', 'hustle' ),
+			'PE'  => __( 'Peru', 'hustle' ),
+			'PH'  => __( 'Philippines', 'hustle' ),
+			'PN'  => __( 'Pitcairn Islands', 'hustle' ),
+			'PL'  => __( 'Poland', 'hustle' ),
+			'PT'  => __( 'Portugal', 'hustle' ),
+			'PR'  => __( 'Puerto Rico', 'hustle' ),
+			'QA'  => __( 'Qatar', 'hustle' ),
+			'RE'  => __( 'Réunion', 'hustle' ),
+			'RO'  => __( 'Romania', 'hustle' ),
+			'RU'  => __( 'Russia', 'hustle' ),
+			'RW'  => __( 'Rwanda', 'hustle' ),
+			'SH'  => __( 'Saint Helena', 'hustle' ),
+			'KN'  => __( 'Saint Kitts and Nevis', 'hustle' ),
+			'LC'  => __( 'Saint Lucia', 'hustle' ),
+			'PM'  => __( 'Saint Pierre and Miquelon', 'hustle' ),
+			'VC'  => __( 'Saint Vincent and the Grenadines', 'hustle' ),
+			'WS'  => __( 'Samoa', 'hustle' ),
+			'SM'  => __( 'San Marino', 'hustle' ),
+			'ST'  => __( 'Sao Tome and Principe', 'hustle' ),
+			'SA'  => __( 'Saudi Arabia', 'hustle' ),
+			'SN'  => __( 'Senegal', 'hustle' ),
+			'CS'  => __( 'Serbia', 'hustle' ),
+			'SC'  => __( 'Seychelles', 'hustle' ),
+			'SL'  => __( 'Sierra Leone', 'hustle' ),
+			'SG'  => __( 'Singapore', 'hustle' ),
+			'MF'  => __( 'Sint Maarten', 'hustle' ),
+			'SK'  => __( 'Slovakia', 'hustle' ),
+			'SI'  => __( 'Slovenia', 'hustle' ),
+			'SB'  => __( 'Solomon Islands', 'hustle' ),
+			'SO'  => __( 'Somalia', 'hustle' ),
+			'ZA'  => __( 'South Africa', 'hustle' ),
+			'GS'  => __( 'South Georgia and the South Sandwich Islands', 'hustle' ),
+			'ES'  => __( 'Spain', 'hustle' ),
+			'LK'  => __( 'Sri Lanka', 'hustle' ),
+			'XX'  => __( 'Stateless Persons', 'hustle' ),
+			'SD'  => __( 'Sudan', 'hustle' ),
+			'SS'  => __( 'South Sudan', 'hustle' ),
+			'SR'  => __( 'Suriname', 'hustle' ),
+			'SJ'  => __( 'Svalbard and Jan Mayen', 'hustle' ),
+			'SZ'  => __( 'Swaziland', 'hustle' ),
+			'SE'  => __( 'Sweden', 'hustle' ),
+			'CH'  => __( 'Switzerland', 'hustle' ),
+			'SY'  => __( 'Syria', 'hustle' ),
+			'TW'  => __( 'Taiwan, Republic of China', 'hustle' ),
+			'TJ'  => __( 'Tajikistan', 'hustle' ),
+			'TZ'  => __( 'Tanzania', 'hustle' ),
+			'TH'  => __( 'Thailand', 'hustle' ),
+			'TG'  => __( 'Togo', 'hustle' ),
+			'TK'  => __( 'Tokelau', 'hustle' ),
+			'TO'  => __( 'Tonga', 'hustle' ),
+			'TT'  => __( 'Trinidad and Tobago', 'hustle' ),
+			'TN'  => __( 'Tunisia', 'hustle' ),
+			'TR'  => __( 'Turkey', 'hustle' ),
+			'TM'  => __( 'Turkmenistan', 'hustle' ),
+			'TC'  => __( 'Turks and Caicos Islands', 'hustle' ),
+			'TV'  => __( 'Tuvalu', 'hustle' ),
+			'UG'  => __( 'Uganda', 'hustle' ),
+			'UA'  => __( 'Ukraine', 'hustle' ),
+			'AE'  => __( 'United Arab Emirates', 'hustle' ),
+			'GB'  => __( 'United Kingdom', 'hustle' ),
+			'US'  => __( 'United States of America (USA)', 'hustle' ),
+			'UM'  => __( 'US Minor Outlying Islands', 'hustle' ),
+			'UY'  => __( 'Uruguay', 'hustle' ),
+			'UZ'  => __( 'Uzbekistan', 'hustle' ),
+			'VU'  => __( 'Vanuatu', 'hustle' ),
+			'VA'  => __( 'Vatican City', 'hustle' ),
+			'VE'  => __( 'Venezuela', 'hustle' ),
+			'VN'  => __( 'Vietnam', 'hustle' ),
+			'VG'  => __( 'Virgin Islands, British', 'hustle' ),
+			'VI'  => __( 'Virgin Islands, U.S.', 'hustle' ),
+			'WF'  => __( 'Wallis And Futuna', 'hustle' ),
+			'EH'  => __( 'Western Sahara', 'hustle' ),
+			'YE'  => __( 'Yemen', 'hustle' ),
+			'ZM'  => __( 'Zambia', 'hustle' ),
+			'ZW'  => __( 'Zimbabwe', 'hustle' ),
 		);
 
 		// Deprecated.
@@ -1303,63 +1303,38 @@ class Opt_In_Utils {
 	 */
 	private static function is_hub_cache() {
 		$key_option = 'hustle_hub_cache_enabled';
-		$key_time   = 'hustle_hub_cache_timeout';
-		$cache      = get_site_option( $key_option, null );
-		if ( ! is_null( $cache ) ) {
-			$timeout = get_site_option( $key_time );
-			if ( time() < $timeout || ! is_admin() ) {
-				$return = $cache;
-			}
-		}
-		if ( ! isset( $return ) ) {
-			$return = self::get_hub_cache_status();
-			update_site_option( $key_option, (int) $return );
-			update_site_option( $key_time, time() + DAY_IN_SECONDS );
+		$cache      = get_site_transient( $key_option );
+
+		if ( false === $cache ) {
+			$cache = self::is_hub_cache_enabled();
+			set_site_transient( $key_option, (int) $cache, DAY_IN_SECONDS );
 		}
 
-		return (bool) $return;
+		return (bool) $cache;
 	}
 
 	/**
-	 * Check if Static Server Cache is enabled on HUB or not
+	 * Check if Static Server Cache is enabled on HUB
 	 *
 	 * @return boolean
 	 */
-	private static function get_hub_cache_status() {
-		if ( ! class_exists( 'WPMUDEV_Dashboard' ) ) {
-			return false;
+	private static function is_hub_cache_enabled() {
+		return (bool) self::get_hosting_feature( 'static_cache' );
+	}
+
+	/**
+	 * Get list of hosting features and their status
+	 *
+	 * @param string $name The name of the hosting feature to check.
+	 * @return mixed The status of the hosting feature, or an empty string if not found.
+	 */
+	private static function get_hosting_feature( $name ) {
+		if ( function_exists( 'wpmudev_hosting_features' ) ) {
+			$states = wpmudev_hosting_features();
+			return isset( $states[ $name ] ) ? $states[ $name ] : '';
 		}
-		try {
-			$api     = WPMUDEV_Dashboard::$api;
-			$api_key = $api->get_key();
-			$site_id = $api->get_site_id();
-			$base    = defined( 'WPMUDEV_CUSTOM_API_SERVER' ) && WPMUDEV_CUSTOM_API_SERVER
-				? WPMUDEV_CUSTOM_API_SERVER
-				: 'https://wpmudev.com/';
-			$url     = "{$base}api/hub/v1/sites/$site_id/modules/hosting";
 
-			$options = array(
-				'headers' => array(
-					'Authorization' => 'Basic ' . $api_key,
-					'apikey'        => $api_key,
-				),
-			);
-			$data    = array(
-				'domain' => network_site_url(),
-			);
-
-			$response = $api->call( $url, $data, 'GET', $options );
-
-			if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
-				$data = json_decode( wp_remote_retrieve_body( $response ), true );
-				if ( ! empty( $data['static_cache']['is_active'] ) ) {
-					return true;
-				}
-			}
-			return false;
-		} catch ( Exception $e ) {
-			return false;
-		}
+		return '';
 	}
 
 	/**
@@ -1402,5 +1377,40 @@ class Opt_In_Utils {
 		}
 
 		return $settings['labels_config'][1107020]['name'];
+	}
+
+	/**
+	 * Build notification response
+	 *
+	 * @param string $type The type of notification (success, error, etc.).
+	 * @param string $message The notification message.
+	 * @return array The notification response.
+	 */
+	public static function build_notification( $type, $message ) {
+		return array(
+			'action'  => 'notification',
+			'status'  => $type,
+			'message' => $message,
+		);
+	}
+
+	/**
+	 * Get HUB API key
+	 *
+	 * @return string
+	 */
+	public static function get_hub_api_key() {
+		if ( ! class_exists( 'WPMUDEV_Dashboard' ) ) {
+			return '';
+		}
+
+		if (
+			WPMUDEV_Dashboard::$api &&
+			WPMUDEV_Dashboard::$api->has_key()
+		) {
+			return WPMUDEV_Dashboard::$api->get_key();
+		}
+
+		return '';
 	}
 }

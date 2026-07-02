@@ -61,7 +61,6 @@ if ( ! class_exists( 'Hustle_New_SendGrid_Api' ) ) :
 			);
 
 			return $args;
-
 		}
 
 		/**
@@ -252,7 +251,6 @@ if ( ! class_exists( 'Hustle_New_SendGrid_Api' ) ) :
 			}
 
 			return ! empty( $response_array['result'][0]['id'] ) ? $response_array['result'][0]['id'] : false;
-
 		}
 
 		/**
@@ -373,6 +371,5 @@ if ( ! class_exists( 'Hustle_New_SendGrid_Api' ) ) :
 
 			return $response;
 		}
-
 	}
 endif;

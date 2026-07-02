@@ -82,7 +82,6 @@ class Hustle_GHBlock_Unsubscribe extends Hustle_GHBlock_Abstract {
 			array(),
 			filemtime( Hustle_Gutenberg::get_plugin_dir() . 'css/unsubscribe-block.css' )
 		);
-
 	}
 
 	/**

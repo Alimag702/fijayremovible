@@ -140,7 +140,6 @@ class Hustle_Renderer_Sshare extends Hustle_Renderer_Abstract {
 		);
 
 		return $html;
-
 	}
 
 	/**
@@ -165,7 +164,6 @@ class Hustle_Renderer_Sshare extends Hustle_Renderer_Abstract {
 		);
 
 		return $html;
-
 	}
 
 	/**
@@ -411,7 +409,6 @@ class Hustle_Renderer_Sshare extends Hustle_Renderer_Abstract {
 		$html .= '</div>';
 
 		return $html;
-
 	}
 
 	/**
@@ -450,5 +447,4 @@ class Hustle_Renderer_Sshare extends Hustle_Renderer_Abstract {
 
 		return $response;
 	}
-
 }

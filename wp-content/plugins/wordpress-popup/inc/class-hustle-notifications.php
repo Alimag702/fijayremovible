@@ -258,6 +258,55 @@ class Hustle_Notifications {
 	}
 
 	/**
+	 * Prints the html for the provider's authentication deprecation notice.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param string $provider Provider's name.
+	 * @param array  $provider_data Provider's data.
+	 * @param string $button_text Notice button text.
+	 * @param string $button_url Notice button URL.
+	 */
+	private function get_provider_auth_deprecation_notice_html( $provider, $provider_data = array(), $button_text = '', $button_url = '' ) {
+		$current_user = wp_get_current_user();
+
+		$username = ! empty( $current_user->user_firstname ) ? $current_user->user_firstname : $current_user->user_login;
+
+		$provided_id = isset( $provider_data['id'] ) ? $provider . '_' . $provider_data['id'] : $provider;
+
+		if ( empty( $button_text ) ) {
+			$button_text = __( 'Re-authorize Now', 'hustle' );
+		}
+
+		if ( empty( $button_url ) ) {
+			$button_url = add_query_arg(
+				array(
+					'page'                    => Hustle_Data::INTEGRATIONS_PAGE,
+					'show_provider_migration' => $provider,
+					'action'                  => 'show_migration_message',
+					'integration_id'          => isset( $provider_data['id'] ) ? $provider_data['id'] : '0',
+				),
+				'admin.php'
+			);
+		}
+
+		?>
+		<div
+			id='<?php echo esc_attr( "hustle_migration_notice__$provided_id" ); ?>'
+			class="hustle-notice notice notice-warning hustle-provider-notice is-dismissible <?php echo esc_attr( "hustle_migration_notice__$provider" ); ?>"
+			data-name="<?php echo esc_attr( $provider ); ?>"
+			data-id="<?php echo isset( $provider_data['id'] ) ? esc_attr( $provider_data['id'] ) : ''; ?>"
+			style="display: none"
+		>
+			<p>
+			<?php $this->get_provider_migration_content( $provider, $username, $provider_data['name'] ); ?>
+			</p>
+			<p><a href="<?php echo esc_url( $button_url ); ?>" class="button-primary"><?php echo esc_html( $button_text ); ?></a></p>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Prints the copy for the notice for when migrating providers.
 	 *
 	 * @param string $provider Provider's slug.
@@ -268,15 +317,25 @@ class Hustle_Notifications {
 		switch ( $provider ) {
 			case 'constantcontact':
 				/* translators: user's name */
-				$msg = sprintf( esc_html__( "Hey %s, we have updated our Constant Contact integration to support the latest v3.0 API. Since you are connected to the old API version, we recommend you to migrate your integration to the latest API version as we'll cease to support the deprecated API at some point.", 'hustle' ), $username );
+				$msg = sprintf( esc_html__( "Hustle's Constant Contact integration has been upgraded to the latest API (v3) with OAuth2 authentication for improved security and reliability. To continue sending leads to Constant Contact, please re-authorize your integration.", 'hustle' ), $username );
 				break;
 			case 'infusionsoft':
-				/* translators: user's name */
-				$msg = sprintf( esc_html__( "Hey %s, we have updated our Keap integration to support the latest REST API. Since you are connected to the old API version, we recommend you to migrate your integration to the latest API version as we'll cease to support the deprecated API at some point.", 'hustle' ), $username );
+				$msg = esc_html__( "Hustle's Keap integration has been upgraded to the latest OAuth2 authentication for improved security and reliability. To continue sending leads to Keap, please re-authenticate your integration.", 'hustle' );
 				break;
 			case 'aweber':
 				/* translators: 1. user's name, */
 				$msg = sprintf( esc_html__( "Hey %1\$s, we have updated our AWeber integration to support the oAuth 2.0. Since you are connected via oAuth 1.0, we recommend you to migrate your %2\$s integration to the latest authorization method as we'll cease to support the deprecated oAuth method at some point.", 'hustle' ), $username, $identifier );
+				break;
+			case 'convertkit':
+				/* translators: 1. integration identifier */
+				$msg = sprintf( esc_html__( 'Hustle’s Kit (Formerly ConvertKit) integration has been upgraded to the latest API (v4) for improved security and reliability. To continue sending leads to Kit, please re-authorize your "%s" integration.', 'hustle' ), $identifier );
+				break;
+			case 'hubspot':
+				/* translators: 1. user's name, 2. provider's name */
+				$msg = sprintf( esc_html__( 'Hey %1$s, we have updated our HubSpot integration to support the latest API (v3).', 'hustle' ), $username );
+				break;
+			case 'hustle_hubspot_missing_api_key':
+				$msg = esc_html__( 'You have active Hubspot integration, but your site is not connected to WPMU Dev Hub. Please provide your own HubSpot API keys in the integration settings to continue using HubSpot with Hustle.', 'hustle' );
 				break;
 
 			default:
@@ -311,7 +370,6 @@ class Hustle_Notifications {
 						'hustle_page_hustle_integrations',
 						'hustle_page_hustle_entries',
 						'hustle_page_hustle_settings',
-						'hustle_page_hustle_tutorials',
 					),
 				)
 			);
@@ -359,7 +417,7 @@ class Hustle_Notifications {
 
 			add_action(
 				'load-plugins.php',
-				function() {
+				function () {
 					add_action( 'after_plugin_row_hustle/opt-in.php', array( $this, 'in_plugin_update_message' ), 10, 3 );
 				},
 				22 // Must be called after Dashboard which is 21.
@@ -612,6 +670,113 @@ class Hustle_Notifications {
 						'id'   => $key,
 					);
 					$this->get_provider_migration_notice_html( 'aweber', $provider_data );
+				}
+			}
+		}
+
+		$keap_instances = get_option( 'hustle_provider_infusionsoft_settings' );
+		// We show the notice if there is at least one instance without a token.
+		if ( ! empty( $keap_instances ) && is_array( $keap_instances ) ) {
+			$provider    = Hustle_Infusion_Soft::get_instance();
+			$api_version = (int) $provider->get_installed_version();
+			if ( 1 === $api_version ) {
+				// Show only one notification.
+				// This will work globally for all the instances.
+				$provider_data = array(
+					'name' => Hustle_Infusion_Soft::SLUG,
+					'id'   => '0',
+				);
+				$this->get_provider_auth_deprecation_notice_html( 'infusionsoft', $provider_data );
+			}
+		}
+
+		$cc_instance = Hustle_ConstantContact::get_instance();
+		if ( $cc_instance->migration_required() ) {
+			// Check if there is a connected Constant Contact integration.
+			// If there is, show the notice.
+			if ( $cc_instance->is_connected() ) {
+				$provider_data = array(
+					'name' => Hustle_ConstantContact::SLUG,
+					'id'   => '0',
+				);
+				$this->get_provider_auth_deprecation_notice_html( 'constantcontact', $provider_data );
+			}
+		}
+
+		$hubspot_instance = Hustle_HubSpot::get_instance();
+		if ( $hubspot_instance->is_connected() && ! Opt_In_Utils::get_hub_api_key() ) {
+
+			if ( ! $hubspot_instance->has_api_keys() ) {
+				$integrations_url = add_query_arg(
+					array(
+						'page'                    => Hustle_Data::INTEGRATIONS_PAGE,
+						'action'                  => 'reauth_provider',
+						'nonce'                   => wp_create_nonce( 'hustle_provider_reauthorize' ),
+						'show_provider_migration' => 'hubspot',
+					),
+					'admin.php'
+				);
+
+				$provider_data = array(
+					'name' => Hustle_HubSpot::SLUG,
+					'id'   => '0',
+				);
+
+				$this->get_provider_auth_deprecation_notice_html(
+					'hustle_hubspot_missing_api_key',
+					$provider_data,
+					__( 'Re-authorize', 'hustle' ),
+					$integrations_url
+				);
+			}
+		}
+
+		if ( $hubspot_instance->migration_required() ) {
+			// Check if there is a connected HubSpot integration.
+			// If there is, show the notice.
+			if ( $hubspot_instance->is_connected() ) {
+				$provider_data = array(
+					'name' => Hustle_HubSpot::SLUG,
+					'id'   => '0',
+				);
+
+				$url = add_query_arg(
+					array(
+						'page'                    => Hustle_Data::INTEGRATIONS_PAGE,
+						'show_provider_migration' => 'hubspot',
+						'action'                  => 'migrate_provider_data',
+						'nonce'                   => wp_create_nonce( 'hustle_provider_migrate' ),
+					),
+					'admin.php'
+				);
+
+				$this->get_provider_auth_deprecation_notice_html(
+					'hubspot',
+					$provider_data,
+					__( 'Migrate Data', 'hustle' ),
+					$url
+				);
+			}
+		}
+
+		$ck_instance = Hustle_ConvertKit::get_instance();
+		// Check if there is a connected ConvertKit integration.
+		// If there is, show the notice.
+		if ( $ck_instance->is_connected() ) {
+			$connections = $ck_instance->get_settings_values();
+			if ( empty( $connections ) || ! is_array( $connections ) ) {
+				return;
+			}
+
+			foreach ( $connections as $connection_id => $connection ) {
+				if ( empty( $connection['version'] ) || version_compare( $connection['version'], '2.0', '<' ) ) {
+					// Show only one notification.
+					// This will work globally for all the instances.
+					$provider_data = array(
+						'name' => $connection['name'],
+						'id'   => $connection_id,
+					);
+					$this->get_provider_auth_deprecation_notice_html( 'convertkit', $provider_data );
 				}
 			}
 		}

@@ -17,7 +17,7 @@ $description_class         = ( isset( $label ) ) ? 'hustle-' . sanitize_title( $
 <?php
 printf(
 	'<div class="sui-box-settings-row %s"%s>',
-	$description_class,
+	esc_attr( $description_class ),
 	$vanilla_hide ? ' data-toggle-content="use-vanilla"' : ''
 );
 ?>

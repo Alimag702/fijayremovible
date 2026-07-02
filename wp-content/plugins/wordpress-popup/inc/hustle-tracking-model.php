@@ -77,16 +77,19 @@ class Hustle_Tracking_Model {
 	 */
 	public function save_tracking( $module_id, $action, $module_type, $page_id, $module_sub_type = null, $date_created = null, $ip = null ) {
 		global $wpdb;
+
 		/**
 		 * IP Tracking
 		 */
-		$ip_query    = ' AND `ip` IS NULL';
 		$settings    = Hustle_Settings_Admin::get_privacy_settings();
 		$ip_tracking = ! isset( $settings['ip_tracking'] ) || 'on' === $settings['ip_tracking'];
-		if ( $ip_tracking ) {
-			$ip       = $ip ? $ip : Opt_In_Geo::get_user_ip();
+
+		if ( $ip && $ip_tracking ) {
 			$ip_query = ' AND `ip` = %s';
+		} else {
+			$ip_query = ' AND `ip` IS NULL';
 		}
+
 		if ( ! in_array( $action, array( 'conversion', 'cta_conversion', 'cta_1_conversion', 'cta_2_conversion', 'optin_conversion' ), true ) ) {
 			$action = 'view';
 		}
@@ -306,12 +309,11 @@ class Hustle_Tracking_Model {
 		$date_format = '%%Y-%%m-%%d';
 		if ( ! is_null( $starting_date ) && ! is_null( $ending_date ) && ! empty( $starting_date ) && ! empty( $ending_date ) ) {
 			$date_query = $wpdb->prepare( "$clause DATE_FORMAT($prefix`date_created`, '$date_format') >= %s AND DATE_FORMAT($prefix`date_created`, '$date_format') <= %s", $starting_date, $ending_date );// phpcs:ignore
-		} else {
-			if ( ! is_null( $starting_date ) && ! empty( $starting_date ) ) {
+		} elseif ( ! is_null( $starting_date ) && ! empty( $starting_date ) ) {
 				$date_query = $wpdb->prepare( "$clause DATE_FORMAT($prefix`date_created`, '$date_format') >= %s", $starting_date );// phpcs:ignore
-			} elseif ( ! is_null( $ending_date ) && ! empty( $ending_date ) ) {
-				$date_query = $wpdb->prepare( "$clause DATE_FORMAT($prefix`date_created`, '$date_format') <= %s", $starting_date );// phpcs:ignore
-			}
+		} elseif ( ! is_null( $ending_date ) && ! empty( $ending_date ) ) {
+			$date_query = $wpdb->prepare( "$clause DATE_FORMAT($prefix`date_created`, '$date_format') <= %s", $starting_date );// phpcs:ignore
+
 		}
 		return $date_query;
 	}

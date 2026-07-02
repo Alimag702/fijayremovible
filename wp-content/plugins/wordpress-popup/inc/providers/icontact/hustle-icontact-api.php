@@ -92,7 +92,7 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 				$this->get_account_id();
 				$this->get_client_folder_id();
 			} catch ( Exception $e ) {
-				throw new Exception( $e->getMessage() );
+				throw new Exception( esc_html( $e->getMessage() ) );
 			}
 		}
 
@@ -130,25 +130,23 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 					if ( ! is_wp_error( $account_data ) ) {
 						if ( is_array( $account_data ) && count( $account_data ) > 0 ) {
 							if ( isset( $account_data['errors'] ) && $account_data['errors'] ) {
-								throw new Exception( __( 'Please check your API Credentials.', 'hustle' ) );
-							} else {
-								if ( isset( $account_data['accounts'] ) && is_array( $account_data['accounts'] ) ) {
+								throw new Exception( esc_html__( 'Please check your API Credentials.', 'hustle' ) );
+							} elseif ( isset( $account_data['accounts'] ) && is_array( $account_data['accounts'] ) ) {
 									$account = $account_data['accounts'][0];
-									if ( intval( $account['enabled'] ) === 1 ) {
-										$this->account_id = (int) $account['accountId'];
-										wp_cache_set( 'hustle_icontact_account_id', $this->account_id, self::API_CACHE_KEY );
-									} else {
-										throw new Exception( __( 'Your account has been disabled.', 'hustle' ) );
-									}
+								if ( intval( $account['enabled'] ) === 1 ) {
+									$this->account_id = (int) $account['accountId'];
+									wp_cache_set( 'hustle_icontact_account_id', $this->account_id, self::API_CACHE_KEY );
 								} else {
-									throw new Exception( __( 'Your have no accounts. Please check your credentials', 'hustle' ) );
+									throw new Exception( esc_html__( 'Your account has been disabled.', 'hustle' ) );
 								}
+							} else {
+								throw new Exception( esc_html__( 'Your have no accounts. Please check your credentials', 'hustle' ) );
 							}
 						} else {
-							throw new Exception( __( 'Your have no accounts. Please check your credentials', 'hustle' ) );
+							throw new Exception( esc_html__( 'Your have no accounts. Please check your credentials', 'hustle' ) );
 						}
 					} else {
-						throw new Exception( $account_data->get_error_message() );
+						throw new Exception( esc_html( $account_data->get_error_message() ) );
 					}
 				}
 			}
@@ -177,10 +175,10 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 							$this->folder_id = (int) $folder['clientFolderId'];
 							wp_cache_set( 'hustle_icontact_client_folder_id', $this->folder_id, self::API_CACHE_KEY );
 						} else {
-							throw new Exception( __( 'No client folders were found for this account', 'hustle' ) );
+							throw new Exception( esc_html__( 'No client folders were found for this account', 'hustle' ) );
 						}
 					} else {
-						throw new Exception( $account_data->get_error_message() );
+						throw new Exception( esc_html( $folder_data->get_error_message() ) );
 					}
 				}
 			}
@@ -288,9 +286,8 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 
 			if ( is_wp_error( $contact ) ) {
 				$this->error = $contact;
-				throw new Exception( $error_message );
-			} else {
-				if ( is_array( $contact ) && ! empty( $contact['contacts'] ) && is_array( $contact['contacts'] ) ) {
+				throw new Exception( esc_html( $error_message ) );
+			} elseif ( is_array( $contact ) && ! empty( $contact['contacts'] ) && is_array( $contact['contacts'] ) ) {
 					$contact_id = $contact['contacts'][0]['contactId'];
 
 					$subscription_array = array(
@@ -302,7 +299,7 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 					if ( 'pending' === $status && empty( $confirmation_message_id ) ) {
 						$error_message = __( 'Something went wrong, please select your confirmation message to enable double-optin.', 'hustle' );
 						$this->error   = new WP_Error( 'missing_confirmation_message_id', $error_message );
-						throw new Exception( $error_message );
+						throw new Exception( esc_html( $error_message ) );
 					} elseif ( 'pending' === $status ) {
 						$subscription_array['confirmationMessageId'] = $confirmation_message_id;
 					}
@@ -316,10 +313,9 @@ if ( ! class_exists( 'Hustle_Icontact_Api' ) ) :
 					} else {
 						return __( 'Successful subscription', 'hustle' );
 					}
-				} else {
-					$this->set_error( 'contact_error', 'Something went wrong. Please try again' );
-					throw new Exception( __( 'Something went wrong, please try again', 'hustle' ) );
-				}
+			} else {
+				$this->set_error( 'contact_error', 'Something went wrong. Please try again' );
+				throw new Exception( esc_html__( 'Something went wrong, please try again', 'hustle' ) );
 			}
 		}
 

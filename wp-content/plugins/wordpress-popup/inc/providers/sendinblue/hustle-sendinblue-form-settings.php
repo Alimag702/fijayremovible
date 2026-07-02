@@ -225,7 +225,6 @@ if ( ! class_exists( 'Hustle_SendinBlue_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

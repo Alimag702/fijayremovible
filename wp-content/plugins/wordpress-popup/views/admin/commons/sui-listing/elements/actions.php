@@ -7,7 +7,6 @@
  */
 
 $is_embedded_or_social = Hustle_Module_Model::EMBEDDED_MODULE === $module->module_type || Hustle_Module_Model::SOCIAL_SHARING_MODULE === $module->module_type;
-$free_limit_reached    = Hustle_Data::was_free_limit_reached( $module->module_type );
 
 $can_edit   = Opt_In_Utils::is_user_allowed( 'hustle_edit_module', $module->id );
 $can_create = current_user_can( 'hustle_create' );
@@ -132,7 +131,7 @@ if (
 if ( empty( $dashboard ) && $can_create ) :
 	?>
 	<li><button
-		class="<?php echo ! $free_limit_reached ? 'hustle-single-module-button-action hustle-onload-icon-action' : 'hustle-upgrade-modal-button'; ?>"
+		class="hustle-single-module-button-action hustle-onload-icon-action"
 		data-module-id="<?php echo esc_attr( $module->id ); ?>"
 		data-hustle-action="clone"
 	>

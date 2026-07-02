@@ -32,7 +32,11 @@ class Opt_In_Condition_Source_Of_Arrival extends Opt_In_Condition_Abstract {
 		if ( ! $is_allowed && isset( $this->args->source_external ) && 'true' === $this->args->source_external ) {
 			$internal = preg_replace( '#^https?://#', '', get_option( 'home' ) );
 			// If not direct and not internal source.
-			$is_allowed = $is_allowed || '' !== Opt_In_Utils::get_referrer() && ! Opt_In_Utils::test_referrer( $internal );
+			$is_allowed = $is_allowed ||
+				(
+					'' !== Opt_In_Utils::get_referrer() &&
+					! Opt_In_Utils::test_referrer( $internal )
+				);
 		}
 
 		// Check is source is internal one.

@@ -329,7 +329,7 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array $content The stored module's content meta settings.
+	 * @param object $content The stored module's content meta settings.
 	 * @return boolean
 	 */
 	private function is_show_cta( $content ) {
@@ -351,13 +351,13 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 				return false;
 			}
 		} else {
-
 			// Make both buttons have a label.
-			// And make sure they have an URL if their action isn't to close the module.
 			if ( '' === $content->cta_label || '' === $content->cta_two_label ) {
 				return false;
+			}
 
-			} elseif (
+			// And make sure they have an URL if their action isn't to close the module.
+			if (
 				( 'close' !== $content->cta_target && '' === $content->cta_url ) ||
 				( 'close' !== $content->cta_two_target && '' === $content->cta_two_url )
 			) {
@@ -366,6 +366,30 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns whether the primary CTA can be used as a whole-module trigger.
+	 *
+	 * Whole-module CTA can intentionally hide the visible button label, so we
+	 * only require that the CTA action itself is actionable.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @param object $content The stored module's content meta settings.
+	 * @return boolean
+	 */
+	private function has_whole_cta( $content ) {
+
+		if ( '1' !== $content->show_cta || empty( $content->cta_whole ) ) {
+			return false;
+		}
+
+		if ( 'close' === $content->cta_target ) {
+			return true;
+		}
+
+		return '' !== $content->cta_url;
 	}
 
 	/**
@@ -487,7 +511,46 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 		 * @param $url You guess.
 		 * @param $class Extra classes for the button.
 		 */
-		return apply_filters( 'hustle_get_cta_buttons', $html, $label, $target, $url, $class );
+		return apply_filters( 'hustle_get_cta_html', $html, $label, $target, $url, $class );
+	}
+
+	/**
+	 * Adds an off-screen CTA target for whole-module CTA when the visible button
+	 * is intentionally hidden by leaving its label empty.
+	 *
+	 * @since 4.3.0
+	 * @return string
+	 */
+	private function maybe_get_hidden_whole_cta_button() {
+		$content = $this->module->content;
+
+		if ( ! $this->has_whole_cta( $content ) || $this->is_show_cta( $content ) ) {
+			return '';
+		}
+
+		$target = $content->cta_target;
+		$url    = $content->cta_url;
+		$class  = '';
+		$data   = '';
+
+		if ( 'close' !== $target ) {
+			$data = sprintf( 'href="%s" target="_%s"', esc_url( $url ), esc_attr( $target ) );
+		} else {
+			$class = 'hustle-cta-close hustle-button-close';
+			$data  = 'href="#"';
+		}
+
+		$class = apply_filters( 'hustle_cta_extra_classes', $class, 'cta', $target );
+		$class = trim( $class . ' hustle-hidden-whole-module-cta' );
+
+		$html = sprintf(
+			'<a class="hustle-button hustle-button-cta %1$s" %2$s %3$s aria-hidden="true" tabindex="-1" style="display:none;"></a>',
+			esc_attr( $class ),
+			$data,
+			'data-cta-type="cta"'
+		);
+
+		return apply_filters( 'hustle_get_cta_html', $html, '', $target, $url, $class );
 	}
 
 	// ====================================
@@ -524,12 +587,12 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 			$html .= '<div class="hustle-main-wrapper">';
 
 				$html .= '<div class="hustle-layout'
-						. ( ! empty( $content->show_cta ) && '1' === $content->show_cta && ! empty( $content->cta_whole )
-						? ' hustle-whole-module-cta' : '' ) . '">';
+						. ( $this->has_whole_cta( $content ) ? ' hustle-whole-module-cta' : '' ) . '">';
 
 					$html .= ( 'cabriolet' !== $layout ) ? $this->get_close_button() : '';
 
 					$html .= $this->get_informational_body_content();
+					$html .= $this->maybe_get_hidden_whole_cta_button();
 
 				$html .= '</div>';
 
@@ -836,14 +899,14 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 				$html .= $this->maybe_get_success_message();
 
 				$html .= '<div class="hustle-layout'
-						. ( ! empty( $content->show_cta ) && '1' === $content->show_cta && ! empty( $content->cta_whole )
-						? ' hustle-whole-module-cta' : '' ) . '">';
+						. ( $this->has_whole_cta( $content ) ? ' hustle-whole-module-cta' : '' ) . '">';
 
 					$html .= '<div class="hustle-main-wrapper">';
 
 					$html .= $this->get_close_button();
 
 					$html .= $this->get_optin_body_content();
+					$html .= $this->maybe_get_hidden_whole_cta_button();
 
 					$html .= '</div>';
 
@@ -1356,6 +1419,7 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 		// reCaptchaget_recaptcha_container.
 		if ( $show_recaptcha ) {
 			$html .= $this->get_recaptcha_container( $fields );
+			$html .= $this->get_turnstile_container( $fields );
 		}
 
 		// Error message.
@@ -1385,7 +1449,7 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 		if ( is_array( $fields ) ) {
 
 			foreach ( $fields as $name => $field ) {
-				if ( in_array( $field['type'], array( 'submit', 'gdpr', 'recaptcha' ), true ) ) {
+				if ( in_array( $field['type'], array( 'submit', 'gdpr', 'recaptcha', 'turnstile' ), true ) ) {
 					continue;
 				}
 
@@ -1688,7 +1752,7 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 	 *
 	 * @since 4.0
 	 * @return string
-	 * @throws Excpetion Addon field isn't a string.
+	 * @throws Exception Addon field isn't a string.
 	 */
 	private function get_custom_fields() {
 
@@ -1707,13 +1771,13 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 
 					// Log errors.
 					if ( ! is_string( $addon_fields ) ) {
-						throw new Excpetion( 'The returned markup should be a string.' );
+						throw new Exception( 'The returned markup should be a string.' );
 					}
 
 					$html .= $addon_fields;
 				}
 			} catch ( Exception $e ) {
-				Hustle_Utils::maybe_log( $connected_addon->get_slug(), 'failed to add custom front form fields.', $e->getMessage() );
+				Hustle_Provider_Utils::maybe_log( $connected_addon->get_slug(), 'failed to add custom front form fields.', $e->getMessage() );
 			}
 		}
 
@@ -2045,7 +2109,70 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 		}
 
 		return $html;
+	}
 
+	/**
+	 * Get Cloudflare Turnstile container if configured.
+	 *
+	 * @since 4.0.0
+	 * @param array $fields Fields.
+	 * @return string
+	 */
+	private function get_turnstile_container( $fields ) {
+
+		$html   = '';
+		$fields = $this->module->emails->form_elements;
+
+		if ( $this->is_turnstile_active( $fields ) ) {
+
+			$turnstile          = $fields['turnstile'];
+			$turnstile_settings = Hustle_Settings_Admin::get_turnstile_settings();
+			$render_id          = self::$render_ids[ $this->module->module_id ];
+			$css_classes        = isset( $turnstile['css_classes'] ) ? $turnstile['css_classes'] : '';
+			$theme              = isset( $turnstile['turnstile_theme'] ) ? $turnstile['turnstile_theme'] : 'auto';
+			$size               = isset( $turnstile['turnstile_size'] ) ? $turnstile['turnstile_size'] : 'normal';
+			$language           = isset( $turnstile['language'] ) ? $turnstile['language'] : $turnstile_settings['language'];
+
+			$html .= sprintf(
+				'<div id="hustle-modal-turnstile-%1$d-%2$d" style="margin-top: 10px;" class="hustle-turnstile %3$s" data-required-error="%4$s" data-sitekey="%5$s" data-theme="%6$s" data-size="%7$s" data-language="%8$s"></div>',
+				esc_attr( $this->module->id ),
+				esc_attr( $render_id ),
+				esc_attr( $css_classes ),
+				esc_attr( wp_strip_all_tags( html_entity_decode( $turnstile['validation_message'] ) ) ),
+				esc_attr( $turnstile_settings['turnstile_api_key'] ),
+				esc_attr( $theme ),
+				esc_attr( $size ),
+				esc_attr( $language )
+			);
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Whether the current module's Turnstile can be displayed.
+	 * Check whether this module has a turnstile field,
+	 * and if the corresponding credentials were already stored.
+	 *
+	 * @since 4.0.0
+	 * @param array $fields This module's fields.
+	 * @return bool
+	 */
+	private function is_turnstile_active( $fields = array() ) {
+
+		if ( empty( $fields ) ) {
+			$fields = $this->module->emails->form_elements;
+		}
+
+		if ( isset( $fields['turnstile'] ) ) {
+			$turnstile_settings = Hustle_Settings_Admin::get_turnstile_settings();
+
+			if ( ! empty( $turnstile_settings['turnstile_api_key'] ) && ! empty( $turnstile_settings['turnstile_client_secret'] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -2125,6 +2252,12 @@ class Hustle_Module_Renderer extends Hustle_Renderer_Abstract {
 
 				// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 				$response['script'] = '<script src="' . esc_url( $source ) . '" async defer></script>';
+			}
+
+			// Load the Turnstile script if the module has it, and if the credentials are stored.
+			if ( $this->is_turnstile_active( $fields ) ) {
+				// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+				$response['script'] = ( isset( $response['script'] ) ? $response['script'] : '' ) . '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>';
 			}
 		}
 

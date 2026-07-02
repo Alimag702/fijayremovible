@@ -93,5 +93,4 @@ class Hustle_Local_List_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 	 * Hustle_Module_Modal::add_local_subscription() doesn't exist anymore.
 	 * We're handling entries with hustle_Entry_Model class.
 	 */
-
 }

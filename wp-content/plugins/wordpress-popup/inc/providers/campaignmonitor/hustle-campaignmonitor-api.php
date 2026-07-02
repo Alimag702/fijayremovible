@@ -52,7 +52,7 @@ class Hustle_Campaignmonitor_API {
 	private function __construct( $api_key ) {
 		// prerequisites.
 		if ( ! $api_key ) {
-			throw new Exception( __( 'Missing required API Key', 'hustle' ) );
+			throw new Exception( esc_html__( 'Missing required API Key', 'hustle' ) );
 		}
 
 		$this->api_key = $api_key;
@@ -183,7 +183,7 @@ class Hustle_Campaignmonitor_API {
 
 		if ( is_wp_error( $res ) || ! $res ) {
 			throw new Exception(
-				__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
+				esc_html__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
 			);
 		}
 
@@ -203,7 +203,7 @@ class Hustle_Campaignmonitor_API {
 				}
 
 				/* translators: error message */
-				throw new Exception( sprintf( __( 'Failed to processing request : %s', 'hustle' ), $msg ) );
+				throw new Exception( sprintf( esc_html__( 'Failed to processing request : %s', 'hustle' ), esc_html( $msg ) ) );
 			}
 		}
 

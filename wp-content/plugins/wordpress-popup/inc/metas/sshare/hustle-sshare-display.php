@@ -46,5 +46,4 @@ class Hustle_SShare_Display extends Hustle_Meta_Base_Display {
 
 		return $settings;
 	}
-
 }

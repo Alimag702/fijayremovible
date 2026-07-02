@@ -263,7 +263,7 @@ $palette_optin = array(
 							'value' => 'optin_select_icon_error',
 							'alpha' => 'true',
 						),
-						'select_background_error' => array(
+						'select_border_error'     => array(
 							'name'  => __( 'Border color', 'hustle' ),
 							'value' => 'optin_select_border_error',
 							'alpha' => 'true',

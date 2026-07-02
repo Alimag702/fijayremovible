@@ -19,7 +19,7 @@ $available_apps = count( $providers );
 $connected_apps = 0;
 foreach ( $providers as $slug => $data ) {
 	if ( $data['is_connected'] ) {
-		$connected_apps++;
+		++$connected_apps;
 	}
 }
 ?>

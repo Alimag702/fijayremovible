@@ -169,7 +169,6 @@ if ( ! class_exists( 'Hustle_Local_List_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

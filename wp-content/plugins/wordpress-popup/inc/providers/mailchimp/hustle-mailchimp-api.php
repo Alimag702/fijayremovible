@@ -398,7 +398,7 @@ class Hustle_Mailchimp_Api {
 					$error .= ' ' . $error_data;
 				}
 			}
-			throw new Exception( $error );
+			throw new Exception( esc_html( $error ) );
 		}
 	}
 
@@ -463,8 +463,7 @@ class Hustle_Mailchimp_Api {
 		if ( ! is_wp_error( $res ) ) {
 			return __( 'User updated', 'hustle' );
 		} else {
-			throw new Exception( $error );
+			throw new Exception( esc_html( $error ) );
 		}
 	}
-
 }

@@ -329,7 +329,7 @@ if ( ! class_exists( 'Hustle_E_Newsletter' ) ) :
 		public function is_member( $email ) {
 			$e_newsletter = $this->get_enewsletter_instance();
 			$member       = $e_newsletter->get_member_by_email( $email );
-			return ! ! $member;
+			return (bool) $member;
 		}
 
 		/**
@@ -383,6 +383,5 @@ if ( ! class_exists( 'Hustle_E_Newsletter' ) ) :
 				'enabled' => 'active',
 			);
 		}
-
 	}
 endif;

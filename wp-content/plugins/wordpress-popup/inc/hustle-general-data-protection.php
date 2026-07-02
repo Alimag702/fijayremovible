@@ -53,7 +53,6 @@ class Hustle_General_Data_Protection {
 		add_action( 'hustle_general_data_protection_cleanup', array( $this, 'personal_data_cleanup' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_eraser' ), 10 );
 		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporter' ), 10 );
-
 	}
 
 	/**
@@ -471,5 +470,4 @@ class Hustle_General_Data_Protection {
 			}
 		}
 	}
-
 }

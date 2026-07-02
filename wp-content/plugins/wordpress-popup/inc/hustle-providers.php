@@ -193,7 +193,6 @@ class Hustle_Providers {
 			Opt_In_Utils::maybe_log( __METHOD__, $class_name, $e->getMessage() );
 			return false;
 		}
-
 	}
 
 	/**
@@ -211,15 +210,15 @@ class Hustle_Providers {
 	 */
 	private function validate_provider_class( $class_name ) {
 		if ( ! class_exists( $class_name ) ) {
-			throw new Exception( 'Provider with ' . $class_name . ' does not exist' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'Provider with %s does not exist', 'hustle' ), esc_html( $class_name ) ) );
 		}
 
 		if ( ! is_callable( array( $class_name, 'get_instance' ) ) ) {
-			throw new Exception( 'Provider with ' . $class_name . ' does not have get_instance method' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'Provider with %s does not have get_instance method', 'hustle' ), esc_html( $class_name ) ) );
 		}
 
 		if ( ! is_callable( array( $class_name, 'check_is_compatible' ) ) ) {
-			throw new Exception( 'Provider with ' . $class_name . ' does not have check_is_compatible method' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'Provider with %s does not have check_is_compatible method', 'hustle' ), esc_html( $class_name ) ) );
 		}
 
 		if ( ! call_user_func( array( $class_name, 'check_is_compatible' ), $class_name ) ) {
@@ -229,7 +228,6 @@ class Hustle_Providers {
 		$provider_class = call_user_func( array( $class_name, 'get_instance' ), $class_name );
 
 		return $provider_class;
-
 	}
 
 	/**
@@ -253,7 +251,7 @@ class Hustle_Providers {
 		$class_name     = get_class( $instance );
 
 		if ( ! $provider_class instanceof Hustle_Provider_Abstract ) {
-			throw new Exception( 'The provider ' . $class_name . ' is not instanceof Hustle_Provider_Abstract' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'The provider %s is not instanceof Hustle_Provider_Abstract', 'hustle' ), esc_html( $class_name ) ) );
 		}
 		$slug    = $provider_class->get_slug();
 		$title   = $provider_class->get_title();
@@ -261,21 +259,21 @@ class Hustle_Providers {
 		$class   = $provider_class->get_class();
 
 		if ( empty( $slug ) ) {
-			throw new Exception( 'The provider ' . $class_name . ' does not have the required _slug property.' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'The provider %s does not have the required _slug property.', 'hustle' ), esc_html( $class_name ) ) );
 		}
 		if ( empty( $title ) ) {
-			throw new Exception( 'The provider ' . $class_name . ' does not have the required _title property.' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'The provider %s does not have the required _title property.', 'hustle' ), esc_html( $class_name ) ) );
 		}
 		if ( empty( $class ) ) {
-			throw new Exception( 'The provider ' . $class_name . ' does not the required _class property.' );
+			throw new Exception( sprintf( /* translators: %s: provider class name */ esc_html__( 'The provider %s does not the required _class property.', 'hustle' ), esc_html( $class_name ) ) );
 		}
 
 		// FIFO.
 		if ( isset( $this->providers[ $slug ] ) ) {
-			throw new Exception( 'The provider with the slug ' . $slug . ' already exists.' );
+			throw new Exception( sprintf( /* translators: %s: provider slug */ esc_html__( 'The provider with the slug %s already exists.', 'hustle' ), esc_html( $slug ) ) );
 		}
 		if ( empty( $version ) ) {
-			throw new Exception( 'Provider with the slug ' . $slug . ' does not have a valid _version property.' );
+			throw new Exception( sprintf( /* translators: %s: provider slug */ esc_html__( 'Provider with the slug %s does not have a valid _version property.', 'hustle' ), esc_html( $slug ) ) );
 		}
 
 		// check if the version changed if active.
@@ -286,7 +284,7 @@ class Hustle_Providers {
 					$provider_class->version_changed( $provider_class->get_installed_version(), $provider_class->get_installed_version() );
 				}
 			} catch ( Exception $e ) {
-				Hustle_Provider_Utils( $provider_class->get_slug(), 'failed to trigger version_changed', $e->getMessage() );
+				Hustle_Provider_Utils::maybe_log( $provider_class->get_slug(), 'failed to trigger version_changed', $e->getMessage() );
 			}
 		}
 
@@ -535,5 +533,4 @@ class Hustle_Providers {
 	public function get_activated_addons() {
 		return $this->activated_addons;
 	}
-
 }

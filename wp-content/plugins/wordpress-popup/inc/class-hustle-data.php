@@ -125,39 +125,4 @@ class Hustle_Data {
 			self::TUTORIALS,
 		);
 	}
-
-	/**
-	 * Check whether a new module of this type can be created based on Free limits.
-	 * If it's free and there's already 3 modules of this type, then it's a nope.
-	 *
-	 * @since 4.3.1
-	 *
-	 * @param string $module_type Module type to check the limits for.
-	 * @return boolean
-	 */
-	public static function was_free_limit_reached( $module_type ) {
-
-		// If it's Pro, the sky's the limit.
-		if ( ! Opt_In_Utils::is_free() ) {
-			return false;
-		}
-
-		// Check the Module's type is valid.
-		if ( ! in_array( $module_type, self::get_module_types(), true ) ) {
-			return true;
-		}
-
-		$collection_args = array(
-			'module_type' => $module_type,
-			'count_only'  => true,
-		);
-		$total_modules   = Hustle_Module_Collection::instance()->get_all( null, $collection_args );
-
-		// If we have less than 3 modules of this type, can create another one.
-		if ( $total_modules >= 3 ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

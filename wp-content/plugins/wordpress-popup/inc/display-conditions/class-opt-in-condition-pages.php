@@ -53,5 +53,4 @@ class Opt_In_Condition_Pages extends Opt_In_Condition_Abstract {
 				return $all || ! $is_selected_page;
 		}
 	}
-
 }

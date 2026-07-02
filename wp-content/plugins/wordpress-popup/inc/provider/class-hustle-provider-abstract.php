@@ -740,7 +740,7 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 					$prev_step_is_completed = call_user_func( $steps[ $prev_step ]['is_completed'], $submitted_data );
 				}
 				if ( ! $prev_step_is_completed ) {
-					$step --;
+					--$step;
 
 					return $this->get_settings_wizard( $submitted_data, $module_id, $current_step, $step );
 				}
@@ -759,7 +759,6 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 		}
 
 		return $this->get_wizard( $steps, $submitted_data, $module_id, $step );
-
 	}
 
 	/**
@@ -824,7 +823,7 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 					$prev_step_is_completed = call_user_func( $steps[ $prev_step ]['is_completed'], $submitted_data );
 				}
 				if ( ! $prev_step_is_completed ) {
-					$step --;
+					--$step;
 
 					return $this->get_form_settings_wizard( $submitted_data, $module_id, $current_step, $step );
 				}
@@ -946,10 +945,8 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 			if ( false !== $this->find_one_global_active_connection() ) {
 				return true;
 			}
-		} else {
-			if ( $this->settings_are_completed() ) {
+		} elseif ( $this->settings_are_completed() ) {
 				return true;
-			}
 		}
 
 		return false;
@@ -1522,7 +1519,7 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 	 * Gets the provider's data.
 	 * General function to get the provider's details from database based on a module_id and field key.
 	 * This method required an instance of Hustle_Module_Model. Now it accepts the module_id in order to prevent
-	 * third-party integrations from having to use new Hustle_Module_Model( $module_id ) just to use this method.
+	 * third-party integrations from having to use Hustle_Module_Model::new_instance( $module_id ) just to use this method.
 	 * -Helper.
 	 *
 	 * @param int|Hustle_Module_Model $module_id The ID of the module from which the data will be retrieved.
@@ -1539,7 +1536,7 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 			if ( ! ( $module_id instanceof Hustle_Module_Model ) || 0 === (int) $module_id ) {
 				return $details;
 			}
-			$module = new Hustle_Module_Model( $module_id );
+			$module = Hustle_Module_Model::new_instance( $module_id );
 			if ( is_wp_error( $module ) ) {
 				return $details;
 			}
@@ -1583,12 +1580,12 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 	 * Retrieves provider's option from db.
 	 *
 	 * @uses get_option
-	 * @param string $option_key Name of the option to retrieve.
-	 * @param mixed  $default    Value to return if the option wasn't found.
+	 * @param string $option_key    Name of the option to retrieve.
+	 * @param mixed  $default_value Value to return if the option wasn't found.
 	 * @return mixed
 	 */
-	public function get_provider_option( $option_key, $default ) {
-		return get_option( $this->get_slug() . '_' . $option_key, $default );
+	public function get_provider_option( $option_key, $default_value ) {
+		return get_option( $this->get_slug() . '_' . $option_key, $default_value );
 	}
 
 	/**
@@ -1622,14 +1619,14 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 	 * @since 4.0.0
 	 *
 	 * @param string $setting_name    Name of the setting to be retrieved.
-	 * @param mixed  $default         Value to return if the setting wasn't found.
+	 * @param mixed  $default_value   Value to return if the setting wasn't found.
 	 * @param string $global_multi_id ID of the global instance of the provider.
 	 * @return mixed
 	 */
-	public function get_setting( $setting_name, $default = false, $global_multi_id = false ) {
+	public function get_setting( $setting_name, $default_value = false, $global_multi_id = false ) {
 
 		$setting_values    = $this->get_settings_values();
-		$retrieved_setting = $default;
+		$retrieved_setting = $default_value;
 		if ( $global_multi_id ) {
 			if ( isset( $setting_values[ $global_multi_id ] ) ) {
 				$account = $setting_values[ $global_multi_id ];
@@ -1638,10 +1635,8 @@ abstract class Hustle_Provider_Abstract implements Hustle_Provider_Interface {
 					$retrieved_setting = $account[ $setting_name ];
 				}
 			}
-		} else {
-			if ( isset( $setting_values[ $setting_name ] ) ) {
+		} elseif ( isset( $setting_values[ $setting_name ] ) ) {
 				$retrieved_setting = $setting_values[ $setting_name ];
-			}
 		}
 
 		return $retrieved_setting;

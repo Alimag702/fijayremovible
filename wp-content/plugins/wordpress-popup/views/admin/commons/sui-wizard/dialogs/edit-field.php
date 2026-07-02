@@ -766,6 +766,126 @@ $this->render_modal( $attributes );
 
 </script>
 
+<?php // TAB: Turnstile Settings. ?>
+<script id="hustle-turnstile-field-settings-tpl" type="text/template">
+
+	<?php
+	$turnstile_url = add_query_arg(
+		array(
+			'page'    => Hustle_Data::SETTINGS_PAGE,
+			'section' => 'turnstile',
+		),
+		'admin.php'
+	);
+
+	$turnstile_unavailable_message = sprintf(
+		/* translators: 1: opening 'a' tag, 2: closing 'a' tag */
+		esc_html__( 'You haven\'t added API keys for Cloudflare Turnstile in your global settings. Add your keys %1$shere%2$s and then come back to configure this field.', 'hustle' ),
+		'<a href="' . esc_url_raw( $turnstile_url ) . '" target="_blank">',
+		'</a>'
+	);
+
+	$turnstile_unavailable_html = $this->get_html_for_options(
+		array(
+			array(
+				'type'  => 'inline_notice',
+				'class' => 'sui-notice-error',
+				'icon'  => 'info',
+				'value' => $turnstile_unavailable_message,
+			),
+		),
+		true
+	);
+	?>
+
+	<?php if ( $turnstile_available ) : ?>
+
+		<?php // ROW: Theme. ?>
+		<div class="sui-box-settings-row">
+
+			<div class="sui-box-settings-col-2">
+
+				<div class="sui-row">
+
+					<div class="sui-col-md-6">
+
+						<div class="sui-form-field">
+
+							<label for="hustle-turnstile-theme" class="sui-settings-label sui-dark"><?php esc_html_e( 'Theme', 'hustle' ); ?></label>
+
+							<select id="hustle-turnstile-theme" data-attribute="turnstile_theme" name="turnstile_theme">
+								<option value="light" {{ _.selected( 'light' === turnstile_theme, true ) }}><?php esc_attr_e( 'Light', 'hustle' ); ?></option>
+								<option value="dark" {{ _.selected( 'dark' === turnstile_theme, true ) }}><?php esc_attr_e( 'Dark', 'hustle' ); ?></option>
+								<option value="auto" {{ _.selected( 'auto' === turnstile_theme, true ) }}><?php esc_attr_e( 'Auto', 'hustle' ); ?></option>
+							</select>
+
+						</div>
+
+					</div>
+
+					<div class="sui-col-md-6">
+
+						<div class="sui-form-field">
+
+							<label for="hustle-turnstile-size" class="sui-settings-label sui-dark"><?php esc_html_e( 'Size', 'hustle' ); ?></label>
+
+							<select id="hustle-turnstile-size" data-attribute="turnstile_size" name="turnstile_size">
+								<option value="normal" {{ _.selected( 'normal' === turnstile_size, true ) }}><?php esc_attr_e( 'Normal', 'hustle' ); ?></option>
+								<option value="compact" {{ _.selected( 'compact' === turnstile_size, true ) }}><?php esc_attr_e( 'Compact', 'hustle' ); ?></option>
+								<option value="flexible" {{ _.selected( 'flexible' === turnstile_size, true ) }}><?php esc_attr_e( 'Flexible', 'hustle' ); ?></option>
+							</select>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<?php // ROW: Verification Error. ?>
+		<div class="sui-box-settings-row">
+
+			<div class="sui-box-settings-col-2">
+
+				<div class="sui-form-field">
+
+					<label for="turnstile-verification-error" id="turnstile-verification-error-label" class="sui-settings-label sui-dark"><?php esc_html_e( 'Verification Error', 'hustle' ); ?></label>
+
+					<span id="turnstile-verification-error-desc" class="sui-description" style="margin-bottom: 10px;"><?php esc_html_e( 'Choose the error message you want to display when Turnstile verification fails.', 'hustle' ); ?></span>
+
+					<input
+						type="text"
+						name="validation_message"
+						value="{{ validation_message }}"
+						id="turnstile-verification-error"
+						class="sui-form-control"
+						aria-labelledby="turnstile-verification-error-label"
+						aria-describedby="turnstile-verification-error-desc"
+					/>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	<?php else : ?>
+
+		<div class="sui-box-settings-row">
+			<div class="sui-box-settings-col-2">
+				<?php echo wp_kses_post( $turnstile_unavailable_html ); ?>
+			</div>
+		</div>
+
+	<?php endif; ?>
+
+	<input type="hidden" id="hustle_turnstile_available" value="<?php echo $turnstile_available ? '1' : '0'; ?>" />
+
+</script>
+
 <script id="hustle-gdpr-field-settings-tpl" type="text/template">
 
 	<?php // TAB: GDPR Settings. ?>

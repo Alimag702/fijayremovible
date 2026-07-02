@@ -44,13 +44,11 @@ if ( ! $module->active ) {
 		/* translators: module type display name */
 		$chart_message = sprintf( __( "This %s is in draft state, so we've paused collecting data until you publish it live.", 'hustle' ), $smallcaps_singular );
 	}
-} else {
+} elseif ( ! $is_tracking_enabled ) {
 
-	if ( ! $is_tracking_enabled ) {
 
 		/* translators: module type display name */
 		$chart_message = sprintf( __( 'This %s has tracking disabled. Enable tracking from the settings dropdown to start collecting data.', 'hustle' ), $smallcaps_singular );
-	}
 }
 
 $last_conversion_text = __( 'Last Conversion', 'hustle' );

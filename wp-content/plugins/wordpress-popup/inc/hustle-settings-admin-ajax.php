@@ -21,6 +21,9 @@ class Hustle_Settings_Admin_Ajax {
 		// Return the recaptcha script for preview.
 		add_action( 'wp_ajax_hustle_load_recaptcha_preview', array( $this, 'load_recaptcha_preview' ) );
 
+		// Return the turnstile script for preview.
+		add_action( 'wp_ajax_hustle_load_turnstile_preview', array( $this, 'load_turnstile_preview' ) );
+
 		// Color Palette tab actions.
 		add_action( 'wp_ajax_hustle_handle_palette_actions', array( $this, 'handle_palette_actions' ) );
 
@@ -38,7 +41,7 @@ class Hustle_Settings_Admin_Ajax {
 	private function filter_ips( $ip_string ) {
 
 		// Create an array with their values.
-		$ip_array = preg_split( '/[\s,]+/', $ip_string, null, PREG_SPLIT_NO_EMPTY );
+		$ip_array = preg_split( '/[\s,]+/', $ip_string, -1, PREG_SPLIT_NO_EMPTY );
 
 		// Remove from the array the IPs that are not valid IPs.
 		foreach ( $ip_array as $key => $ip ) {
@@ -80,7 +83,6 @@ class Hustle_Settings_Admin_Ajax {
 		 * @since 4.0.3
 		 */
 		do_action( 'hustle_after_reset_settings' );
-
 	}
 
 	/**
@@ -287,6 +289,39 @@ class Hustle_Settings_Admin_Ajax {
 	}
 
 	/**
+	 * Save the Cloudflare Turnstile settings.
+	 *
+	 * @since 4.0.0
+	 */
+	private function save_turnstile_settings() {
+
+		$settings_to_save = array(
+			'turnstile_api_key'       => '',
+			'turnstile_client_secret' => '',
+			'language'                => 'auto',
+		);
+
+		foreach ( $settings_to_save as $key => $value ) {
+			$incoming_setting = filter_input( INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS );
+
+			if ( $incoming_setting ) {
+				$settings_to_save[ $key ] = trim( $incoming_setting );
+			}
+		}
+
+		Hustle_Settings_Admin::update_hustle_settings( $settings_to_save, 'turnstile' );
+
+		wp_send_json_success(
+			array(
+				'notification' => array(
+					'status'  => 'success',
+					'message' => esc_html__( 'Cloudflare Turnstile configured successfully.', 'hustle' ),
+				),
+			)
+		);
+	}
+
+	/**
 	 * Save the Accessibility settings.
 	 *
 	 * @since 4.0.0
@@ -345,7 +380,20 @@ class Hustle_Settings_Admin_Ajax {
 		Hustle_Settings_Admin::update_hustle_settings( $value, 'unsubscribe' );
 
 		wp_send_json_success();
+	}
 
+	/**
+	 * Return the Cloudflare Turnstile script to be added in the page.
+	 *
+	 * @since 7.13.0
+	 */
+	public function load_turnstile_preview() {
+
+		$source = Hustle_Module_Front::add_turnstile_script( true, true );
+		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+		$html = '<script src="' . esc_url( $source ) . '" async defer></script>';
+
+		wp_send_json_success( $html );
 	}
 
 	/**
@@ -398,6 +446,10 @@ class Hustle_Settings_Admin_Ajax {
 				$this->save_recaptcha_settings();
 				break;
 
+			case 'turnstile':
+				$this->save_turnstile_settings();
+				break;
+
 			case 'accessibility':
 				$this->save_accessibility_settings();
 				break;
@@ -446,7 +498,7 @@ class Hustle_Settings_Admin_Ajax {
 
 			foreach ( $modules_ids as $module_id ) {
 
-				$module = new Hustle_Module_Model( $module_id );
+				$module = Hustle_Module_Model::new_instance( $module_id );
 				if ( ! is_wp_error( $module ) ) {
 
 					$selected_roles = isset( $modules_roles[ $module_id ] ) ? $modules_roles[ $module_id ] : array();
@@ -514,21 +566,16 @@ class Hustle_Settings_Admin_Ajax {
 					// Add capability.
 					$role->add_cap( $cap );
 
-				} else {
-
-					// Check if this role can edit at least one module before removing the cap.
-					if ( 'edit' === $capability ) {
-
-						if ( ! Hustle_Module_Model::can_role_edit_one_module( $role_slug ) ) {
-							// Remove capability.
-							$role->remove_cap( $cap );
-						} else {
-							$role->add_cap( $cap );
-						}
-					} else {
+				} elseif ( 'edit' === $capability ) { // Check if this role can edit at least one module before removing the cap.
+					if ( ! Hustle_Module_Model::can_role_edit_one_module( $role_slug ) ) {
 						// Remove capability.
 						$role->remove_cap( $cap );
+					} else {
+						$role->add_cap( $cap );
 					}
+				} else {
+					// Remove capability.
+					$role->remove_cap( $cap );
 				}
 			}
 		}
@@ -537,7 +584,6 @@ class Hustle_Settings_Admin_Ajax {
 		Hustle_Settings_Admin::update_hustle_settings( $incoming, 'permissions' );
 
 		wp_send_json_success();
-
 	}
 
 	/**
@@ -749,7 +795,7 @@ class Hustle_Settings_Admin_Ajax {
 
 				$module_id = filter_input( INPUT_POST, 'module_id', FILTER_VALIDATE_INT );
 
-				$module = new Hustle_Module_Model( $module_id );
+				$module = Hustle_Module_Model::new_instance( $module_id );
 
 				if ( is_wp_error( $module ) ) {
 					$palette_array = $fallback_palette;
@@ -807,5 +853,4 @@ class Hustle_Settings_Admin_Ajax {
 
 		return $id;
 	}
-
 }

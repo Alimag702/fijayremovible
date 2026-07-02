@@ -478,6 +478,5 @@ if ( ! class_exists( 'Hustle_Campaignmonitor' ) ) :
 				'api_key' => 'api_key',
 			);
 		}
-
 	}
 endif;

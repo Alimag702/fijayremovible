@@ -166,6 +166,8 @@ class Elementor implements Integration_Interface {
 		}
 
 		\add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'init' ] );
+		\add_action( 'elementor/editor/footer', [ $this, 'start_output_buffering' ], 0 );
+		\add_action( 'elementor/editor/footer', [ $this, 'inject_yoast_tab' ], 999 );
 	}
 
 	/**
@@ -177,6 +179,44 @@ class Elementor implements Integration_Interface {
 		$this->asset_manager->register_assets();
 		$this->enqueue();
 		$this->render_hidden_fields();
+	}
+
+	/**
+	 * Start capturing buffer.
+	 *
+	 * @return void
+	 */
+	public function start_output_buffering() {
+		\ob_start();
+	}
+
+	/**
+	 * Injects the Yoast SEO tab into the Elements panel of the Elementor editor.
+	 *
+	 * @return void
+	 */
+	public function inject_yoast_tab() {
+		$output = \ob_get_clean();
+
+		// If the buffer is empty or the call failed, bail out.
+		if ( empty( $output ) ) {
+			return;
+		}
+
+		$search  = '/(<(div|button) class="elementor-component-tab elementor-panel-navigation-tab" data-tab="global">.*<\/(div|button)>)/m';
+		$replace = '${1}<${2} class="elementor-component-tab elementor-panel-navigation-tab" data-tab="yoast-seo-tab">Yoast SEO</${2}>';
+
+		$modified_output = \preg_replace( $search, $replace, $output );
+
+		// Check if preg_replace failed. If so, fallback to original output.
+		if ( $modified_output === null ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Already escaped output.
+			echo $output;
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Already escaped output.
+		echo $modified_output;
 	}
 
 	// Below is mostly copied from `class-metabox.php`. That constructor has side-effects we do not need.
@@ -256,7 +296,7 @@ class Elementor implements Integration_Interface {
 			WPSEO_Meta::get_meta_field_defs( 'general', $post->post_type ),
 			WPSEO_Meta::get_meta_field_defs( 'advanced', $post->post_type ),
 			$social_fields,
-			WPSEO_Meta::get_meta_field_defs( 'schema', $post->post_type )
+			WPSEO_Meta::get_meta_field_defs( 'schema', $post->post_type ),
 		);
 
 		foreach ( $meta_boxes as $key => $meta_box ) {
@@ -370,7 +410,9 @@ class Elementor implements Integration_Interface {
 
 		$this->asset_manager->enqueue_style( 'admin-global' );
 		$this->asset_manager->enqueue_style( 'metabox-css' );
-		$this->asset_manager->enqueue_style( 'scoring' );
+		if ( $this->readability_analysis->is_enabled() ) {
+			$this->asset_manager->enqueue_style( 'scoring' );
+		}
 		$this->asset_manager->enqueue_style( 'monorepo' );
 		$this->asset_manager->enqueue_style( 'admin-css' );
 		$this->asset_manager->enqueue_style( 'ai-generator' );
@@ -416,6 +458,7 @@ class Elementor implements Integration_Interface {
 			'isPost'                    => true,
 			'isBlockEditor'             => WP_Screen::get()->is_block_editor(),
 			'isElementorEditor'         => true,
+			'isAlwaysIntroductionV2'    => $this->is_elementor_version_compatible_with_introduction_v2(),
 			'postStatus'                => \get_post_status( $post_id ),
 			'postType'                  => \get_post_type( $post_id ),
 			'analysis'                  => [
@@ -437,7 +480,27 @@ class Elementor implements Integration_Interface {
 		$script_data = \array_merge_recursive( $site_information->get_legacy_site_information(), $script_data );
 
 		$this->asset_manager->localize_script( 'elementor', 'wpseoScriptData', $script_data );
-		$this->asset_manager->enqueue_user_language_script();
+	}
+
+	/**
+	 * Checks whether the current Elementor version is compatible with our introduction v2.
+	 *
+	 * In version 3.30.0, Elementor removed the experimental flag for the editor v2.
+	 * Resulting in the editor v2 being the default.
+	 *
+	 * @return bool Whether the Elementor version is compatible with introduction v2.
+	 */
+	private function is_elementor_version_compatible_with_introduction_v2(): bool {
+		if ( ! \defined( 'ELEMENTOR_VERSION' ) ) {
+			return false;
+		}
+
+		// Take the semver version from their version string.
+		$matches = [];
+		$version = ( \preg_match( '/^([0-9]+.[0-9]+.[0-9]+)/', \ELEMENTOR_VERSION, $matches ) > 0 ) ? $matches[1] : \ELEMENTOR_VERSION;
+
+		// Check if the version is 3.30.0 or higher. This is where the editor v2 was taken out of the experimental into the default state.
+		return \version_compare( $version, '3.30.0', '>=' );
 	}
 
 	/**
@@ -450,7 +513,7 @@ class Elementor implements Integration_Interface {
 		\printf(
 			'<form id="yoast-form" method="post" action="%1$s"><input type="hidden" name="action" value="wpseo_elementor_save" /><input type="hidden" id="post_ID" name="post_id" value="%2$s" />',
 			\esc_url( \admin_url( 'admin-ajax.php' ) ),
-			\esc_attr( $this->get_metabox_post()->ID )
+			\esc_attr( $this->get_metabox_post()->ID ),
 		);
 
 		\wp_nonce_field( 'wpseo_elementor_save', '_wpseo_elementor_nonce' );
@@ -478,7 +541,7 @@ class Elementor implements Integration_Interface {
 			 * If the DB value is empty we can auto-generate a slug.
 			 * But if not empty, we should not touch it anymore.
 			 */
-			\esc_attr( $this->get_metabox_post()->post_name )
+			\esc_attr( $this->get_metabox_post()->post_name ),
 		);
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output should be escaped in the filter.
@@ -511,7 +574,7 @@ class Elementor implements Integration_Interface {
 	 */
 	protected function get_metabox_script_data( $permalink ) {
 		$post_formatter = new WPSEO_Metabox_Formatter(
-			new WPSEO_Post_Metabox_Formatter( $this->get_metabox_post(), [], $permalink )
+			new WPSEO_Post_Metabox_Formatter( $this->get_metabox_post(), [], $permalink ),
 		);
 
 		$values = $post_formatter->get_values();
@@ -695,7 +758,7 @@ class Elementor implements Integration_Interface {
 			[
 				\YoastSEO()->meta->for_post( $post->ID )->presentation->title,
 				\YoastSEO()->meta->for_post( $post->ID )->presentation->meta_description,
-			]
+			],
 		);
 
 		\preg_match_all( '/%%cf_([A-Za-z0-9_]+)%%/', $replace_vars_fields, $matches );

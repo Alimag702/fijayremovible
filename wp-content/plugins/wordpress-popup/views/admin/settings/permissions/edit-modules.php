@@ -25,8 +25,9 @@ $modules_ids      = array();
 
 		<?php
 		// TABLE: Modules.
-		$filtered = ! empty( $filter['role'] ) && 'any' !== $filter['role'] || ! empty( $filter['q'] )
-				|| 4 > count( $filter['types'] ) && ! empty( $filter['types'] );
+		$filtered = ( ! empty( $filter['role'] ) && 'any' !== $filter['role'] ) ||
+			! empty( $filter['q'] ) ||
+			( 4 > count( $filter['types'] ) && ! empty( $filter['types'] ) );
 
 		if ( 0 === count( $modules ) && ! $filtered ) {
 			?>

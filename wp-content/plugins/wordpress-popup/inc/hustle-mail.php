@@ -239,7 +239,7 @@ class Hustle_Mail {
 		if ( ! $referer ) {
 			return '';
 		}
-		$module = new Hustle_Module_Model();
+		$module = Hustle_Module_Model::new_instance();
 		$nonce  = $module->create_unsubscribe_nonce( $email, $modules_id );
 		if ( ! $nonce ) {
 			return '';
@@ -273,5 +273,4 @@ class Hustle_Mail {
 
 		return $sent;
 	}
-
 }

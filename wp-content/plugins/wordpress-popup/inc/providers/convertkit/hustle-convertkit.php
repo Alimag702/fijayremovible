@@ -22,7 +22,7 @@ if ( ! class_exists( 'Hustle_ConvertKit' ) ) :
 		/**
 		 * Api
 		 *
-		 * @var ConvertKit
+		 * @var ConvertKit_Api_Interface
 		 */
 		protected static $api;
 		/**
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Hustle_ConvertKit' ) ) :
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $title = 'ConvertKit';
+		protected $title = 'Kit';
 
 		/**
 		 * Class name of form settings
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Hustle_ConvertKit' ) ) :
 		 */
 		public static function get_instance() {
 			if ( is_null( self::$instance ) ) {
-				self::$instance = new self();
+				self::$instance = new static();
 			}
 
 			return self::$instance;
@@ -383,7 +383,7 @@ if ( ! class_exists( 'Hustle_ConvertKit' ) ) :
 		 *
 		 * @param string $api_key Api key.
 		 * @param string $api_secret Api secret.
-		 * @return Hustle_ConvertKit_Api
+		 * @return Hustle_ConvertKit_Api_Interface
 		 */
 		public static function api( $api_key, $api_secret = '' ) {
 
@@ -396,6 +396,26 @@ if ( ! class_exists( 'Hustle_ConvertKit' ) ) :
 				}
 			}
 			return self::$api;
+		}
+
+		/**
+		 * Check if migration is needed.
+		 * Migration is required if the provider is using version 1.0 (API key/secret authentication)
+		 * and needs to migrate to version 2.0 (OAuth authentication).
+		 *
+		 * @since 4.6.0
+		 * @return boolean
+		 */
+		public function migration_required() {
+			$api_version = $this->get_installed_version();
+			if ( empty( $api_version ) ) {
+				return false;
+			}
+
+			$settings = $this->get_settings_values();
+
+			return ! empty( $settings ) &&
+				version_compare( $api_version, '2.0', '<' );
 		}
 
 		/**

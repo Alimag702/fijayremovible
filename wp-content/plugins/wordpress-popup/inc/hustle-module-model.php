@@ -136,7 +136,7 @@ class Hustle_Module_Model extends Hustle_Model {
 	 *
 	 * @since 4.0
 	 *
-	 * @return array
+	 * @return \Hustle_Meta_Base_Integrations
 	 */
 	public function get_integrations_settings() {
 		$stored = $this->get_settings_meta( self::KEY_INTEGRATIONS_SETTINGS );
@@ -254,7 +254,6 @@ class Hustle_Module_Model extends Hustle_Model {
 		$form_fields = apply_filters( 'hustle_form_elements', $emails_data['form_elements'] );
 
 		return $form_fields;
-
 	}
 
 	/**
@@ -439,7 +438,6 @@ class Hustle_Module_Model extends Hustle_Model {
 		update_option( self::KEY_UNSUBSCRIBE_NONCES, $data );
 
 		return true;
-
 	}
 
 	/**
@@ -558,7 +556,7 @@ class Hustle_Module_Model extends Hustle_Model {
 					// Handle Visibility -> URL textarea.
 					$urls  = preg_split( '/\r\n|\r|\n/', $value );
 					$urls  = array_map(
-						function( $v ) {
+						function ( $v ) {
 							return filter_var( wp_strip_all_tags( $v ), FILTER_SANITIZE_URL );
 						},
 						(array) $urls
@@ -569,6 +567,8 @@ class Hustle_Module_Model extends Hustle_Model {
 					if ( ! in_array( $key, array( 'main_content', 'emailmessage', 'email_message', 'success_message' ), true ) ) {
 						$value = wp_kses_post( $value );
 					}
+				} elseif ( 'custom_css' === $key ) {
+					$value = sanitize_textarea_field( $value );
 				} elseif ( ! is_int( $value ) ) {
 					$value = sanitize_text_field( $value );
 				}
@@ -604,7 +604,35 @@ class Hustle_Module_Model extends Hustle_Model {
 			return $errors;
 		}
 
+		$validator = $this->create_validator();
+
+		$field_errors = array();
+		foreach ( Hustle_Module_Fields::FIELDS as $section => $fields ) {
+			if ( ! isset( $data[ $section ] ) ) {
+				continue;
+			}
+
+			$result = $validator->validate( $fields, $data[ $section ] );
+			if ( ! $result['is_valid'] ) {
+				$field_errors[ $section ] = $result['errors'];
+			}
+		}
+
+		if ( ! empty( $field_errors ) ) {
+			$errors['error']['field_errors'] = $field_errors;
+			return $errors;
+		}
+
 		return true;
+	}
+
+	/**
+	 * Create the validator instance.
+	 *
+	 * @return Hustle_Module_Fields_Validator
+	 */
+	protected function create_validator() {
+		return new Hustle_Module_Fields_Validator();
 	}
 
 	/**
@@ -809,7 +837,7 @@ class Hustle_Module_Model extends Hustle_Model {
 			$api     = $addon::api( $api_key, $new_campaigns );
 
 			foreach ( $emails['form_elements'] as $element ) {
-				if ( empty( $element['type'] ) || in_array( $element['type'], array( 'submit', 'recaptcha' ), true ) ) {
+				if ( empty( $element['type'] ) || in_array( $element['type'], array( 'submit', 'recaptcha', 'turnstile' ), true ) ) {
 					continue;
 				}
 				$custom_fields[] = array(
@@ -934,11 +962,81 @@ class Hustle_Module_Model extends Hustle_Model {
 		$i        = 0;
 
 		while ( array_key_exists( $new_name, $sanitized_fields ) ) {
-			$i++;
+			++$i;
 			$new_name = $field_name . '-' . $i;
 		}
 
 		return $new_name;
 	}
 
+	/**
+	 * Disconnect an integration from the module by its slug.
+	 *
+	 * @since 7.8.13
+	 *
+	 * @param string $slug Integration slug.
+	 * @return void
+	 */
+	public function disconnect_integration( $slug ) {
+		$settings = $this->get_integrations_settings()->to_array();
+
+		if (
+			isset( $settings['active_integrations'] ) &&
+			is_string( $settings['active_integrations'] )
+		) {
+			$integrations = explode( ',', $settings['active_integrations'] );
+			$integrations = array_map( 'trim', $integrations );
+
+			if ( in_array( $slug, $integrations, true ) ) {
+				// Remove the slug from the active integrations list.
+				$integrations       = array_diff( $integrations, array( $slug ) );
+				$integrations_count = count( $integrations );
+
+				$settings['active_integrations'] = implode( ',', $integrations );
+			}
+		}
+
+		if ( isset( $integrations_count ) ) {
+			$settings['active_integrations_count'] = $integrations_count;
+		}
+
+		$this->update_meta( self::KEY_INTEGRATIONS_SETTINGS, $settings );
+
+		// Delete the integration-specific settings meta.
+		$integration_meta_key = $slug . self::KEY_PROVIDER;
+		$this->update_meta( $integration_meta_key, array() );
+	}
+
+	/**
+	 * Connect an integration to the module by its slug.
+	 *
+	 * @since 7.8.13
+	 *
+	 * @param string $slug Integration slug.
+	 * @return void
+	 */
+	public function connect_integration( $slug ) {
+		$settings = $this->get_integrations_settings()->to_array();
+
+		if ( isset( $settings['active_integrations'] ) && is_string( $settings['active_integrations'] ) ) {
+			$integrations = explode( ',', $settings['active_integrations'] );
+			$integrations = array_map( 'trim', $integrations );
+
+			if ( ! in_array( $slug, $integrations, true ) ) {
+				$integrations[]     = $slug;
+				$integrations_count = count( $integrations );
+
+				$settings['active_integrations'] = implode( ',', $integrations );
+			}
+		} else {
+			$settings['active_integrations'] = $slug;
+			$integrations_count              = 1;
+		}
+
+		if ( isset( $integrations_count ) ) {
+			$settings['active_integrations_count'] = $integrations_count;
+		}
+
+		$this->update_meta( self::KEY_INTEGRATIONS_SETTINGS, $settings );
+	}
 }

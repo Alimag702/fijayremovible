@@ -222,7 +222,6 @@ if ( ! class_exists( 'Hustle_ConstantContact_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

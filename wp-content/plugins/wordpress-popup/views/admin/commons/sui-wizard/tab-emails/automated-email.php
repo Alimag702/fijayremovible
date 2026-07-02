@@ -229,7 +229,7 @@ $options = array(
 							></select>
 
 						</div>
-
+						<div id="recipient-error" class="sui-error-message" style="display: none;"></div>
 					</div>
 
 					<div class="sui-form-field">
@@ -254,6 +254,7 @@ $options = array(
 
 						</div>
 
+						<div id="email_subject-error" class="sui-error-message" style="display: none;"></div>
 					</div>
 
 					<div class="sui-form-field">

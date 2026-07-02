@@ -167,12 +167,6 @@ class Hustle_Settings_Admin {
 			'sender_email_name'                     => get_bloginfo( 'name' ),
 			'sender_email_address'                  => get_option( 'admin_email', '' ),
 			'mobile_breakpoint'                     => 782,
-			'published_popup_on_dashboard'          => '1',
-			'draft_popup_on_dashboard'              => '1',
-			'published_slidein_on_dashboard'        => '1',
-			'draft_slidein_on_dashboard'            => '1',
-			'published_embedded_on_dashboard'       => '1',
-			'draft_embedded_on_dashboard'           => '1',
 			'global_tracking_disabled'              => '0',
 			'debug_enabled'                         => '0',
 			// Dashboard settings.
@@ -321,6 +315,40 @@ class Hustle_Settings_Admin {
 		}
 
 		return apply_filters( 'hustle_get_recaptcha_settings', $recaptcha_settings );
+	}
+
+	/**
+	 * Get the Cloudflare Turnstile settings.
+	 *
+	 * @since 4.0.0
+	 * @return array
+	 */
+	public static function get_turnstile_settings() {
+
+		$default = array(
+			'turnstile_api_key'       => '',
+			'turnstile_client_secret' => '',
+			'language'                => 'auto',
+		);
+
+		$saved_settings = self::get_hustle_settings( 'turnstile' );
+
+		if ( ! empty( $saved_settings ) ) {
+			return array_merge( $default, $saved_settings );
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Check if Cloudflare Turnstile is configured and available to use.
+	 *
+	 * @since 7.8.13
+	 * @return bool
+	 */
+	public static function is_turnstile_available() {
+		$settings = self::get_turnstile_settings();
+		return ! empty( $settings['turnstile_api_key'] ) && ! empty( $settings['turnstile_client_secret'] );
 	}
 
 	/**
@@ -582,5 +610,4 @@ class Hustle_Settings_Admin {
 
 		return apply_filters( 'hustle_get_custom_color_palettes', $custom_palettes );
 	}
-
 }

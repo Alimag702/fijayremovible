@@ -7,8 +7,12 @@
 
 if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 
-	include_once 'hustle-infusion-soft-api.php';
-	include_once 'class-opt-in-infusionsoft-xml-res.php';
+	include_once 'hustle-infusion-soft-oauth.php';
+	include_once 'interface-opt-in-infusionsoft-connection.php';
+	include_once 'hustle-infusion-soft-request-method.php';
+	include_once 'hustle-infusion-soft-rest-api.php';
+	include_once __DIR__ . '/model/hustle-infusion-soft-contact.php';
+	include_once __DIR__ . '/model/hustle-infusion-soft-custom-field.php';
 
 
 	/**
@@ -16,7 +20,9 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 	 */
 	class Hustle_Infusion_Soft extends Hustle_Provider_Abstract {
 
-		const SLUG = 'infusionsoft';
+		const SLUG          = 'infusionsoft';
+		const OAUTH_ACTION  = 'infusionsoft_oauth';
+		const KEAP_APPS_URL = 'https://keys.developer.keap.com/my-apps';
 
 		const CLIENT_ID     = 'inc_opt_infusionsoft_clientid';
 		const CLIENT_SECRET = 'inc_opt_infusionsoft_clientsecret';
@@ -24,7 +30,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		/**
 		 * Api
 		 *
-		 * @var Opt_In_Infusionsoft_Api
+		 * @var Opt_In_Infusionsoft_Connection
 		 */
 		protected static $api;
 		/**
@@ -44,6 +50,13 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		protected static $instance = null;
 
 		/**
+		 * OAuth
+		 *
+		 * @var Hustle_Infusion_Soft_OAuth
+		 */
+		protected $auth;
+
+		/**
 		 * Slug
 		 *
 		 * @since 3.0.5
@@ -52,12 +65,19 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		protected $slug = 'infusionsoft';
 
 		/**
+		 * Is multi on global
+		 *
+		 * @var boolean
+		 */
+		protected $is_multi_on_global = false;
+
+		/**
 		 * Version
 		 *
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $version = '1.0';
+		protected $version = '2.0';
 
 		/**
 		 * Class
@@ -96,7 +116,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * @since 4.0
 		 * @var array
 		 */
-		protected $completion_options = array( 'api_key', 'account_name' );
+		protected $completion_options = array( 'account_name' );
 
 		/**
 		 * Provider constructor.
@@ -104,6 +124,49 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		public function __construct() {
 			$this->icon_2x = plugin_dir_url( __FILE__ ) . 'images/icon.png';
 			$this->logo_2x = plugin_dir_url( __FILE__ ) . 'images/logo.png';
+			$this->get_oauth();
+		}
+
+		/**
+		 * Get OAuth instance
+		 *
+		 * @return Hustle_Infusion_Soft_OAuth
+		 */
+		public function get_oauth() {
+			if ( ! $this->auth ) {
+				if ( Opt_In_Utils::get_hub_api_key() ) {
+					$this->auth = new Hustle_Infusion_Soft_OAuth();
+				} else {
+					$settings   = $this->get_settings_values();
+					$this->auth = new Hustle_Infusion_Soft_OAuth_Non_Hub();
+					// Set the keys if they exist.
+					if ( ! is_array( $settings ) ) {
+						$settings = array();
+					}
+					if ( ! empty( $settings['api_key'] ) ) {
+						$this->auth->set_api_key( $settings['api_key'] );
+					}
+					if ( ! empty( $settings['private_key'] ) ) {
+						$this->auth->set_secret_key( $settings['private_key'] );
+					}
+				}
+			}
+
+			return $this->auth;
+		}
+
+		/**
+		 * Get token
+		 *
+		 * @return string
+		 */
+		public function get_access_token() {
+			$token = $this->get_oauth()->get_token();
+			if ( is_wp_error( $token ) || is_null( $token ) ) {
+				return '';
+			}
+
+			return $token->get_access_token();
 		}
 
 		/**
@@ -123,15 +186,14 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * Returns a cached api
 		 *
 		 * @param string $api_key Api key.
-		 * @param string $app_name App name.
 		 * @return Opt_In_Infusionsoft_Api
 		 */
-		public static function api( $api_key, $app_name ) {
+		public static function api( $api_key ) {
 
 			if ( empty( self::$api ) ) {
 				try {
 					self::$errors = array();
-					self::$api    = new Opt_In_Infusionsoft_Api( $api_key, $app_name );
+					self::$api    = new Opt_In_Infusionsoft_Rest_Api( $api_key );
 				} catch ( Exception $e ) {
 					self::$errors = array( 'api_error' => $e );
 				}
@@ -148,255 +210,380 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * @return array
 		 */
 		public function settings_wizards() {
-			return array(
-				array(
-					'callback'     => array( $this, 'configure_api_key' ),
-					'is_completed' => array( $this, 'is_connected' ),
-				),
-			);
+			if ( Opt_In_Utils::get_hub_api_key() ) {
+				// Hub user integration.
+				return array(
+					array(
+						'callback'     => array( $this, 'build_user_authorization_form' ),
+						'is_completed' => array( $this, 'is_connected' ),
+					),
+				);
+			} else {
+				// Non hub user integration.
+				return array(
+					array(
+						'callback'     => array( $this, 'build_non_hub_user_integration_settings' ),
+						'is_completed' => array( $this, 'is_connected' ),
+					),
+				);
+			}
 		}
 
 		/**
-		 * Configure the API key settings. Global settings.
-		 *
-		 * @since 4.0
+		 * Build authorization form for integration.
 		 *
 		 * @param array $submitted_data Submitted data.
-		 * @return array
+		 * @param bool  $is_submit      Is submit.
+		 * @param int   $module_id      Module ID.
+		 * @return array Response array.
 		 */
-		public function configure_api_key( $submitted_data ) {
-			$has_errors      = false;
-			$default_data    = array(
-				'api_key'      => '',
-				'account_name' => '',
-				'name'         => '',
-			);
-			$current_data    = $this->get_current_data( $default_data, $submitted_data );
-			$is_submit       = isset( $submitted_data['api_key'] ) && isset( $submitted_data['account_name'] );
-			$global_multi_id = $this->get_global_multi_id( $submitted_data );
-			$api_key_valid   = true;
+		public function build_user_authorization_form( $submitted_data, $is_submit, $module_id ) {
+			$oauth = $this->get_oauth();
+			$page  = $oauth->get_authorization_uri( $module_id, true, Hustle_Data::INTEGRATIONS_PAGE );
 
-			$api_account_name_valid = true;
+			$description  = '';
+			$is_connected = $this->is_connected();
 
-			if ( $is_submit ) {
-
-				$api_key_valid          = ! empty( $current_data['api_key'] );
-				$api_account_name_valid = ! empty( $current_data['account_name'] );
-				$api_key_validated      = $api_key_valid && $api_account_name_valid
-					&& $this->validate_credentials( $submitted_data['api_key'], $submitted_data['account_name'] );
-				if ( ! $api_key_validated ) {
-					$error_message = $this->provider_connection_falied();
-					$api_key_valid = false;
-					$has_errors    = true;
-
-					$api_account_name_valid = false;
+			if ( $is_connected ) {
+				if ( $this->migration_required() ) {
+					/* translators: %s is a link to Keap developer keys page */
+					$description = sprintf( __( 'Re-authenticate your Hustle → Keap integration using OAuth2. Enter your Keap access tokens to update your integration. Get your API keys %s.', 'hustle' ), '<a href="' . esc_url( self::KEAP_APPS_URL ) . '" target="_blank">' . esc_html__( 'here', 'hustle' ) . '</a>' );
 				}
-
-				if ( ! $has_errors ) {
-					$settings_to_save = array(
-						'api_key'      => $current_data['api_key'],
-						'account_name' => $current_data['account_name'],
-						'name'         => $current_data['name'],
-					);
-					// If not active, activate it.
-					// TODO: Wrap this in a friendlier method.
-					if ( Hustle_Provider_Utils::is_provider_active( $this->slug )
-							|| Hustle_Providers::get_instance()->activate_addon( $this->slug ) ) {
-						$this->save_multi_settings_values( $global_multi_id, $settings_to_save );
-					} else {
-						$error_message = __( "Provider couldn't be activated.", 'hustle' );
-						$has_errors    = true;
-					}
-				}
-
-				if ( ! $has_errors ) {
-
-					return array(
-						'html'         => Hustle_Provider_Utils::get_integration_modal_title_markup( __( 'Keap Added', 'hustle' ), __( 'You can now go to your pop-ups, slide-ins and embeds and assign them to this integration', 'hustle' ) ),
-						'buttons'      => array(
-							'close' => array(
-								'markup' => Hustle_Provider_Utils::get_provider_button_markup( __( 'Close', 'hustle' ), 'sui-button-ghost', 'close' ),
-							),
-						),
-						'redirect'     => false,
-						'has_errors'   => false,
-						'notification' => array(
-							'type' => 'success',
-							'text' => '<strong>' . $this->get_title() . '</strong> ' . esc_html__( 'Successfully connected', 'hustle' ),
-						),
-					);
-
-				}
-			}
-
-			$options = array(
-				array(
-					'type'     => 'wrapper',
-					'class'    => $api_key_valid ? '' : 'sui-form-field-error',
-					'elements' => array(
-						'label'   => array(
-							'type'  => 'label',
-							'for'   => 'api_key',
-							'value' => __( 'API Key (Encrypted)', 'hustle' ),
-						),
-						'api_key' => array(
-							'type'        => 'text',
-							'name'        => 'api_key',
-							'value'       => $current_data['api_key'],
-							'placeholder' => __( 'Enter API Key', 'hustle' ),
-							'id'          => 'api_key',
-							'icon'        => 'key',
-						),
-						'error'   => array(
-							'type'  => 'error',
-							'class' => $api_key_valid ? 'sui-hidden' : '',
-							'value' => __( 'Please enter a valid Keap encrypted API key', 'hustle' ),
-						),
-					),
-				),
-				array(
-					'type'     => 'wrapper',
-					'class'    => $api_account_name_valid ? '' : 'sui-form-field-error',
-					'elements' => array(
-						'label'        => array(
-							'type'  => 'label',
-							'for'   => 'account_name',
-							'value' => __( 'Account Name', 'hustle' ),
-						),
-						'account_name' => array(
-							'type'        => 'text',
-							'name'        => 'account_name',
-							'value'       => $current_data['account_name'],
-							'placeholder' => __( 'Enter Account Name', 'hustle' ),
-							'id'          => 'account_name',
-							'icon'        => 'style-type',
-						),
-						'error'        => array(
-							'type'  => 'error',
-							'class' => $api_account_name_valid ? 'sui-hidden' : '',
-							'value' => __( 'Please enter a valid Keap account name', 'hustle' ),
-						),
-					),
-				),
-				array(
-					'type'     => 'wrapper',
-					'style'    => 'margin-bottom: 0;',
-					'elements' => array(
-						'label'   => array(
-							'type'  => 'label',
-							'for'   => 'instance-name-input',
-							'value' => __( 'Identifier', 'hustle' ),
-						),
-						'name'    => array(
-							'type'        => 'text',
-							'name'        => 'name',
-							'value'       => $current_data['name'],
-							'placeholder' => __( 'E.g. Business Account', 'hustle' ),
-							'id'          => 'instance-name-input',
-						),
-						'message' => array(
-							'type'  => 'description',
-							'value' => __( 'Helps to distinguish your integrations if you have connected to the multiple accounts of this integration.', 'hustle' ),
-						),
-					),
-				),
-			);
-
-			if ( $has_errors ) {
-
-				$error_notice = array(
-					'type'  => 'notice',
-					'icon'  => 'info',
-					'class' => 'sui-notice-error',
-					'value' => esc_html( $error_message ),
-				);
-				array_unshift( $options, $error_notice );
-			}
-
-			$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup(
-				__( 'Configure Keap', 'hustle' ),
-				sprintf(
-					/* translators: 1. opening 'a' tag to the API key guide, 2. closing 'a' tag, 3. opening 'a' tag to the account name guide */
-					__( 'Log in to your account to get your %1$sAPI key (encrypted)%2$s and %3$saccount name%2$s.', 'hustle' ),
-					'<a target="_blank" href="https://wpmudev.com/docs/wpmu-dev-plugins/hustle/#keap-api-keys">',
-					'</a>',
-					'<a target="_blank" href="https://wpmudev.com/docs/wpmu-dev-plugins/hustle/#keap-account-name" >'
-				)
-			);
-
-			$step_html .= Hustle_Provider_Utils::get_html_for_options( $options );
-
-			$is_edit = $this->settings_are_completed( $global_multi_id );
-			if ( $is_edit ) {
+				// If the user is already authorized, we can skip the connection step.
 				$buttons = array(
 					'disconnect' => array(
 						'markup' => Hustle_Provider_Utils::get_provider_button_markup(
 							__( 'Disconnect', 'hustle' ),
-							'sui-button-ghost',
+							'sui-button-ghost sui-button-center',
 							'disconnect',
-							true
-						),
-					),
-					'save'       => array(
-						'markup' => Hustle_Provider_Utils::get_provider_button_markup(
-							__( 'Save', 'hustle' ),
-							'',
-							'connect',
 							true
 						),
 					),
 				);
 			} else {
+				/* translators: Plugin name */
+				$description = sprintf( __( 'Connect the Keap integration by authenticating it using the button below. Note that you’ll be taken to the Keap website to grant access to %s and then redirected back.', 'hustle' ), Opt_In_Utils::get_plugin_name() );
+
 				$buttons = array(
 					'connect' => array(
 						'markup' => Hustle_Provider_Utils::get_provider_button_markup(
 							__( 'Connect', 'hustle' ),
-							'sui-button-right',
+							'sui-button-blue sui-button-right',
 							'connect',
-							true
+							true,
+							false,
+							$page
 						),
 					),
 				);
-
 			}
 
-			$response = array(
+			if ( $this->migration_required() ) {
+				$title = __( 'Migrate Keap', 'hustle' );
+			} else {
+				$title = __( 'Connect Keap', 'hustle' );
+			}
+
+			$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup(
+				$title,
+				$description
+			);
+
+			if ( $is_connected ) {
+				// Show success message if already connected.
+				$step_html .= Hustle_Provider_Utils::get_html_for_options(
+					array(
+						array(
+							'type'  => 'notice',
+							'icon'  => 'check-tick',
+							'value' => esc_html__( 'Hustle is successfully integrated with Keap. You can start sending data to this integration.', 'hustle' ),
+							'class' => 'sui-notice-success',
+						),
+					)
+				);
+			}
+
+			return array(
 				'html'       => $step_html,
+				'buttons'    => $buttons,
+				'has_errors' => false,
+			);
+		}
+
+		/**
+		 * Check if API key is configured for non-hub users
+		 *
+		 * @since 4.0
+		 * @return bool
+		 */
+		public function is_api_key_configured() {
+			$settings = $this->get_settings_values();
+
+			return ! empty( $settings['api_key'] ) && ! empty( $settings['private_key'] );
+		}
+
+		/**
+		 * Build authorization form for non-hub user integration.
+		 *
+		 * @param array $submitted_data Submitted data.
+		 * @param bool  $is_submit      Is submit.
+		 * @param int   $module_id      Module ID.
+		 * @return array Response array.
+		 */
+		public function build_non_hub_user_integration_settings( $submitted_data, $is_submit, $module_id ) {
+
+			if ( $this->is_connected() ) {
+				return $this->user_account_info();
+			}
+
+			$has_errors = false;
+			$html       = '';
+			$buttons    = array();
+
+			if ( $is_submit ) {
+				$public_key = isset( $submitted_data['public_key'] ) ? sanitize_text_field( $submitted_data['public_key'] ) : '';
+				$secret_key = isset( $submitted_data['secret_key'] ) ? sanitize_text_field( $submitted_data['secret_key'] ) : '';
+
+				if ( empty( $public_key ) || empty( $secret_key ) ) {
+					$has_errors = true;
+				} else {
+					// Save the keys.
+					$settings = $this->get_settings_values();
+					if ( ! is_array( $settings ) ) {
+						$settings = array();
+					}
+					$settings['api_key']     = $public_key;
+					$settings['private_key'] = $secret_key;
+
+					$this->save_settings_values( $settings, $module_id );
+
+					$this->get_oauth()->set_api_key( $public_key );
+					$this->get_oauth()->set_secret_key( $secret_key );
+				}
+
+				$page = $this->
+					get_oauth()->
+					get_authorization_uri( $module_id, true, Hustle_Data::INTEGRATIONS_PAGE );
+
+				return array(
+					'redirect' => $page,
+					'is_close' => false,
+				);
+			} else {
+				$settings   = $this->get_settings_values();
+				$public_key = isset( $settings['api_key'] ) ? $settings['api_key'] : '';
+				$secret_key = isset( $settings['private_key'] ) ? $settings['private_key'] : '';
+			}
+
+			if ( $this->migration_required() ) {
+				$this->get_oauth()->set_api_key( $public_key );
+				$this->get_oauth()->set_secret_key( $secret_key );
+
+				$page = $this->
+					get_oauth()->
+					get_authorization_uri( $module_id, true, Hustle_Data::INTEGRATIONS_PAGE );
+
+				return array(
+					'redirect' => $page,
+					'is_close' => false,
+				);
+			}
+
+			ob_start();
+			?>
+			<div class="hustle-wizard-content">
+				<?php
+				$keap_link = 'https://keys.developer.keap.com/my-apps';
+				echo wp_kses_post(
+					Hustle_Provider_Utils::get_integration_modal_title_markup(
+						__( 'Keap integration', 'hustle' ),
+						/* translators: %s is a link to Keap developer keys page */
+						sprintf( __( 'Authenticate your Hustle → Keap integration using OAuth2. Enter your Keap access tokens to update your integration. Get your API keys %s.', 'hustle' ), '<a href="' . esc_url( $keap_link ) . '" target="_blank">' . esc_html__( 'here', 'hustle' ) . '</a>' )
+					)
+				);
+				?>
+				
+				<div class="sui-form-field">
+					<label class="sui-label"><?php esc_html_e( 'Client ID', 'hustle' ); ?></label>
+					<input
+						name="public_key"
+						placeholder="<?php esc_attr_e( 'Enter your client ID', 'hustle' ); ?>"
+						value="<?php echo esc_attr( $public_key ); ?>"
+						class="sui-form-control" />
+				</div>
+
+				<div class="sui-form-field">
+					<label class="sui-label"><?php esc_html_e( 'Secret key', 'hustle' ); ?></label>
+					<input
+						name="secret_key"
+						type="password"
+						placeholder="<?php esc_attr_e( 'Enter your secret key', 'hustle' ); ?>"
+						value="<?php echo esc_attr( $secret_key ); ?>"
+						class="sui-form-control" />
+				</div>
+			</div>
+			<?php
+			$html = ob_get_clean();
+
+			$buttons = array(
+				'authorize' => array(
+					'markup' => Hustle_Provider_Utils::get_provider_button_markup(
+						__( 'Authorize', 'hustle' ),
+						'sui-button-blue sui-button-center',
+						'next',
+						true,
+						false,
+						''
+					),
+				),
+			);
+
+			return array(
+				'html'       => $html,
 				'buttons'    => $buttons,
 				'has_errors' => $has_errors,
 			);
+		}
+
+		/**
+		 * User account info after connection.
+		 *
+		 * @return array Response array.
+		 */
+		private function user_account_info() {
+			$buttons = array(
+				'disconnect' => array(
+					'markup' => Hustle_Provider_Utils::get_provider_button_markup(
+						__( 'Disconnect', 'hustle' ),
+						'sui-button-ghost sui-button-center',
+						'disconnect',
+						true
+					),
+				),
+			);
+
+			$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup(
+				__( 'Connect Keap', 'hustle' ),
+			);
+
+			// Show success message if already connected.
+			$step_html .= Hustle_Provider_Utils::get_html_for_options(
+				array(
+					array(
+						'type'  => 'notice',
+						'icon'  => 'check-tick',
+						'value' => esc_html__( 'Hustle is successfully integrated with Keap. You can start sending data to this integration.', 'hustle' ),
+						'class' => 'sui-notice-success',
+					),
+				)
+			);
+
+			return array(
+				'html'       => $step_html,
+				'buttons'    => $buttons,
+				'has_errors' => false,
+			);
+		}
+
+		/**
+		 * Safe tokens after authorization complete.
+		 */
+		public function process_external_redirect() {
+
+			$auth   = $this->get_oauth();
+			$status = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+			if ( 'success' === $status && $auth->is_authorized() ) {
+				$providers = $this->get_providers();
+
+				if ( ! $providers->addon_is_active( $this->slug ) ) {
+					// Activate the provider if not active.
+					$activated = $providers->activate_addon( $this->slug );
+
+					if ( $activated ) {
+						// Success message for first time connection.
+						$response = Opt_In_Utils::build_notification(
+							'success',
+							/* translators: integration name */
+							sprintf( esc_html__( '%s successfully connected.', 'hustle' ), '<strong>' . esc_html( $this->title ) . '</strong>' )
+						);
+					} else {
+						$response = Opt_In_Utils::build_notification(
+							'error',
+							/* translators: integration name */
+							sprintf( esc_html__( 'Failed to activate %s. Please try again.', 'hustle' ), esc_html( $this->title ) )
+						);
+					}
+				} else {
+					$response = Opt_In_Utils::build_notification(
+						'success',
+						/* translators: integration name */
+						sprintf( esc_html__( '%s successfully reconnected.', 'hustle' ), '<strong>' . esc_html( $this->title ) . '</strong>' )
+					);
+				}
+
+				update_option( $this->get_version_options_name(), $this->version );
+			} else {
+				$response = Opt_In_Utils::build_notification(
+					'error',
+					/* translators: integration name */
+					sprintf( esc_html__( 'Authentication failed! Please check your %s credentials and try again.', 'hustle' ), esc_html( $this->title ) )
+				);
+			}
 
 			return $response;
 		}
 
 		/**
-		 * Validate the provided API key and account name.
+		 * Get providers
 		 *
-		 * @since 4.0
+		 * @return Hustle_Providers
+		 */
+		protected function get_providers() {
+			return Hustle_Providers::get_instance();
+		}
+
+		/**
+		 * Check if settings are completed
 		 *
-		 * @param string $api_key Api key.
-		 * @param string $account_name Account name.
+		 * @param string $multi_id Multi ID.
 		 * @return bool
 		 */
-		private function validate_credentials( $api_key, $account_name ) {
-			if ( empty( $api_key ) || empty( $account_name ) ) {
+		protected function settings_are_completed( $multi_id = '' ) {
+			$token = $this->get_oauth()
+				->get_token();
+
+			if ( is_wp_error( $token ) || ! $token instanceof Hustle_Auth_Token ) {
+				// Error retrieving token or invalid token.
 				return false;
 			}
 
-			try {
-				// Check if credentials are valid.
-				$_lists = self::api( $api_key, $account_name )->get_lists();
+			// Check if token is valid.
+			return $token->get_access_token() &&
+				$token->get_refresh_token() &&
+				( time() < $token->get_expiration_time() );
+		}
 
-				if ( is_wp_error( $_lists ) && ! empty( $_lists ) ) {
-					Hustle_Provider_Utils::maybe_log( __METHOD__, __( 'Invalid Keap credentials.', 'hustle' ) );
-					return false;
-				}
-			} catch ( Exception $e ) {
-				Hustle_Provider_Utils::maybe_log( __METHOD__, $e->getMessage() );
+		/**
+		 * Check if migration is needed
+		 *
+		 * @return bool
+		 */
+		private function migration_required() {
+			$api_version = $this->get_installed_version();
+			if ( empty( $api_version ) ) {
 				return false;
 			}
 
-			return true;
+			$settings = $this->get_settings_values();
+
+			return ! empty( $settings['api_key'] ) &&
+				! empty( $settings['private_key'] ) &&
+				version_compare(
+					$api_version,
+					'2.0',
+					'<'
+				);
 		}
 
 		/**
@@ -409,6 +596,60 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 				'api_key'      => 'api_key',
 				'account_name' => 'account_name',
 			);
+		}
+
+		/**
+		 * Configure migrated api keys
+		 *
+		 * @param array $data Data.
+		 * @return void
+		 */
+		public function configure_migrated_api_keys( $data ) {
+			if ( ! is_array( $data ) ) {
+				return;
+			}
+
+			// Activate the provider if not active.
+			if (
+				$this->is_active() ||
+				Hustle_Providers::get_instance()->activate_addon( $this->slug )
+			) {
+
+				$api_key    = isset( $data['api_key'] ) ? sanitize_text_field( $data['api_key'] ) : '';
+				$secret_key = isset( $data['private_key'] ) ? sanitize_text_field( $data['private_key'] ) : '';
+				// Save the keys.
+				$this->update_api_keys( $api_key, $secret_key );
+			}
+		}
+
+		/**
+		 * Update api key and secret key.
+		 *
+		 * @param string $api_key Api key.
+		 * @param string $secret_key Secret key.
+		 * @return void
+		 */
+		public function update_api_keys( $api_key, $secret_key ) {
+			$settings = $this->get_settings_values();
+			if ( ! is_array( $settings ) ) {
+				$settings = array();
+			}
+
+			$settings['api_key']     = $api_key;
+			$settings['private_key'] = $secret_key;
+
+			$this->save_settings_values( $settings );
+		}
+
+		/**
+		 * Clean up resources.
+		 */
+		public function remove_wp_options() {
+			$auth = $this->get_oauth();
+
+			if ( $auth ) {
+				$auth->remove_wp_options();
+			}
 		}
 	}
 

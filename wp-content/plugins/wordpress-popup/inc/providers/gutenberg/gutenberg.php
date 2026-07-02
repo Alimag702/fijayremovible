@@ -46,7 +46,7 @@ class Hustle_Gutenberg {
 
 		if ( isset( $current_screen->is_block_editor ) && $current_screen->is_block_editor ) {
 			// Load abstracts.
-			require_once dirname( __FILE__ ) . '/abstract-block.php';
+			require_once __DIR__ . '/abstract-block.php';
 
 			// Load blocks.
 			self::load_blocks();
@@ -61,7 +61,7 @@ class Hustle_Gutenberg {
 	public static function gutenberg_init_frontend() {
 		if ( function_exists( 'has_blocks' ) && has_blocks() ) {
 			// Load abstracts.
-			require_once dirname( __FILE__ ) . '/abstract-block.php';
+			require_once __DIR__ . '/abstract-block.php';
 
 			// Load blocks.
 			self::load_blocks();
@@ -87,7 +87,7 @@ class Hustle_Gutenberg {
 	 * @return mixed
 	 */
 	public static function get_plugin_dir() {
-		return trailingslashit( dirname( __FILE__ ) );
+		return trailingslashit( __DIR__ );
 	}
 
 	/**
@@ -112,5 +112,4 @@ class Hustle_Gutenberg {
 			)
 		);
 	}
-
 }

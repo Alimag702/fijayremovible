@@ -37,6 +37,12 @@
 			'admin/commons/sui-wizard/tab-emails/automated-email',
 			array( 'settings' => $settings )
 		);
+
+		// SETTING: Notification Email.
+		$this->render(
+			'admin/commons/sui-wizard/tab-emails/notifications',
+			array( 'settings' => $settings )
+		);
 		?>
 
 	</div>

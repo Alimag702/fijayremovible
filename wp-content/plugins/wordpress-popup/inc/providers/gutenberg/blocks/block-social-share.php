@@ -92,7 +92,6 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 			array(),
 			Opt_In::VERSION
 		);
-
 	}
 
 	/**

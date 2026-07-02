@@ -48,6 +48,11 @@ $fields = array(
 		'label'  => __( 'reCaptcha', 'hustle' ),
 		'single' => true,
 	),
+	'turnstile'  => array(
+		'icon'   => 'cloudflare',
+		'label'  => __( 'Cloudflare Turnstile', 'hustle' ),
+		'single' => true,
+	),
 	'gdpr'       => array(
 		'icon'   => 'gdpr',
 		'label'  => __( 'GDPR Approval', 'hustle' ),

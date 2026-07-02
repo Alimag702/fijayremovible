@@ -424,7 +424,6 @@ return array(
 	'title_drop_shadow_y'                      => 0,
 	'title_drop_shadow_blur'                   => 0,
 	'title_drop_shadow_spread'                 => 0,
-	'subtitle_margin_are_sides_linked'         => '1',
 
 	'subtitle_margin_are_sides_linked'         => '0',
 	'subtitle_margin_unit'                     => 'px',

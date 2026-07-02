@@ -10,7 +10,7 @@
  *
  * @class Hustle_ConvertKit_Api
  **/
-class Hustle_ConvertKit_Api {
+class Hustle_ConvertKit_Api implements Hustle_ConvertKit_Api_Interface {
 
 	/**
 	 * Api key

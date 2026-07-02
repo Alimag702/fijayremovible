@@ -124,6 +124,36 @@
 
 				</div>
 
+				<div id="hustle-optin-field--turnstile" class="sui-builder-field sui-can_open sui-hidden" data-field-id="turnstile">
+
+					<div class="sui-builder-field-label">
+
+						<span class="sui-icon-cloudflare" aria-hidden="true"></span>
+
+						<span class="hustle-field-label-text"><?php esc_html_e( 'Cloudflare Turnstile', 'hustle' ); ?></span>
+
+					</div>
+
+					<div class="sui-dropdown">
+
+						<button class="sui-button-icon sui-dropdown-anchor">
+							<span class="sui-icon-widget-settings-config" aria-hidden="true"></span>
+							<span class="sui-screen-reader-text"><?php esc_html_e( 'Turnstile settings', 'hustle' ); ?></span>
+						</button>
+
+						<ul>
+							<li><button class="hustle-optin-field--edit">
+								<span class="sui-icon-pencil" aria-hidden="true"></span> <?php esc_html_e( 'Edit Field', 'hustle' ); ?>
+							</button></li>
+							<li><button class="hustle-optin-field--delete">
+								<span class="sui-icon-trash" aria-hidden="true"></span> <?php esc_html_e( 'Delete', 'hustle' ); ?>
+							</button></li>
+						</ul>
+
+					</div>
+
+				</div>
+
 			</div>
 
 		</div>

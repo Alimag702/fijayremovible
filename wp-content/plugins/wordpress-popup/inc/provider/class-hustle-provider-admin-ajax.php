@@ -75,6 +75,10 @@ class Hustle_Provider_Admin_Ajax {
 		add_action( 'wp_ajax_hustle_refresh_email_lists', array( $this, 'refresh_email_lists' ) );
 		add_action( 'wp_ajax_hustle_provider_insert_local_list', array( $this, 'insert_local_list' ) );
 		add_action( 'wp_ajax_hustle_provider_migrate_aweber', array( $this, 'migrate_aweber' ) );
+		add_action( 'wp_ajax_hustle_provider_migrate_constantcontact', array( $this, 'migrate_constantcontact' ) );
+		add_action( 'wp_ajax_hustle_provider_migrate_infusionsoft', array( $this, 'migrate_infusionsoft' ) );
+		add_action( 'wp_ajax_hustle_provider_migrate_convertkit', array( $this, 'migrate_convertkit' ) );
+		add_action( 'wp_ajax_hustle_provider_migrate_hubspot', array( $this, 'migrate_hubspot' ) );
 	}
 
 	/**
@@ -171,7 +175,6 @@ class Hustle_Provider_Admin_Ajax {
 				'not_connected' => $not_connected_html,
 			)
 		);
-
 	}
 
 	/**
@@ -337,7 +340,7 @@ class Hustle_Provider_Admin_Ajax {
 	public function form_settings() {
 		$this->validate_ajax();
 
-		$sanitized_post_data = $this->get_sanitized_submitted_data( array( 'module_id' => 'FILTER_VALIDATE_INT' ) );
+		$sanitized_post_data = $this->get_sanitized_submitted_data( array( 'module_id' => FILTER_VALIDATE_INT ) );
 
 		$check_required_fields_missing = $this->check_required_fields( $sanitized_post_data, array( 'slug', 'step', 'current_step', 'module_id' ) );
 
@@ -377,6 +380,13 @@ class Hustle_Provider_Admin_Ajax {
 		unset( $sanitized_post_data['module_id'] );
 
 		$wizard = $provider->get_form_settings_wizard( $sanitized_post_data, $module_id, $current_step, $step );
+
+		if ( ! $wizard['opt_in_provider_has_next_step'] ) {
+			$module = Hustle_Module_Model::new_instance( $module_id );
+			if ( ! is_wp_error( $module ) ) {
+				$module->connect_integration( $slug );
+			}
+		}
 
 		wp_send_json_success(
 			array(
@@ -472,7 +482,7 @@ class Hustle_Provider_Admin_Ajax {
 		$this->validate_ajax();
 
 		$id     = filter_input( INPUT_POST, 'id', FILTER_VALIDATE_INT );
-		$module = new Hustle_Module_Model( $id );
+		$module = Hustle_Module_Model::new_instance( $id );
 
 		if ( 0 < $id && ! is_wp_error( $module ) ) {
 			$module->update_meta( 'local_list_provider_settings', array( 'local_list_name' => 'hustle-' . wp_rand() ) );
@@ -513,7 +523,158 @@ class Hustle_Provider_Admin_Ajax {
 		}
 
 		wp_send_json_success();
+	}
 
+	/**
+	 * Migrate constant contact integration from oAuth1 to oAuth2
+	 *
+	 * @since 4.1.1
+	 */
+	public function migrate_constantcontact() {
+		$this->validate_ajax();
+
+		// Check if site connected to Hub.
+		if ( Opt_In_Utils::get_hub_api_key() ) {
+			wp_send_json_success();
+		}
+
+		if ( isset( $_POST['data'] ) && is_array( $_POST['data'] ) ) {// phpcs:ignore
+			$post_data = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		} else {
+			$post_data = filter_input( INPUT_POST, 'data' );
+		}
+		$sanitized_post_data = Opt_In_Utils::validate_and_sanitize_fields( $post_data, array( 'slug', 'api_key', 'global_multi_id' ) );
+
+		if ( isset( $sanitized_post_data['errors'] ) ) {
+			wp_send_json_error();
+		}
+
+		$instance = Hustle_ConstantContact::get_instance();
+		// Update API key and enable migration mode.
+		$instance->update_api_key( $sanitized_post_data['api_key'] );
+
+		$result = array(
+			'next_step' => array(
+				'nonce'           => wp_create_nonce( 'hustle_provider_action' ),
+				'module_id'       => 0,
+				'multi_id'        => 0,
+				'action'          => 'hustle_provider_settings',
+				'global_multi_id' => 0,
+				'slug'            => 'constantcontact',
+				'step'            => 2,
+			),
+		);
+
+		wp_send_json_success( $result );
+	}
+
+	/**
+	 * Migrate Infusionsoft integration from to OAuth2
+	 *
+	 * @since 7.8.9
+	 */
+	public function migrate_infusionsoft() {
+		// Validate the AJAX request.
+		$this->validate_ajax();
+
+		if ( isset( $_POST['data'] ) && is_array( $_POST['data'] ) ) {// phpcs:ignore
+			$post_data = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		} else {
+			$post_data = filter_input( INPUT_POST, 'data' );
+		}
+		$sanitized_post_data = Opt_In_Utils::validate_and_sanitize_fields( $post_data, array( 'slug', 'api_key', 'private_key', 'global_multi_id' ) );
+
+		if ( isset( $sanitized_post_data['errors'] ) ) {
+			wp_send_json_error();
+		}
+
+		$instance = Hustle_Infusion_Soft::get_instance();
+		// Update API key.
+		$instance->configure_migrated_api_keys( $sanitized_post_data );
+
+		$redirect_url = $instance
+			->get_oauth()
+			->get_authorization_uri( 0, true, Hustle_Data::INTEGRATIONS_PAGE );
+		$result       = array(
+			'redirect' => $redirect_url,
+		);
+
+		wp_send_json_success( $result );
+	}
+
+	/**
+	 * Migrate ConvertKit integration to V4
+	 *
+	 * @since 7.8.11
+	 */
+	public function migrate_convertkit() {
+		$this->validate_ajax();
+
+		if ( isset( $_POST['data'] ) && is_array( $_POST['data'] ) ) {// phpcs:ignore
+			$post_data = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		} else {
+			$post_data = filter_input( INPUT_POST, 'data' );
+		}
+		$sanitized_post_data = Opt_In_Utils::validate_and_sanitize_fields( $post_data, array( 'slug', 'api_key', 'global_multi_id' ) );
+
+		$convertkit = Hustle_ConvertKit::get_instance()->configure_api_key(
+			$sanitized_post_data
+		);
+
+		if ( ! empty( $convertkit['errors'] ) ) {
+			wp_send_json_error();
+		}
+
+		$integration_id = filter_var( $sanitized_post_data['global_multi_id'], FILTER_SANITIZE_SPECIAL_CHARS );
+
+		wp_send_json_success(
+			array(
+				'redirect' => add_query_arg(
+					array(
+						'page'           => Hustle_Data::INTEGRATIONS_PAGE,
+						'migration'      => true,
+						'slug'           => 'convertkit',
+						'nonce'          => wp_create_nonce( 'hustle_provider_external_redirect' ),
+						'action'         => 'external-redirect',
+						'integration_id' => $integration_id,
+					),
+					admin_url( 'admin.php' )
+				),
+			)
+		);
+	}
+
+	/**
+	 * Configure HubSpot integration with the new API key and enable migration mode.
+	 *
+	 * @since 7.8.13
+	 */
+	public function migrate_hubspot() {
+		$this->validate_ajax();
+
+		if ( isset( $_POST['data'] ) && is_array( $_POST['data'] ) ) {// phpcs:ignore
+			$post_data = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		} else {
+			$post_data = filter_input( INPUT_POST, 'data' );
+		}
+		$sanitized_post_data = Opt_In_Utils::validate_and_sanitize_fields( $post_data, array( 'slug', 'api_key', 'global_multi_id' ) );
+
+		if ( isset( $sanitized_post_data['errors'] ) ) {
+			wp_send_json_error();
+		}
+
+		$instance = Hustle_HubSpot::get_instance();
+		$instance->remove_wp_options();
+		// Update API key.
+		$instance->configure_migrated_api_keys( $sanitized_post_data );
+
+		wp_send_json_success(
+			array(
+				'next_step' => array(
+					'slug' => 'hubspot',
+				),
+			)
+		);
 	}
 
 	/**
@@ -615,7 +776,7 @@ class Hustle_Provider_Admin_Ajax {
 		}
 
 		// Implement FILTER_SANITIZE_SPECIAL_CHARS for all the other incoming fields.
-		$generic_filters = array_fill_keys( array_keys( $data ), 'FILTER_SANITIZE_SPECIAL_CHARS' );
+		$generic_filters = array_fill_keys( array_keys( $data ), FILTER_SANITIZE_SPECIAL_CHARS );
 
 		// Merge both generic filters with the pre-defined and arrays ones.
 		$filters = array_merge( $generic_filters, $arrays_filters, $base_filters );

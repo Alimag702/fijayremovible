@@ -39,5 +39,4 @@ class Opt_In_Condition_User_Roles extends Opt_In_Condition_Abstract {
 
 		return false;
 	}
-
 }

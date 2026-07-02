@@ -11,10 +11,11 @@
  */
 class Hustle_Dashboard_Admin extends Hustle_Admin_Page_Abstract {
 
-	const WELCOME_MODAL_NAME   = 'welcome_modal';
-	const MIGRATE_MODAL_NAME   = 'migrate_modal';
-	const HIGHLIGHT_MODAL_NAME = 'release_highlight_modal_470';
-	const MIGRATE_NOTICE_NAME  = 'migrate_notice';
+	const WELCOME_MODAL_NAME      = 'welcome_modal';
+	const MIGRATE_MODAL_NAME      = 'migrate_modal';
+	const HIGHLIGHT_MODAL_NAME    = 'release_highlight_modal_470';
+	const NEW_FEATURES_MODAL_NAME = 'new_features_modal_480';
+	const MIGRATE_NOTICE_NAME     = 'migrate_notice';
 
 	/**
 	 * Whether we have any module.
@@ -281,7 +282,7 @@ class Hustle_Dashboard_Admin extends Hustle_Admin_Page_Abstract {
 						$value = esc_html__( 'None', 'hustle' );
 						break;
 					}
-					$module = new Hustle_Module_Model( $module_id );
+					$module = Hustle_Module_Model::new_instance( $module_id );
 					if ( ! is_wp_error( $module ) ) {
 						$value = $module->module_name;
 						$url   = add_query_arg( 'page', $module->get_wizard_page() );
@@ -359,6 +360,11 @@ class Hustle_Dashboard_Admin extends Hustle_Admin_Page_Abstract {
 			$this->get_renderer()->render( 'admin/dashboard/dialogs/release-highlight' );
 		}
 
+		// New features (Zoho, Newsletter integrations, Cloudflare Turnstile).
+		if ( $this->should_show_new_features_modal() ) {
+			$this->get_renderer()->render( 'admin/dashboard/dialogs/new-features' );
+		}
+
 		// Dissmiss migrate tracking notice modal confirmation.
 		if ( Hustle_Notifications::is_show_migrate_tracking_notice() ) {
 			$this->get_renderer()->render( 'admin/dialogs/migrate-dismiss-confirmation' );
@@ -407,6 +413,28 @@ class Hustle_Dashboard_Admin extends Hustle_Admin_Page_Abstract {
 				// Fresh install or focus on migration. Dismiss the notification.
 				Hustle_Notifications::add_dismissed_notification( self::HIGHLIGHT_MODAL_NAME );
 			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns whether the new features modal should show up, or dismiss otherwise.
+	 *
+	 * @since 7.8.13
+	 *
+	 * @return boolean
+	 */
+	private function should_show_new_features_modal() {
+		$hide = apply_filters( 'wpmudev_branding_hide_doc_link', false );
+		if ( $hide ) {
+			return false;
+		}
+
+		$is_force      = filter_input( INPUT_GET, 'show-new-features', FILTER_VALIDATE_BOOLEAN );
+		$was_dismissed = Hustle_Notifications::was_notification_dismissed( self::NEW_FEATURES_MODAL_NAME );
+
+		if ( ! $was_dismissed || $is_force ) {
+			return true;
 		}
 		return false;
 	}

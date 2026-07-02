@@ -47,13 +47,9 @@ if ( 'custom' === $font_family ) {
 
 if ( 'regular' === $font_weight ) {
 	$font_weight = 'normal';
-} else {
-
-	// Check if font weight is italic.
-	if ( preg_match( '/(italic)/', $font_weight ) ) {
-		$font_weight = str_replace( 'italic', '', $font_weight );
-		$font_style  = 'italic';
-	}
+} elseif ( preg_match( '/(italic)/', $font_weight ) ) { // Check if font weight is italic.
+	$font_weight = str_replace( 'italic', '', $font_weight );
+	$font_style  = 'italic';
 }
 
 $mobile_font_size       = ( '' !== $typography['error_message_font_size_mobile'] ) ? $typography['error_message_font_size_mobile'] . $typography['error_message_font_size_unit_mobile'] : $font_size;
@@ -67,13 +63,9 @@ $mobile_text_decoration = $typography['error_message_text_decoration_mobile'];
 
 if ( 'regular' === $mobile_font_weight ) {
 	$mobile_font_weight = 'normal';
-} else {
-
-	// Check if font weight is italic.
-	if ( preg_match( '/(italic)/', $mobile_font_weight ) ) {
-		$mobile_font_weight = str_replace( 'italic', '', $mobile_font_weight );
-		$mobile_font_style  = 'italic';
-	}
+} elseif ( preg_match( '/(italic)/', $mobile_font_weight ) ) { // Check if font weight is italic.
+	$mobile_font_weight = str_replace( 'italic', '', $mobile_font_weight );
+	$mobile_font_style  = 'italic';
 }
 
 if ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_typography ) ) {

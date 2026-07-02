@@ -19,7 +19,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		 * @since 4.2.0
 		 * @var array
 		 */
-		protected $form_completion_options = array( 'selected_global_multi_id', 'list_id', 'list_name' );
+		protected $form_completion_options = array( 'list_id', 'list_name' );
 
 		/**
 		 * For settings Wizard steps
@@ -133,9 +133,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		 * @return array
 		 */
 		public function refresh_global_multi_lists( $provider, $global_multi_id ) {
-			$api_key      = $provider->get_setting( 'api_key', '', $global_multi_id );
-			$account_name = $provider->get_setting( 'account_name', '', $global_multi_id );
-			$api          = $provider::api( $api_key, $account_name );
+			$api = $provider::api( $provider->get_access_token() );
 
 			$lists = array();
 
@@ -197,7 +195,6 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

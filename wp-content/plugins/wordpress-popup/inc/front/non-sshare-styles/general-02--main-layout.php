@@ -12,18 +12,40 @@ $is_rtl = $wp_locale->is_rtl();
 
 $component = ( ! $is_optin && ( 'cabriolet' !== $layout_info ) ) ? '.hustle-layout' : '.hustle-layout .hustle-layout-body';
 
+$shadow_y        = ( '' !== $advanced['module_cont_drop_shadow_y'] ) ? ( ( ! $is_rtl ) ? (int) $advanced['module_cont_drop_shadow_y'] : ( -1 * (int) $advanced['module_cont_drop_shadow_y'] ) ) : 0;
+$mobile_shadow_y = ( '' !== $advanced['module_cont_drop_shadow_y_mobile'] ) ? (int) $advanced['module_cont_drop_shadow_y_mobile'] : $shadow_y;
+
 // SETTINGS: Margin.
-$margin_top    = ( '' !== $advanced['module_cont_margin_top'] ) ? $advanced['module_cont_margin_top'] . $advanced['module_cont_margin_unit'] : '0';
-$margin_right  = ( '' !== $advanced['module_cont_margin_right'] ) ? $advanced['module_cont_margin_right'] . $advanced['module_cont_margin_unit'] : '0';
-$margin_bottom = ( '' !== $advanced['module_cont_margin_bottom'] ) ? $advanced['module_cont_margin_bottom'] . $advanced['module_cont_margin_unit'] : '0';
-$margin_left   = ( '' !== $advanced['module_cont_margin_left'] ) ? $advanced['module_cont_margin_left'] . $advanced['module_cont_margin_unit'] : '0';
+$margin_top   = ( '' !== $advanced['module_cont_margin_top'] ) ? $advanced['module_cont_margin_top'] . $advanced['module_cont_margin_unit'] : '0';
+$margin_right = ( '' !== $advanced['module_cont_margin_right'] ) ? $advanced['module_cont_margin_right'] . $advanced['module_cont_margin_unit'] : '0';
+if (
+	$is_embed &&
+	$shadow_y > 0
+) {
+	$shadow_offset_y = $shadow_y . $advanced['module_cont_drop_shadow_unit'];
+	// Add the shadow offset to the margin to prevent the shadow from overlapping other elements when the layout is embedded.
+	$margin_bottom = ( '' !== $advanced['module_cont_margin_bottom'] ) ? 'calc(' . $advanced['module_cont_margin_bottom'] . $advanced['module_cont_margin_unit'] . ' + ' . $shadow_offset_y . ')' : '0';
+} else {
+	$margin_bottom = ( '' !== $advanced['module_cont_margin_bottom'] ) ? $advanced['module_cont_margin_bottom'] . $advanced['module_cont_margin_unit'] : '0';
+}
+$margin_left = ( '' !== $advanced['module_cont_margin_left'] ) ? $advanced['module_cont_margin_left'] . $advanced['module_cont_margin_unit'] : '0';
 
 $margin = $margin_top . ' ' . $margin_right . ' ' . $margin_bottom . ' ' . $margin_left;
 
-$mobile_margin_top    = ( '' !== $advanced['module_cont_margin_top_mobile'] ) ? $advanced['module_cont_margin_top_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_top;
-$mobile_margin_right  = ( '' !== $advanced['module_cont_margin_right_mobile'] ) ? $advanced['module_cont_margin_right_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_right;
-$mobile_margin_bottom = ( '' !== $advanced['module_cont_margin_bottom_mobile'] ) ? $advanced['module_cont_margin_bottom_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_bottom;
-$mobile_margin_left   = ( '' !== $advanced['module_cont_margin_left_mobile'] ) ? $advanced['module_cont_margin_left_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_left;
+
+$mobile_margin_top   = ( '' !== $advanced['module_cont_margin_top_mobile'] ) ? $advanced['module_cont_margin_top_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_top;
+$mobile_margin_right = ( '' !== $advanced['module_cont_margin_right_mobile'] ) ? $advanced['module_cont_margin_right_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_right;
+if (
+	$is_embed &&
+	$mobile_shadow_y > 0
+) {
+	$mobile_shadow_offset_y = $mobile_shadow_y . $advanced['module_cont_drop_shadow_unit_mobile'];
+	// Add the shadow offset to the margin to prevent the shadow from overlapping other elements when the layout is embedded.
+	$mobile_margin_bottom = ( '' !== $advanced['module_cont_margin_bottom_mobile'] ) ? 'calc(' . $advanced['module_cont_margin_bottom_mobile'] . $advanced['module_cont_margin_unit_mobile'] . ' + ' . $mobile_shadow_offset_y . ')' : $margin_bottom;
+} else {
+	$mobile_margin_bottom = ( '' !== $advanced['module_cont_margin_bottom_mobile'] ) ? $advanced['module_cont_margin_bottom_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_bottom;
+}
+$mobile_margin_left = ( '' !== $advanced['module_cont_margin_left_mobile'] ) ? $advanced['module_cont_margin_left_mobile'] . $advanced['module_cont_margin_unit_mobile'] : $margin_left;
 
 $mobile_margin = ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_advanced ) ) ? $margin : $mobile_margin_top . ' ' . $mobile_margin_right . ' ' . $mobile_margin_bottom . ' ' . $mobile_margin_left;
 

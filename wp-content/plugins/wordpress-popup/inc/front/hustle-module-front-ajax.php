@@ -76,7 +76,7 @@ class Hustle_Module_Front_Ajax {
 				'{site_url}'   => site_url(),
 				'{site_title}' => get_bloginfo( 'name' ),
 			);
-			$module              = new Hustle_Module_Model( $module_id );
+			$module              = Hustle_Module_Model::new_instance( $module_id );
 			$local_list_settings = ! is_wp_error( $module ) ? $module->get_provider_settings( 'local_list' ) : '';
 			if ( ! empty( $local_list_settings['local_list_name'] ) ) {
 				$site_placeholders['{local_list}'] = $local_list_settings['local_list_name'];
@@ -268,7 +268,7 @@ class Hustle_Module_Front_Ajax {
 			return;
 		}
 		$module_id = sanitize_text_field( wp_unslash( $_POST['data']['module_id'] ) );// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$module    = new Hustle_Module_Model( $module_id );
+		$module    = Hustle_Module_Model::new_instance( $module_id );
 
 		if ( is_wp_error( $module ) || ! $module instanceof Hustle_Module_Model || ! property_exists( $module, 'active' ) ) {
 			wp_send_json_error( __( 'Invalid module', 'hustle' ) );
@@ -318,7 +318,7 @@ class Hustle_Module_Front_Ajax {
 			'success'  => false,
 			'behavior' => array(),
 		);
-		$module   = new Hustle_Module_Model( $module_id );
+		$module   = Hustle_Module_Model::new_instance( $module_id );
 		if ( is_wp_error( $module ) ) {
 			return $response;
 		}
@@ -342,6 +342,17 @@ class Hustle_Module_Front_Ajax {
 
 				if ( ! empty( $submit_errors ) ) {
 					// Recaptcha failed. No need to check the other fields.
+					$fields = array();
+				}
+			}
+
+			// Verify Cloudflare Turnstile if present.
+			if ( isset( $fields['turnstile'] ) ) {
+
+				$submit_errors = $this->validate_turnstile( $form_data, $fields['turnstile'] );
+
+				if ( ! empty( $submit_errors ) ) {
+					// Turnstile failed. No need to check the other fields.
 					$fields = array();
 				}
 			}
@@ -391,6 +402,7 @@ class Hustle_Module_Front_Ajax {
 
 			$allow_subscribed = '1' === $integrations_settings['allow_subscribed_users'];
 
+			// Unset technical data.
 			$formatted_submitted_data = Hustle_Provider_Utils::format_submitted_data_for_addon( $submitted_data );
 			// Do provider's validation.
 			$provider_error = $this->attach_addons_on_form_submit( $module_id, $formatted_submitted_data, $allow_subscribed );
@@ -518,6 +530,30 @@ class Hustle_Module_Front_Ajax {
 				$response['behavior']['file']      = $emails_settings['auto_download_file'];
 				$response['behavior']['file_name'] = $file_name;
 			}
+
+			if (
+				! empty( $emails_settings['notification_email'] ) &&
+				! empty( $emails_settings['notification_email_recipient'] )
+			) {
+				$notification_recipient = $this->replace_placeholders(
+					$module_id,
+					sanitize_email( $emails_settings['notification_email_recipient'] ),
+					$form_data
+				);
+				$notification_subject   = $this->replace_placeholders(
+					$module_id,
+					sanitize_text_field( $emails_settings['notification_email_subject'] ),
+					$form_data
+				);
+				$notification_body      = $this->replace_placeholders(
+					$module_id,
+					wp_kses_post( $emails_settings['notification_email_body'] ),
+					$form_data
+				);
+
+				// Send the notification email right away.
+				Hustle_Mail::send_email( $notification_recipient, $notification_subject, $notification_body );
+			}
 		}
 
 		if ( ! empty( $submit_errors ) ) {
@@ -627,6 +663,73 @@ class Hustle_Module_Front_Ajax {
 	}
 
 	/**
+	 * Do Cloudflare Turnstile backend validation.
+	 *
+	 * @since 7.8.13
+	 * @param array $form_data Form data.
+	 * @param array $turnstile_field Turnstile field settings.
+	 * @return array
+	 *
+	 * @throws Exception When Turnstile validation failed.
+	 */
+	private function validate_turnstile( $form_data, $turnstile_field ) {
+
+		$submit_errors      = array();
+		$turnstile_settings = Hustle_Settings_Admin::get_turnstile_settings();
+		$secret             = ! empty( $turnstile_settings['turnstile_client_secret'] ) ? $turnstile_settings['turnstile_client_secret'] : '';
+		$site_key           = ! empty( $turnstile_settings['turnstile_api_key'] ) ? $turnstile_settings['turnstile_api_key'] : '';
+		$token              = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+
+		if ( ! empty( $secret ) && ! empty( $site_key ) ) {
+
+			try {
+				$validation_message = ! empty( $turnstile_field['validation_message'] )
+						? esc_html( $turnstile_field['validation_message'] ) : '';
+
+				if ( ! $token ) {
+					throw new Exception(
+						! empty( $validation_message ) ? $validation_message
+						: esc_html__( 'Please complete the Cloudflare Turnstile challenge.', 'hustle' )
+					);
+				}
+
+				$remote_ip = filter_input( INPUT_SERVER, 'HTTP_X_FORWARDED_FOR', FILTER_SANITIZE_SPECIAL_CHARS );
+				if ( ! $remote_ip ) {
+					$remote_ip = filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_SPECIAL_CHARS );
+				}
+
+				$response = wp_remote_post(
+					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+					array(
+						'body' => array(
+							'secret'   => $secret,
+							'response' => $token,
+							'remoteip' => $remote_ip,
+						),
+					)
+				);
+
+				if ( is_wp_error( $response ) ) {
+					throw new Exception( $response->get_error_message() );
+				}
+
+				$response_body = ! empty( $response['body'] ) ? json_decode( $response['body'] ) : '';
+
+				if ( empty( $response_body ) || ! $response_body->success ) {
+					throw new Exception(
+						! empty( $validation_message ) ? $validation_message
+						: esc_html__( 'Turnstile validation failed. Please try again.', 'hustle' )
+					);
+				}
+			} catch ( Exception $e ) {
+				$submit_errors['turnstile'] = $e->getMessage();
+			}
+		}
+
+		return $submit_errors;
+	}
+
+	/**
 	 * Validate fields.
 	 *
 	 * @since 4.0
@@ -660,9 +763,20 @@ class Hustle_Module_Front_Ajax {
 					continue;
 				}
 
-				if ( 'email' === $fields[ $slug ]['type'] && ! is_email( $form_data[ $slug ] ) ||
-					'url' === $fields[ $slug ]['type'] && false === filter_var( $form_data[ $slug ], FILTER_VALIDATE_URL ) ||
-					'datepicker' === $fields[ $slug ]['type'] && false === $this->validate_date( $form_data[ $slug ], $fields[ $slug ]['date_format'] ) ) {
+				if (
+					(
+						'email' === $fields[ $slug ]['type'] &&
+						! is_email( $form_data[ $slug ] )
+					) ||
+					(
+						'url' === $fields[ $slug ]['type'] &&
+						false === filter_var( $form_data[ $slug ], FILTER_VALIDATE_URL )
+					) ||
+					(
+						'datepicker' === $fields[ $slug ]['type'] &&
+						false === $this->validate_date( $form_data[ $slug ], $fields[ $slug ]['date_format'] )
+					)
+				) {
 
 					$submit_errors[ $slug ] = $fields[ $slug ]['validation_message'];
 
@@ -736,7 +850,6 @@ class Hustle_Module_Front_Ajax {
 			return false;
 		}
 
-		$tracking = Hustle_Tracking_Model::get_instance();
 		if ( 'social_sharing' === $module->module_type ) {
 			$action = 'conversion';
 		} elseif ( $cta ) {
@@ -744,9 +857,42 @@ class Hustle_Module_Front_Ajax {
 		} else {
 			$action = 'optin_conversion';
 		}
-		$tracking->save_tracking( $module->id, $action, $module->module_type, $page_id, $module_sub_type );
+		$this->temp_log_conversion( $module, $action, $page_id, $module_sub_type );
 
 		return true;
+	}
+
+
+	/**
+	 * Temporary log for conversions.
+	 *
+	 * @param Hustle_Module_Model $module Module.
+	 * @param string              $action Action.
+	 * @param int                 $post_id Post ID.
+	 * @param string|null         $module_sub_type Module subtype.
+	 */
+	private function temp_log_conversion( $module, $action, $post_id, $module_sub_type ) {
+		$settings    = Hustle_Settings_Admin::get_privacy_settings();
+		$ip_tracking = ! isset( $settings['ip_tracking'] ) || 'on' === $settings['ip_tracking'];
+
+		if ( $ip_tracking ) {
+			$user_ip = Opt_In_Geo::get_user_ip();
+		} else {
+			$user_ip = '';
+		}
+
+		$logs   = get_option( 'hustle_conversion_logs', array() );
+		$logs[] = array(
+			'time'            => time(),
+			'module_id'       => $module->id,
+			'module_type'     => $module->module_type,
+			'post_id'         => $post_id,
+			'action'          => $action,
+			'ip'              => $user_ip,
+			'module_sub_type' => $module_sub_type,
+		);
+
+		update_option( 'hustle_conversion_logs', $logs );
 	}
 
 	/**
@@ -947,7 +1093,7 @@ class Hustle_Module_Front_Ajax {
 			} elseif ( isset( $sanitized_data['form_step'] ) && 'enter_email' === $sanitized_data['form_step'] ) {
 				$modules_id = self::get_module_ids( $email, $sanitized_data, $messages );
 
-				$module   = new Hustle_Module_Model();
+				$module   = Hustle_Module_Model::new_instance();
 				$params   = array(
 					'ajax_step'   => true,
 					'modules_id'  => $modules_id,
@@ -1026,7 +1172,7 @@ class Hustle_Module_Front_Ajax {
 			wp_send_json_error();
 		}
 
-		$module_instance = new Hustle_SShare_Model();
+		$module_instance = Hustle_SShare_Model::new_instance();
 		$networks_shares = $module_instance->retrieve_networks_shares( $networks, $post_id );
 
 		wp_send_json_success(
@@ -1046,7 +1192,8 @@ class Hustle_Module_Front_Ajax {
 	 * @return null
 	 */
 	public function log_module_conversion() {
-		$data = json_decode( file_get_contents( 'php://input' ) );
+		$data = file_get_contents( 'php://input' );
+		$data = json_decode( $data );
 		$data = $data ? get_object_vars( $data ) : array();
 
 		if ( ! is_array( $data ) || empty( $data ) ) {
@@ -1070,6 +1217,10 @@ class Hustle_Module_Front_Ajax {
 		}
 
 		if ( $module->id ) {
+
+			if ( ! $module->active ) {
+				wp_send_json_error( __( 'Module is not active.', 'hustle' ) );
+			}
 
 			$page_id         = $data['page_id'];
 			$module_sub_type = ( isset( $data['module_sub_type'] ) && ! empty( $data['module_sub_type'] ) ) ? $data['module_sub_type'] : null;
@@ -1107,30 +1258,20 @@ class Hustle_Module_Front_Ajax {
 			wp_send_json_error( __( 'Invalid Request: Module id invalid', 'hustle' ) );
 		}
 
-		$module = new Hustle_Module_Model( $module_id );
+		$module = Hustle_Module_Model::new_instance( $module_id );
 		if ( is_wp_error( $module ) ) {
 			wp_send_json_error( __( 'Invalid module!', 'hustle' ) );
 		}
 
 		if ( $module->id ) {
-
-			$module_type     = $data['module_type'];
 			$page_id         = $data['page_id'];
 			$module_sub_type = isset( $data['module_sub_type'] ) ? $data['module_sub_type'] : null;
 
-			$tracking = Hustle_Tracking_Model::get_instance();
-			$res      = $tracking->save_tracking( $module_id, 'view', $module_type, $page_id, $module_sub_type );
-
-		} else {
-			$res = false;
-		}
-
-		if ( ! $res ) {
-			wp_send_json_error( __( 'Error saving stats', 'hustle' ) );
-		} else {
+			$this->temp_log_conversion( $module, 'view', $page_id, $module_sub_type );
 			wp_send_json_success( __( 'Stats Successfully saved', 'hustle' ) );
 		}
 
+		wp_send_json_error( __( 'Error saving stats', 'hustle' ) );
 	}
 
 	/**

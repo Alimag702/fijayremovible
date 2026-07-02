@@ -63,7 +63,7 @@ if ( ! class_exists( 'Hustle_Mautic_Api' ) ) :
 		private function __construct( $username, $base_url, $password ) {
 			// final check here.
 			if ( ! $base_url || ! $username || ! $password ) {
-				throw new Exception( __( 'Missing required API Credentials', 'hustle' ) );
+				throw new Exception( esc_html__( 'Missing required API Credentials', 'hustle' ) );
 			}
 
 			$this->base_url = $base_url;
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Hustle_Mautic_Api' ) ) :
 		public static function get_instance( $username, $base_url = '', $password = '' ) {
 			// initial check here.
 			if ( ! $username ) {
-				throw new Exception( __( 'Missing required API Credentials', 'hustle' ) );
+				throw new Exception( esc_html__( 'Missing required API Credentials', 'hustle' ) );
 			}
 
 			if ( ! isset( self::$instances[ md5( $username ) ] ) ) {
@@ -216,7 +216,7 @@ if ( ! class_exists( 'Hustle_Mautic_Api' ) ) :
 
 			if ( is_wp_error( $res ) || ! $res ) {
 				throw new Exception(
-					__( 'Failed to process request, make sure your API URL is correct and your server has internet connection.', 'hustle' )
+					esc_html__( 'Failed to process request, make sure your API URL is correct and your server has internet connection.', 'hustle' )
 				);
 			}
 
@@ -238,7 +238,7 @@ if ( ! class_exists( 'Hustle_Mautic_Api' ) ) :
 
 					if ( 404 === $status_code ) {
 						/* translators: error message */
-						throw new Exception( sprintf( __( 'Failed to processing request : %s', 'hustle' ), $msg ) );
+						throw new Exception( sprintf( esc_html__( 'Failed to processing request : %s', 'hustle' ), esc_html( $msg ) ) );
 					}
 				}
 			}

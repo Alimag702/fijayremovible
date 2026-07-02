@@ -21,12 +21,11 @@ $unit_name  = $property_key . '_line_height_unit' . $device_suffix;
 			'label'         => esc_html__( 'Line Height', 'hustle' ),
 			'name'          => $unit_name,
 			'selected'      => $settings[ $unit_name ],
-			'extra_units'   => array( 'none' => __( 'none', 'hustle' ) ),
-			'exclude_units' => array( 'vh', 'vw' ),
 			'extra_units'   => array(
 				'em'  => 'em',
 				'rem' => 'rem',
 			),
+			'exclude_units' => array( 'vh', 'vw' ),
 		)
 	);
 	?>

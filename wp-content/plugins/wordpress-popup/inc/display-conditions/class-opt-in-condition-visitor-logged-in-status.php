@@ -31,5 +31,4 @@ class Opt_In_Condition_Visitor_Logged_In_Status extends Opt_In_Condition_Abstrac
 
 		return false;
 	}
-
 }

@@ -91,7 +91,7 @@ class Hustle_Module_Widget extends WP_Widget {
 				<?php
 				$types = array( 'embedded', 'social_sharing' );
 				foreach ( Hustle_Module_Collection::instance()->get_embed_id_names( $types ) as $mod ) :
-					$module = new Hustle_Module_Model( $mod->module_id );
+					$module = Hustle_Module_Model::new_instance( $mod->module_id );
 					if ( is_wp_error( $module ) ) {
 						continue;
 					}

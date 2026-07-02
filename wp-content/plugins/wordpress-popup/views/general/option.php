@@ -420,6 +420,24 @@ if ( 'label' === $element_type ) { ?>
 } elseif ( 'raw' === $element_type ) {
 	?>
 	<?php echo wp_kses_post( $value ); ?>
+	<?php
+} elseif ( 'readonly' === $element_type ) {
+	?>
+	<div class="sui-with-button sui-with-button-inside">
+		<input
+			<?php $this->render_attributes( isset( $attributes ) ? $attributes : array() ); ?>
+			type="text"
+			<?php echo isset( $name ) ? 'name="' . esc_attr( $name ) . '"' : ''; ?>
+			value="<?php echo isset( $value ) ? esc_attr( $value ) : ''; ?>"
+			id="<?php echo isset( $id ) ? esc_attr( $id ) : ''; ?>"
+			class="sui-form-control <?php echo esc_attr( $type_class ); ?> <?php echo isset( $class ) ? esc_attr( $class ) : ''; ?>"
+			readonly
+		/>
+		<button class="sui-button-icon sui-copy-button hustle-copy-shortcode-button" type="button" aria-label="<?php esc_attr_e( 'Copy to clipboard', 'hustle' ); ?>">
+			<span class="sui-icon-copy" aria-hidden="true"></span>
+			<span class="sui-screen-reader-text"><?php esc_html_e( 'Copy to clipboard', 'hustle' ); ?></span>
+		</button>
+	</div>
 <?php } else { ?>
 	<?php echo isset( $icon ) ? '<div class="sui-control-with-icon">' : ''; ?>
 		<?php if ( empty( $describedby ) && ! empty( $id ) ) { ?>

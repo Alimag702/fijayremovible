@@ -150,7 +150,7 @@ if ( ! class_exists( 'Hustle_Aweber' ) ) :
 				} elseif ( empty( $api_credentials ) && ! empty( $multi_global_id ) ) {
 
 					if ( ! $multi_global_id ) {
-						throw new Hustle_Addon_Aweber_Wp_Api_Exception( __( 'Missing global ID instance.', 'hustle' ) );
+						throw new Hustle_Addon_Aweber_Wp_Api_Exception( esc_html__( 'Missing global ID instance.', 'hustle' ) );
 					}
 					$api_credentials = $this->get_credentials_keys( $multi_global_id );
 					$api             = new Hustle_Addon_Aweber_Wp_Api( $api_credentials );
@@ -272,12 +272,12 @@ if ( ! class_exists( 'Hustle_Aweber' ) ) :
 
 			$accounts = $api->get_accounts();
 			if ( ! isset( $accounts->entries ) ) {
-				throw new Hustle_Addon_Aweber_Exception( __( 'Failed to get AWeber account information', 'hustle' ) );
+				throw new Hustle_Addon_Aweber_Exception( esc_html__( 'Failed to get AWeber account information', 'hustle' ) );
 			}
 
 			$entries = $accounts->entries;
 			if ( ! isset( $entries[0] ) ) {
-				throw new Hustle_Addon_Aweber_Exception( __( 'Failed to get AWeber account information', 'hustle' ) );
+				throw new Hustle_Addon_Aweber_Exception( esc_html__( 'Failed to get AWeber account information', 'hustle' ) );
 			}
 
 			$first_entry = $entries[0];

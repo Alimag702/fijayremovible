@@ -137,7 +137,6 @@ if ( ! class_exists( 'Hustle_Local_List' ) ) :
 				Hustle_Providers::get_instance()->activate_addon( $this->get_slug() );
 			}
 		}
-
 	}
 
 endif;

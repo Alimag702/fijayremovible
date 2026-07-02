@@ -45,6 +45,5 @@ class Opt_In_Condition_User_Registration extends Opt_In_Condition_Abstract {
 		} else {
 			return false;
 		}
-
 	}
 }

@@ -51,6 +51,7 @@ class Hustle_Deletion {
 		delete_option( 'hustle_custom_palettes' );
 		delete_option( 'hustle_notice_stop_support_m2' );
 		delete_option( 'hustle-hide_tutorials' );
+		delete_option( 'hustle_conversion_logs' );
 	}
 
 	/**
@@ -85,7 +86,6 @@ class Hustle_Deletion {
 
 			}
 		}
-
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Hustle_Deletion {
 
 		// Delete module cache.
 		if ( $max_module_id && is_numeric( $max_module_id ) && $max_module_id > 0 ) {
-			for ( $i = 1; $i <= $max_module_id; $i ++ ) {
+			for ( $i = 1; $i <= $max_module_id; $i++ ) {
 				wp_cache_delete( $i, 'hustle_model_data' );
 				wp_cache_delete( $i, 'hustle_module_meta' );
 				wp_cache_delete( $i, 'hustle_subscribed_emails' );
@@ -164,7 +164,7 @@ class Hustle_Deletion {
 		$max_entry_meta_id       = $wpdb->get_var( $max_entry_meta_id_query ); // phpcs:ignore
 
 		if ( $max_entry_id && is_numeric( $max_entry_id ) && $max_entry_id > 0 ) {
-			for ( $i = 1; $i <= $max_entry_id; $i ++ ) {
+			for ( $i = 1; $i <= $max_entry_id; $i++ ) {
 				wp_cache_delete( $i, 'Hustle_Entry_Model' );
 			}
 		}

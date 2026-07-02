@@ -10,10 +10,10 @@
  * Plugin Name: Hustle
  * Plugin URI: https://wordpress.org/plugins/wordpress-popup/
  * Description: Start collecting email addresses and quickly grow your mailing list with big bold pop-ups, slide-ins, widgets, or in post opt-in forms.
- * Version: 7.8.9.2
+ * Version: 7.8.13.1
  * Author: WPMU DEV
  * Author URI: https://wpmudev.com
- * Tested up to: 6.8
+ * Tested up to: 7.0
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Text Domain: hustle
@@ -40,6 +40,10 @@
 
 if ( ! defined( 'HUSTLE_MIN_PHP_VERSION' ) ) {
 	define( 'HUSTLE_MIN_PHP_VERSION', '7.4' );
+}
+
+if ( ! defined( 'HUSTLE_BASE_FILE' ) ) {
+	define( 'HUSTLE_BASE_FILE', __FILE__ );
 }
 
 if ( ! function_exists( 'hustle_insecure_php_version_notice' ) ) {
@@ -123,7 +127,7 @@ if ( ! function_exists( 'hustle_activated' ) ) {
 
 // Require autoloader.
 if ( ! class_exists( 'ComposerAutoloaderInitd45a15be3ceca75ee1c0c2f87d2b07c1' ) ) {
-	require_once dirname( __FILE__ ) . '/vendor/autoload.php';
+	require_once __DIR__ . '/vendor/autoload.php';
 }
 
 if ( ! defined( 'HUSTLE_SUI_VERSION' ) ) {
@@ -131,122 +135,30 @@ if ( ! defined( 'HUSTLE_SUI_VERSION' ) ) {
 }
 
 if ( ! class_exists( 'Opt_In' ) ) {
+	require_once __DIR__ . '/inc/class-opt-in.php';
+}
 
-	/**
-	 * Opt_In class.
-	 */
-	class Opt_In {
 
-		const VERSION = '7.8.7';
 
-		const VIEWS_FOLDER = 'views';
 
-		/**
-		 * Base file.
-		 *
-		 * @since 1.0.0
-		 * @var string
-		 */
-		public static $plugin_base_file;
+if ( ! class_exists( 'WordPress_Popup_Module_Admin' ) ) {
+	require_once __DIR__ . '/free/inc/class-wordpress-popup-module-admin.php';
+
+	if ( ! function_exists( 'wordpress_popup_module_admin_init' ) ) {
 
 		/**
-		 * Plugin URL.
+		 * Instantiate WordPress_Popup_Module_Admin
 		 *
-		 * @since 1.0.0
-		 * @var string
+		 * @since unknown
 		 */
-		public static $plugin_url;
-
-		/**
-		 * Plugin path.
-		 *
-		 * @since 1.0.0
-		 * @var string
-		 */
-		public static $plugin_path;
-
-		/**
-		 * Path to "vendor".
-		 *
-		 * @since 1.0.0
-		 * @var string
-		 */
-		public static $vendor_path;
-
-		/**
-		 * Path to "views" files.
-		 *
-		 * @since 1.0.0
-		 * @var string
-		 */
-		public static $template_path;
-
-		/**
-		 * Array container for the registered providers.
-		 *
-		 * @since 3.0.5
-		 * @var array
-		 */
-		protected static $registered_providers = array();
-
-		/**
-		 * Opt_In constructor.
-		 *
-		 * @since 1.0.0
-		 */
-		public function __construct() {
-
-			self::$plugin_base_file = plugin_basename( __FILE__ );
-			self::$plugin_url       = plugin_dir_url( self::$plugin_base_file );
-			self::$plugin_path      = trailingslashit( dirname( __FILE__ ) );
-			self::$vendor_path      = self::$plugin_path . 'vendor/';
-			self::$template_path    = trailingslashit( dirname( __FILE__ ) ) . 'views/';
-
-			add_action( 'after_setup_theme', array( $this, 'load_text_domain' ) );
-
-			// check caps.
-			add_action( 'admin_init', array( $this, 'hustle_check_caps' ), 999 );
-
-			new Hustle_Init();
+		function wordpress_popup_module_admin_init() {
+			new WordPress_Popup_Module_Admin();
 		}
 
-		/**
-		 * Returns list of optin providers based on their declared classes that implement Opt_In_Provider_Interface
-		 *
-		 * @return array
-		 */
-		public function get_providers() {
-			if ( empty( self::$registered_providers ) ) {
-				self::$registered_providers = Hustle_Provider_Utils::get_activable_providers_list();
-			}
-			return self::$registered_providers;
-		}
-
-		/**
-		 * Loads text domain
-		 *
-		 * @since 1.0.0
-		 */
-		public function load_text_domain() {
-			load_plugin_textdomain( 'hustle', false, dirname( plugin_basename( self::$plugin_base_file ) ) . '/languages/' );
-		}
-
-		/**
-		 * Callback function when user migrates from 3x to 4x from ftp.
-		 * The activation hook won't run we'd have to check it in init.
-		 *
-		 * @since 4.0.0
-		 */
-		public function hustle_check_caps() {
-			$admin = get_role( 'administrator' );
-			$roles = get_editable_roles();
-			if ( ( $admin && ! $admin->has_cap( 'hustle_menu' ) ) || ( ! $admin && ! empty( $roles ) ) ) {
-				hustle_activation();
-			}
-		}
+		add_action( 'after_setup_theme', 'wordpress_popup_module_admin_init', 5 );
 	}
+}
 
-};
 
 if ( ! function_exists( 'hustle_init' ) ) {
 
@@ -270,7 +182,7 @@ if ( ! function_exists( 'hustle_activation' ) ) {
 	function hustle_activation() {
 
 		if ( ! class_exists( 'Hustle_Db' ) ) {
-			require_once trailingslashit( dirname( __FILE__ ) ) . 'inc/hustle-db.php';
+			require_once trailingslashit( __DIR__ ) . 'inc/hustle-db.php';
 		}
 		update_option( 'hustle_activated_flag', 1 );
 
@@ -316,7 +228,6 @@ if ( ! function_exists( 'hustle_activation' ) ) {
 				}
 			}
 		}
-
 	}
 }
 register_activation_hook( __FILE__, 'hustle_activation' );
@@ -331,6 +242,7 @@ if ( ! function_exists( 'hustle_deactivation' ) ) {
 	function hustle_deactivation() {
 		// Remove the cron for data protection cleanup.
 		wp_clear_scheduled_hook( 'hustle_general_data_protection_cleanup' );
+		wp_clear_scheduled_hook( 'hustle_background_conversion_log_cron' );
 	}
 }
 

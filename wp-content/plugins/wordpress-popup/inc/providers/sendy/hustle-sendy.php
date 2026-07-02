@@ -414,7 +414,6 @@ if ( ! class_exists( 'Hustle_Sendy' ) ) :
 				'list_id'          => 'list_id',
 			);
 		}
-
 	}
 
 endif;

@@ -406,12 +406,11 @@ if ( ! class_exists( 'Hustle_Icontact_Form_Settings' ) ) :
 		 * @return bool
 		 */
 		public function second_step_is_completed() {
-			$done = $this->first_step_is_completed() &&
-			empty( $this->addon_form_settings['auto_optin'] ) || isset( $this->addon_form_settings['confirmation_message_id'] );
+			$done = ( $this->first_step_is_completed() && empty( $this->addon_form_settings['auto_optin'] ) ) ||
+				isset( $this->addon_form_settings['confirmation_message_id'] );
 
 			return $done;
 		}
-
 	}
 
 endif;

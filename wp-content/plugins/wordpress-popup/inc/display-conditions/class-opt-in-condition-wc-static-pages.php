@@ -49,5 +49,4 @@ class Opt_In_Condition_Wc_Static_Pages extends Opt_In_Condition_Abstract {
 		}
 		return false;
 	}
-
 }

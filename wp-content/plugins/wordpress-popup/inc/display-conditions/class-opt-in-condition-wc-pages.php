@@ -33,7 +33,5 @@ class Opt_In_Condition_Wc_Pages extends Opt_In_Condition_Abstract {
 		} else {
 			return ! $is_wc;
 		}
-
 	}
-
 }

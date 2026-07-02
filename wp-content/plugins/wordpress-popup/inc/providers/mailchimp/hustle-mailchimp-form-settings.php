@@ -410,7 +410,7 @@ class Hustle_Mailchimp_Form_Settings extends Hustle_Provider_Form_Settings_Abstr
 	 * @return boolean
 	 */
 	private function is_optin_gpdr() {
-		$module = new Hustle_Module_Model( $this->module_id );
+		$module = Hustle_Module_Model::new_instance( $this->module_id );
 		if ( is_wp_error( $module ) ) {
 			return false;
 		}
@@ -911,7 +911,6 @@ class Hustle_Mailchimp_Form_Settings extends Hustle_Provider_Form_Settings_Abstr
 		}
 
 		return $fields;
-
 	}
 
 
@@ -945,7 +944,6 @@ class Hustle_Mailchimp_Form_Settings extends Hustle_Provider_Form_Settings_Abstr
 			// TODO: handle exception.
 			return array();
 		}
-
 	}
 
 	/**
@@ -1004,7 +1002,6 @@ class Hustle_Mailchimp_Form_Settings extends Hustle_Provider_Form_Settings_Abstr
 			// return $e;.
 			return array();
 		}
-
 	}
 
 	// -------------------------------------------------------
@@ -1035,5 +1032,4 @@ class Hustle_Mailchimp_Form_Settings extends Hustle_Provider_Form_Settings_Abstr
 		// error handling on first step.
 		return $api_tags;
 	}
-
 }

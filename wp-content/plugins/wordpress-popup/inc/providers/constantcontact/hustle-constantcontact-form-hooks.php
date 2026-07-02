@@ -107,7 +107,7 @@ class Hustle_ConstantContact_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstr
 			);
 
 			if ( $exists ) {
-				$response = $api->updateSubscription( $exists, $first_name, $last_name, $list_id, $custom_fields );
+				$response = $api->update_subscription( $exists, $first_name, $last_name, $list_id, $custom_fields );
 			} else {
 				$response = $api->subscribe( $submitted_data['email'], $first_name, $last_name, $list_id, $custom_fields );
 			}
@@ -291,5 +291,4 @@ class Hustle_ConstantContact_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstr
 		}
 		return $this->subscriber[ md5( $data['email'] ) ];
 	}
-
 }

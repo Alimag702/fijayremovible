@@ -25,7 +25,6 @@ if ( isset( $page_title ) ) {
 	$page_title = esc_html__( 'Module', 'hustle' );
 }
 $sql_month_start_date = date( 'Y-m-d H:i:s', strtotime( '-30 days midnight' ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-$free_limit_reached   = Hustle_Data::was_free_limit_reached( $module_type );
 $is_search            = filter_input( INPUT_GET, 'q' );
 ?>
 
@@ -40,20 +39,12 @@ $is_search            = filter_input( INPUT_GET, 'q' );
 			<button
 				id="hustle-create-new-module"
 				class="sui-button sui-button-blue hustle-create-module"
-				<?php
-				if ( $free_limit_reached ) {
-					echo 'data-enabled="false"';}
-				?>
 			>
 				<span class="sui-icon-plus" aria-hidden="true"></span> <?php esc_html_e( 'Create', 'hustle' ); ?>
 			</button>
 
 			<button
 				class="sui-button hustle-import-module-button"
-				<?php
-				if ( $free_limit_reached ) {
-					echo 'data-enabled="false"';}
-				?>
 			>
 				<span class="sui-icon-upload-cloud" aria-hidden="true"></span> <?php esc_html_e( 'Import', 'hustle' ); ?>
 			</button>

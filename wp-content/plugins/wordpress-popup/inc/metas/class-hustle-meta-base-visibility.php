@@ -44,8 +44,10 @@ class Hustle_Meta_Base_Visibility extends Hustle_Meta {
 		// Remove the conditions that are not for this subtype.
 		$conditions_removed = false;
 		foreach ( $all_conditions['conditions'] as $group_id => $data ) {
-			if ( isset( $data[ 'apply_on_' . $subtype ] ) && 'false' === $data[ 'apply_on_' . $subtype ] ||
-					'shortcode' === $subtype && ! isset( $data[ 'apply_on_' . $subtype ] ) ) {
+			if (
+				( isset( $data[ 'apply_on_' . $subtype ] ) && 'false' === $data[ 'apply_on_' . $subtype ] ) ||
+				( 'shortcode' === $subtype && ! isset( $data[ 'apply_on_' . $subtype ] ) )
+			) {
 				$conditions_removed = true;
 				unset( $all_conditions['conditions'][ $group_id ] );
 			}
@@ -174,7 +176,7 @@ class Hustle_Meta_Base_Visibility extends Hustle_Meta {
 
 			if ( 'any' === $filter_type ) {
 				if ( $any_true ) {
-					$display = $display || $any_true && ! $default_behavior;
+					$display = $display || ( $any_true && ! $default_behavior );
 				} elseif ( $any_false ) {
 					$display = $display || $default_behavior;
 				}
@@ -183,7 +185,7 @@ class Hustle_Meta_Base_Visibility extends Hustle_Meta {
 				if ( $any_false ) {
 					$display = $display || $default_behavior;
 				} elseif ( $any_true ) {
-					$display = $display || $any_true && ! $default_behavior;
+					$display = $display || ( $any_true && ! $default_behavior );
 				}
 			}
 		}
@@ -220,6 +222,5 @@ class Hustle_Meta_Base_Visibility extends Hustle_Meta {
 	 */
 	private function get_default_group_behavior( $conditions ) {
 		return ! empty( $conditions['show_or_hide_conditions'] ) && 'hide' === $conditions['show_or_hide_conditions'];
-
 	}
 }

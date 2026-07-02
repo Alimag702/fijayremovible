@@ -116,7 +116,7 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 
 		$module_id     = $this->module_id;
 		$provider_slug = $this->provider->get_slug();
-		$module        = new Hustle_Module_Model( $module_id );
+		$module        = Hustle_Module_Model::new_instance( $module_id );
 		if ( is_wp_error( $module ) ) {
 			return array();
 		}
@@ -212,7 +212,7 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 	 */
 	final public function save_form_settings_values( $values, $force = false ) {
 		$module_id = $this->module_id;
-		$module    = new Hustle_Module_Model( $module_id );
+		$module    = Hustle_Module_Model::new_instance( $module_id );
 		if ( is_wp_error( $module ) ) {
 			return;
 		}
@@ -383,7 +383,6 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 			'html'       => '<p>Hello im from first step settings</p>',
 			'has_errors' => false,
 		);
-
 	}
 
 	/**
@@ -411,7 +410,12 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 	 * @param array $submitted_data Submitted data.
 	 */
 	public function disconnect_form( $submitted_data ) {
-		$this->save_form_settings_values( array(), true );
+		$module = Hustle_Module_Model::new_instance( $this->module_id );
+		if ( is_wp_error( $module ) ) {
+			return;
+		}
+
+		$module->disconnect_integration( $this->provider->get_slug() );
 	}
 
 	/**
@@ -474,7 +478,6 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -686,7 +689,7 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 	 * @return array
 	 */
 	protected function get_form_fields_for_map_step( $required = false, $type = false ) {
-		$module = new Hustle_Module_Model( $this->module_id );
+		$module = Hustle_Module_Model::new_instance( $this->module_id );
 
 		$module_fields = $module->get_form_fields();
 
@@ -727,7 +730,7 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 	 * @return array
 	 */
 	protected function get_main_email_field_for_map_step() {
-		$module        = new Hustle_Module_Model( $this->module_id );
+		$module        = Hustle_Module_Model::new_instance( $this->module_id );
 		$module_fields = $module->get_form_fields();
 
 		return array(

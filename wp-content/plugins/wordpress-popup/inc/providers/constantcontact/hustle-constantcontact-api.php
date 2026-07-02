@@ -8,7 +8,7 @@
 if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 
 	if ( ! class_exists( 'Ctct\CTCTOfficialSplClassLoader' ) ) {
-		require_once dirname( __FILE__ ) . '/CtCt/autoload.php';
+		require_once __DIR__ . '/CtCt/autoload.php';
 	}
 
 	if ( ! class_exists( 'Hustle_ConstantContact_Api' ) ) :
@@ -16,7 +16,7 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 		/**
 		 * Class Hustle_ConstantContact_Api
 		 */
-		class Hustle_ConstantContact_Api extends Opt_In_WPMUDEV_API {
+		class Hustle_ConstantContact_Api extends Opt_In_WPMUDEV_API implements Hustle_ConstantContact_Api_Interface {
 
 			const API_URL      = 'https://api.constantcontact.com/v2/';
 			const AUTH_API_URL = 'https://oauth2.constantcontact.com/';
@@ -64,7 +64,6 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 			 */
 			public function __construct() {
 				// Init request callback listener.
-				add_action( 'init', array( $this, 'process_callback_request' ) );
 			}
 
 			/**
@@ -112,24 +111,34 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 			public function get_authorization_uri( $module_id = 0, $log_referrer = true, $page = 'hustle_embedded' ) {
 				$oauth = new Ctct\Auth\CtctOAuth2( self::APIKEY, self::CONSUMER_SECRET, $this->get_redirect_uri() );
 				if ( $log_referrer ) {
-					/**
-					* Store $referer to use after retrieving the access token
-					*/
-					$params = array(
-						'page'   => $page,
-						'action' => 'external-redirect',
-						'slug'   => 'constantcontact',
-						'nonce'  => wp_create_nonce( 'hustle_provider_external_redirect' ),
-					);
-					if ( ! empty( $module_id ) ) {
-						$params['id']      = $module_id;
-						$params['section'] = 'integrations';
-					}
-					$referer = add_query_arg( $params, admin_url( 'admin.php' ) );
-					update_option( self::REFERER, $referer );
-					update_option( self::CURRENTPAGE, $page );
+					$this->log_referer( $page, $module_id );
 				}
 				return $oauth->getAuthorizationUrl();
+			}
+
+
+			/**
+			 * Store $referer to use after retrieving the access token
+			 *
+			 * @param string $page Page.
+			 * @param int    $module_id Module ID.
+			 */
+			protected function log_referer( $page, $module_id ) {
+				$params = array(
+					'page'   => $page,
+					'action' => 'external-redirect',
+					'slug'   => 'constantcontact',
+					'nonce'  => wp_create_nonce( 'hustle_provider_external_redirect' ),
+				);
+
+				if ( ! empty( $module_id ) ) {
+					$params['id']      = $module_id;
+					$params['section'] = 'integrations';
+				}
+
+				$referer = add_query_arg( $params, admin_url( 'admin.php' ) );
+				update_option( self::REFERER, $referer );
+				update_option( self::CURRENTPAGE, $page );
 			}
 
 			/**
@@ -161,7 +170,6 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 					'authorize',
 					array(
 						'client_id' => self::CLIENT_ID,
-						'state'     => rawurlencode( $this->get_nonce_value() . '|' . site_url( '/' ) ),
 					)
 				);
 			}
@@ -248,7 +256,6 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 					$contact = $res->results[0];
 				}
 				return $contact;
-
 			}
 
 
@@ -282,10 +289,10 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 			 * @param String $email Email.
 			 * @param String $first_name First name.
 			 * @param String $last_name Last name.
-			 * @param String $list List.
+			 * @param String $target_list Target list.
 			 * @param Array  $custom_fields Custom fields.
 			 */
-			public function subscribe( $email, $first_name, $last_name, $list, $custom_fields = array() ) {
+			public function subscribe( $email, $first_name, $last_name, $target_list, $custom_fields = array() ) {
 				$access_token = $this->get_token( 'access_token' );
 				$cc_api       = new Ctct\ConstantContact( self::APIKEY );
 				$contact      = new Ctct\Components\Contacts\Contact();
@@ -296,7 +303,7 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 				if ( ! empty( $last_name ) ) {
 					$contact->last_name = $last_name;
 				}
-				$contact->addList( $list );
+				$contact->addList( $target_list );
 
 				if ( ! empty( $custom_fields ) ) {
 					$allowed = array(
@@ -314,15 +321,13 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 					foreach ( $custom_fields as $key => $value ) {
 						if ( in_array( $key, $allowed, true ) ) {
 							$contact->$key = $value;
-						} else {
-							if ( ! empty( $value ) ) {
+						} elseif ( ! empty( $value ) ) {
 								$custom_field             = array(
 									'name'  => 'CustomField' . $x,
 									'value' => $value,
 								);
 								$contact->custom_fields[] = $custom_field;
-								$x++;
-							}
+								++$x;
 						}
 					}
 				}
@@ -347,14 +352,14 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 			 * @param object $contact Contact.
 			 * @param string $first_name First name.
 			 * @param string $last_name Last name.
-			 * @param string $list List.
+			 * @param string $target_list List.
 			 * @param array  $custom_fields Custom fields.
 			 * @return type
 			 */
-			public function updateSubscription( $contact, $first_name, $last_name, $list, $custom_fields = array() ) {
+			public function update_subscription( $contact, $first_name, $last_name, $target_list, $custom_fields = array() ) {
 				$access_token = $this->get_token( 'access_token' );
 				$cc_api       = new Ctct\ConstantContact( self::APIKEY );
-				$contact->addList( $list );
+				$contact->addList( $target_list );
 				if ( ! empty( $first_name ) ) {
 					$contact->first_name = $first_name;
 				}
@@ -378,15 +383,13 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 					foreach ( $custom_fields as $key => $value ) {
 						if ( in_array( $key, $allowed, true ) ) {
 							$contact->$key = $value;
-						} else {
-							if ( ! empty( $value ) ) {
+						} elseif ( ! empty( $value ) ) {
 								$custom_field             = array(
 									'name'  => 'CustomField' . $x,
 									'value' => $value,
 								);
 								$contact->custom_fields[] = $custom_field;
-								$x++;
-							}
+								++$x;
 						}
 					}
 				}

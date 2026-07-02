@@ -205,11 +205,11 @@ class Hustle_Sendy_API {
 	/**
 	 * Get error
 	 *
-	 * @param string $string String.
+	 * @param string $error_code Error code.
 	 * @param bool   $return_with_code Return with code.
 	 * @return array
 	 */
-	private function error_string( $string, $return_with_code = false ) {
+	private function error_string( $error_code, $return_with_code = false ) {
 		$strings = array(
 			// Subscribe.
 			'Some fields are missing.' => esc_html__( 'Some fields are missing.', 'hustle' ),
@@ -224,7 +224,7 @@ class Hustle_Sendy_API {
 			'List does not exist'      => esc_html__( 'List does not exist', 'hustle' ),
 		);
 
-		$message = empty( $strings[ $string ] ) ? $string : $strings[ $string ];
+		$message = empty( $strings[ $error_code ] ) ? $error_code : $strings[ $error_code ];
 
 		if ( ! $return_with_code ) {
 			return $message;
@@ -232,7 +232,7 @@ class Hustle_Sendy_API {
 
 		// We need the non-translated code sometimes.
 		return array(
-			'code'    => $string,
+			'code'    => $error_code,
 			'message' => $message,
 		);
 	}

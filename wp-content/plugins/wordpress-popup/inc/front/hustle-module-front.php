@@ -98,6 +98,8 @@ class Hustle_Module_Front {
 		}
 		// phpcs:enable
 
+		Hustle_Module_Inline_Style_Queue::init();
+
 		if ( ! $is_preview ) {
 			$this->prepare_for_front();
 		} else {
@@ -121,7 +123,7 @@ class Hustle_Module_Front {
 
 		// Enqueue it in the footer to overrider all the css that comes with the popup.
 		add_action(
-			'wp_footer',
+			'hustle_after_enqueue_inline_styles',
 			array( $this, 'register_styles' )
 		);
 
@@ -299,8 +301,8 @@ class Hustle_Module_Front {
 				'is_admin'              => is_admin(),
 				'real_page_id'          => Opt_In_Utils::get_real_page_id(),
 				'thereferrer'           => Opt_In_Utils::get_referrer(),
-				'actual_url'            => Opt_In_Utils::get_current_actual_url(),
-				'full_actual_url'       => Opt_In_Utils::get_current_actual_url( true ),
+				'actual_url'            => esc_url_raw( Opt_In_Utils::get_current_actual_url() ),
+				'full_actual_url'       => esc_url_raw( Opt_In_Utils::get_current_actual_url( true ) ),
 				'native_share_enpoints' => Hustle_SShare_Model::get_sharing_endpoints( false ),
 				'ajaxurl'               => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 				'page_id'               => get_queried_object_id(), // Used in many places to decide whether to show the module and cookies.
@@ -345,6 +347,11 @@ class Hustle_Module_Front {
 			$this->add_recaptcha_script( $modules_deps['recaptcha']['language'] );
 		}
 
+		// Queue Cloudflare Turnstile if required.
+		if ( ! empty( $modules_deps['turnstile'] ) ) {
+			self::add_turnstile_script();
+		}
+
 		// Queue Pinteres if required.
 		if ( ! empty( $modules_deps['pinterest'] ) ) {
 			wp_enqueue_script(
@@ -384,6 +391,25 @@ class Hustle_Module_Front {
 		wp_localize_script( 'hui_scripts', 'hustleSettings', $settings );
 
 		wp_enqueue_script( 'hui_scripts' );
+	}
+
+	/**
+	 * Enqueue the Cloudflare Turnstile script.
+	 *
+	 * @since 7.8.13
+	 *
+	 * @param bool $is_preview If it's preview.
+	 * @param bool $is_return  Is return.
+	 */
+	public static function add_turnstile_script( $is_preview = false, $is_return = false ) {
+		$script_url = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+
+		if ( ! $is_return ) {
+			wp_enqueue_script( 'hustle_turnstile', $script_url, array(), null, true ); // phpcs:ignore -- Prevent from adding the version to the script URL. It isn't recommended to cache api.js script because it will cause Turnstile to fail when future updates are released.
+
+		} elseif ( $is_preview ) {
+			return $script_url;
+		}
 	}
 
 	/**
@@ -636,6 +662,7 @@ class Hustle_Module_Front {
 		$modules            = apply_filters( 'hustle_sort_modules', Hustle_Module_Collection::instance()->get_all( true ) );
 		$datepicker_found   = false;
 		$recaptcha_found    = false;
+		$turnstile_found    = false;
 		$select2_found      = false;
 		$recaptcha_language = '';
 		$enqueue_adblock    = false;
@@ -714,6 +741,13 @@ class Hustle_Module_Front {
 								$recaptcha_language = $recaptcha_field['recaptcha_language'];
 							}
 						}
+
+						// Cloudflare Turnstile.
+						// Check if the module has a Turnstile to enqueue scripts unless we already found one.
+						// We'll queue the script afterwards.
+						if ( ! empty( $form_fields['turnstile'] ) && ! $turnstile_found ) {
+							$turnstile_found = true;
+						}
 					}
 
 					// Select2.
@@ -723,10 +757,14 @@ class Hustle_Module_Front {
 						if (
 							! empty( $mailchimp_settings ) &&
 							! is_null( $mailchimp_settings['group'] ) &&
-							'-1' !== $mailchimp_settings['group'] &&
-							'dropdown' === $mailchimp_settings['group_type']
+							'-1' !== $mailchimp_settings['group']
 						) {
-							$select2_found = true;
+							if (
+								isset( $mailchimp_settings['group_type'] ) &&
+								'dropdown' === $mailchimp_settings['group_type']
+							) {
+								$select2_found = true;
+							}
 						}
 					}
 				}
@@ -785,6 +823,11 @@ class Hustle_Module_Front {
 		// Set flag for scripts: recaptcha field.
 		if ( $recaptcha_found ) {
 			$this->modules_data_for_scripts['recaptcha'] = array( 'language' => $recaptcha_language );
+		}
+
+		// Set flag for scripts: Cloudflare Turnstile field.
+		if ( $turnstile_found ) {
+			$this->modules_data_for_scripts['turnstile'] = true;
 		}
 
 		if ( $pinterest_found ) {
@@ -869,7 +912,7 @@ class Hustle_Module_Front {
 
 		add_action(
 			'wp_footer',
-			function() use ( $html ) {
+			function () use ( $html ) {
 				echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 		);

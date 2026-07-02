@@ -102,43 +102,14 @@ if ( $is_embed ) {
 						$style     .= '}';
 					$style         .= '}';
 				}
-			} else {
-
-				// Check if mobile settings and custom size for mobiles are enabled.
-				if ( $is_mobile_enabled && $is_mobile_custom ) {
-
-					if ( '' !== $mobile_width || '' !== $mobile_height ) {
-
-						$style         .= $breakpoint . ' {';
-							$style     .= $prefix_desktop . $component . ' {';
-								$style .= ( '' !== $mobile_width ) ? 'max-width: 100%;' : '';
-								$style .= ( '' !== $mobile_height ) ? 'max-height: none;' : '';
-								$style .= ( '' !== $mobile_height ) ? 'max-height: unset;' : '';
-								$style .= ( '' !== $mobile_height ) ? 'overflow-y: initial;' : '';
-							$style     .= '}';
-						$style         .= '}';
-
-						if ( '' !== $mobile_height ) {
-							$style         .= $breakpoint . ' {';
-								$style     .= ( $is_optin ) ? $prefix_desktop . $component . ' .hustle-layout {' : $prefix_desktop . $component . ' .hustle-info {';
-									$style .= 'max-height: none;';
-									$style .= 'max-height: unset;';
-								$style     .= '}';
-							$style         .= '}';
-						}
-					}
-				}
-			}
-		} else {
-
-			// Check if mobile settings and custom size for mobiles are enabled.
-			if ( $is_mobile_enabled && $is_mobile_custom ) {
+			} elseif ( $is_mobile_enabled && $is_mobile_custom ) { // Check if mobile settings and custom size for mobiles are enabled.
 
 				if ( '' !== $mobile_width || '' !== $mobile_height ) {
 
 					$style         .= $breakpoint . ' {';
 						$style     .= $prefix_desktop . $component . ' {';
 							$style .= ( '' !== $mobile_width ) ? 'max-width: 100%;' : '';
+							$style .= ( '' !== $mobile_height ) ? 'max-height: none;' : '';
 							$style .= ( '' !== $mobile_height ) ? 'max-height: unset;' : '';
 							$style .= ( '' !== $mobile_height ) ? 'overflow-y: initial;' : '';
 						$style     .= '}';
@@ -147,10 +118,31 @@ if ( $is_embed ) {
 					if ( '' !== $mobile_height ) {
 						$style         .= $breakpoint . ' {';
 							$style     .= ( $is_optin ) ? $prefix_desktop . $component . ' .hustle-layout {' : $prefix_desktop . $component . ' .hustle-info {';
+								$style .= 'max-height: none;';
 								$style .= 'max-height: unset;';
 							$style     .= '}';
 						$style         .= '}';
 					}
+				}
+			}
+		} elseif ( $is_mobile_enabled && $is_mobile_custom ) { // Check if mobile settings and custom size for mobiles are enabled.
+
+			if ( '' !== $mobile_width || '' !== $mobile_height ) {
+
+				$style         .= $breakpoint . ' {';
+					$style     .= $prefix_desktop . $component . ' {';
+						$style .= ( '' !== $mobile_width ) ? 'max-width: 100%;' : '';
+						$style .= ( '' !== $mobile_height ) ? 'max-height: unset;' : '';
+						$style .= ( '' !== $mobile_height ) ? 'overflow-y: initial;' : '';
+					$style     .= '}';
+				$style         .= '}';
+
+				if ( '' !== $mobile_height ) {
+					$style         .= $breakpoint . ' {';
+						$style     .= ( $is_optin ) ? $prefix_desktop . $component . ' .hustle-layout {' : $prefix_desktop . $component . ' .hustle-info {';
+							$style .= 'max-height: unset;';
+						$style     .= '}';
+					$style         .= '}';
 				}
 			}
 		}

@@ -117,11 +117,11 @@ class Hustle_Get_Response_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract
 				$custom_fields = wp_list_pluck( $cf, 'name', 'customFieldId' );
 				$phone_fields  = array_filter(
 					wp_list_pluck( $cf, 'type', 'name' ),
-					function ( $var ) {
-						return 'phone' === $var;
+					function ( $field_name ) {
+						return 'phone' === $field_name;
 					}
 				);
-				$module        = new Hustle_Module_Model( $module_id );
+				$module        = Hustle_Module_Model::new_instance( $module_id );
 				$form_fields   = $module->get_form_fields();
 
 				foreach ( $extra_data as $key => $value ) {
@@ -416,5 +416,4 @@ class Hustle_Get_Response_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract
 
 		return $value;
 	}
-
 }

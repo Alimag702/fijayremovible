@@ -60,5 +60,4 @@ class Opt_In_Condition_Wc_Categories extends Opt_In_Condition_Abstract {
 		$term_ids = $terms && ! is_wp_error( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 		return array_map( 'strval', $term_ids );
 	}
-
 }

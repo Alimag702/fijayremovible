@@ -19,5 +19,4 @@ interface Hustle_Provider_Interface {
 	 * @return self
 	 */
 	public static function get_instance();
-
 }

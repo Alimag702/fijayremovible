@@ -37,6 +37,12 @@ $sections = array(
 			'settings' => Hustle_Settings_Admin::get_recaptcha_settings(),
 		),
 	),
+	'turnstile'     => array(
+		'label' => __( 'Cloudflare Turnstile', 'hustle' ),
+		'data'  => array(
+			'settings' => Hustle_Settings_Admin::get_turnstile_settings(),
+		),
+	),
 	'accessibility' => array(
 		'label' => __( 'Accessibility', 'hustle' ),
 		'data'  => array(

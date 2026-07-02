@@ -7,7 +7,7 @@
  */
 
 $is_ssharing     = Hustle_Module_Model::SOCIAL_SHARING_MODULE === $this->admin->module_type;
-$module_instance = new Hustle_Module_Model();
+$module_instance = Hustle_Module_Model::new_instance();
 
 if ( ! $is_ssharing ) {
 	$smallcaps_singular = Opt_In_Utils::get_module_type_display_name( $this->admin->module_type );

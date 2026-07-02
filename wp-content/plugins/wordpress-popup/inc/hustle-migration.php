@@ -276,7 +276,6 @@ class Hustle_Migration {
 		} else {
 			$this->migrate_sshare_module( $old_module );
 		}
-
 	}
 
 	/**
@@ -297,14 +296,14 @@ class Hustle_Migration {
 	private function migrate_sshare_module( $old_module ) {
 
 		if ( ! $this->is_multisite || is_main_site( get_current_blog_id() ) ) {
-			$module = new Hustle_SShare_Model( $old_module->module_id );
+			$module = Hustle_SShare_Model::new_instance( $old_module->module_id );
 			$module->save();
 
 		} else {
 
 			// The tables in multisite are no longer shared between the sites of the network.
 			// Instead, each site has its own tables, so they're empty and we should move the content there.
-			$module = new Hustle_SShare_Model();
+			$module = Hustle_SShare_Model::new_instance();
 
 			$module->module_id   = $old_module->module_id;
 			$module->active      = $old_module->active;
@@ -509,7 +508,7 @@ class Hustle_Migration {
 	private function migrate_non_sshare_module( $old_module ) {
 
 		if ( ! $this->is_multisite || is_main_site( get_current_blog_id() ) ) {
-			$module = new Hustle_Module_Model( $old_module->module_id );
+			$module = Hustle_Module_Model::new_instance( $old_module->module_id );
 
 			// Modules with 'test mode' enabled should be drafts.
 			if ( $this->is_true( $old_module->test_mode ) ) {
@@ -524,7 +523,7 @@ class Hustle_Migration {
 
 			// The tables in multisite are no longer shared between the sites of the network.
 			// Instead, each site has its own tables, so they're empty and we should move the content there.
-			$module = new Hustle_Module_Model();
+			$module = Hustle_Module_Model::new_instance();
 
 			// Modules with 'test mode' enabled should be drafts.
 			$module->active = ! $this->is_true( $old_module->test_mode ) ? $old_module->active : '0';
@@ -595,7 +594,6 @@ class Hustle_Migration {
 		);
 
 		$module->update_module( $data );
-
 	}
 
 	/**
@@ -1269,7 +1267,6 @@ class Hustle_Migration {
 		}
 
 		return $custom_css;
-
 	}
 
 	/**
@@ -1397,7 +1394,7 @@ class Hustle_Migration {
 
 		foreach ( $metas as $meta ) {
 
-			$migrated_rows++;
+			++$migrated_rows;
 
 			// Store the new views, conversions, and subscriptions.
 			if ( false !== stripos( $meta->meta_key, 'view' ) ) {
@@ -1432,7 +1429,6 @@ class Hustle_Migration {
 		);
 
 		wp_send_json_success( $response );
-
 	}
 
 	/**
@@ -1536,18 +1532,14 @@ class Hustle_Migration {
 
 		if ( isset( $old_data['module_type'] ) ) {
 			$module_type = $old_data['module_type'];
-		} else {
+		} elseif ( false !== stripos( $old_view->meta_key, 'popup' ) ) {
 			// Conversions didn't store the module_type. Try to get it without making a db call.
-			if ( false !== stripos( $old_view->meta_key, 'popup' ) ) {
-				$module_type = Hustle_Module_Model::POPUP_MODULE;
-
-			} elseif ( false !== stripos( $old_view->meta_key, 'slidein' ) ) {
-				$module_type = Hustle_Module_Model::SLIDEIN_MODULE;
-
-			} else {
-				// It can be either an embed or ssharing module. No way to know it unless retrieving it.
-				$module_type = $this->get_module_type_by_module_id( $module_id );
-			}
+			$module_type = Hustle_Module_Model::POPUP_MODULE;
+		} elseif ( false !== stripos( $old_view->meta_key, 'slidein' ) ) {
+			$module_type = Hustle_Module_Model::SLIDEIN_MODULE;
+		} else {
+			// It can be either an embed or ssharing module. No way to know it unless retrieving it.
+			$module_type = $this->get_module_type_by_module_id( $module_id );
 		}
 		$meta_key        = $old_view->meta_key;
 		$date_created    = date_i18n( 'Y-m-d H:i:s', $old_data['date'] );

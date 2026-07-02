@@ -68,11 +68,34 @@ class Opt_In_WPMUDEV_API {
 				'provider' => $provider,
 				'wpnonce'  => $this->get_nonce_value(),
 				'migrate'  => true === $migration ? 1 : 0,
-				'redirect' => site_url( '/' ),
+				'state'    => $this->prepare_state_param(),
 			)
 		);
 
-		return add_query_arg( $params, self::REDIRECT_URI );
+		return add_query_arg( $params, self::get_remote_api_url() );
+	}
+
+	/**
+	 * Prepare state param for OAuth requests.
+	 *
+	 * @return string
+	 */
+	protected function prepare_state_param() {
+		$state_data = $this->get_state_params();
+		return base64_encode( wp_json_encode( $state_data ) ); // phpcs:ignore
+	}
+
+	/**
+	 * Get state params
+	 *
+	 * @return array
+	 */
+	protected function get_state_params() {
+		return array(
+			'nonce'        => $this->get_nonce_value(),
+			'redirect_uri' => site_url( '/' ),
+			'hub_api_key'  => Opt_In_Utils::get_hub_api_key(),
+		);
 	}
 
 	/**
@@ -111,5 +134,17 @@ class Opt_In_WPMUDEV_API {
 
 		/* translators: Plugin name */
 		wp_die( wp_kses_post( $html ), esc_html( sprintf( __( '%s failure notice.', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ), 403 );
+	}
+
+	/**
+	 * Get WPMU DEV API URL
+	 *
+	 * @return string
+	 */
+	public static function get_remote_api_url() {
+		if ( defined( 'WPMUDEV_CUSTOM_API_SERVER' ) && ! empty( WPMUDEV_CUSTOM_API_SERVER ) ) {
+			return untrailingslashit( WPMUDEV_CUSTOM_API_SERVER ) . '/api/hustle/v1/provider';
+		}
+		return self::REDIRECT_URI;
 	}
 }

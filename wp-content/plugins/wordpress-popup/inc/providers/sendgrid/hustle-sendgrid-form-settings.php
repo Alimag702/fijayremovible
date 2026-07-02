@@ -203,7 +203,6 @@ if ( ! class_exists( 'Hustle_SendGrid_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

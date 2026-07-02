@@ -87,13 +87,11 @@ if ( ! class_exists( 'Hustle_Activecampaign_Form_Settings' ) ) :
 
 					return false;
 				}
-			} else {
-				if ( empty( $this->addon_form_settings['list_id'] ) ) {
+			} elseif ( empty( $this->addon_form_settings['list_id'] ) ) {
 					// preliminary value.
 					$this->addon_form_settings['list_id'] = 0;
 
 					return false;
-				}
 			}
 
 			return true;
@@ -404,7 +402,6 @@ if ( ! class_exists( 'Hustle_Activecampaign_Form_Settings' ) ) :
 
 			return $this->form_completion_options;
 		}
-
 	} // Class end.
 
 endif;

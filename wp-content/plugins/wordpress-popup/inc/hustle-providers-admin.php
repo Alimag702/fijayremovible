@@ -136,6 +136,47 @@ class Hustle_Providers_Admin extends Hustle_Admin_Page_Abstract {
 			$response['integration_id'] = $multi_id;
 		}
 
+		if ( 'reauth_provider' === $action ) {
+			$response['reauth'] = true;
+		}
+
+		if ( 'migrate_provider_data' === $action && ! empty( $provider ) ) {
+			$nonce = filter_input( INPUT_GET, 'nonce' );
+
+			if ( $nonce && wp_verify_nonce( $nonce, 'hustle_provider_migrate' ) ) {
+
+				$provider_instance = Hustle_Provider_Utils::get_provider_by_slug( $provider );
+
+				if (
+					$provider_instance instanceof Hustle_Provider_Abstract &&
+					method_exists( $provider_instance, 'process_data_migration' )
+				) {
+					$result = $provider_instance->process_data_migration();
+
+					if ( is_wp_error( $result ) ) {
+						$response['migration_notificaiton'] = array(
+							'action'  => 'notification',
+							'status'  => 'error',
+							'message' => $result->get_error_message(),
+						);
+					} else {
+						$response['migration_notificaiton'] = array(
+							'action'  => 'notification',
+							'status'  => 'success',
+							'slug'    => $provider,
+							'message' => /* translators: integration type */ sprintf( esc_html__( '%s integration successfully migrated to the new API version.', 'hustle' ), '<strong>' . esc_html( ucfirst( $provider ) ) . '</strong>' ),
+						);
+					}
+				}
+			} else {
+				return array(
+					'action'  => 'notification',
+					'status'  => 'error',
+					'message' => esc_html__( "You're not allowed to do this request.", 'hustle' ),
+				);
+			}
+		}
+
 		if ( 'external-redirect' === $action && true === $migration ) {
 
 			$nonce = filter_input( INPUT_GET, 'nonce' );
@@ -157,6 +198,9 @@ class Hustle_Providers_Admin extends Hustle_Admin_Page_Abstract {
 				if ( 'infusionsoft' === $slug ) {
 					$response['migration_notificaiton']['message'] = /* translators: integration type */ sprintf( esc_html__( '%s integration successfully migrated to use the REST API.', 'hustle' ), '<strong>' . esc_html__( 'Keap', 'hustle' ) . '</strong>' );
 				}
+				if ( 'convertkit' === $slug ) {
+					$response['migration_notificaiton']['message'] = /* translators: integration type */ sprintf( esc_html__( '%s integration successfully migrated to use the latest API version.', 'hustle' ), '<strong>' . esc_html__( 'ConvertKit', 'hustle' ) . '</strong>' );
+				}
 			} else {
 
 				$response = array(
@@ -169,5 +213,4 @@ class Hustle_Providers_Admin extends Hustle_Admin_Page_Abstract {
 
 		return $response;
 	}
-
 }

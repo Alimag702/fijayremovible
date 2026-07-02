@@ -137,7 +137,6 @@ class Hustle_Wp_Dashboard_Page {
 		$classes .= ' sui-hustle-dashboard';
 
 		return $classes;
-
 	}
 
 	/**
@@ -349,7 +348,7 @@ class Hustle_Wp_Dashboard_Page {
 	 */
 	private function get_default_analytics_stats( $days_ago ) {
 		$days = array();
-		$days_ago--;
+		--$days_ago;
 
 		for ( $i = $days_ago; 0 <= $i; $i-- ) {
 			$days[] = date( 'Y-m-d', time() - $i * DAY_IN_SECONDS ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
@@ -582,5 +581,4 @@ class Hustle_Wp_Dashboard_Page {
 			wp_cache_delete( $range, $cache_group );
 		}
 	}
-
 }

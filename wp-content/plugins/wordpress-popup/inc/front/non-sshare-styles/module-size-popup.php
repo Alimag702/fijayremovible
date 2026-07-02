@@ -70,16 +70,14 @@ if ( $is_popup ) {
 						$style     .= '}';
 					$style         .= '}';
 				}
-			} else {
+			} elseif ( '' !== $mobile_height ) {
 
-				if ( '' !== $mobile_height ) {
 					$style         .= $breakpoint . ' {';
 						$style     .= $prefix_desktop . $component . ( $is_optin ) ? ' .hustle-layout {' : ' .hustle-info {';
 							$style .= 'max-height: none;';
 							$style .= 'max-height: unset;';
 						$style     .= '}';
 					$style         .= '}';
-				}
 			}
 		} else {
 			$style     .= $prefix_mobile . $component . ' {';

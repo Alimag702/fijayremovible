@@ -68,12 +68,22 @@ class Hustle_Campaignmonitor_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstr
 			if ( isset( $submitted_data['last_name'] ) ) {
 				$name['last_name'] = $submitted_data['last_name'];
 			}
-			$name = implode( ' ', $name );
+
+			if ( empty( $name ) ) {
+
+				$name = '';
+				if ( isset( $submitted_data['name'] ) ) {
+					$name = $submitted_data['name'];
+				}
+			} else {
+				$name = implode( ' ', $name );
+			}
 
 			// Remove unwanted fields.
 			foreach ( $submitted_data as $key => $sub_d ) {
 
 				if ( 'email' === $key ||
+					'name' === $key ||
 					'first_name' === $key ||
 					'last_name' === $key || 'gdpr' === $key ) {
 					continue;
@@ -98,7 +108,7 @@ class Hustle_Campaignmonitor_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstr
 				}
 
 				$new_fields  = array_diff( array_keys( $_fields ), $api_fields );
-				$module      = new Hustle_Module_Model( $module_id );
+				$module      = Hustle_Module_Model::new_instance( $module_id );
 				$form_fields = $module->get_form_fields();
 
 				foreach ( $new_fields as $custom_field ) {
@@ -349,5 +359,4 @@ class Hustle_Campaignmonitor_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstr
 
 		return $type;
 	}
-
 }

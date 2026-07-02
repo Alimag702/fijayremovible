@@ -214,7 +214,6 @@ if ( ! class_exists( 'Hustle_MailerLite_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

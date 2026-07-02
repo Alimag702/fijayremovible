@@ -98,7 +98,7 @@ class Hustle_SendinBlue_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 					$api_fields = wp_list_pluck( $result->attributes, 'name' );
 				}
 
-				$module      = new Hustle_Module_Model( $module_id );
+				$module      = Hustle_Module_Model::new_instance( $module_id );
 				$_fields     = wp_list_pluck( $custom_fields, 'name' );
 				$new_fields  = array_udiff( $_fields, $api_fields, 'strcasecmp' );
 				$form_fields = $module->get_form_fields();
@@ -365,5 +365,4 @@ class Hustle_SendinBlue_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 		return $type;
 	}
-
 }

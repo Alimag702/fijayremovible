@@ -37,14 +37,14 @@ class Opt_In_Condition_On_Url extends Opt_In_Condition_Abstract {
 	 * Tests if the $test_url matches any pattern defined in the $list.
 	 *
 	 * @since  4.3.1
-	 * @param array $list List of URL-patterns to test against.
+	 * @param array $patterns List of URL-patterns to test against.
 	 * @return bool
 	 */
-	private function check_url( $list ) {
+	private function check_url( $patterns ) {
 		$response = false;
 
-		$list = array_map( 'trim', (array) $list );
-		if ( empty( $list ) ) {
+		$patterns = array_map( 'trim', (array) $patterns );
+		if ( empty( $patterns ) ) {
 			$response = true;
 
 		} else {
@@ -52,7 +52,7 @@ class Opt_In_Condition_On_Url extends Opt_In_Condition_Abstract {
 			$test_url             = strtok( $this->get_current_actual_url( true ), '#' );
 			$test_url_no_protocol = strtok( $this->get_current_actual_url(), '#' );
 
-			foreach ( $list as $match ) {
+			foreach ( $patterns as $match ) {
 				$match = strtok( $match, '#' );
 
 				// We're using '%' at the beggining of the string in visibility conditions to differentiate

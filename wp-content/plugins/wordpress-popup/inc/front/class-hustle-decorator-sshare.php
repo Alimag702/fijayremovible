@@ -57,14 +57,14 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 				if ( 'center' !== $display['float_desktop_position'] ) {
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positionx="%1$s"] { %1$s: %2$spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positionx="%1$s"] { %1$s: %2$spx !important }',
 						esc_html( $display['float_desktop_position'] ),
 						esc_attr( $desktop_x_offset )
 					);
 				}
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positiony="%1$s"] { %1$s: %2$spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-large[data-desktop="true"][data-desktop-positiony="%1$s"] { %1$s: %2$spx !important }',
 						esc_html( $display['float_desktop_position_y'] ),
 						esc_attr( $desktop_y_offset )
 					);
@@ -83,14 +83,14 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 				if ( 'center' !== $display['float_mobile_position'] ) {
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positionx="%1$s"] { %1$s: %2$spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positionx="%1$s"] { %1$s: %2$spx !important }',
 						esc_html( $display['float_mobile_position'] ),
 						esc_attr( $mobile_x_offset )
 					);
 				}
 
 					$styles .= sprintf(
-						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positiony="%1$s"] { %1$s: %2$spx }',
+						$prefix . '.hustle-float.hustle-displaying-in-small[data-mobiles="true"][data-mobiles-positiony="%1$s"] { %1$s: %2$spx !important }',
 						esc_html( $display['float_mobile_position_y'] ),
 						esc_attr( $mobile_y_offset )
 					);
@@ -153,40 +153,36 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 						$design['floating_counter_border']
 					);
 				}
-			} else {
+			} elseif ( (bool) $design['floating_customize_colors'] ) { // Icons custom color.
 
-				// Icons custom color.
-				if ( (bool) $design['floating_customize_colors'] ) {
+				// DESIGN: Default.
+				if ( 'flat' === $design['icon_style'] ) {
 
-					// DESIGN: Default.
-					if ( 'flat' === $design['icon_style'] ) {
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-float .hustle-social.hustle-social--default[data-custom="true"] ul.hustle-counter--none a[class*="hustle-share-"] { border-color: %s; }',
+						'transparent'
+					);
+				}
 
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-float .hustle-social.hustle-social--default[data-custom="true"] ul.hustle-counter--none a[class*="hustle-share-"] { border-color: %s; }',
-							'transparent'
-						);
-					}
+				// DESIGN: Rounded.
+				if ( 'rounded' === $design['icon_style'] ) {
 
-					// DESIGN: Rounded.
-					if ( 'rounded' === $design['icon_style'] ) {
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-float .hustle-social.hustle-social--rounded[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
+						$design['floating_icon_bg_color']
+					);
+				}
 
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-float .hustle-social.hustle-social--rounded[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
-							$design['floating_icon_bg_color']
-						);
-					}
+				// DESIGN: Squared.
+				if ( 'squared' === $design['icon_style'] ) {
 
-					// DESIGN: Squared.
-					if ( 'squared' === $design['icon_style'] ) {
-
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-float .hustle-social.hustle-social--squared[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
-							$design['floating_icon_bg_color']
-						);
-					}
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-float .hustle-social.hustle-social--squared[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
+						$design['floating_icon_bg_color']
+					);
 				}
 			}
 
@@ -309,40 +305,36 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 						$design['widget_counter_border']
 					);
 				}
-			} else {
+			} elseif ( (bool) $design['widget_customize_colors'] ) { // Icons custom color.
 
-				// Icons custom color.
-				if ( (bool) $design['widget_customize_colors'] ) {
+				// DESIGN: Default.
+				if ( 'flat' === $design['icon_style'] ) {
 
-					// DESIGN: Default.
-					if ( 'flat' === $design['icon_style'] ) {
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-inline .hustle-social.hustle-social--default[data-custom="true"] ul.hustle-counter--none a[class*="hustle-share-"] { border-color: %s; }',
+						'transparent'
+					);
+				}
 
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-inline .hustle-social.hustle-social--default[data-custom="true"] ul.hustle-counter--none a[class*="hustle-share-"] { border-color: %s; }',
-							'transparent'
-						);
-					}
+				// DESIGN: Rounded.
+				if ( 'rounded' === $design['icon_style'] ) {
 
-					// DESIGN: Rounded.
-					if ( 'rounded' === $design['icon_style'] ) {
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-inline .hustle-social.hustle-social--rounded[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
+						$design['widget_icon_bg_color']
+					);
+				}
 
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-inline .hustle-social.hustle-social--rounded[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
-							$design['widget_icon_bg_color']
-						);
-					}
+				// DESIGN: Squared.
+				if ( 'squared' === $design['icon_style'] ) {
 
-					// DESIGN: Squared.
-					if ( 'squared' === $design['icon_style'] ) {
-
-						// Element border.
-						$styles .= sprintf(
-							$prefix . '.hustle-inline .hustle-social.hustle-social--squared[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
-							$design['widget_icon_bg_color']
-						);
-					}
+					// Element border.
+					$styles .= sprintf(
+						$prefix . '.hustle-inline .hustle-social.hustle-social--squared[data-custom="true"] a[class*="hustle-share-"] { border-color: %s; }',
+						$design['widget_icon_bg_color']
+					);
 				}
 			}
 
@@ -395,6 +387,5 @@ class Hustle_Decorator_Sshare extends Hustle_Decorator_Abstract {
 		}
 
 		return $styles;
-
 	}
 }

@@ -169,6 +169,5 @@ class Hustle_Palettes_Helper {
 		}
 
 		return $content;
-
 	}
 }

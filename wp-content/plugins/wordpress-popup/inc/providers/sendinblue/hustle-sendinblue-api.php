@@ -68,7 +68,7 @@ if ( ! class_exists( 'Hustle_SendinBlue_Api' ) ) :
 		 */
 		private function __construct( $api_key ) {
 			if ( ! $api_key ) {
-				throw new Exception( __( 'Missing required API Credential', 'hustle' ) );
+				throw new Exception( esc_html__( 'Missing required API Credential', 'hustle' ) );
 			}
 			$this->api_key = $api_key;
 		}
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Hustle_SendinBlue_Api' ) ) :
 
 			if ( is_wp_error( $res ) || ! $res ) {
 				throw new Exception(
-					__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
+					esc_html__( 'Failed to process request, make sure your Webhook URL is correct and your server has internet connection.', 'hustle' )
 				);
 			}
 
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Hustle_SendinBlue_Api' ) ) :
 					}
 
 					/* translators: error message */
-					throw new Exception( sprintf( __( 'Failed to processing request : %s', 'hustle' ), $msg ) );
+					throw new Exception( sprintf( esc_html__( 'Failed to processing request : %s', 'hustle' ), esc_html( $msg ) ) );
 				}
 			}
 
@@ -407,5 +407,3 @@ if ( ! class_exists( 'Hustle_SendinBlue_Api' ) ) :
 		}
 	}
 endif;
-
-

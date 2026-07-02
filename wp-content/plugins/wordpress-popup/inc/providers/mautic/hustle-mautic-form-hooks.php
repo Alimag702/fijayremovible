@@ -91,7 +91,7 @@ class Hustle_Mautic_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 			);
 			$extra_data = array_filter( $extra_data );
 			if ( ! empty( $extra_data ) ) {
-				$module        = new Hustle_Module_Model( $module_id );
+				$module        = Hustle_Module_Model::new_instance( $module_id );
 				$form_fields   = $module->get_form_fields();
 				$custom_fields = array();
 				foreach ( $extra_data as $key => $value ) {
@@ -310,7 +310,6 @@ class Hustle_Mautic_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 		}
 
 		return true;
-
 	}
 
 	/**

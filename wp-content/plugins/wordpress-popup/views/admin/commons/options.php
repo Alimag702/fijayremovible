@@ -239,12 +239,10 @@ switch ( $type ) :
 				<?php
 				if ( is_array( $selected ) ) {
 					checked( in_array( $value, $selected, true ) );
-				} else {
-					if ( ! $is_template ) {
+				} elseif ( ! $is_template ) {
 						checked( $value, $selected );
-					} else {
-						echo '{{ _.checked( "' . esc_attr( $value ) . '", ' . esc_attr( $name ) . ' ) }}';
-					}
+				} else {
+					echo '{{ _.checked( "' . esc_attr( $value ) . '", ' . esc_attr( $name ) . ' ) }}';
 				}
 				?>
 			/>

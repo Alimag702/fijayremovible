@@ -19,7 +19,6 @@ if ( ! class_exists( 'Hustle_Multisite' ) ) :
 
 			// add action to clone modules to new site.
 			add_action( 'wp_insert_site', array( $this, 'clone_modules_to_new_site' ), 10, 1 );
-
 		}
 		/**
 		 * Clone modules to the new site by ids.
@@ -55,6 +54,5 @@ if ( ! class_exists( 'Hustle_Multisite' ) ) :
 				}
 			}
 		}
-
 	}
 endif;

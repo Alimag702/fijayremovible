@@ -32,5 +32,4 @@ class Hustle_Popup_Settings extends Hustle_Meta_Base_Settings {
 
 		return $settings;
 	}
-
 }

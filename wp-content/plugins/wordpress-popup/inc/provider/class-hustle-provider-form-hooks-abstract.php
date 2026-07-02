@@ -203,7 +203,7 @@ abstract class Hustle_Provider_Form_Hooks_Abstract {
 
 		// Set a common error message for when an already subscribed user can't subscribe again.
 		if ( self::ALREADY_SUBSCRIBED_ERROR === $error_message ) {
-			$module = new Hustle_Module_Model( $module_id );
+			$module = Hustle_Module_Model::new_instance( $module_id );
 			if ( ! is_wp_error( $module ) ) {
 				$integrations_settings = $module->get_integrations_settings()->to_array();
 			}
@@ -520,7 +520,6 @@ abstract class Hustle_Provider_Form_Hooks_Abstract {
 		$additional_fields = array_diff_key( $all_fields, $default_fields );
 
 		return $additional_fields;
-
 	}
 
 	/**
@@ -572,5 +571,4 @@ abstract class Hustle_Provider_Form_Hooks_Abstract {
 	protected function get_field_type( $type ) {
 		return 'text';
 	}
-
 }

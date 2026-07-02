@@ -10,6 +10,8 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 	 * Class Hustle_HubSpot_Api
 	 */
 	class Hustle_HubSpot_Api extends Opt_In_WPMUDEV_API {
+
+
 		const CLIENT_ID = '5253e533-2dd2-48fd-b102-b92b8f250d1b';
 		const BASE_URL  = 'https://app.hubspot.com/';
 		const API_URL   = 'https://api.hubapi.com/';
@@ -47,12 +49,21 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 		public $sending = false;
 
 		/**
-		 * Hustle_HubSpot_Api constructor.
+		 * Auth instance.
+		 *
+		 * @var Hustle_Hubspot_Base_Auth
 		 */
-		public function __construct() {
+		private $auth;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param Hustle_Hubspot_Base_Auth $auth Auth instance.
+		 */
+		public function __construct( $auth ) {
+			$this->auth = $auth;
 			// Init request callback listener.
 			add_action( 'init', array( $this, 'process_callback_request' ) );
-
 		}
 
 		/**
@@ -68,7 +79,7 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 				$referer      = get_option( self::REFERER );
 				$current_page = get_option( self::CURRENTPAGE );
 				if ( $code ) {
-					if ( $this->get_access_token( array( 'code' => $code ) ) ) {
+					if ( $this->get_access_token( $code ) ) {
 						$status = 'success';
 					}
 				}
@@ -102,68 +113,44 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 		}
 
 		/**
-		 * Compose redirect_uri to use on request argument.
-		 * The redirect uri must be constant and should not be change per request.
-		 *
-		 * @param array $args Args.
-		 * @return string
-		 */
-		private function get_redirect_uri( $args = array() ) {
-			$params = wp_parse_args(
-				$args,
-				array(
-					'action'    => 'authorize',
-					'provider'  => 'hubspot',
-					'client_id' => self::CLIENT_ID,
-				)
-			);
-
-			return add_query_arg( $params, self::REDIRECT_URI );
-		}
-
-		/**
 		 * Get access token
 		 *
 		 * @return string
 		 */
 		public function refresh_access_token() {
-			$args = array(
-				'grant_type'    => 'refresh_token',
-				'refresh_token' => $this->get_token( 'refresh_token' ),
+			$refresh_token = $this->get_token( 'refresh_token' );
+			if ( ! $refresh_token ) {
+				return '';
+			}
+
+			$token = $this->auth->refresh_access_token(
+				$refresh_token,
+				$this->prepare_state_param()
 			);
 
-			return $this->get_access_token( $args );
+			if ( ! is_null( $token ) ) {
+				$this->update_auth_token( $token );
+				return $token->get_refresh_token();
+			}
+
+			return '';
 		}
 
 		/**
 		 * Get or retrieve access token from HubSpot.
 		 *
-		 * @param array $args Args.
+		 * @param string $code Authorization code.
 		 * @return bool
 		 */
-		public function get_access_token( array $args ) {
-			$args = wp_parse_args(
-				$args,
-				array(
-					'redirect_uri' => rawurlencode( $this->get_redirect_uri() ),
-					'grant_type'   => 'authorization_code',
-					'state'        => 'state', // It's added just because state param is required on the final endpoint. It's unuseful here.
-					'action'       => 'get_access_token',
-				)
+		public function get_access_token( $code ) {
+			$token = $this->auth->get_access_token(
+				$code,
+				$this->prepare_state_param()
 			);
 
-			$url      = $this->get_redirect_uri( $args );
-			$res      = wp_remote_get( $url );
-			$body     = is_wp_error( $res ) || ! $res ? '' : wp_remote_retrieve_body( $res );
-			$response = $body ? json_decode( $body ) : '';
-
-			if ( ! empty( $response->refresh_token ) ) {
-				$token_data = get_object_vars( $response );
-
-				$token_data['expires_in'] += time();
-
+			if ( ! is_null( $token ) ) {
 				// Update auth token.
-				$this->update_auth_token( $token_data );
+				$this->update_auth_token( $token );
 
 				return true;
 			}
@@ -183,7 +170,7 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 		 *
 		 * @return mixed
 		 */
-		private function request( $endpoint, $method = 'GET', $query_args = array(), $access_token = '', $x_www = false, $json = false ) {
+		protected function request( $endpoint, $method = 'GET', $query_args = array(), $access_token = '', $x_www = false, $json = false ) {
 			// Avoid multiple call at once.
 			if ( $this->sending ) {
 				return false; }
@@ -191,10 +178,7 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 			$this->sending = true;
 			$url           = self::API_URL . $endpoint;
 
-			$args = array(
-				'client_id' => self::CLIENT_ID,
-				'scope'     => self::SCOPE,
-			);
+			$args = $this->get_client_data();
 			$args = wp_parse_args( $args, $query_args );
 
 			if ( ! $x_www && $json ) {
@@ -232,11 +216,25 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 					return true;
 				}
 
-				if ( $response['response']['code'] <= 204
-					|| isset( $body->status ) && 'error' === $body->status ) {
-					return $body; }
+				if (
+					$response['response']['code'] <= 204 ||
+					( isset( $body->status ) && 'error' === $body->status ) ) {
+					return $body;
+				}
 			}
 			return $response;
+		}
+
+		/**
+		 * Get client id and scope data.
+		 *
+		 * @return array
+		 */
+		protected function get_client_data() {
+			return array(
+				'client_id' => self::CLIENT_ID,
+				'scope'     => self::SCOPE,
+			);
 		}
 
 		/**
@@ -279,11 +277,17 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 		/**
 		 * Update token data.
 		 *
-		 * @param array $token Token.
+		 * @param Hustle_Auth_Token $token Token.
 		 * @return void
 		 */
-		public function update_auth_token( array $token ) {
-			update_option( $this->option_name, $token );
+		public function update_auth_token( $token ) {
+			$data = array(
+				'access_token'  => $token->get_access_token(),
+				'refresh_token' => $token->get_refresh_token(),
+				'scope'         => $token->get_scope(),
+				'expires_in'    => $token->get_expiration_time(),
+			);
+			update_option( $this->option_name, $data );
 		}
 
 		/**
@@ -345,15 +349,24 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 
 			$auth_url = add_query_arg(
 				array(
-					'client_id'    => self::CLIENT_ID,
+					'client_id'    => $this->auth->get_client_id(),
 					'scope'        => rawurlencode( self::SCOPE ),
 					'redirect_uri' => rawurlencode( $this->get_redirect_uri() ),
-					'state'        => rawurlencode( $this->get_nonce_value() . '|' . site_url( '/' ) ),
+					'state'        => $this->prepare_state_param(),
 				),
 				self::BASE_URL . 'oauth/authorize'
 			);
 
 			return $auth_url;
+		}
+
+		/**
+		 * Get the redirect URI.
+		 *
+		 * @return string
+		 */
+		public function get_redirect_uri() {
+			return $this->auth->get_redirect_uri();
 		}
 
 		/**
@@ -480,8 +493,16 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 
 			$difference = array_diff_key( $data, $filtered_data );
 			if ( ! empty( $difference ) ) {
-				$message = 'These fields are preventing your users from subscribing because they do not exist in your Hubspot account: ' . implode( ', ', array_keys( $difference ) );
-				throw new Exception( $message );
+				$invalid_fields = implode( ', ', array_keys( $difference ) );
+				throw new Exception(
+					esc_html(
+						sprintf(
+							/* translators: %s: List of invalid fields */
+							esc_html__( 'These fields are preventing your users from subscribing because they do not exist in your Hubspot account: %s', 'hustle' ),
+							esc_html( $invalid_fields )
+						)
+					)
+				);
 			}
 
 			foreach ( $data as $key => $value ) {
@@ -528,8 +549,16 @@ if ( ! class_exists( 'Hustle_HubSpot_Api' ) ) :
 
 			$difference = array_diff_key( $data, $filtered_data );
 			if ( ! empty( $difference ) ) {
-				$message = 'These fields are preventing your users from subscribing because they do not exist in your Hubspot account: ' . implode( ', ', array_keys( $difference ) );
-				throw new Exception( $message );
+				$invalid_fields = implode( ', ', array_keys( $difference ) );
+				throw new Exception(
+					esc_html(
+						sprintf(
+							/* translators: %s: List of invalid fields */
+							esc_html__( 'These fields are preventing your users from subscribing because they do not exist in your Hubspot account: %s', 'hustle' ),
+							esc_html( $invalid_fields )
+						)
+					)
+				);
 			}
 
 			foreach ( $data as $key => $value ) {

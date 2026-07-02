@@ -111,7 +111,16 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		if ( ! empty( $this->current_page ) && ( $this->current_page === $this->page || $this->current_page === $this->page_edit ) ) {
 			$this->on_listing_and_wizard_actions();
 		}
+	}
 
+	/**
+	 * Perform actions during the 'load-{page}' hook.
+	 *
+	 * @since 7.8.11
+	 */
+	public function current_page_loaded() {
+		Hustle_Background_Conversion_Log::get_instance()->process_task();
+		parent::current_page_loaded();
 	}
 
 	/**
@@ -654,7 +663,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		$wc_cats    = array();
 		$wc_tags    = array();
 
-		$module = new Hustle_Module_Model( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ) );
+		$module = Hustle_Module_Model::new_instance( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ) );
 		if ( ! is_wp_error( $module ) ) {
 			$settings = $module->get_visibility()->to_array();
 
@@ -977,6 +986,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			'validation_message'           => __( 'Please enter a valid {field}.', 'hustle' ),
 			'recaptcha_error_message'      => __( 'reCAPTCHA verification failed. Please try again.', 'hustle' ),
 			'recaptcha_validation_message' => __( 'reCAPTCHA verification failed. Please try again.', 'hustle' ),
+			'turnstile_validation_message' => __( 'Turnstile verification failed. Please try again.', 'hustle' ),
 			'gdpr_required_error_message'  => __( 'Please accept the terms and try again.', 'hustle' ),
 			/* translators: 1. opening 'a' tag, 2. closing 'a' tag */
 			'gdpr_message'                 => sprintf( __( 'I\'ve read and accept the %1$sterms & conditions%2$s', 'hustle' ), '<a href="#">', '</a>' ),
@@ -1004,6 +1014,8 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 				'timepicker_placeholder' => '',
 				'recaptcha_label'        => 'reCAPTCHA',
 				'recaptcha_placeholder'  => '',
+				'turnstile_label'        => __( 'Cloudflare Turnstile', 'hustle' ),
+				'turnstile_placeholder'  => '',
 				'gdpr_label'             => __( 'GDPR', 'hustle' ),
 			),
 			'recaptcha_badge_replacement'  => sprintf(

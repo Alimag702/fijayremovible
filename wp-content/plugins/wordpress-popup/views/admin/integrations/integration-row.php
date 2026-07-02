@@ -191,6 +191,7 @@ if ( true === $advertising ) {
 							data-module_id="<?php echo esc_attr( $module_id ); ?>"
 							data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
 							data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
+							data-is_multi_on_global="<?php echo intval( $provider['is_multi_on_global'] ); ?>"
 							data-action="<?php echo esc_attr( $providers_action ); ?>"
 							data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
 							<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>
@@ -234,6 +235,7 @@ if ( true === $advertising ) {
 					data-module_id="<?php echo esc_attr( $module_id ); ?>"
 					data-multi_id="<?php echo esc_attr( $multi_id ); ?>"
 					data-global_multi_id="<?php echo esc_attr( $global_multi_id ); ?>"
+					data-is_multi_on_global="<?php echo intval( $provider['is_multi_on_global'] ); ?>"
 					data-action="<?php echo esc_attr( $providers_action ); ?>"
 					data-nonce="<?php echo esc_attr( wp_create_nonce( 'hustle_provider_action' ) ); ?>">
 					<span class="<?php echo esc_attr( $icon_class_action ); ?>" aria-hidden="true"></span>

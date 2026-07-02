@@ -236,7 +236,6 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 		}
 
 		return $styles;
-
 	}
 
 	/**
@@ -322,7 +321,7 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 			$check_element = trim( $element );
 
 			if ( empty( $check_element ) ) {
-				$index++; // Still increment $index even if empty.
+				++$index; // Still increment $index even if empty.
 				continue;
 			}
 
@@ -341,7 +340,7 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 					'name' => $media_name,
 				);
 				$name                            = $a_name[1];
-				$media_names_key++;
+				++$media_names_key;
 
 			}
 
@@ -426,11 +425,13 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 					$next_element = isset( $elements[ $index + 2 ] ) ? trim( $elements[ $index + 2 ] ) : false;
 
 					// If inside @media block.
-					if ( ! empty( $next_element ) ) {
+					if ( false !== $next_element ) {
 						$media_names[ $prev_media_names_key ]['styles'] .= $prepared;
 					} else {
 						// If outside of @media block, add to output.
 						$output .= $prepared;
+						// reset $prepared for next styles.
+						$prepared = '';
 					}
 				} else {
 					$media_names[ $prev_media_names_key ]['styles'] = $prepared;
@@ -439,10 +440,12 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 
 				// If no @media, add styles to $output outside @media.
 				$output .= $prepared;
+				// reset $prepared for next styles.
+				$prepared = '';
 			}
 
 			// Increase index.
-			$index++;
+			++$index;
 		}
 
 		// if have @media, populate styles using $media_names.
@@ -460,6 +463,5 @@ class Hustle_Decorator_Non_Sshare extends Hustle_Decorator_Abstract {
 		}
 
 		return $as_array ? $css_array : $output;
-
 	}
 }

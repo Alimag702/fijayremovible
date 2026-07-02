@@ -84,7 +84,7 @@ class Hustle_Sendgrid_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 				} else {
 					$custom_fields = array();
-					$module        = new Hustle_Module_Model( $module_id );
+					$module        = Hustle_Module_Model::new_instance( $module_id );
 					$form_fields   = $module->get_form_fields();
 					foreach ( $extra_data as $key => $value ) {
 						$type = isset( $form_fields[ $key ] ) ? $this->get_field_type( $form_fields[ $key ]['type'] ) : 'text';
@@ -291,7 +291,6 @@ class Hustle_Sendgrid_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 		}
 
 		return true;
-
 	}
 
 	/**
@@ -348,5 +347,4 @@ class Hustle_Sendgrid_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 		return $type;
 	}
-
 }

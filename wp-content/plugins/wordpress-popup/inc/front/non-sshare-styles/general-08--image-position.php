@@ -255,101 +255,99 @@ if ( '' !== $image ) {
 				$style         .= '}';
 			}
 		}
-	} else {
+	} elseif ( 'cover' === $fitting || 'contain' === $fitting ) {
 
-		if ( 'cover' === $fitting || 'contain' === $fitting ) {
 			$style     .= $prefix_mobile . $component . ' {';
 				$style .= 'object-position: ' . $horizontal_value . ' ' . $vertical_value . ';';
 				$style .= '-o-object-position: ' . $horizontal_value . ' ' . $vertical_value . ';';
 			$style     .= '}';
 
-			if ( 'left' === $horizontal ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'left: 0;';
-					$style     .= '}';
-				$style         .= '}';
-			} elseif ( 'right' === $horizontal ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'right: 0;';
-					$style     .= '}';
-				$style         .= '}';
-			} elseif ( 'center' === $horizontal ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'left: 50%;';
-					$style     .= '}';
-				$style         .= '}';
+		if ( 'left' === $horizontal ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'left: 0;';
+				$style     .= '}';
+			$style         .= '}';
+		} elseif ( 'right' === $horizontal ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'right: 0;';
+				$style     .= '}';
+			$style         .= '}';
+		} elseif ( 'center' === $horizontal ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'left: 50%;';
+				$style     .= '}';
+			$style         .= '}';
 
-				if ( 'center' === $vertical ) {
-					$style         .= $support_ie . ' {';
-						$style     .= $prefix_mobile . $component . ' {';
-							$style .= 'transform: translate(-50%,-50%);';
-							$style .= '-ms-transform: translate(-50%,-50%);';
-							$style .= '-webkit-transform: translate(-50%,-50%);';
-						$style     .= '}';
-					$style         .= '}';
-				} else {
-					$style         .= $support_ie . ' {';
-						$style     .= $prefix_mobile . $component . ' {';
-							$style .= 'transform: translateX(-50%);';
-							$style .= '-ms-transform: translateX(-50%);';
-							$style .= '-webkit-transform: translateX(-50%);';
-						$style     .= '}';
-					$style         .= '}';
-				}
+			if ( 'center' === $vertical ) {
+				$style         .= $support_ie . ' {';
+					$style     .= $prefix_mobile . $component . ' {';
+						$style .= 'transform: translate(-50%,-50%);';
+						$style .= '-ms-transform: translate(-50%,-50%);';
+						$style .= '-webkit-transform: translate(-50%,-50%);';
+					$style     .= '}';
+				$style         .= '}';
 			} else {
 				$style         .= $support_ie . ' {';
 					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'left: ' . $vertical_value . ';';
+						$style .= 'transform: translateX(-50%);';
+						$style .= '-ms-transform: translateX(-50%);';
+						$style .= '-webkit-transform: translateX(-50%);';
 					$style     .= '}';
 				$style         .= '}';
 			}
+		} else {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'left: ' . $vertical_value . ';';
+				$style     .= '}';
+			$style         .= '}';
+		}
 
-			if ( 'top' === $vertical ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'top: 0;';
-					$style     .= '}';
-				$style         .= '}';
-			} elseif ( 'bottom' === $vertical ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'bottom: 0;';
-					$style     .= '}';
-				$style         .= '}';
-			} elseif ( 'center' === $vertical ) {
-				$style         .= $support_ie . ' {';
-					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'top: 50%;';
-					$style     .= '}';
-				$style         .= '}';
+		if ( 'top' === $vertical ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'top: 0;';
+				$style     .= '}';
+			$style         .= '}';
+		} elseif ( 'bottom' === $vertical ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'bottom: 0;';
+				$style     .= '}';
+			$style         .= '}';
+		} elseif ( 'center' === $vertical ) {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'top: 50%;';
+				$style     .= '}';
+			$style         .= '}';
 
-				if ( 'center' === $horizontal ) {
-					$style         .= $support_ie . ' {';
-						$style     .= $prefix_mobile . $component . ' {';
-							$style .= 'transform: translate(-50%,-50%);';
-							$style .= '-ms-transform: translate(-50%,-50%);';
-							$style .= '-webkit-transform: translate(-50%,-50%);';
-						$style     .= '}';
-					$style         .= '}';
-				} else {
-					$style         .= $support_ie . ' {';
-						$style     .= $prefix_mobile . $component . ' {';
-							$style .= 'transform: translateY(-50%);';
-							$style .= '-ms-transform: translateY(-50%);';
-							$style .= '-webkit-transform: translateY(-50%);';
-						$style     .= '}';
-					$style         .= '}';
-				}
+			if ( 'center' === $horizontal ) {
+				$style         .= $support_ie . ' {';
+					$style     .= $prefix_mobile . $component . ' {';
+						$style .= 'transform: translate(-50%,-50%);';
+						$style .= '-ms-transform: translate(-50%,-50%);';
+						$style .= '-webkit-transform: translate(-50%,-50%);';
+					$style     .= '}';
+				$style         .= '}';
 			} else {
 				$style         .= $support_ie . ' {';
 					$style     .= $prefix_mobile . $component . ' {';
-						$style .= 'top: ' . $vertical_value . ';';
+						$style .= 'transform: translateY(-50%);';
+						$style .= '-ms-transform: translateY(-50%);';
+						$style .= '-webkit-transform: translateY(-50%);';
 					$style     .= '}';
 				$style         .= '}';
 			}
+		} else {
+			$style         .= $support_ie . ' {';
+				$style     .= $prefix_mobile . $component . ' {';
+					$style .= 'top: ' . $vertical_value . ';';
+				$style     .= '}';
+			$style         .= '}';
 		}
 	}
 	if ( $is_rtl ) {

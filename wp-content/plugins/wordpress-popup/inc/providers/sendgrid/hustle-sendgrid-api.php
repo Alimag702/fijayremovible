@@ -61,7 +61,6 @@ if ( ! class_exists( 'Hustle_SendGrid_Api' ) ) :
 			);
 
 			return $args;
-
 		}
 
 		/**
@@ -288,7 +287,6 @@ if ( ! class_exists( 'Hustle_SendGrid_Api' ) ) :
 			}
 
 			return ( ! isset( $response_array['recipient_count'] ) || 0 !== $response_array['recipient_count'] );
-
 		}
 
 		/**
@@ -419,6 +417,5 @@ if ( ! class_exists( 'Hustle_SendGrid_Api' ) ) :
 				'last_name'  => '',
 			);
 		}
-
 	}
 endif;

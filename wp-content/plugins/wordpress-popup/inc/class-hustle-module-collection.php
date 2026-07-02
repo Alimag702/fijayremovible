@@ -373,7 +373,6 @@ class Hustle_Module_Collection {
 		}
 
 		return $modules;
-
 	}
 
 	/**
@@ -431,5 +430,4 @@ class Hustle_Module_Collection {
 		);
 		return $wpdb->get_col( $query ); // phpcs:ignore
 	}
-
 }

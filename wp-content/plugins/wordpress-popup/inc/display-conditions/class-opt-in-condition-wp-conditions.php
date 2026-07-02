@@ -45,5 +45,4 @@ class Opt_In_Condition_Wp_Conditions extends Opt_In_Condition_Abstract {
 		}
 		return false;
 	}
-
 }

@@ -212,7 +212,6 @@ if ( ! class_exists( 'Hustle_Mautic_Form_Settings' ) ) :
 
 			return $options;
 		}
-
 	} // Class end.
 
 endif;

@@ -49,7 +49,7 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 	 * Entries array.
 	 *
 	 * @since 4.0
-	 * @var string
+	 * @var array
 	 */
 	private $entries = array();
 
@@ -373,7 +373,7 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 
 		if ( $this->get_current_module_id() ) {
 
-			$module = new Hustle_Module_Model( $this->get_current_module_id() );
+			$module = Hustle_Module_Model::new_instance( $this->get_current_module_id() );
 
 			if ( is_wp_error( $module ) ) {
 				return null;
@@ -729,7 +729,7 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 			$iterator['addons'] = $addons;
 
 			$entries_iterator[] = $iterator;
-			$numerator_id --;
+			--$numerator_id;
 		}
 
 		return $entries_iterator;
@@ -1077,7 +1077,7 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 			return;
 		}
 
-		$module   = new Hustle_Module_Model( $id );
+		$module   = Hustle_Module_Model::new_instance( $id );
 		$filename = sprintf(
 			'hustle-%s-%s-%s-%s-emails.csv',
 			$module->module_type,
@@ -1089,7 +1089,7 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 
 		$entries = $this->get_entries_for_export();
 
-		$fp = fopen( 'php://memory', 'w' ); // phpcs:disable WordPress.WP.AlternativeFunctions.file_system_read_fopen -- disable phpcs because it writes memory
+		$fp = fopen( 'php://memory', 'w' ); // phpcs:ignore -- disable phpcs because it writes memory
 		foreach ( $entries as $entry ) {
 			$fields = self::get_formatted_csv_fields( $entry );
 			fputcsv( $fp, $fields );
@@ -1114,7 +1114,6 @@ class Hustle_Entries_Admin extends Hustle_Admin_Page_Abstract {
 		}
 
 		exit();
-
 	}
 
 	/**

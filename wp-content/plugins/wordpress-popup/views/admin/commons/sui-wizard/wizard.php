@@ -188,6 +188,7 @@ $docs_section = Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module_type ? 'c
 		'admin/commons/sui-wizard/dialogs/edit-field',
 		array(
 			'available_recaptchas' => Hustle_Settings_Admin::get_available_recaptcha_versions(),
+			'turnstile_available'  => Hustle_Settings_Admin::is_turnstile_available(),
 		)
 	);
 

@@ -65,12 +65,21 @@ do {
 	} else {
 		$u = $base_url;
 	}
-	if ( ! $short_pagination && ( $paged - 2 === $i && 1 !== $i || $paged + 2 === $i && $i !== $max ) ) {
+	if (
+		! $short_pagination &&
+		(
+			( $paged - 2 === $i && 1 !== $i ) ||
+			( $paged + 2 === $i && $i !== $max )
+		)
+	) {
 		printf(
 			'<li><a href="%s"> ... </a></li>',
 			esc_url( $u )
 		);
-	} elseif ( $short_pagination || in_array( $i, range( $paged - 2, $paged + 2 ), true ) ) {
+	} elseif (
+		$short_pagination ||
+		in_array( $i, range( $paged - 2, $paged + 2 ), true )
+	) {
 		printf(
 			'<li><a class="%s" href="%s">%d</a></li>',
 			esc_attr( $paged === $i ? 'sui-active' : '' ),
@@ -78,7 +87,7 @@ do {
 			esc_html( $i )
 		);
 	}
-	$i++;
+	++$i;
 } while ( $i <= $max );
 
 /**

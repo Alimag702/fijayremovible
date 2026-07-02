@@ -83,7 +83,7 @@ class Hustle_Activecampaign_Api {
 		if ( is_wp_error( $res ) || ! $res ) {
 			Opt_In_Utils::maybe_log( __METHOD__, $res );
 			throw new Exception(
-				__( 'Failed to process request, make sure your API URL and API KEY are correct and your server has internet connection.', 'hustle' )
+				esc_html__( 'Failed to process request, make sure your API URL and API KEY are correct and your server has internet connection.', 'hustle' )
 			);
 		}
 
@@ -96,7 +96,7 @@ class Hustle_Activecampaign_Api {
 				}
 
 				/* translators: error message */
-				throw new Exception( sprintf( __( 'Failed to processing request : %s', 'hustle' ), $msg ) );
+				throw new Exception( sprintf( esc_html__( 'Failed to processing request : %s', 'hustle' ), esc_html( $msg ) ) );
 			}
 		}
 
@@ -115,7 +115,7 @@ class Hustle_Activecampaign_Api {
 						$message = ' ' . $res['result_message'];
 					}
 					/* translators: error message */
-					throw new Exception( sprintf( __( 'Failed to get ActiveCampaign data. %s', 'hustle' ), $message ) );
+					throw new Exception( sprintf( esc_html__( 'Failed to get ActiveCampaign data. %s', 'hustle' ), esc_html( $message ) ) );
 				}
 			}
 		}
@@ -353,11 +353,8 @@ class Hustle_Activecampaign_Api {
 							return true;
 						}
 					}
-				} else {
-					// Or active form if checking on a form.
-					if ( $id === $res['formid'] ) {
-						return true;
-					}
+				} elseif ( $id === $res['formid'] ) { // Or active form if checking on a form.
+					return true;
 				}
 			}
 		} catch ( Exception $e ) {
@@ -371,11 +368,9 @@ class Hustle_Activecampaign_Api {
 	/**
 	 * Add custom filed
 	 *
-	 * @param array               $custom_fields Custom fields.
-	 * @param string              $list List.
-	 * @param Hustle_Module_Model $module Module.
+	 * @param array $custom_fields Custom fields.
 	 */
-	public function add_custom_fields( $custom_fields, $list, Hustle_Module_Model $module ) {
+	public function add_custom_fields( $custom_fields ) {
 		if ( ! empty( $custom_fields ) ) {
 			foreach ( $custom_fields as $key => $value ) {
 
@@ -386,9 +381,9 @@ class Hustle_Activecampaign_Api {
 					'p[0]'    => 0,
 					'req'     => 0,
 				);
-				$res        = $this->post( 'list_field_add', $field_data );
+
+				$this->post( 'list_field_add', $field_data );
 			}
 		}
 	}
-
 }

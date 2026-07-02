@@ -14,7 +14,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // Require helper file for uninstallation.
 if ( ! class_exists( 'Hustle_Deletion' ) ) {
-	require_once dirname( __FILE__ ) . '/inc/hustle-deletion.php';
+	require_once __DIR__ . '/inc/hustle-deletion.php';
 }
 
 // Get Hustle settings for the main site.

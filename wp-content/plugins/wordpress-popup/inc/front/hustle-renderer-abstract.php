@@ -69,7 +69,7 @@ abstract class Hustle_Renderer_Abstract {
 		if ( ! isset( self::$render_ids[ $id ] ) ) {
 			self::$render_ids[ $id ] = 0;
 		} else {
-			self::$render_ids[ $id ] ++;
+			++self::$render_ids[ $id ];
 		}
 	}
 
@@ -107,12 +107,7 @@ abstract class Hustle_Renderer_Abstract {
 			$display_module = $this->module->active && $this->module->get_visibility()->is_allowed_to_display( $module->module_type, $sub_type );
 		}
 		if ( $is_preview || $display_module ) {
-			if ( did_action( 'wp_head' ) ) {
-				add_action( 'wp_footer', array( $this, 'print_styles' ), 9999 );
-			} else {
-				add_action( 'wp_head', array( $this, 'print_styles' ) );
-			}
-
+			$this->enqueue_styles();
 			// Render form.
 			return $this->get_module( $sub_type, $custom_classes );
 		}
@@ -182,6 +177,28 @@ abstract class Hustle_Renderer_Abstract {
 	}
 
 	/**
+	 * Enqueue styles
+	 */
+	public function enqueue_styles() {
+		$disable_styles = apply_filters( 'hustle_disable_front_styles', false, $this->module, $this );
+
+		if ( ! $disable_styles ) {
+			$render_id = self::$render_ids[ $this->module->module_id ];
+
+			$style_id = 'hustle-module-' . esc_attr( $this->module->module_id ) . '-' . esc_attr( $render_id ) . '-styles';
+
+			if ( Hustle_Module_Inline_Style_Queue::has_inline_style( $style_id ) ) {
+				// Already enqueued.
+				return;
+			}
+
+			$style = $this->module->get_decorated()->get_module_styles( $this->module->module_type ); // it's already escaped.
+
+			Hustle_Module_Inline_Style_Queue::enqueue_inline_style( $style_id, $style );
+		}
+	}
+
+	/**
 	 * Print styles
 	 */
 	public function print_styles() {
@@ -200,7 +217,6 @@ abstract class Hustle_Renderer_Abstract {
 				$style // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 		}
-
 	}
 
 	/**
@@ -224,7 +240,7 @@ abstract class Hustle_Renderer_Abstract {
 		} else {
 			// Previewing a template.
 			// Only non-ssharing modules have templates.
-			$module = new Hustle_Module_Model();
+			$module = Hustle_Module_Model::new_instance();
 
 			$template_mode = $preview_data['template_mode'];
 			$template_name = $preview_data['template_name'];

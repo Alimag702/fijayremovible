@@ -113,13 +113,14 @@ class Hustle_Layout_Helper {
 	 * @since 4.2.0
 	 *
 	 * @param  array   $options Array with the options that define the markup to be returned.
-	 * @param  boolean $return Whether to echo or return the markup.
+	 * @param  boolean $return_value Whether to echo or return the markup.
 	 * @return string
 	 */
-	public function get_html_for_options( $options, $return = false ) {
-		$html = '';
+	public static function get_html_for_options( $options, $return_value = false ) {
+		$instance = new self();
+		$html     = '';
 		foreach ( $options as $key => $option ) {
-			$html .= $this->render( 'admin/commons/options', $option, $return );
+			$html .= $instance->render( 'admin/commons/options', $option, $return_value );
 		}
 		return $html;
 	}
@@ -132,39 +133,23 @@ class Hustle_Layout_Helper {
 	 *
 	 * @param string     $file Path to the view file.
 	 * @param array      $params Array whose keys will be variable names when within the view file.
-	 * @param bool|false $return Whether to echo or return the contents.
+	 * @param bool|false $return_value Whether to echo or return the contents.
 	 * @return string
 	 */
-	public function render( $file, $params = array(), $return = false ) {
+	public function render( $file, $params = array(), $return_value = false ) {
 
-		// Assign $file to a variable which is unlikely to be used by users of the method.
-		$opt_in_to_be_file_name = $file;
 		extract( $params, EXTR_OVERWRITE ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 
-		if ( $return ) {
+		if ( $return_value ) {
 			ob_start();
 		}
 
-		$template_file = trailingslashit( Opt_In::$plugin_path ) . Opt_In::VIEWS_FOLDER . '/' . $opt_in_to_be_file_name . '.php';
+		$template_file = $this->locate_file( $file );
 		if ( file_exists( $template_file ) ) {
 			include $template_file;
-
-		} else {
-			$template_path = Opt_In::$template_path . $opt_in_to_be_file_name . '.php';
-
-			// Render file located outside the plugin's folder. Useful when adding third-party integrations.
-			$external_path = $opt_in_to_be_file_name . '.php';
-
-			if ( file_exists( $template_path ) ) {
-				include $template_path;
-			} elseif ( file_exists( $external_path ) ) {
-				include $external_path;
-			} elseif ( file_exists( $opt_in_to_be_file_name ) ) {
-				include $opt_in_to_be_file_name;
-			}
 		}
 
-		if ( $return ) {
+		if ( $return_value ) {
 			return ob_get_clean();
 		}
 
@@ -173,6 +158,37 @@ class Hustle_Layout_Helper {
 				unset( $param );
 			}
 		}
+	}
+
+	/**
+	 * Locates a file and returns its path.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param string $layout Layout name, which is used to create the file name.
+	 * @return string
+	 */
+	public function locate_file( $layout ) {
+		// Assign $file to a variable which is unlikely to be used by users of the method.
+		$opt_in_to_be_file_name = $layout;
+
+		$template_file = trailingslashit( Opt_In::$plugin_path ) . Opt_In::VIEWS_FOLDER . '/' . $opt_in_to_be_file_name . '.php';
+
+		if ( file_exists( $template_file ) ) {
+			return apply_filters( 'hustle_locate_file', $template_file, $layout );
+		}
+
+		$template_path = Opt_In::$template_path . $opt_in_to_be_file_name . '.php';
+		if ( file_exists( $template_path ) ) {
+			return apply_filters( 'hustle_locate_file', $template_path, $layout );
+		}
+
+		$external_path = $opt_in_to_be_file_name . '.php';
+		if ( file_exists( $external_path ) ) {
+			return apply_filters( 'hustle_locate_file', $external_path, $layout );
+		}
+
+		return apply_filters( 'hustle_locate_file', $opt_in_to_be_file_name, $layout );
 	}
 
 	/**
@@ -367,6 +383,5 @@ class Hustle_Layout_Helper {
 				data-attribute="' . esc_attr( $name ) . '" />
 
 		</div>';
-
 	}
 }

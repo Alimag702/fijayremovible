@@ -102,6 +102,14 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		abstract protected function init();
 
 		/**
+		 * Get the template arguments for the page.
+		 *
+		 * @since 7.8.9
+		 * @return array
+		 */
+		abstract protected function get_page_template_args();
+
+		/**
 		 * Register the admin menus.
 		 *
 		 * @since 4.0.1
@@ -200,14 +208,6 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 				true
 			);
 
-			wp_enqueue_script(
-				'shared-tutorials',
-				Opt_In::$plugin_url . 'assets/js/shared-tutorials.min.js',
-				'',
-				HUSTLE_SUI_VERSION,
-				true
-			);
-
 			/**
 			 * Filters the variable to be localized into the js side of Hustle's admin pages.
 			 *
@@ -218,7 +218,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			wp_register_script(
 				'optin_admin_scripts',
 				Opt_In::$plugin_url . 'assets/js/admin.min.js',
-				array( 'jquery', 'backbone', 'jquery-effects-core' ),
+				array( 'jquery', 'backbone', 'jquery-effects-core', 'shared-ui' ),
 				Opt_In::VERSION,
 				true
 			);
@@ -250,6 +250,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			);
 
 			return array(
+				'ss_preview_nonce'     => wp_create_nonce( 'hustle-preview' ),
 				'dismiss_notice_nonce' => wp_create_nonce( 'hustle_dismiss_notification' ),
 				'urlParams'            => $url_params,
 				'module_page'          => array(
@@ -259,9 +260,6 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 					'social_sharing' => Hustle_Data::SOCIAL_SHARING_LISTING_PAGE,
 				),
 				'messages'             => array(
-					/* translators: Plugin name */
-					'hustleTutorials'             => esc_html( sprintf( __( '%s Tutorials', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ),
-					'tutorialsRemoved'            => $tutorials_removed,
 					'something_went_wrong'        => esc_html__( 'Something went wrong. Please try again', 'hustle' ), // everywhere.
 					'something_went_wrong_reload' => '<label class="wpmudev-label--notice"><span>' . esc_html__( 'Something went wrong. Please reload this page and try again.', 'hustle' ) . '</span></label>', // everywhere.
 					/* translators: "Aweber" between "strong" tags */
@@ -385,7 +383,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			$plugin = get_plugin_data( WP_PLUGIN_DIR . '/' . Opt_In::$plugin_base_file );
 
 			// Get module.
-			$module = new Hustle_Module_Model( $id );
+			$module = Hustle_Module_Model::new_instance( $id );
 			if ( is_wp_error( $module ) ) {
 				return;
 			}
@@ -525,12 +523,12 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 *
 		 * @since 4.3.1
 		 *
-		 * @param boolean|string $default Default value.
+		 * @param boolean|string $default_value Default value.
 		 * @return boolean|string
 		 */
-		protected function get_current_section( $default = false ) {
+		protected function get_current_section( $default_value = false ) {
 			$section = filter_input( INPUT_GET, 'section', FILTER_SANITIZE_SPECIAL_CHARS );
-			return empty( $section ) ? $default : $section;
+			return empty( $section ) ? $default_value : $section;
 		}
 
 		/**
@@ -538,9 +536,9 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 *
 		 * @since 4.2.0
 		 *
-		 * @param string|null $class Class to be added.
+		 * @param string|null $class_name Class to be added.
 		 */
-		protected function get_sui_summary_config( $class = null ) {
+		protected function get_sui_summary_config( $class_name = null ) {
 			$style     = '';
 			$image_url = apply_filters( 'wpmudev_branding_hero_image', null );
 			if ( ! empty( $image_url ) ) {
@@ -555,8 +553,8 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 					),
 				),
 			);
-			if ( ! empty( $class ) && is_string( $class ) ) {
-				$sui['summary']['classes'][] = $class;
+			if ( ! empty( $class_name ) && is_string( $class_name ) ) {
+				$sui['summary']['classes'][] = $class_name;
 			}
 			/**
 			 * Dash integration

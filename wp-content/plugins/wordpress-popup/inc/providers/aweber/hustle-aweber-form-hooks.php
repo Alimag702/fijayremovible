@@ -366,7 +366,6 @@ class Hustle_Aweber_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 		}
 
 		return true;
-
 	}
 
 	/**
@@ -390,5 +389,4 @@ class Hustle_Aweber_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 		}
 		return $this->subscriber[ md5( $data['email'] ) ];
 	}
-
 }

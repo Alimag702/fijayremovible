@@ -4,7 +4,7 @@ Description:  Child theme para modificaciones varias
 Author:       Alicia Martin Gonzalez		
 Author URI:   http://fijayremovible.compact
 Template:     neve
-Version:      1.0.0
+Version:      1.0.1
 License:      GNU General Public License v2 or later
 License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
@@ -27,4 +27,122 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 
 .user-registration-password-hint {
     color: #f9f9f9 !important;
+}
+
+/* Contact Form 7: fallback styles for the contact page form */
+.contact-line {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+}
+
+.contact-line > p {
+    margin: 0;
+    color: #1b0f95;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.contact-line label {
+    display: block;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.contact-line .wpcf7-form-control-wrap {
+    display: block;
+    margin: 5px 0 18px;
+}
+
+.contact-line input[type="text"],
+.contact-line input[type="email"],
+.contact-line input[type="tel"],
+.contact-line textarea {
+    width: 100%;
+    padding: 8px 5px 0 !important;
+    border: none;
+    border-bottom: 2px solid #1b0f95;
+    background: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    color: #1b0f95;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.contact-line input::placeholder,
+.contact-line textarea::placeholder {
+    color: #1b0f95;
+}
+
+.contact-line input:focus,
+.contact-line textarea:focus {
+    border-bottom-color: #1b0f95;
+}
+
+.contact-line textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.contact-line .btn-wrap {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.contact-line .btn-wrap p {
+    margin: 0;
+}
+
+.contact-line input[type="submit"] {
+    background: #1b0f95;
+    color: #fff;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 25px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.contact-line input[type="submit"]:hover {
+    background: #1b0f95;
+    transform: translateY(-2px);
+}
+
+@media screen and (max-width: 768px) {
+    .contact-line {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .contact-line > p,
+    .contact-line label,
+    .contact-line input[type="text"],
+    .contact-line input[type="email"],
+    .contact-line input[type="tel"],
+    .contact-line textarea {
+        font-size: 12px;
+    }
+
+    .contact-line textarea {
+        min-height: 40px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .contact-line {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .contact-line textarea {
+        min-height: 20px;
+    }
+
+    .contact-line input[type="submit"] {
+        padding: 15px 40px;
+        font-size: 12px;
+    }
 }

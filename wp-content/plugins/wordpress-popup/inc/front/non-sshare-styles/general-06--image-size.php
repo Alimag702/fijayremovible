@@ -53,13 +53,11 @@ if ( $is_optin ) {
 			$image_size = ( '' !== $design['feature_image_height'] ) ? $design['feature_image_height'] : '0';
 			$image_unit = $design['feature_image_height_unit'];
 			$image_size = $image_size . $image_unit;
-		} else {
+		} elseif ( $has_only_image ) {
 
-			if ( $has_only_image ) {
 				$image_size = ( '' !== $design['feature_image_height'] ) ? $design['feature_image_height'] : '0';
 				$image_unit = $design['feature_image_height_unit'];
 				$image_size = $image_size . $image_unit;
-			}
 		}
 	}
 
@@ -326,9 +324,8 @@ if ( '' !== $image ) {
 						$style     .= '}';
 					$style         .= '}';
 				}
-			} else {
+			} elseif ( $has_only_image ) {
 
-				if ( $has_only_image ) {
 					$style         .= $breakpoint . ' {';
 						$style     .= $prefix_desktop . ' .hustle-layout .hustle-layout-sidebar {';
 							$style .= 'width: 100%;';
@@ -337,29 +334,28 @@ if ( '' !== $image ) {
 							$style .= 'height: auto;';
 						$style     .= '}';
 					$style         .= '}';
-				} else {
-					$style         .= $breakpoint . ' {';
-						$style     .= $prefix_desktop . ' .hustle-layout .hustle-layout-sidebar {';
-							$style .= 'max-width: 50%;';
-							$style .= 'min-height: 0;';
-							$style .= 'display: flex;';
-							$style .= 'display: -ms-flexbox;';
-							$style .= 'display: -webkit-box;';
-							$style .= 'flex: 0 0 auto;';
-							$style .= '-ms-flex: 0 0 auto;';
-							$style .= '-webkit-box-flex: 0;';
-							$style .= 'flex-direction: column;';
-							$style .= '-ms-flex-direction: column;';
-							$style .= '-webkit-box-orient: vertical;';
-							$style .= '-webkit-box-direction: normal;';
-							$style .= 'justify-content: center;';
-							$style .= '-ms-flex-pack: center;';
-						$style     .= '}';
-						$style     .= $prefix_desktop . $container . ' {';
-							$style .= 'height: auto;';
-						$style     .= '}';
-					$style         .= '}';
-				}
+			} else {
+				$style         .= $breakpoint . ' {';
+					$style     .= $prefix_desktop . ' .hustle-layout .hustle-layout-sidebar {';
+						$style .= 'max-width: 50%;';
+						$style .= 'min-height: 0;';
+						$style .= 'display: flex;';
+						$style .= 'display: -ms-flexbox;';
+						$style .= 'display: -webkit-box;';
+						$style .= 'flex: 0 0 auto;';
+						$style .= '-ms-flex: 0 0 auto;';
+						$style .= '-webkit-box-flex: 0;';
+						$style .= 'flex-direction: column;';
+						$style .= '-ms-flex-direction: column;';
+						$style .= '-webkit-box-orient: vertical;';
+						$style .= '-webkit-box-direction: normal;';
+						$style .= 'justify-content: center;';
+						$style .= '-ms-flex-pack: center;';
+					$style     .= '}';
+					$style     .= $prefix_desktop . $container . ' {';
+						$style .= 'height: auto;';
+					$style     .= '}';
+				$style         .= '}';
 			}
 		}
 	} else {

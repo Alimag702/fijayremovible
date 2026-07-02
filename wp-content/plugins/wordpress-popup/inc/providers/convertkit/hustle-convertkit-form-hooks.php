@@ -14,6 +14,36 @@
 class Hustle_ConvertKit_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 	/**
+	 * Hustle_Provider_Form_Hooks_Abstract constructor.
+	 *
+	 * @param Hustle_Provider_Abstract $addon Provider's instance.
+	 * @param int                      $module_id ID of the module the form belogngs to.
+	 *
+	 * @since 7.8.11
+	 */
+	public function __construct( Hustle_Provider_Abstract $addon, $module_id ) {
+		$this->module_id = $module_id;
+
+		$this->form_settings_instance = $addon->get_provider_form_settings( $this->module_id );
+		$form_settings_values         = $this->form_settings_instance->get_form_settings_values();
+
+		if ( isset( $form_settings_values['selected_global_multi_id'] ) ) {
+			// Get the version of the addon for the selected global multi id.
+			$version = $addon->get_setting( 'version', '1.0', $form_settings_values['selected_global_multi_id'] );
+			if ( version_compare( $version, '2.0', '<' ) ) {
+				// Fallback to ConvertKit V1 for older versions.
+				// The plugin uses new ConvertKit V2 by default.
+				$addon = new Hustle_ConvertKit();
+				// get the form settings instance to be available throughout cycle.
+				$this->form_settings_instance = $addon->get_provider_form_settings( $this->module_id );
+			}
+		}
+
+		$this->addon    = $addon; // TODO: replace this by $this->provider in 4.0.1 and adapt all providers to this.
+		$this->provider = $addon;
+	}
+
+	/**
 	 * Add ConvertKit data to entry.
 	 *
 	 * @since 4.0
@@ -26,7 +56,7 @@ class Hustle_ConvertKit_Form_Hooks extends Hustle_Provider_Form_Hooks_Abstract {
 
 		$addon     = $this->addon;
 		$module_id = $this->module_id;
-		$module    = new Hustle_Module_Model( $module_id );
+		$module    = Hustle_Module_Model::new_instance( $module_id );
 		if ( is_wp_error( $module ) ) {
 			return;
 		}
