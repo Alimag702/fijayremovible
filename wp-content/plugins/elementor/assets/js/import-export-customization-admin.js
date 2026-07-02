@@ -80,7 +80,8 @@ var AppsEventTracking = exports.AppsEventTracking = /*#__PURE__*/function () {
   return (0, _createClass2.default)(AppsEventTracking, null, [{
     key: "dispatchEvent",
     value: function dispatchEvent(eventName, payload) {
-      return elementorCommon.eventsManager.dispatchEvent(eventName, payload);
+      var _window$elementorComm, _window$elementorComm2;
+      return (_window$elementorComm = window.elementorCommon) === null || _window$elementorComm === void 0 || (_window$elementorComm = _window$elementorComm.eventsManager) === null || _window$elementorComm === void 0 || (_window$elementorComm2 = _window$elementorComm.dispatchEvent) === null || _window$elementorComm2 === void 0 ? void 0 : _window$elementorComm2.call(_window$elementorComm, eventName, payload);
     }
   }, {
     key: "sendPageViewsWebsiteTemplates",
@@ -233,7 +234,7 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
     key: "revertKit",
     value: function () {
       var _revertKit = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var activeKitName, confirmed, referrerKitId, _yield$this$callRever, data, _t;
+        var activeKitName, confirmed, referrerKitId, returnTo, noAutomaticRedirect, _yield$this$callRever, data, _t;
         return _regenerator.default.wrap(function (_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -250,7 +251,9 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
             case 2:
               _context.prev = 2;
               referrerKitId = this.getReferrerKitId();
-              this.saveToCache(referrerKitId, activeKitName);
+              returnTo = this.getReturnTo();
+              noAutomaticRedirect = this.getNoAutomaticRedirect();
+              this.saveToCache(referrerKitId, activeKitName, returnTo, noAutomaticRedirect);
               _context.next = 3;
               return this.callRevertAPI();
             case 3:
@@ -393,6 +396,10 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
   }, {
     key: "showReferrerKitDialog",
     value: function showReferrerKitDialog(referrerKitId) {
+      var _this = this;
+      var _this$getDataFromCach2 = this.getDataFromCache(),
+        returnTo = _this$getDataFromCach2.returnTo,
+        noAutomaticRedirect = _this$getDataFromCach2.noAutomaticRedirect;
       elementorCommon.dialogsManager.createWidget('confirm', {
         id: RevertKitHandler.DIALOG_ID,
         headerMessage: this.createSuccessHeaderMessage(),
@@ -402,7 +409,7 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
           cancel: __('Close', 'elementor')
         },
         onConfirm: function onConfirm() {
-          location.href = elementorImportExport.appUrl + '/preview/' + referrerKitId;
+          location.href = _this.buildPreviewUrl(referrerKitId, returnTo, noAutomaticRedirect);
         },
         onCancel: function onCancel() {
           location.reload();
@@ -411,10 +418,23 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
       this.clearCache();
     }
   }, {
+    key: "buildPreviewUrl",
+    value: function buildPreviewUrl(referrerKitId, returnTo, noAutomaticRedirect) {
+      var baseUrl = elementorImportExport.appUrl + '/preview/' + referrerKitId;
+      var url = new URL(baseUrl);
+      if (returnTo) {
+        url.searchParams.append(RevertKitHandler.URL_PARAM_RETURN_TO, returnTo);
+      }
+      if (noAutomaticRedirect) {
+        url.searchParams.append(RevertKitHandler.URL_PARAM_NO_AUTOMATIC_REDIRECT, noAutomaticRedirect);
+      }
+      return url.toString();
+    }
+  }, {
     key: "maybeShowReferrerKitDialog",
     value: function maybeShowReferrerKitDialog() {
-      var _this$getDataFromCach2 = this.getDataFromCache(),
-        referrerKitId = _this$getDataFromCach2.referrerKitId;
+      var _this$getDataFromCach3 = this.getDataFromCache(),
+        referrerKitId = _this$getDataFromCach3.referrerKitId;
       if (undefined === referrerKitId) {
         return;
       }
@@ -463,11 +483,25 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
       return new URL(this.revertButton.href).searchParams.get(RevertKitHandler.URL_PARAM_REFERRER_KIT) || '';
     }
   }, {
+    key: "getReturnTo",
+    value: function getReturnTo() {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(RevertKitHandler.URL_PARAM_RETURN_TO) || '';
+    }
+  }, {
+    key: "getNoAutomaticRedirect",
+    value: function getNoAutomaticRedirect() {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(RevertKitHandler.URL_PARAM_NO_AUTOMATIC_REDIRECT) || '';
+    }
+  }, {
     key: "saveToCache",
-    value: function saveToCache(referrerKitId, activeKitName) {
+    value: function saveToCache(referrerKitId, activeKitName, returnTo, noAutomaticRedirect) {
       sessionStorage.setItem(RevertKitHandler.KIT_DATA_KEY, JSON.stringify({
         referrerKitId: referrerKitId || '',
-        activeKitName: activeKitName || ''
+        activeKitName: activeKitName || '',
+        returnTo: returnTo || '',
+        noAutomaticRedirect: noAutomaticRedirect || ''
       }));
     }
   }, {
@@ -496,6 +530,8 @@ var RevertKitHandler = exports.RevertKitHandler = /*#__PURE__*/function () {
 (0, _defineProperty2.default)(RevertKitHandler, "API_PATH", 'revert');
 (0, _defineProperty2.default)(RevertKitHandler, "DIALOG_ID", 'e-revert-kit-deleted-dialog');
 (0, _defineProperty2.default)(RevertKitHandler, "URL_PARAM_REFERRER_KIT", 'referrer_kit');
+(0, _defineProperty2.default)(RevertKitHandler, "URL_PARAM_RETURN_TO", 'return_to');
+(0, _defineProperty2.default)(RevertKitHandler, "URL_PARAM_NO_AUTOMATIC_REDIRECT", 'no_automatic_redirect');
 (0, _defineProperty2.default)(RevertKitHandler, "KIT_DATA_KEY", 'elementor-kit-data');
 (0, _defineProperty2.default)(RevertKitHandler, "NAME_SEPARATOR_PATTERN", /[-_]+/);
 
@@ -629,6 +665,53 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 var eventsConfig = {
+  appTypes: {
+    editor: 'editor',
+    wpAdmin: 'wpadmin',
+    wpDash: 'wpdash'
+  },
+  targetTypes: {
+    dropdownItem: 'dropdown_item',
+    button: 'button',
+    tab: 'tab',
+    toggle: 'toggle',
+    searchInput: 'search_input',
+    searchResult: 'search_result',
+    buttons: 'buttons',
+    searchWidget: 'search_widget',
+    wpDashAdminMenuItem: 'wpdash_admin_menu_item',
+    wpDashEditorMenu: 'wpdash_editor_menu',
+    wpDashSubMenuItem: 'wpdash_sub_menu_item'
+  },
+  interactionResults: {
+    actionSelected: 'action_selected',
+    navigate: 'navigate',
+    create: 'create',
+    sessionEnd: 'session_end',
+    tabChanged: 'tab_changed',
+    assetInserted: 'asset_inserted',
+    assetFavorite: 'asset_favorite',
+    aiGenerate: 'ai_generate',
+    resultsUpdated: 'results_updated',
+    noResults: 'no_results',
+    selected: 'selected',
+    promotionViewed: 'promotion_viewed',
+    upgradeNow: 'upgrade_now',
+    elementorSideMenuOpened: 'elementor_side_menu_opened',
+    editorSubMenuOpened: 'wpdash_editor_sub_menu_opened',
+    themeBuilderPromotionWindow: 'theme_builder_promotion_window'
+  },
+  targetNames: {
+    publishDropdown: {
+      saveDraft: 'save_draft',
+      saveAsTemplate: 'save_as_template',
+      viewPage: 'view_page',
+      copyAndShare: 'copy_and_share'
+    },
+    pageList: {
+      addNewPage: 'add_new_page'
+    }
+  },
   triggers: {
     click: 'Click',
     rightClick: 'Right Click',
@@ -638,11 +721,16 @@ var eventsConfig = {
     dropdownClick: 'Click Dropdown',
     editorLoaded: 'Editor Loaded',
     visible: 'Visible',
-    pageLoaded: 'Page Loaded'
+    pageLoaded: 'Page Loaded',
+    typing: 'Typing',
+    tabSelect: 'Tab Select',
+    insert: 'Insert',
+    hover: 'Hover'
   },
   locations: {
     widgetPanel: 'Widget Panel',
     topBar: 'Top Bar',
+    sidebar: 'Sidebar',
     elementorEditor: 'Elementor Editor',
     templatesLibrary: {
       library: 'Templates Library'
@@ -656,8 +744,14 @@ var eventsConfig = {
     variables: 'Variables Panel',
     variablesManager: 'Variables Manager',
     admin: 'WP admin',
+    wpDashAdmin: 'wpdash_admin',
     structurePanel: 'Structure Panel',
-    canvas: 'Canvas'
+    canvas: 'Canvas',
+    leftPanel: 'Left Panel',
+    elementorLibrary: 'Elementor Library',
+    components: {
+      instanceEditingPanel: 'Instance Editing Panel'
+    }
   },
   secondaryLocations: {
     layout: 'Layout Section',
@@ -732,7 +826,17 @@ var eventsConfig = {
       pluginWebsiteTemplatesTab: 'plugin_website_templates_tab'
     },
     componentsTab: 'Components Tab',
-    canvasElement: 'Canvas Element'
+    canvasElement: 'Canvas Element',
+    publishDropdown: 'Publish Dropdown',
+    pageListDropdown: 'Page List Dropdown',
+    emptyBox: 'Empty Box',
+    searchBar: 'Search Bar',
+    finderResults: 'Finder Results',
+    libraryTabs: 'Library Tabs',
+    assetCard: 'Asset Card',
+    wpDashElementorCoreMenu: 'elementor_editor_core_menu',
+    wpDashElementorCoreSubMenu: 'elementor_editor_core_sub_menu',
+    wpDashThemeBuilder: 'wpdash_core_sub_menu_theme_builder'
   },
   elements: {
     accordionSection: 'Accordion section',
@@ -783,6 +887,7 @@ var eventsConfig = {
     },
     // ChecklistSteps event names are generated dynamically, based on stepId and action type taken: title, action, done, undone, upgrade
     elementorEditor: {
+      editorLoaded: 'editor_loaded',
       checklist: {
         checklistHeaderClose: 'checklist_header_close_icon',
         checklistFirstPopup: 'checklist popup triggered'
@@ -799,14 +904,29 @@ var eventsConfig = {
       save: 'save_new_variable',
       openManager: 'open_variables_manager',
       saveChanges: 'save_variables_changes',
-      delete: 'delete_variable'
+      delete: 'delete_variable',
+      variableSyncToV3: 'variable_sync_to_v3'
+    },
+    design_system: {
+      importOpened: 'design_system_import_opened',
+      fileSelected: 'design_system_file_selected',
+      validationFailed: 'design_system_validation_failed',
+      conflictChoice: 'design_system_conflict_choice',
+      confirmed: 'design_system_import_confirmed',
+      imported: 'design_system_imported',
+      importFailed: 'design_system_import_failed'
     },
     components: {
       createClicked: 'component_create_clicked',
       createCancelled: 'component_creation_cancelled',
       created: 'component_created',
       instanceAdded: 'component_instance_added',
-      edited: 'component_edited'
+      edited: 'component_edited',
+      propertiesPanelOpened: 'component_properties_panel_opened',
+      propertiesGroupCreated: 'component_properties_group_created',
+      propertyExposed: 'component_property_exposed',
+      propertyRemoved: 'component_property_removed',
+      detached: 'component_detached'
     },
     global_classes: {
       classApplied: 'class_applied',
@@ -826,7 +946,33 @@ var eventsConfig = {
       classStyled: 'class_styled',
       classStateClicked: 'class_state_clicked',
       classUsageClicked: 'class_usage_clicked',
-      classDuplicate: 'class_duplicate'
+      classDuplicate: 'class_duplicate',
+      classSyncToV3PopupShown: 'class_sync_to_v3_popup_shown',
+      classSyncToV3: 'class_sync_to_v3',
+      classSyncToV3PopupClick: 'class_sync_to_v3_popup_click'
+    },
+    editorOne: {
+      topBarPublishDropdown: 'top_bar_publish_dropdown',
+      topBarPageList: 'top_bar_page_list',
+      siteSettingsSession: 'site_settings_session',
+      eLibraryNav: 'e_library_nav',
+      eLibraryInsert: 'e_library_insert',
+      eLibraryFavorite: 'e_library_favorite',
+      eLibraryGenerateAi: 'e_library_generate_ai',
+      finderSearchInput: 'finder_search_input',
+      finderResultSelect: 'finder_result_select',
+      canvasEmptyBoxAction: 'canvas_empty_box_action',
+      widgetPanelSearch: 'widget_panel_search',
+      wpDashElementorMenuClick: 'wpdash_elementor_menu_click',
+      wpDashEditorSubMenuHover: 'wpdash_editor_sub_menu_hover',
+      wpDashThemeBuilderClick: 'wpdash_theme_builder_click'
+    },
+    interactions: {
+      created: 'interactions_created'
+    },
+    promotions: {
+      viewPromotion: 'view_promotion',
+      upgradePromotionClick: 'upgrade_promotion_click'
     }
   }
 };

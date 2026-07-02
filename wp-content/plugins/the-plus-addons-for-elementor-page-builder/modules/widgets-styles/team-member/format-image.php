@@ -13,6 +13,9 @@ if ( 'repeater' === $selct_source ) {
 	$tsize = '';
 	if ( $img_id ) {
 		$featured_image = tp_get_image_rander( $img_id, $tsize );
+	} elseif ( ! empty( $tmImage['url'] ) ) {
+		$image_alt      = ! empty( $tmImage['alt'] ) ? $tmImage['alt'] : $tm_title;
+		$featured_image = '<img src="' . esc_url( $tmImage['url'] ) . '" alt="' . esc_attr( $image_alt ) . '">';
 	} else {
 		$featured_image = l_theplus_get_thumb_url();
 		$featured_image = '<img src="' . esc_url( $featured_image ) . '" alt="' . esc_attr( $tm_title ) . '">';

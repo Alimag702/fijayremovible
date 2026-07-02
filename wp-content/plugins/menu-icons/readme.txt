@@ -1,13 +1,13 @@
-=== Menu Icons by ThemeIsle ===
+=== Menu Icons by Themeisle – Add Icons to Navigation Menus ===
 Contributors: codeinwp, themeisle
-Tags: menu, nav-menu, icons, navigation
+Tags: menu icons, navigation menu, font awesome, dashicons, image icons
 Requires at least: 4.7
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Spice up your navigation menus with pretty icons, easily.
+Add icons to WordPress navigation menus easily — pick from Font Awesome, Dashicons, image icons & more. Style menu items with custom colors & sizes.
 
 
 == Description ==
@@ -220,7 +220,34 @@ add_filter( 'menu_icons_menu_settings', 'my_menu_icons_menu_settings', 10, 2 );
 = I can't select a custom image size from the *Image Size* dropdown =
 Read [this blog post](http://kucrut.org/add-custom-image-sizes-right-way/).
 
+= How to report a security issue? =
+ 
+Plugin security is a core priority for us. If you identify a potential vulnerability, we ask that you disclose it responsibly.
+Please follow the reporting protocols outlined on our [Security Page](https://themeisle.com/security/).
+
 == Changelog ==
+
+##### [Version 0.13.23](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.22...v0.13.23) (2026-04-23)
+
+- Fixed issue with SVG menu icons rendering too small
+- Fixed issue with vertical alignment not working on frontend
+
+
+
+
+##### [Version 0.13.22](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.21...v0.13.22) (2026-04-09)
+
+- Updated dependencies
+
+
+
+
+##### [Version 0.13.21](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.20...v0.13.21) (2026-02-03)
+
+- Enhanced security
+
+
+
 
 ##### [Version 0.13.20](https://github.com/codeinwp/wp-menu-icons/compare/v0.13.19...v0.13.20) (2025-12-15)
 

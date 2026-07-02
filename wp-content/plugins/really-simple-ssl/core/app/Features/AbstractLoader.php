@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace ReallySimplePlugins\RSS\Core\Features;
 
-use ReallySimplePlugins\RSS\Core\Bootstrap\App;
 use ReallySimplePlugins\RSS\Core\Managers\FeatureManager;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\EnvironmentConfig;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\RequestStorage;
 
 /**
  * Each Feature should have a {FeatureName}Loader class that extends this
@@ -18,11 +19,17 @@ use ReallySimplePlugins\RSS\Core\Managers\FeatureManager;
  */
 abstract class AbstractLoader
 {
-    protected App $app;
+	protected EnvironmentConfig $env;
+	protected RequestStorage $request;
 
-    public function __construct(App $app)
+
+    public function __construct(
+		EnvironmentConfig $environmentConfig,
+		RequestStorage $request
+    )
     {
-        $this->app = $app;
+		$this->env = $environmentConfig;
+		$this->request = $request;
     }
 
     /**
@@ -45,8 +52,8 @@ abstract class AbstractLoader
      */
     protected function userIsOnDashboard(): bool
     {
-        $pageVisitedByUser = $this->app->request->getString('page');
-        $dashboardUrl = $this->app->config->getString('env.plugin.dashboard_url');
+        $pageVisitedByUser = $this->request->getString('global.page');
+        $dashboardUrl = $this->env->getString('plugin.dashboard_url');
 
         $pluginPageQueryString = wp_parse_url($dashboardUrl, PHP_URL_QUERY);
         parse_str($pluginPageQueryString, $parsedQuery);
@@ -70,7 +77,7 @@ abstract class AbstractLoader
      */
     protected function requestIsRestRequest(): bool
     {
-        $pluginHttpNamespace = $this->app->config->getString('env.http.namespace');
+        $pluginHttpNamespace = $this->env->getString('http.namespace');
         $restUrlPrefix = trailingslashit(rest_get_url_prefix());
 
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -83,5 +90,4 @@ abstract class AbstractLoader
 
         return (strpos($currentRequestUri, $restUrlPrefix) !== false) || $isPlainPermalink;
     }
-
 }

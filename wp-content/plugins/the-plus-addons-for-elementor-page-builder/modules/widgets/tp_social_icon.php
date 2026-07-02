@@ -10,10 +10,15 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
+use ThePlusAddons\Elementor\ScrollAnimation\TP_Global_Scroll_Animation_Helper;
+
+if ( ! class_exists( '\ThePlusAddons\Elementor\ScrollAnimation\TP_Global_Scroll_Animation_Helper' ) ) {
+	include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-global-scroll-animation-helper.php';
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Social_Icon
  */
-class L_ThePlus_Social_Icon extends Widget_Base {
+class L_ThePlus_Social_Icon extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -33,13 +38,6 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 	public function get_name() {
 		return 'tp-social-icon';
 	}
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
 
 	/**
 	 * Get Widget Title.
@@ -58,7 +56,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-share-square-o theplus_backend_icon';
+		return 'theplus-i-social-icon tpae-editor-logo';
 	}
 
 	/**
@@ -78,18 +76,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'social', 'icon', 'social icon' );
-	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
+		return array( 'Tp Social Icon', 'Social Icons', 'Tooltip Social Icon', 'Animated Social Icon', 'Parallax Social Icon', 'Custom Social Links', 'Vertical Icon Layout', 'Horizontal Icon Layout' );
 	}
 
 	/**
@@ -101,37 +88,6 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 		return false;
 	}
 
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -148,20 +104,12 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="16804" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="16804">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/social-icons-for-elementor/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
-				),
-                'label_block'     => true,
-            )
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 16804,
+				'label_block' => true,
+			)
 		);
 		$this->add_control(
 			'styles',
@@ -205,6 +153,19 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				),
 			)
 		);
+		$this->add_control(
+			'repeater_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Select the social media platform you want to display', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+			)
+		);
 		$repeater = new \Elementor\Repeater();
 
 		$repeater->add_control(
@@ -212,7 +173,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Social Network Select', 'tpebl' ),
 				'type'    => Controls_Manager::SELECT,
-				'default' => 'image',
+				'default' => 'none',
 				'options' => array(
 					'none'                    => esc_html__( 'None', 'tpebl' ),
 					'fa-deviantart'           => esc_html__( 'Deviantart ', 'tpebl' ),
@@ -257,6 +218,21 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			)
 		);
 		$repeater->add_control(
+			'custom_icons_opt',
+			array(
+				'label'   => esc_html__( 'Icon Options', 'tpebl' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'icon',
+				'options' => array(
+					'icon'       => esc_html__( 'Font Icon', 'tpebl' ),
+					'custom-svg' => esc_html__( 'SVG Icon', 'tpebl' ),
+				),
+				'condition' => array(
+					'pt_plus_social_icons' => 'custom',
+				),
+			)
+		);
+		$repeater->add_control(
 			'pt_plus_social_icon_custom',
 			array(
 				'label'     => esc_html__( 'Icon', 'tpebl' ),
@@ -264,6 +240,22 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'default'   => 'fa fa-whatsapp',
 				'condition' => array(
 					'pt_plus_social_icons' => 'custom',
+					'custom_icons_opt'     => 'icon',
+				),
+			)
+		);
+		$repeater->add_control(
+			'select_custom_svg',
+			array(
+				'label'     => esc_html__( 'Choose Icon', 'tpebl' ),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => array(
+					'value'   => 'fas fa-star',
+					'library' => 'fa-solid',
+				),
+				'condition' => array(
+					'pt_plus_social_icons' => 'custom',
+					'custom_icons_opt'     => 'custom-svg',
 				),
 			)
 		);
@@ -279,6 +271,12 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'default'     => array(
 					'url' => '#',
 				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add the URL to your social profile or page.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
@@ -288,10 +286,16 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'label_block' => true,
 				'label'       => esc_html__( 'Title', 'tpebl' ),
 				'default'     => '',
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enter a custom title or label for the icon for accessibility or tooltip purposes.', 'tpebl' ),
+					)
+				),
 			)
 		);
-
 		$repeater->add_control(
 			'icon_color',
 			array(
@@ -311,6 +315,36 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'default'   => '#fff',
 				'selectors' => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}}:not(.style-12):not(.style-4):hover a,{{WRAPPER}} {{CURRENT_ITEM}}.style-12 a span,{{WRAPPER}} {{CURRENT_ITEM}}.style-4 a i.fa,{{WRAPPER}} {{CURRENT_ITEM}}.style-5:hover a i.fa,{{WRAPPER}} {{CURRENT_ITEM}}.style-14 a span' => 'color: {{VALUE}};',
+				),
+			)
+		);
+		$repeater->add_control(
+			'svg_fill_color',
+			array(
+				'label'     => esc_html__( 'Fill', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_social_list .social-loop-inner a > svg, {{WRAPPER}} .pt_plus_social_list .social-loop-inner a > svg > path' => 'fill: {{VALUE}} !important; ',
+				),
+				'condition' => array(
+					'pt_plus_social_icons'       => 'custom',
+					'custom_icons_opt'           => 'custom-svg',
+					'select_custom_svg[library]' => 'svg',
+				),
+			)
+		);
+		$repeater->add_control(
+			'svg_stroke_color',
+			array(
+				'label'     => esc_html__( 'Stroke', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_social_list .social-loop-inner a > svg, {{WRAPPER}} .pt_plus_social_list .social-loop-inner a > svg > path, {{WRAPPER}} .pt_plus_social_list .social-loop-inner a > svg > line' => 'stroke: {{VALUE}} !important;',
+				),
+				'condition' => array(
+					'pt_plus_social_icons'       => 'custom',
+					'custom_icons_opt'           => 'custom-svg',
+					'select_custom_svg[library]' => 'svg',
 				),
 			)
 		);
@@ -366,20 +400,32 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 		$repeater->add_control(
 			'loop_magic_scroll',
 			array(
-				'label'     => esc_html__( 'Magic Scroll', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Magic Scroll', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'default'   => 'no',
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to add smooth scrolling animation when the icon appears in view.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
 			'loop_magic_scroll_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'loop_magic_scroll' => array( 'yes' ),
 				),
@@ -388,22 +434,32 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 		$repeater->add_control(
 			'plus_tooltip',
 			array(
-				'label'       => esc_html__( 'Tooltip', 'tpebl' ),
+				'label'       => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Tooltip', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'        => Controls_Manager::SWITCHER,
-				'label_on'    => esc_html__( 'Yes', 'tpebl' ),
-				'label_off'   => esc_html__( 'No', 'tpebl' ),
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
 				'render_type' => 'template',
 				'separator'   => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Show a tooltip with the icon title when users hover over it.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
 			'plus_tooltip_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'plus_tooltip' => array( 'yes' ),
 				),
@@ -412,21 +468,31 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 		$repeater->add_control(
 			'plus_mouse_move_parallax',
 			array(
-				'label'     => esc_html__( 'Mouse Move Parallax', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Mouse Move Parallax', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Yes', 'tpebl' ),
-				'label_off' => esc_html__( 'No', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable subtle motion effects when the mouse moves over the icon.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
 			'plus_mouse_move_parallax_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'plus_mouse_move_parallax' => array( 'yes' ),
 				),
@@ -437,9 +503,15 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Continuous Animation', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Yes', 'tpebl' ),
-				'label_off' => esc_html__( 'No', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add a looping animation to make the icon more visually engaging.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
@@ -464,8 +536,8 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Hover Animation', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Yes', 'tpebl' ),
-				'label_off' => esc_html__( 'No', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'condition' => array(
 					'plus_continuous_animation' => 'yes',
 				),
@@ -530,7 +602,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'type'        => Controls_Manager::REPEATER,
 				'default'     => array(
 					array(
-						'pt_plus_social_icons' => '',
+						'pt_plus_social_icons' => 'none',
 					),
 				),
 				'fields'      => $repeater->get_controls(),
@@ -565,10 +637,16 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Vertical Layout', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this option to stack the social icons vertically instead of horizontally.', 'tpebl' ),
+					)
+				),
 				'condition' => array(
 					'styles!' => 'custom',
 				),
@@ -587,6 +665,31 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				'condition'  => array(
 					'styles'              => array( 'style-14', 'style-15' ),
 					'social_icon_verical' => 'yes',
+				),
+			)
+		);
+		$this->end_controls_section();
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/social-icons-for-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=exz4Ahc-KeA',
+					),
 				),
 			)
 		);
@@ -673,6 +776,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 					{{WRAPPER}} .pt_plus_social_list ul.social_list .style-14 a,
 					{{WRAPPER}} .pt_plus_social_list ul.social_list .style-15 a,
 					{{WRAPPER}} .pt_plus_social_list ul.social_list .custom a' => 'font-size: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .pt_plus_social_list ul.social_list a > svg' => 'height: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}};',
 				),
 
 			)
@@ -928,149 +1032,11 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 		$this->end_controls_tabs();
 		$this->end_controls_section();
 
-		$this->start_controls_section(
-			'section_animation_styling',
-			array(
-				'label' => esc_html__( 'On Scroll View Animation', 'tpebl' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
-		$this->add_control(
-			'animation_effects',
-			array(
-				'label'   => esc_html__( 'Choose Animation Effect', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'no-animation',
-				'options' => l_theplus_get_animation_options(),
-			)
-		);
-		$this->add_control(
-			'animation_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_duration_default',
-			array(
-				'label'     => esc_html__( 'Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animate_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'         => 'no-animation',
-					'animation_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_effects',
-			array(
-				'label'     => esc_html__( 'Out Animation Effect', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'no-animation',
-				'options'   => l_theplus_get_out_animation_options(),
-				'separator' => 'before',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Out Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration_default',
-			array(
-				'label'     => esc_html__( 'Out Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'             => 'no-animation',
-					'animation_out_effects!'         => 'no-animation',
-					'animation_out_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->end_controls_section();
+		$Plus_Listing_block        = 'Plus_Listing_block';
+		$tp_hide_columns_animation = true;
+		$tp_enable_global_scroll_animation = true;
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation.php';
 
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1082,6 +1048,7 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
+		$settings = TP_Global_Scroll_Animation_Helper::resolve_widget_settings( $settings );
 
 		$styles        = ! empty( $settings['styles'] ) ? $settings['styles'] : '';
 		$social_align  = $settings['social_align'];
@@ -1117,35 +1084,10 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 			}
 		}
 
-		$animation_effects = ! empty( $settings['animation_effects'] ) ? $settings['animation_effects'] : '';
-		$animation_delay   = ! empty( $settings['animation_delay']['size'] ) ? $settings['animation_delay']['size'] : 50;
-		$animate_duration  = ! empty( $settings['animate_duration']['size'] ) ? $settings['animate_duration']['size'] : 50;
+		$Plus_Listing_block = 'Plus_Listing_block';
+		$animated_columns   = '';
 
-		$ani_duration = ! empty( $settings['animation_duration_default'] ) ? $settings['animation_duration_default'] : '';
-		$out_effect   = ! empty( $settings['animation_out_effects'] ) ? $settings['animation_out_effects'] : '';
-		$out_delay    = ! empty( $settings['animation_out_delay']['size'] ) ? $settings['animation_out_delay']['size'] : 50;
-		$out_duration = ! empty( $settings['animation_out_duration_default'] ) ? $settings['animation_out_duration_default'] : '';
-		$out_speed    = ! empty( $settings['animation_out_duration']['size'] ) ? $settings['animation_out_duration']['size'] : 50;
-
-		if ( 'no-animation' === $animation_effects ) {
-			$animated_class = '';
-			$animation_attr = '';
-		} else {
-			$animate_offset  = '85%';
-			$animated_class  = 'animate-general';
-			$animation_attr  = ' data-animate-type="' . esc_attr( $animation_effects ) . '" data-animate-delay="' . esc_attr( $animation_delay ) . '"';
-			$animation_attr .= ' data-animate-offset="' . esc_attr( $animate_offset ) . '"';
-
-			if ( 'yes' === $ani_duration ) {
-				$animation_attr .= ' data-animate-duration="' . esc_attr( $animate_duration ) . '"';
-			}
-			if ( 'no-animation' !== $out_effect ) {
-				$animation_attr .= ' data-animate-out-type="' . esc_attr( $out_effect ) . '" data-animate-out-delay="' . esc_attr( $out_delay ) . '"';
-				if ( 'yes' === $out_duration ) {
-					$animation_attr .= ' data-animate-out-duration="' . esc_attr( $out_speed ) . '"';
-				}
-			}
-		}
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation-attr.php';
 
 		$social  = '<div class="pt_plus_social_list ' . esc_attr( $si_v_class ) . ' ' . esc_attr( $social_align ) . ' ' . esc_attr( $styles ) . ' ' . esc_attr( $animated_class ) . '" ' . $animation_attr . '>';
 		$social .= '<ul class="social_list ' . esc_attr( $social_animation ) . '">';
@@ -1158,16 +1100,34 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 				$id = wp_rand( 1000, 10000000 );
 
 				$pt_social_ic = ! empty( $network['pt_plus_social_icons'] ) ? $network['pt_plus_social_icons'] : '';
+
+				$custom_icons_opt = ! empty( $network['custom_icons_opt'] ) ? $network['custom_icons_opt'] : 'icon';
+
 				$pt_cust_icon = ! empty( $network['pt_plus_social_icon_custom'] ) ? $network['pt_plus_social_icon_custom'] : '';
 				$social_url   = ! empty( $network['social_url'] ) ? $network['social_url'] : '';
+				$select_svg   = ! empty( $network['select_custom_svg'] ) ? $network['select_custom_svg'] : '';
 
 				if ( ! empty( $pt_social_ic ) && ! empty( $social_url['url'] ) ) {
 
-					if ( 'custom' === $pt_social_ic && ! empty( $pt_cust_icon ) ) {
-						$icon = $pt_cust_icon;
-					} elseif ( ! empty( $pt_social_ic ) ) {
+					if( 'custom' === $pt_social_ic ) {
+						if( 'icon' === $custom_icons_opt && ! empty( $pt_cust_icon ) ) {
+							$icon = $pt_cust_icon;
+						} else if ( 'custom-svg' === $custom_icons_opt && ! empty( $select_svg ) ) {
+							ob_start();
+							\Elementor\Icons_Manager::render_icon( $select_svg, array( 'aria-hidden' => 'true' ) );
+							$icon = ob_get_contents();
+							ob_end_clean();
+						}
+					} else {
 						$icon = $pt_social_ic;
 					}
+
+
+					// if ( 'custom' === $pt_social_ic && ! empty( $pt_cust_icon ) ) {
+					// 	$icon = $pt_cust_icon;
+					// } elseif ( ! empty( $pt_social_ic ) ) {
+					// 	$icon = $pt_social_ic;
+					// }
 
 					if ( ! empty( $social_url['url'] ) ) {
 						$link_atts_url = 'href="' . esc_url( $social_url['url'] ) . '"';
@@ -1187,7 +1147,12 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 						$social_text = '<span class="' . esc_attr( $social_chaffle ) . '" data-lang="en">' . wp_kses_post( $soc_txt ) . '</span>';
 					}
 
-					$icon_html = '<i class="fa fab ' . esc_attr( $icon ) . '"></i>';
+					if ( 'custom' === $pt_social_ic && 'custom-svg' === $custom_icons_opt && ! empty( $select_svg ) ) {
+						$icon_html = $icon;
+						$icon = '';
+					} else {
+						$icon_html = '<i class="fa fab ' . esc_attr( $icon ) . '"></i>';
+					}
 
 					if ( 'style-6' === $styles ) {
 						$hover_style = '<i class="social-hover-style"></i>';
@@ -1214,11 +1179,11 @@ class L_ThePlus_Social_Icon extends Widget_Base {
 
 					$uid_social = uniqid( 'social' ) . $network['_id'];
 
-					$social .= '<li id="' . esc_attr( $uid_social ) . '" class="elementor-repeater-item-' . esc_attr( $network['_id'] ) . ' ' . esc_attr( $styles ) . '  social-' . esc_attr( $icon ) . ' social-' . esc_attr( $id ) . ' ' . esc_attr( $continuous_animation ) . '" ' . $this->get_render_attribute_string( '_tooltip' ) . '>';
+					$social .= '<li id="' . esc_attr( $uid_social ) . '" class="elementor-repeater-item-' . esc_attr( $network['_id'] ) . ' ' . esc_attr( $styles ) . ' social-' . esc_attr( $icon ) . ' social-' . esc_attr( $id ) . ' ' . esc_attr( $continuous_animation ) . '" ' . $this->get_render_attribute_string( '_tooltip' ) . '>';
 
-						$social .= '<div class="social-loop-inner ">';
-
-							$social .= '<a ' . $link_atts_url . ' ' . esc_attr( $link_atts_title ) . ' ' . esc_attr( $link_atts_target ) . '>' . $icon_html . $social_text . $hover_style . '</a>';
+						$social .= '<div class="social-loop-inner ' . esc_attr( $animated_columns ) . '">';
+							
+							$social .= '<a ' . $link_atts_url . ' ' . esc_attr( $link_atts_title ) . ' ' . esc_attr( $link_atts_target ) . '>' . $icon_html  . $social_text . $hover_style . '</a>';
 
 						$social .= '</div>';
 

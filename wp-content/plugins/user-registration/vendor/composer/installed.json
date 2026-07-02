@@ -148,17 +148,17 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v15.10.0",
-            "version_normalized": "15.10.0.0",
+            "version": "v19.4.1",
+            "version_normalized": "19.4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "3df1a19a33477af9ead8984dbd84e8f637c36199"
+                "reference": "095384404587d07de2ad1154c389c4051c5ed92f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/3df1a19a33477af9ead8984dbd84e8f637c36199",
-                "reference": "3df1a19a33477af9ead8984dbd84e8f637c36199",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/095384404587d07de2ad1154c389c4051c5ed92f",
+                "reference": "095384404587d07de2ad1154c389c4051c5ed92f",
                 "shasum": ""
             },
             "require": {
@@ -168,11 +168,11 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "3.5.0",
+                "friendsofphp/php-cs-fixer": "3.94.0",
                 "phpstan/phpstan": "^1.2",
                 "phpunit/phpunit": "^5.7 || ^9.0"
             },
-            "time": "2024-09-18T18:38:30+00:00",
+            "time": "2026-03-06T22:53:13+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -204,9 +204,51 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v15.10.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v19.4.1"
             },
             "install-path": "../stripe/stripe-php"
+        },
+        {
+            "name": "themegrill/themegrill-sdk",
+            "version": "1.0.4",
+            "version_normalized": "1.0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/themegrill/themegrill-sdk.git",
+                "reference": "2787bc7bcd0c5d6bf470c986682fd74b390d34c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/themegrill/themegrill-sdk/zipball/2787bc7bcd0c5d6bf470c986682fd74b390d34c3",
+                "reference": "2787bc7bcd0c5d6bf470c986682fd74b390d34c3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.24"
+            },
+            "require-dev": {
+                "yoast/phpunit-polyfills": "^4.0"
+            },
+            "time": "2026-06-12T10:51:17+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "themegrill",
+                    "email": "team@themegrill.com",
+                    "homepage": "https://themegrill.com"
+                }
+            ],
+            "description": "A lightweight SDK that provides common functionality and shared features for ThemeGrill themes and plugins.",
+            "support": {
+                "issues": "https://github.com/themegrill/themegrill-sdk/issues",
+                "source": "https://github.com/themegrill/themegrill-sdk/tree/v1.0.4"
+            },
+            "install-path": "../themegrill/themegrill-sdk"
         }
     ],
     "dev": false,

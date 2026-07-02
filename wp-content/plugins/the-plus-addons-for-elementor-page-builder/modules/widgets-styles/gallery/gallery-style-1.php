@@ -21,7 +21,7 @@ $full_image = wp_get_attachment_url( $image_id, 'full' );
 $bg_attr = '';
 if ( 'metro' === $layout ) {
 	if ( ! empty( $full_image ) ) {
-		$bg_attr = 'style="background:url(' . $full_image . ')"';
+		$bg_attr = 'style="background:url(' . esc_url( $full_image ) . ')"';
 	} else {
 		$bg_attr = l_theplus_loading_image_grid( $postid, 'background' );
 	}

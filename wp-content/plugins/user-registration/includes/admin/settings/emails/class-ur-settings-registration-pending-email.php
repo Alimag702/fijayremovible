@@ -38,12 +38,20 @@ if ( ! class_exists( 'UR_Settings_Registration_Pending_Email', false ) ) :
 		public $description;
 
 		/**
+		 * UR_Settings_Approval_Link_Email Receiver.
+		 *
+		 * @var string
+		 */
+		public $receiver;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'registration_pending_email';
-			$this->title       = __( 'Registration Pending Email', 'user-registration' );
-			$this->description = __( 'Email sent to the user notifying the registration is pending', 'user-registration' );
+			$this->title       = __( 'Account Status Changed: Pending Approval', 'user-registration' );
+			$this->description = __( 'Notifies the user that their existing registration status has been reverted to pending approval by an administrator.', 'user-registration' );
+			$this->receiver    = 'User';
 		}
 
 		/**
@@ -67,7 +75,7 @@ if ( ! class_exists( 'UR_Settings_Registration_Pending_Email', false ) ) :
 							'title'        => __( 'Registration Pending Email', 'user-registration' ),
 							'type'         => 'card',
 							'desc'         => '',
-							'back_link'    => ur_back_link( __( 'Return to emails', 'user-registration' ), admin_url( 'admin.php?page=user-registration-settings&tab=email' ) ),
+							'back_link'    => ur_back_link( __( 'Return to emails', 'user-registration' ), admin_url( 'admin.php?page=user-registration-settings&tab=email&section=to-user' ) ),
 							'preview_link' => ur_email_preview_link(
 								__( 'Preview', 'user-registration' ),
 								$this->id
@@ -87,8 +95,8 @@ if ( ! class_exists( 'UR_Settings_Registration_Pending_Email', false ) ) :
 									'desc'     => __( 'The email subject you want to customize.', 'user-registration' ),
 									'id'       => 'user_registration_registration_pending_email_subject',
 									'type'     => 'text',
-									'default'  => __( 'Sorry! Registration changed to pending on {{blog_info}}', 'user-registration' ),
-									'css'      => 'min-width: 350px;',
+									'default'  => __( 'Account Status Changed: Pending Approval on {{blog_info}}', 'user-registration' ),
+									'css'      => '',
 									'desc_tip' => true,
 								),
 
@@ -98,8 +106,11 @@ if ( ! class_exists( 'UR_Settings_Registration_Pending_Email', false ) ) :
 									'id'       => 'user_registration_registration_pending_email',
 									'type'     => 'tinymce',
 									'default'  => $this->ur_get_registration_pending_email(),
-									'css'      => 'min-width: 350px;',
+									'css'      => '',
 									'desc_tip' => true,
+									'show-ur-registration-form-button' => false,
+									'show-smart-tags-button' => true,
+									'show-reset-content-button' => true,
 								),
 							),
 						),
@@ -123,27 +134,37 @@ if ( ! class_exists( 'UR_Settings_Registration_Pending_Email', false ) ) :
 		public function ur_get_registration_pending_email() {
 
 			/**
+			 * Filter to overwrite the registration pending email.
+			 *
+			 * @param string Message content to overwrite the existing email content.
+			 */
+			$body_content = __(
+				'<p style="margin: 0 0 16px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+					Hi {{username}},
+				</p>
+				<p style="margin: 0 0 16px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+					Your registration on <a href="{{home_url}}" style="color: #4A90E2; text-decoration: none;">{{blog_info}}</a> is now marked as pending.
+				</p>
+				<p style="margin: 0 0 16px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+					We apologize for the inconvenience. You will be notified once your registration has been approved.
+				</p>
+				<p style="margin: 0 0 16px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+					Thank you for your patience!
+				</p>',
+				'user-registration'
+			);
+			$body_content = ur_wrap_email_body_content( $body_content );
+
+			if ( UR_PRO_ACTIVE && function_exists( 'ur_get_email_template_wrapper' ) ) {
+				$body_content = ur_get_email_template_wrapper( $body_content, false );
+			}
+
+			/**
 			 * Filter to modify the message content for registration pending email.
 			 *
-			 * @param string Message content for registration pending email to be overridden.
+			 * @param string $body_content Message content for registration pending email to be overridden.
 			 */
-			$message = apply_filters(
-				'user_registration_get_registration_pending_email',
-				sprintf(
-					__(
-						'Hi {{username}}, <br/>
-
-Your registration on <a href="{{home_url}}">{{blog_info}}</a> has been changed to pending. <br/>
-
-Sorry for the inconvenience. <br/>
-
-You will be notified after it is approved. <br/>
-
-Thank You!',
-						'user-registration'
-					)
-				)
-			);
+			$message = apply_filters( 'user_registration_get_registration_pending_email', $body_content );
 
 			return $message;
 		}

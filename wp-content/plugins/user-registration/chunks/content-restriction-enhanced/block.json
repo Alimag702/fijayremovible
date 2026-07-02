@@ -3,10 +3,13 @@
   "apiVersion": 3,
   "name": "user-registration/content-restriction-enhanced",
   "version": "1.0.0",
-  "title": "Content Restriction",
+  "title": "Content Restriction (Legacy)",
   "category": "user-registration",
-  "description": "The block restricts the content.",
-  "keywords": ["user registration content restriction", "content restriction"],
+  "description": "This block is no longer maintained, please use the new content restriction block from the block inserter. It will work as it is but please use the new block for better features.",
+  "keywords": [
+    "user registration content restriction",
+    "content restriction"
+  ],
   "textdomain": "user-registration",
   "example": {
     "attributes": {}
@@ -14,12 +17,27 @@
   "supports": {
     "className": false,
     "customClassName": false,
-    "reusable": false
+    "reusable": false,
+    "inserter": false
   },
   "attributes": {
-    "accessRole": {
+    "accessAllRoles": {
       "type": "string",
       "default": ""
+    },
+    "accessSpecificRoles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "accessMembershipRoles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
     },
     "accessControl": {
       "type": "string",
@@ -27,7 +45,15 @@
     },
     "content": {
       "type": "string",
-      "selector":"div"
+      "selector": "div"
+    },
+    "message": {
+      "type": "string",
+      "default": ""
+    },
+    "enableContentRestriction": {
+      "type": "boolean",
+      "default": false
     }
   },
   "editorScript": "user-registration-blocks-editor",

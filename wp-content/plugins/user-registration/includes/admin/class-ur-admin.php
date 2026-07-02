@@ -25,7 +25,9 @@ class UR_Admin {
 		add_action( 'init', array( $this, 'includes' ) );
 		add_action( 'init', array( $this, 'translation_migration' ) );
 		add_action( 'init', array( $this, 'run_migration_script' ) );
-		add_action( 'init', array( $this, 'run_membership_migration_script' ) );
+		if ( ur_check_module_activation( 'membership' ) ) {
+			add_action( 'init', array( $this, 'run_membership_migration_script' ) );
+		}
 		add_action( 'current_screen', array( $this, 'conditional_includes' ) );
 		add_action( 'admin_init', array( $this, 'prevent_admin_access' ), 10, 2 );
 		add_action( 'load-users.php', array( $this, 'live_user_read' ), 10, 2 );
@@ -39,6 +41,20 @@ class UR_Admin {
 		add_filter( 'display_post_states', array( $this, 'ur_add_post_state' ), 10, 2 );
 		add_action( 'user_registration_after_form_settings', array( $this, 'render_integration_section' ) );
 		add_action( 'user_registration_after_form_settings', array( $this, 'render_integration_List_section' ) );
+		add_action( 'init', array( $this, 'init_users_menu' ) );
+	}
+
+	/**
+	 * Initialize Users Menu.
+	 *
+	 * @return void
+	 */
+	public function init_users_menu() {
+		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_user_registration' ) ) {
+			return;
+		}
+
+		require_once UR_ABSPATH . 'includes/admin/settings/class-ur-members-menu.php';
 	}
 
 	/**
@@ -59,7 +75,6 @@ class UR_Admin {
 		}
 		update_option( 'user_registration_content_restriction_enable', true );
 		if ( ur_check_module_activation( 'payments' ) && ! get_option( 'global_paypal_setting_migration', false ) ) {
-			$logger->notice( '---------- Enable override global settings for paypal standard start. ----------', array( 'source' => 'migration-logger' ) );
 			$get_all_forms = ur_get_all_user_registration_form();
 			foreach ( $get_all_forms as $key => $form ) {
 				$is_paypal_setting_used = get_post_meta( $key, 'user_registration_enable_paypal_standard', false );
@@ -68,7 +83,7 @@ class UR_Admin {
 					add_post_meta( $key, 'user_registration_override_paypal_global_settings', true );
 				}
 			}
-			$logger->notice( '---------- Enable override global settings for paypal standard End. ----------', array( 'source' => 'migration-logger' ) );
+
 			add_option( 'global_paypal_setting_migration', true );
 		}
 
@@ -194,7 +209,7 @@ class UR_Admin {
 			}
 
 			$available_in = isset( $integration['available_in'] ) ? sanitize_text_field( wp_unslash( $integration['available_in'] ) ) : '';
-			echo '<div class="form-settings-sub-tab ' . esc_attr( $css_class ) . '" id="' . esc_attr( $integration['id'] ) . '-settings" data-title="' . esc_attr( $integration['title'] ) . '" data-integration-id="user-registration-' . esc_attr( $integration['id'] ) . '" data-video="' . esc_attr( $integration['video_id'] ) . '" data-available-in="' . esc_attr( $available_in ) . '"><h3 class="ur-integration-list">' . esc_html( $integration['title'] ) . '</h3>';
+			echo '<div class="form-settings-sub-tab ' . esc_attr( $css_class ) . '" id="' . esc_attr( $integration['id'] ) . '-settings" data-title="' . esc_attr( $integration['plugin_name'] ) . '" data-integration-id="user-registration-' . esc_attr( $integration['id'] ) . '" data-video="' . esc_attr( $integration['video_id'] ) . '" data-available-in="' . esc_attr( $available_in ) . '"><h3 class="ur-integration-list">' . esc_html( $integration['title'] ) . '</h3>';
 			do_action( 'user_registration_form_settings_integration', $integration['id'], $form_id );
 			echo '</div>';
 			echo '</div>';
@@ -274,10 +289,27 @@ class UR_Admin {
 	 */
 	public function ur_add_post_state( $post_states, $post ) {
 
-		$my_account_page_id = (int) get_option( 'user_registration_myaccount_page_id' );
+		$urm_installable_pages = array(
+			'user_registration_login_page_id'              => __( 'Login', 'user-registration' ),
+			'user_registration_lost_password_page_id'      => __( 'Lost Password', 'user-registration' ),
+			'user_registration_reset_password_page_id'     => __( 'Reset Password', 'user-registration' ),
+			'user_registration_registration_page_id'       => __( 'Registration', 'user-registration' ),
+			'user_registration_member_registration_page_id' => __( 'Membership Registration', 'user-registration' ),
+			'user_registration_thank_you_page_id'          => __( 'Membership Thank You', 'user-registration' ),
+			'user_registration_myaccount_page_id'          => __( 'My Account', 'user-registration' ),
+			'user_registration_membership_pricing_page_id' => __( 'Membership Pricing', 'user-registration' ),
+		);
 
-		if ( $post->ID === $my_account_page_id ) {
-			$post_states[] = __( 'UR My Account Page', 'user-registration' );
+		foreach ( $urm_installable_pages as $option_name => $title ) {
+			$page_id = (int) get_option( $option_name );
+			if ( $post->ID === $page_id ) {
+				$post_states[] = sprintf(
+					/* translators: 1: Page Title */
+					__( 'URM %s Page', 'user-registration' ),
+					$title
+				);
+				break;
+			}
 		}
 
 		return $post_states;
@@ -289,7 +321,7 @@ class UR_Admin {
 	public function includes() {
 		include_once __DIR__ . '/functions-ur-admin.php';
 
-		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_user_registration' ) ) {
+		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_user_registration' ) && ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
 		include_once __DIR__ . '/notifications/class-ur-admin-notices.php';
@@ -300,7 +332,7 @@ class UR_Admin {
 		include_once __DIR__ . '/class-ur-admin-user-list-manager.php';
 		include_once UR_ABSPATH . 'includes' . UR_DS . 'admin' . UR_DS . 'class-ur-admin-assets.php';
 		include_once __DIR__ . '/class-ur-admin-form-templates.php';
-		include_once __DIR__ . '/class-ur-admin-deactivation-feedback.php';
+		include_once __DIR__ . '/class-ur-sdk-deactivation-feedback.php';
 
 		// Setup/welcome.
 		if ( ! empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -322,7 +354,7 @@ class UR_Admin {
 	 * Include admin files conditionally.
 	 */
 	public function conditional_includes() {
-		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_user_registration' ) ) {
+		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_user_registration' ) && ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
 		$screen = get_current_screen();
@@ -398,24 +430,25 @@ class UR_Admin {
 		if ( isset( $current_screen->id ) && apply_filters( 'user_registration_display_admin_footer_text', in_array( $current_screen->id, $ur_pages, true ) ) ) {
 			// Change the footer text.
 			if ( ! get_option( 'user_registration_admin_footer_text_rated' ) ) {
-				$footer_text = wp_kses_post(
-					sprintf(
-					/* translators: 1: User Registration 2:: five stars */
-						__( 'If you like %1$s please leave us a %2$s rating. A huge thanks in advance!', 'user-registration' ),
-						sprintf( '<strong>%s</strong>', esc_html( 'User Registration' ) ),
-						'<a href="https://wordpress.org/support/plugin/user-registration/reviews?rate=5#new-post" rel="noreferrer noopener" target="_blank" class="ur-rating-link" data-rated="' . esc_attr__( 'Thank You!', 'user-registration' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
-					)
-				);
-				ur_enqueue_js(
-					"
-				jQuery( 'a.ur-rating-link' ).on('click', function() {
-						jQuery.post( '" . UR()->ajax_url() . "', { action: 'user_registration_rated' } );
-						jQuery( this ).parent().text( jQuery( this ).data( 'rated' ) );
-					});
-				"
-				);
+				// $footer_text = wp_kses_post(
+				// sprintf(
+				// * translators: 1: User Registration 2:: five stars */
+				// __( 'If you like %1$s please leave us a %2$s rating. A huge thanks in advance!', 'user-registration' ),
+				// sprintf( '<strong>%s</strong>', esc_html( 'User Registration' ) ),
+				// '<a href="https://wordpress.org/support/plugin/user-registration/reviews?rate=5#new-post" rel="noreferrer noopener" target="_blank" class="ur-rating-link" data-rated="' . esc_attr__( 'Thank You!', 'user-registration' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
+				// )
+				// );
+				// ur_enqueue_js(
+				// "
+				// jQuery( 'a.ur-rating-link' ).on('click', function() {
+				// jQuery.post( '" . UR()->ajax_url() . "', { action: 'user_registration_rated' } );
+				// jQuery( this ).parent().text( jQuery( this ).data( 'rated' ) );
+				// });
+				// "
+				// );
+				$footer_text = '';
 			} else {
-				$footer_text = esc_html__( 'Thank you for using User Registration.', 'user-registration' );
+				$footer_text = esc_html__( 'Thank you for using User Registration & Membership.', 'user-registration' );
 			}
 		}
 
@@ -440,6 +473,24 @@ class UR_Admin {
 
 		if ( empty( $data['user_registration_new_user_notice'] ) ) {
 			return $response;
+		}
+
+		if ( false === get_transient( 'urm_users_not_from_urm_forms' ) ) {
+			// Get users not registered via URM forms.
+			$urm_users_not_from_urm_forms = count(
+				get_users(
+					array(
+						'fields'     => 'ID',
+						'meta_query' => array(
+							array(
+								'key'     => 'ur_form_id',
+								'compare' => 'NOT EXISTS',
+							),
+						),
+					)
+				)
+			);
+			set_transient( 'urm_users_not_from_urm_forms', $urm_users_not_from_urm_forms, apply_filters( 'urm_non_urm_user_transient_expiration', MINUTE_IN_SECONDS * 5 ) );
 		}
 
 		$read_time = get_option( 'user_registration_users_listing_viewed' );
@@ -522,7 +573,7 @@ class UR_Admin {
 
 			if ( 'ur-template-refresh' === $action && ! empty( $templates ) ) {
 				if ( empty( $_GET['ur-template-nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['ur-template-nonce'] ) ), 'refresh' ) ) {
-					wp_die( esc_html_e( 'Could not verify nonce', 'user-registration' ) );
+					wp_die( esc_html__( 'Could not verify nonce', 'user-registration' ) );
 				}
 
 				foreach ( array( 'ur_pro_license_plan', 'ur_template_section_list' ) as $transient ) {

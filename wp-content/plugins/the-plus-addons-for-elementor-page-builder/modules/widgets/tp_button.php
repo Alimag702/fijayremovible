@@ -10,11 +10,16 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Box_Shadow;
+use ThePlusAddons\Elementor\ButtonStyle\TP_Global_Button_Style_Helper;
+
+if ( ! trait_exists( '\ThePlusAddons\Elementor\ButtonStyle\TP_Global_Button_Style_Helper' ) ) {
+	include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-global-button-style-helper.php';
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,16 +28,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Button
  */
-class L_ThePlus_Button extends Widget_Base {
-
-	public $tp_doc = L_THEPLUS_TPDOC;
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
+class L_ThePlus_Button extends Plus_Widget_Base {
+	use TP_Global_Button_Style_Helper;
 
 	/**
 	 * Get Widget Name.
@@ -58,7 +55,7 @@ class L_ThePlus_Button extends Widget_Base {
 	 * @since 1.0.0
 	 */
 	public function get_icon() {
-		return 'fa fa-link theplus_backend_icon';
+		return 'theplus-i-button tpae-editor-logo';
 	}
 
 	/**
@@ -76,22 +73,20 @@ class L_ThePlus_Button extends Widget_Base {
 	 * @since 1.0.0
 	 */
 	public function get_keywords() {
-		return array( 'Buttons', 'Button widget', 'Elementor buttons', ' Elementor button widget', 'Button elementor addon', 'Elementor plus addon buttons', 'Elementor plus buttons', 'Button', 'Button elementor element', 'Button elementor module', 'Elementor button module', 'Elementor button element', 'Button elementor extension', 'Elementor button extension', 'Button elementor plugin', 'Elementor button plugin' );
-	}
-
-	public function get_custom_help_url() {
-		$doc_url = $this->tp_help;
-
-		return esc_url( $doc_url );
+		return array( 'Tp Button', 'CTA Button', 'Hover-Text Button', 'Icon Button', 'Tooltip Button', 'Parallax Button', 'Continuous Animation Button', 'Shake Animation Button', 'Full-Width Button', 'Scroll-Animation Button' );
 	}
 
 	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 6.3.3
+	 * @since 6.4.13
 	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
+	public function is_dynamic_content(): bool {
+		return false;
+	}
+
+	protected function get_is_simple_button( $settings ) {
+		return ! empty( $settings['button_type_switch'] ) && in_array( $settings['button_type_switch'], array( 'basic' ), true );
 	}
 
 	/**
@@ -111,20 +106,52 @@ class L_ThePlus_Button extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'button_type_switch',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="16452" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="16452">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/free-elementor-buttons/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
+				'label'   => esc_html__( 'Button Type', 'tpebl' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'default' => 'basic',
+				'options' => array(
+					'basic'  => array(
+						'title' => esc_html__( 'Basic', 'tpebl' ),
+						'icon'  => 'theplus-i-button',
+					),
+					'global' => array(
+						'title' => esc_html__( 'Global', 'tpebl' ),
+						'icon'  => 'eicon-globe',
+					),
 				),
-                'label_block'     => true,
-            )
+				'toggle'  => false,
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text">%s</p>',
+						esc_html__( 'Choose Basic to customize styles from the Style tab, or select Global to use a predefined button style.', 'tpebl' ),
+					)
+				),
+			)
+		);
+		$this->add_control(
+			'button_global_style_preset',
+			array(
+				'label'     => esc_html__( 'Global Style', 'tpebl' ),
+				'type'      => Controls_Manager::SELECT,
+				'options'   => $this->get_global_button_style_options(),
+				'default'   => '',
+				'condition' => array(
+					'button_type_switch' => 'global',
+				),
+			)
+		);
+		$this->add_control(
+			'tpae_preset_controller',
+			array(
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 16452,
+				'label_block' => true,
+				'condition'   => array(
+					'button_type_switch' => 'basic',
+				),
+			)
 		);
 		$this->add_control(
 			'button_style',
@@ -156,6 +183,9 @@ class L_ThePlus_Button extends Widget_Base {
 					'style-21' => esc_html__( 'Style 21', 'tpebl' ),
 					'style-22' => esc_html__( 'Style 22', 'tpebl' ),
 					'style-24' => esc_html__( 'Style 23', 'tpebl' ),
+				),
+				'condition' => array(
+					'button_type_switch' => 'basic',
 				),
 			)
 		);
@@ -194,6 +224,7 @@ class L_ThePlus_Button extends Widget_Base {
 					'hover-bottom' => esc_html__( 'On Bottom', 'tpebl' ),
 				),
 				'condition' => array(
+					'button_type_switch' => 'basic',
 					'button_style' => array( 'style-11', 'style-13' ),
 				),
 			)
@@ -203,7 +234,7 @@ class L_ThePlus_Button extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
-				'ai' => false,
+				'ai'          => false,
 				'dynamic'     => array(
 					'active' => true,
 				),
@@ -222,22 +253,30 @@ class L_ThePlus_Button extends Widget_Base {
 				'default'     => esc_html__( 'Click Here', 'tpebl' ),
 				'placeholder' => esc_html__( 'Click Here', 'tpebl' ),
 				'condition'   => array(
-					'button_style' => array( 'style-24' ),
+					'button_type_switch' => 'basic',
+					'button_style' => 'style-24',
 				),
 			)
 		);
 		$this->add_control(
 			'button_hover_text',
 			array(
-				'label'       => wp_kses_post( "Hover Text <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "button-text-on-hover-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'       => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Hover Text', 'tpebl' ),
+						esc_url( $this->tp_doc . 'button-text-on-hover-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'        => Controls_Manager::TEXT,
-				'ai' => false,
+				'ai'          => false,
 				'dynamic'     => array(
 					'active' => true,
 				),
 				'default'     => esc_html__( 'Click Here', 'tpebl' ),
 				'placeholder' => esc_html__( 'Click Here', 'tpebl' ),
 				'condition'   => array(
+					'button_type_switch' => 'basic',
 					'button_style' => array( 'style-4', 'style-11', 'style-14' ),
 				),
 			)
@@ -260,26 +299,30 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'button_custom_attributes',
 			array(
-				'label'     => __( 'Add Custom Attributes', 'tpebl' ),
-				'type' => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off' => esc_html__( 'Default', 'tpebl' ),
-				'label_on' => esc_html__( 'Custom', 'tpebl' ),
+				'label'        => esc_html__( 'Add Custom Attributes', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
-				'default' => 'yes',
+				'default'      => 'yes',
+				'condition'    => array(
+					'button_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->start_popover();
 		$this->add_control(
 			'custom_attributes',
 			array(
-				'label'       => __( 'Custom Attributes', 'tpebl' ),
+				'label'       => esc_html__( 'Custom Attributes', 'tpebl' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'ai' => false,
+				'ai'          => false,
 				'dynamic'     => array(
 					'active' => true,
 				),
-				'placeholder' => __( 'key=value', 'tpebl' ),
+				'placeholder' => esc_html__( 'key=value', 'tpebl' ),
 				'condition'   => array(
+					'button_type_switch' => 'basic',
 					'button_custom_attributes' => 'yes',
 				),
 			)
@@ -289,10 +332,32 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->start_controls_section(
 			'section_button_icon_styling',
 			array(
-				'label'     => esc_html__( 'Icon Settings', 'tpebl' ),
-				'tab'       => Controls_Manager::TAB_CONTENT,
-				'condition' => array(
-					'button_style!' => array( 'style-3', 'style-6', 'style-7', 'style-9' ),
+				'label'      => esc_html__( 'Icon Settings', 'tpebl' ),
+				'tab'        => Controls_Manager::TAB_CONTENT,
+				'conditions' => array(
+					'relation' => 'or',
+					'terms'    => array(
+						array(
+							'name'     => 'button_type_switch',
+							'operator' => '==',
+							'value'    => 'global',
+						),
+						array(
+							'relation' => 'and',
+							'terms'    => array(
+								array(
+									'name'     => 'button_type_switch',
+									'operator' => '==',
+									'value'    => 'basic',
+								),
+								array(
+									'name'     => 'button_style',
+									'operator' => '!=',
+									'value'    => array( 'style-3', 'style-6', 'style-7', 'style-9' ),
+								),
+							),
+						),
+					),
 				),
 			)
 		);
@@ -307,7 +372,7 @@ class L_ThePlus_Button extends Widget_Base {
 					'hover-bottom' => esc_html__( 'On Bottom', 'tpebl' ),
 				),
 				'condition' => array(
-					'button_style' => array( 'style-17' ),
+					'button_style' => 'style-17',
 				),
 			)
 		);
@@ -318,6 +383,7 @@ class L_ThePlus_Button extends Widget_Base {
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'font_awesome',
 				'options'   => array(
+					'none'           => esc_html__( 'None', 'tpebl' ),
 					'font_awesome'   => esc_html__( 'Font Awesome', 'tpebl' ),
 					'font_awesome_5' => esc_html__( 'Font Awesome 5', 'tpebl' ),
 					'icon_mind'      => esc_html__( 'Icons Mind (Pro)', 'tpebl' ),
@@ -330,26 +396,18 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'font_awesome',
 			array(
-				'label' => esc_html__( 'Font Awesome', 'tpebl' ),
-				'type' => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off' => esc_html__( 'Default', 'tpebl' ),
-				'label_on' => esc_html__( 'Custom', 'tpebl' ),
+				'label'        => esc_html__( 'Font Awesome', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
-				'default' => 'yes',
-				'condition'   => array(
+				'default'      => 'yes',
+				'condition'    => array(
 					'button_icon_style' => 'font_awesome',
 				),
 			)
 		);
 		$this->start_popover();
-		$this->add_control(
-			'icon_fs_options',
-			array(
-				'label'     => esc_html__( 'Font Awesome', 'tpebl' ),
-				'type'      => Controls_Manager::HEADING,
-				'separator' => 'after',
-			)
-		);
 		$this->add_control(
 			'button_icon',
 			array(
@@ -367,26 +425,18 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'font_awesome_5',
 			array(
-				'label' => esc_html__( 'Font Awesome 5', 'tpebl' ),
-				'type' => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off' => esc_html__( 'Default', 'tpebl' ),
-				'label_on' => esc_html__( 'Custom', 'tpebl' ),
+				'label'        => esc_html__( 'Font Awesome 5', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
-				'default' => 'yes',
-				'condition'   => array(
+				'default'      => 'yes',
+				'condition'    => array(
 					'button_icon_style' => 'font_awesome_5',
 				),
 			)
 		);
 		$this->start_popover();
-		$this->add_control(
-			'icon_f5_options',
-			array(
-				'label'     => esc_html__( 'Font Awesome 5', 'tpebl' ),
-				'type'      => Controls_Manager::HEADING,
-				'separator' => 'after',
-			)
-		);
 		$this->add_control(
 			'button_icon_5',
 			array(
@@ -406,13 +456,37 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'iconmind_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
-					'button_icon_style' => 'icon_mind'
+					'button_icon_style' => 'icon_mind',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'icon_circl_size',
+			array(
+				'type'        => Controls_Manager::SLIDER,
+				'label'       => esc_html__( 'Circle Size', 'tpebl' ),
+				'size_units'  => array( 'px' ),
+				'range'       => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 200,
+						'step' => 1,
+					),
+				),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 50,
+				),
+				'render_type' => 'ui',
+				'selectors'   => array(
+					'{{WRAPPER}} .pt_plus_button.button-style-2 .button-link-wrap > i,{{WRAPPER}} .pt_plus_button.button-style-2 .btn-icon > i' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+				),
+				'condition'   => array(
+					'button_style'       => 'style-2',
+					'button_icon_style!' => 'none',
 				),
 			)
 		);
@@ -429,7 +503,7 @@ class L_ThePlus_Button extends Widget_Base {
 				),
 				'condition' => array(
 					'button_style!'      => array( 'style-3', 'style-6', 'style-7', 'style-9', 'style-17' ),
-					'button_icon_style!' => '',
+					'button_icon_style!' => array( '', 'none' ),
 				),
 			)
 		);
@@ -445,7 +519,7 @@ class L_ThePlus_Button extends Widget_Base {
 				),
 				'condition' => array(
 					'button_style!'      => array( 'style-3', 'style-6', 'style-7', 'style-9', 'style-17' ),
-					'button_icon_style!' => '',
+					'button_icon_style!' => array( '', 'none' ),
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .button-link-wrap .button-after' => 'margin-left: {{SIZE}}{{UNIT}};',
@@ -468,7 +542,7 @@ class L_ThePlus_Button extends Widget_Base {
 				'separator' => 'before',
 				'condition' => array(
 					'button_style!'      => array( 'style-3', 'style-6', 'style-7', 'style-9', 'style-17' ),
-					'button_icon_style!' => '',
+					'button_icon_style!' => array( '', 'none' ),
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .button-link-wrap .btn-icon' => 'font-size: {{SIZE}}{{UNIT}};',
@@ -482,6 +556,9 @@ class L_ThePlus_Button extends Widget_Base {
 			array(
 				'label' => esc_html__( 'Extra Option', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
+				'condition' => array(
+					'button_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_control(
@@ -489,26 +566,68 @@ class L_ThePlus_Button extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Button ID', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
-				'ai' => false,
+				'ai'          => false,
 				'default'     => '',
 				'title'       => esc_html__( 'Add your custom id WITHOUT the Pound key. e.g: my-id', 'tpebl' ),
 				'label_block' => false,
-			)
-		);
-		$this->add_control(
-			'btn_id_Note',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i>Please make sure the ID is unique and not used elsewhere on the page this form is displayed. This field allows <code>A-z 0-9</code> & underscore chars without spaces..</i></p>',
-				'label_block' => true,
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Please make sure the ID is unique and not used elsewhere on the page this form is displayed. This field allows A-z 0-9 & underscore chars without spaces..', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->end_controls_section();
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/button/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_typography_styling',
+			array(
+				'label' => esc_html__( 'Typography', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'button_type_switch' => 'global',
+				),
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'global_button_typography',
+				'selector' => '{{WRAPPER}} .pt_plus_button .button-link-wrap',
+			)
+		);
+		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'section_styling',
 			array(
 				'label' => esc_html__( 'Background Option', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'button_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -555,7 +674,7 @@ class L_ThePlus_Button extends Widget_Base {
 			'button_svg_icon_size',
 			array(
 				'type'        => Controls_Manager::SLIDER,
-				'label'       => esc_html__( 'Svg Icon Size', 'tpebl' ),
+				'label'       => esc_html__( 'SVG Icon Size', 'tpebl' ),
 				'size_units'  => array( 'px' ),
 				'range'       => array(
 					'px' => array(
@@ -604,6 +723,36 @@ class L_ThePlus_Button extends Widget_Base {
 					'{{WRAPPER}} .pt_plus_button.button-style-6 .button-link-wrap::before' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .pt_plus_button.button-style-7 .button-link-wrap span.btn-arrow' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .pt_plus_button.button-style-9 a.button-link-wrap .btn-arrow' => 'color: {{VALUE}};',
+				),
+			)
+		);
+		$this->add_control(
+			'icon_fill_color',
+			array(
+				'label'     => esc_html__( 'Fill', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap svg path' => 'fill: {{VALUE}} !important;; ',
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap svg' => 'fill: {{VALUE}} !important;',
+
+				),
+				'condition' => array(
+					'button_icon_style' => 'font_awesome_5',
+				),
+			)
+		);
+		$this->add_control(
+			'icon_stroke_color',
+			array(
+				'label'     => esc_html__( 'Stroke', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap svg path' => 'stroke: {{VALUE}} !important;; ',
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap svg' => 'stroke: {{VALUE}} !important;',
+
+				),
+				'condition' => array(
+					'button_icon_style' => 'font_awesome_5',
 				),
 			)
 		);
@@ -802,7 +951,7 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_text_hover_color',
 			array(
-				'label'     => esc_html__( 'Text Hover Color', 'tpebl' ),
+				'label'     => esc_html__( 'Text Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} .pt_plus_button .button-link-wrap:hover,{{WRAPPER}} .pt_plus_button.button-style-17 .button-link-wrap .btn-icon,{{WRAPPER}} .pt_plus_button.button-style-22 .button-link-wrap .btn-icon' => 'color: {{VALUE}};',
@@ -815,7 +964,7 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_icon_color_hover',
 			array(
-				'label'     => esc_html__( 'Icon Hover Color', 'tpebl' ),
+				'label'     => esc_html__( 'Icon Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} .pt_plus_button:hover .button-link-wrap:hover .btn-icon' => 'color: {{VALUE}};',
@@ -824,6 +973,36 @@ class L_ThePlus_Button extends Widget_Base {
 					'{{WRAPPER}} .pt_plus_button.button-style-7 .button-link-wrap:after:hover' => 'border-color: {{VALUE}};',
 					'{{WRAPPER}} .pt_plus_button.button-style-7 .button-link-wrap:hover span.btn-arrow' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .pt_plus_button.button-style-9 a.button-link-wrap:hover .btn-arrow' => 'color: {{VALUE}};',
+				),
+			)
+		);
+		$this->add_control(
+			'icon_fill_color_hover',
+			array(
+				'label'     => esc_html__( 'Fill', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap:hover svg path' => 'fill: {{VALUE}} !important;; ',
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap:hover svg' => 'fill: {{VALUE}} !important;',
+
+				),
+				'condition' => array(
+					'button_icon_style' => 'font_awesome_5',
+				),
+			)
+		);
+		$this->add_control(
+			'icon_stroke_color_hover',
+			array(
+				'label'     => esc_html__( 'Stroke', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap:hover svg path' => 'stroke: {{VALUE}} !important;; ',
+					'{{WRAPPER}} .pt_plus_button .button-link-wrap:hover svg' => 'stroke: {{VALUE}} !important;',
+
+				),
+				'condition' => array(
+					'button_icon_style' => 'font_awesome_5',
 				),
 			)
 		);
@@ -933,7 +1112,7 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'button_border_hover_color',
 			array(
-				'label'     => esc_html__( 'Hover Border Color', 'tpebl' ),
+				'label'     => esc_html__( 'Border Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#313131',
 				'selectors' => array(
@@ -963,7 +1142,7 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_responsive_control(
 			'button_hover_radius',
 			array(
-				'label'      => esc_html__( 'Hover Border Radius', 'tpebl' ),
+				'label'      => esc_html__( 'Border Radius', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -1004,7 +1183,7 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_bottom_border_hover_color',
 			array(
-				'label'     => esc_html__( 'Border Hover Color', 'tpebl' ),
+				'label'     => esc_html__( 'Border Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'condition' => array(
 					'button_style' => 'style-1',
@@ -1057,6 +1236,9 @@ class L_ThePlus_Button extends Widget_Base {
 			array(
 				'label' => esc_html__( 'Special', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'button_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_control(
@@ -1072,11 +1254,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_magic_scroll_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'btn_magic_scroll' => array( 'yes' ),
 				),
@@ -1085,7 +1264,13 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'plus_tooltip',
 			array(
-				'label'       => wp_kses_post( "Tooltip <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "tooltip-text-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'       => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Tooltip', 'tpebl' ),
+						esc_url( $this->tp_doc . 'tooltip-text-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'        => Controls_Manager::SWITCHER,
 				'label_on'    => esc_html__( 'Yes', 'tpebl' ),
 				'label_off'   => esc_html__( 'No', 'tpebl' ),
@@ -1096,11 +1281,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'plus_tooltip_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'plus_tooltip' => array( 'yes' ),
 				),
@@ -1118,11 +1300,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_special_effect_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'btn_special_effect' => array( 'yes' ),
 				),
@@ -1142,11 +1321,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'plus_mouse_move_parallax_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'plus_mouse_move_parallax' => array( 'yes' ),
 				),
@@ -1155,7 +1331,13 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'plus_continuous_animation',
 			array(
-				'label'       => wp_kses_post( "Continuous Animation <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "continuous-animation-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'       => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Continuous Animation', 'tpebl' ),
+						esc_url( $this->tp_doc . 'continuous-animation-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'        => Controls_Manager::SWITCHER,
 				'label_on'    => esc_html__( 'Yes', 'tpebl' ),
 				'label_off'   => esc_html__( 'No', 'tpebl' ),
@@ -1166,11 +1348,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'plus_continuous_animation_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'plus_continuous_animation' => array( 'yes' ),
 				),
@@ -1179,7 +1358,13 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'full_width_btn',
 			array(
-				'label'     => wp_kses_post( "Full-Width Button<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "full-width-button-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Full-Width Button', 'tpebl' ),
+						esc_url( $this->tp_doc . 'full-width-button-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'default'   => 'no',
 				'separator' => 'before',
@@ -1188,11 +1373,27 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'btn_hover_effects',
 			array(
-				'label'     => wp_kses_post( "Button Hover Effects <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "button-hover-animation-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Button Hover Effects', 'tpebl' ),
+						esc_url( $this->tp_doc . 'button-hover-animation-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => '',
 				'separator' => 'before',
 				'options'   => l_theplus_get_content_hover_effect_options(),
+			)
+		);
+		$this->add_control(
+			'btn_hover_effects_pro',
+			array(
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
+				'condition'   => array(
+					'btn_hover_effects' => array( 'grow', 'bounce-in', 'float', 'wobble_horizontal', 'wobble_vertical', 'float_shadow', 'grow_shadow', 'shadow_radial' ),
+				),
 			)
 		);
 		$this->add_control(
@@ -1209,7 +1410,13 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->add_control(
 			'shake_animate',
 			array(
-				'label'     => wp_kses_post( 'Interval Shake Animate <a class="tp-docs-link" href="' . esc_url( $this->tp_doc ) . 'interval-shake-animation-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Interval Shake Animate', 'tpebl' ),
+						esc_url( $this->tp_doc . 'interval-shake-animation-in-button-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'default'   => 'no',
 				'separator' => 'before',
@@ -1236,7 +1443,6 @@ class L_ThePlus_Button extends Widget_Base {
 		$this->end_controls_section();
 
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation.php';
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1251,7 +1457,10 @@ class L_ThePlus_Button extends Widget_Base {
 	 */
 	protected function render() {
 
-		$settings    = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
+
+		$is_simple_button = ! empty( $settings['button_type_switch'] ) ? $settings['button_type_switch'] : 'basic';
+		$button_global_style_preset = ! empty( $settings['button_global_style_preset'] ) ? $settings['button_global_style_preset'] : '';
 
 		/*--OnScroll View Animation ---*/
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation-attr.php';
@@ -1378,6 +1587,10 @@ class L_ThePlus_Button extends Widget_Base {
 		$uid        = uniqid( 'btn' );
 		$data_class = $uid;
 
+		if ( 'global' === $is_simple_button) {
+			$button_style = 'style-8';
+		}
+
 		$data_class .= ' button-' . $button_style . ' ';
 
 		if ( 'style-11' === $button_style || 'style-13' === $button_style ) {
@@ -1404,10 +1617,33 @@ class L_ThePlus_Button extends Widget_Base {
 		}
 
 		$uid_button = uniqid( 'button' );
+		$global_button_css = '';
 
-		$cst_att = '';
+		if ( 'global' === $is_simple_button && ! empty( $button_global_style_preset ) ) {
+			$global_button_css = $this->build_global_button_style_css( $button_global_style_preset, '#' . $uid_button );
+		}
+
+		$safe_custom_attrs = '';
 		if ( 'yes' === $button_custom_attributes && ! empty( $custom_attributes ) ) {
-			$cst_att = $custom_attributes;
+			$blocked_attrs = array( 'style', 'class', 'id', 'href', 'src', 'action', 'formaction', 'srcdoc', 'data' );
+			$pairs         = explode( "\n", $custom_attributes );
+
+			foreach ( $pairs as $pair ) {
+				$pair = trim( $pair );
+				if ( empty( $pair ) ) {
+					continue;
+				}
+
+				$kv  = explode( '|', $pair, 2 );
+				$key = sanitize_key( trim( $kv[0] ) );
+				$val = isset( $kv[1] ) ? esc_attr( trim( $kv[1] ) ) : '';
+
+				if ( empty( $key ) || preg_match( '/^on/i', $key ) || in_array( $key, $blocked_attrs, true ) ) {
+					continue;
+				}
+
+				$safe_custom_attrs .= ' ' . $key . '="' . $val . '"';
+			}
 		}
 
 		$the_button = '<div class="pt-plus-button-wrapper  ' . esc_attr( $button_align ) . ' ">';
@@ -1420,7 +1656,7 @@ class L_ThePlus_Button extends Widget_Base {
 
 						$the_button .= '<div class="animted-content-inner ' . esc_attr( $continuous_animation ) . '">';
 
-							$the_button .= '<a ' . $this->get_render_attribute_string( 'button' ) . ' ' . tp_senitize_js_input( $cst_att ) . ' >';
+							$the_button .= '<a ' . $this->get_render_attribute_string( 'button' ) . $safe_custom_attrs . ' >';
 
 							$the_button .= $this->render_text();
 
@@ -1435,6 +1671,10 @@ class L_ThePlus_Button extends Widget_Base {
 			$the_button .= '</div>';
 
 		$the_button .= '</div>';
+
+		if ( ! empty( $global_button_css ) ) {
+			$the_button .= '<style>' . $global_button_css . '</style>';
+		}
 
 		echo $the_button;
 	}
@@ -1457,6 +1697,8 @@ class L_ThePlus_Button extends Widget_Base {
 		$before_after = ! empty( $settings['before_after'] ) ? $settings['before_after'] : '';
 		$button_text  = ! empty( $settings['button_text'] ) ? $settings['button_text'] : '';
 		$icon_style   = ! empty( $settings['button_icon_style'] ) ? $settings['button_icon_style'] : 'font_awesome';
+
+		$is_simple_button = ! empty( $settings['button_type_switch'] ) ? $settings['button_type_switch'] : 'basic';
 
 		$icons = '';
 

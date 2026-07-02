@@ -25,7 +25,7 @@ class Wdk_Widget_Api {
 	 *
 	 * @var staring $wdk_site
 	 */
-	public $wdk_site = 'https://wdesignkit.com/api/wp/';
+	public $wdk_site = 'https://api.wdesignkit.com/api/wp/';
 
 	/**
 	 * Member Variable
@@ -59,11 +59,11 @@ class Wdk_Widget_Api {
 	public function tp_wdkit_widget_ajax_call( $type ) {
 
 		if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'content' => __( 'Insufficient permissions.', 'wdesignkit' ) ) );
+			wp_send_json_error( array( 'content' => __( 'Insufficient permissions.', 'tpebl' ) ) );
 		}
 
 		if ( ! $type ) {
-			$this->wdkit_error_msg( __( 'Something went wrong.', 'wdesignkit' ) );
+			$this->wdkit_error_msg( __( 'Something went wrong.', 'tpebl' ) );
 		}
 
 		switch ( $type ) {
@@ -104,7 +104,7 @@ class Wdk_Widget_Api {
 			$error_message = $response->get_error_message();
 
 			/* Translators: %s is a placeholder for the error message */
-			$error_message = printf( esc_html__( 'API request error: %s', 'wdesignkit' ), esc_html( $error_message ) );
+			$error_message = sprintf( esc_html__( 'API request error: %s', 'tpebl' ), esc_html( $error_message ) );
 
 			return array(
 				'massage' => $error_message,
@@ -117,13 +117,14 @@ class Wdk_Widget_Api {
 
 			return array(
 				'data'    => json_decode( wp_remote_retrieve_body( $response ), true ),
-				'massage' => esc_html__( 'Success', 'wdesignkit' ),
+				'massage' => esc_html__( 'Success', 'tpebl' ),
 				'status'  => $status_code,
 				'success' => true,
 			);
 		}
 
-			$error_message = printf( 'Server error: %d', esc_html( $status_code ) );
+		/* translators: %d: HTTP status code */
+		$error_message = sprintf( esc_html__( 'Server error: %d', 'tpebl' ), absint( $status_code ) );
 
 		if ( isset( $error_data->message ) ) {
 			$error_message .= ' (' . $error_data->message . ')';
@@ -145,9 +146,9 @@ class Wdk_Widget_Api {
 
 		$widget_array = array();
 
-		$server_widgets  = $this->wdk_server_widget();
+		$server_widgets = $this->wdk_server_widget();
 
-		$local_widgets = [];
+		$local_widgets = array();
 		if ( defined( 'WDKIT_VERSION' ) ) {
 			$local_widgets = $this->wdk_local_widget();
 		}
@@ -229,7 +230,7 @@ class Wdk_Widget_Api {
 
 		$array_data = array(
 			'CurrentPage' => isset( $_POST['page'] ) ? (int) $_POST['page'] : 1,
-			'builder'     => isset( $_POST['buildertype'] ) ? wp_unslash( $_POST['buildertype'] ) : '["elementor"]',
+			'builder'     => isset( $_POST['buildertype'] ) ? sanitize_text_field( wp_unslash( $_POST['buildertype'] ) ) : '["elementor"]',
 			'category'    => isset( $_POST['category'] ) ? sanitize_text_field( wp_unslash( $_POST['category'] ) ) : '',
 			'ParPage'     => isset( $_POST['perpage'] ) ? (int) $_POST['perpage'] : 1000,
 			'search'      => isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '',
@@ -255,16 +256,16 @@ class Wdk_Widget_Api {
 	public function wdk_update_widget() {
 
 		$array_data = array(
-			'w_name'     => isset( $_POST['w_name'] ) ? sanitize_text_field( wp_unslash( $_POST['w_name'] ) ) : '',
-			'w_unique' 	 => isset( $_POST['w_unique'] ) ? sanitize_text_field( wp_unslash( $_POST['w_unique'] ) ) : '',
-			'p_type'     => isset( $_POST['p_type'] ) ? sanitize_text_field( wp_unslash( $_POST['p_type'] ) ) : '',
+			'w_name'   => isset( $_POST['w_name'] ) ? sanitize_text_field( wp_unslash( $_POST['w_name'] ) ) : '',
+			'w_unique' => isset( $_POST['w_unique'] ) ? sanitize_text_field( wp_unslash( $_POST['w_unique'] ) ) : '',
+			'p_type'   => isset( $_POST['p_type'] ) ? sanitize_text_field( wp_unslash( $_POST['p_type'] ) ) : '',
 		);
 
-		$downlod_path = WDKIT_BUILDER_PATH . "/elementor/";
+		$downlod_path = WDKIT_BUILDER_PATH . '/elementor/';
 		$file_name    = str_replace( ' ', '_', $array_data['w_name'] );
 		$folder_name  = str_replace( ' ', '-', $array_data['w_name'] );
 
-		$tmp_file     = "$downlod_path{$folder_name}_{$array_data['w_unique']}/{$file_name}_{$array_data['w_unique']}.json";
+		$tmp_file = "$downlod_path{$folder_name}_{$array_data['w_unique']}/{$file_name}_{$array_data['w_unique']}.json";
 
 		$json_data = wp_json_file_decode( $tmp_file, true );
 
@@ -275,11 +276,11 @@ class Wdk_Widget_Api {
 		global $wp_filesystem;
 
 		if ( ! empty( $json_data ) ) {
-			$wp_filesystem->put_contents( $tmp_file, json_encode($json_data) );
+			$wp_filesystem->put_contents( $tmp_file, json_encode( $json_data ) );
 
 			$responce = array(
-				'message'     => esc_html__( 'Update Saved Successfully', 'wdesignkit' ),
-				'description' => esc_html__( 'Success! Update Saved', 'wdesignkit' ),
+				'message'     => esc_html__( 'Update Saved Successfully', 'tpebl' ),
+				'description' => esc_html__( 'Success! Update Saved', 'tpebl' ),
 				'success'     => true,
 			);
 

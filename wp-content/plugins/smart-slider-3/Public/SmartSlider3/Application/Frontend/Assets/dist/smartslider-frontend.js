@@ -1530,6 +1530,17 @@ _N2.d('SmartSliderAbstract', function () {
             }
         }
 
+        if (n2const.prefersReducedMotion) {
+            this.disabled.layerAnimations = true;
+            this.disabled.layerSplitTextAnimations = true;
+            this.disabled.backgroundAnimations = true;
+
+            this.disabled.postBackgroundAnimations = true;
+            if (this.parameters.postBackgroundAnimations) {
+                _NodeRemoveClass(this.sliderElement, 'n2-ss-feature-post-bg-loader');
+            }
+        }
+
 
         n2ss.makeReady(this.id, this);
 
@@ -3552,6 +3563,18 @@ _N2.d('Stages', function () {
                 }
             }
         }
+    };
+
+    SmartSliderControlAutoplay.prototype.getState = function () {
+        return this.state;
+    };
+
+    SmartSliderControlAutoplay.prototype.setAllowSlideChange = function (allowSlideChange) {
+        return this.___allowSlideChange = !!allowSlideChange;
+    };
+
+    SmartSliderControlAutoplay.prototype.getAllowSlideChange = function () {
+        return this.___allowSlideChange;
     };
 
     SmartSliderControlAutoplay.prototype.initClick = function (pause, resume) {

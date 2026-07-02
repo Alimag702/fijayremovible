@@ -2,8 +2,12 @@
 
 namespace WPEverest\URMembership\Payment\Admin;
 
+use WPEverest\URMembership\Admin\Repositories\MembershipRepository;
+use WPEverest\URMembership\Admin\Repositories\MembersSubscriptionRepository;
 use WPEverest\URMembership\Admin\Repositories\OrdersRepository;
 use WPEverest\URMembership\Admin\Repositories\SubscriptionRepository;
+use WPEverest\URMembership\Admin\Services\SubscriptionService;
+use WPEverest\URMembership\Admin\Services\PaymentGatewayLogging;
 
 class OrderService {
 	protected $response, $is_membership_active, $orders_repository, $subscription_repository;
@@ -69,12 +73,12 @@ class OrderService {
 		if ( ! isset( $data['order_id'] ) ) {
 			$this->response['status']  = false;
 			$this->response['code']    = 422;
-			$this->response['message'] = __( 'Field Order ID is required.' );
+			$this->response['message'] = __( 'Field Order ID is required.', 'user-registration' );
 
 		} elseif ( $data['order_id'] == 0 && ! isset( $data['user_id'] ) ) {
 			$this->response['status']  = false;
 			$this->response['code']    = 422;
-			$this->response['message'] = __( 'Field User ID is required.' );
+			$this->response['message'] = __( 'Field User ID is required.', 'user-registration' );
 		}
 
 		return $this->response;
@@ -83,7 +87,9 @@ class OrderService {
 	public function create_view_template( $order_id, $user_id ) {
 		if ( $order_id ) {
 			$order_detail = $this->orders_repository->get_order_detail( $order_id );
-
+			if ( ! empty( $order_detail['plan_details'] ) ) {
+				$order_detail['plan_details'] = json_decode( $order_detail['plan_details'], true );
+			}
 			if ( ! empty( $order_detail['coupon'] ) ) {
 				$order_detail['coupon_discount']      = get_user_meta( $order_detail['user_id'], 'ur_coupon_discount', true );
 				$order_detail['coupon_discount_type'] = get_user_meta( $order_detail['user_id'], 'ur_coupon_discount_type', true );
@@ -138,6 +144,7 @@ class OrderService {
 				$total_items['coupon_discount']      = $coupon_discount;
 				$total_items['coupon_discount_type'] = $coupon_discount_type;
 			}
+
 			return $total_items;
 		}
 
@@ -184,35 +191,153 @@ class OrderService {
 	/**
 	 * approve_payment_status
 	 *
-	 * @param $order_id
+	 * @param $order
 	 *
 	 * @return bool[]
 	 */
-	public function approve_payment_status( $order_id, $subscription_id ) {
+	public function approve_payment_status( $order, $subscription_id ) {
 		try {
+			$order_id = $order['order_id'];
+			$user_id  = $order['user_id'];
+
+			// Get membership type for logging
+			$membership_repository = new MembershipRepository();
+			$membership            = $membership_repository->get_single_membership_by_ID( $order['post_id'] );
+			$membership_metas      = wp_unslash( json_decode( $membership['meta_value'], true ) );
+			$membership_type       = $membership_metas['type'] ?? 'unknown';
+
+			PaymentGatewayLogging::log_general(
+				'bank',
+				'Admin approving bank payment order',
+				'notice',
+				array(
+					'event_type'      => 'admin_approval_initiated',
+					'order_id'        => $order_id,
+					'member_id'       => $user_id,
+					'amount'          => $order['total_amount'] ?? 'unknown',
+					'membership_type' => $membership_type,
+				)
+			);
+
 			$this->orders_repository->wpdb()->query( 'START TRANSACTION' ); // Start the transaction.
-			$approve_order = $this->orders_repository->update( $order_id, array( 'status' => 'completed' ) );
-
+			$subscription_service = new SubscriptionService();
+			$approve_order        = $this->orders_repository->update( $order_id, array( 'status' => 'completed' ) );
 			if ( $approve_order ) {
+				$subscription_data      = array( 'status' => 'active' );
+				$prev_subscription_data = json_decode( get_user_meta( $user_id, 'urm_previous_subscription_data', true ), true );
+				$membership_process     = urm_get_membership_process( $user_id );
+				$is_upgrading           = ! empty( $membership_process['upgrade'] ) && isset( $membership_process['upgrade'][ $prev_subscription_data['item_id'] ] );
+				$is_renewing            = ! empty( $membership_process['renew'] ) && in_array( $order['item_id'], $membership_process['renew'] );
 
-				$subscription_activated = $this->subscription_repository->update( $subscription_id, array( 'status' => 'active' ) );
-
-				if ( $subscription_activated ) {
-					$this->orders_repository->wpdb()->query( 'COMMIT' );
-					$this->response['message'] = __( 'Order has been approved successfully.', 'user-registration' );
-
-					return $this->response;
+				if ( $is_upgrading ) {
+					$next_subscription_data      = json_decode( get_user_meta( $user_id, 'urm_next_subscription_data', true ), true );
+					$subscription_data           = $subscription_service->prepare_upgrade_subscription_data( $next_subscription_data['membership'], $next_subscription_data['member_id'], $next_subscription_data );
+					$subscription_data['status'] = 'active';
 				}
+				$approve_order = $this->orders_repository->get_order_detail( $order_id );
+				if ( 'on' === $approve_order['trial_status'] ) {
+					$subscription_data['status'] = 'trial';
+				}
+				if ( $is_renewing ) {
+					$members_subscription_repo      = new MembersSubscriptionRepository();
+					$membership_repository          = new MembershipRepository();
+					$member_subscription            = $members_subscription_repo->get_subscription_data_by_subscription_id( $subscription_id );
+					$membership                     = $membership_repository->get_single_membership_by_ID( $member_subscription['item_id'] );
+					$membership_metas               = wp_unslash( json_decode( $membership['meta_value'], true ) );
+					$membership_metas['post_title'] = $membership['post_title'];
+					$subscription_service->update_subscription_data_for_renewal( $member_subscription, $membership_metas );
+					$subscription_data['start_date'] = date( 'Y-m-d 00:00:00' );
+				}
+
+				$this->subscription_repository->update( $subscription_id, $subscription_data );
+
+				PaymentGatewayLogging::log_general(
+					'bank',
+					'Bank payment order approved - Status changed to completed',
+					'notice',
+					array(
+						'event_type'      => 'status_change',
+						'old_status'      => 'pending',
+						'new_status'      => 'completed',
+						'order_id'        => $order_id,
+						'member_id'       => $user_id,
+						'membership_type' => $membership_type,
+						'is_upgrade'      => $is_upgrading,
+						'is_renewal'      => $is_renewing,
+					)
+				);
+
+				PaymentGatewayLogging::log_general(
+					'bank',
+					'Subscription status changed to ' . $subscription_data['status'],
+					'notice',
+					array(
+						'event_type'      => 'status_change',
+						'old_status'      => 'pending',
+						'new_status'      => $subscription_data['status'],
+						'subscription_id' => $subscription_id,
+						'member_id'       => $user_id,
+						'membership_type' => $membership_type,
+						'is_upgrade'      => $is_upgrading,
+						'is_renewal'      => $is_renewing,
+					)
+				);
+
+				PaymentGatewayLogging::log_transaction_success(
+					'bank',
+					'Bank payment approved and completed successfully',
+					array(
+						'event_type'      => 'admin_approval_completed',
+						'order_id'        => $order_id,
+						'subscription_id' => $subscription_id,
+						'member_id'       => $user_id,
+						'final_status'    => $subscription_data['status'],
+						'membership_type' => $membership_type,
+					)
+				);
+
+				$this->orders_repository->wpdb()->query( 'COMMIT' );
+				$this->response['message'] = __( 'Order has been approved successfully.', 'user-registration' );
+
+				if ( ! empty( $membership_process['upgrade'] ) && isset( $membership_process['upgrade'][ $prev_subscription_data['item_id'] ] ) ) {
+					unset( $membership_process['upgrade'][ $prev_subscription_data['item_id'] ] );
+					update_user_meta( $user_id, 'urm_membership_process', $membership_process );
+				}
+
+				delete_user_meta( $user_id, 'urm_next_subscription_data' );
+				return $this->response;
+
 			}
+			PaymentGatewayLogging::log_error(
+				'bank',
+				'Failed to approve bank payment order',
+				array(
+					'error_code' => 'APPROVAL_UPDATE_FAILED',
+					'order_id'   => $order_id,
+					'member_id'  => $user_id,
+				)
+			);
+
 			$this->response['status']  = false;
 			$this->response['message'] = __( 'Something went wrong while updating payment status', 'user-registration' );
 
 			return $this->response;
 		} catch ( \Exception $e ) {
+			PaymentGatewayLogging::log_error(
+				'bank',
+				'Bank payment approval failed with exception',
+				array(
+					'error_code'    => 'APPROVAL_EXCEPTION',
+					'error_message' => $e->getMessage(),
+					'order_id'      => $order_id ?? 'unknown',
+					'member_id'     => $user_id ?? 'unknown',
+				)
+			);
+
 			// Rollback the transaction if any operation fails.
 			$this->orders_repository->wpdb()->query( 'ROLLBACK' );
 			$this->response['status']  = false;
-			$this->response['message'] = __( 'Something went wrong while updating payment status', 'user-registration' );
+			$this->response['message'] = $e->getMessage();
 
 			return $this->response;
 		}

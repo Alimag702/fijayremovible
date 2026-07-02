@@ -15,7 +15,11 @@ if ( 'tlcontent' === $con_from ) {
 <?php } ?>
 		<div class="testimonial-list-content d-flex flex-row flex-wrap tp-align-items-center">		
 			<div class="post-content-image flex-column flex-wrap">
-				<?php require L_THEPLUS_WSTYLES . 'testimonial/format-image.php'; ?>
+				<?php
+				if ( ! empty( $show_author_image ) && 'yes' === $show_author_image ) {
+					require L_THEPLUS_WSTYLES . 'testimonial/format-image.php';
+				}
+				?>
 			</div>
 			<div class="testimonial-content-text flex-column flex-wrap">
 				<?php

@@ -1,27 +1,27 @@
-=== Cookie Notice & Compliance for GDPR / CCPA ===
+=== Compliance by Hu-manity.co ===
 Contributors: humanityco
-Tags: gdpr, ccpa, cookies, consent, privacy
+Tags: gdpr, ccpa, cookies, consent, privacy, gpc, google-consent-mode
 Requires at least: 4.9.6
 Requires PHP: 7.4
-Tested up to: 6.9
-Stable tag: 2.5.11
+Tested up to: 7.0
+Stable tag: 3.1.2
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 
-Cookie Notice allows you to you elegantly inform users that your site uses cookies and helps you comply with GDPR, CCPA and other data privacy laws.
+Intentional Consent for WordPress — GDPR, CCPA, CPRA & ePrivacy compliance with consent records, autoblocking, Google Consent Mode v2 & GPC support.
 
 == Description ==
 
-<strong>Cookie Notice</strong> provides a simple, customizable website banner that can be used to help your website comply with certain cookie consent requirements under the EU GDPR cookie law and CCPA regulations and includes <strong>seamless integration</strong> with Cookie Compliance to help your site comply with the latest updates to existing consent laws.
+<strong>Compliance by Hu-manity.co</strong> (formerly known as Cookie Notice) provides a simple, customizable website banner that can be used to help your website comply with cookie consent requirements under the EU GDPR, CCPA, and other data privacy laws — with <strong>seamless integration</strong> with Cookie Compliance to help your site comply with the latest updates to existing consent laws.
 
 <strong>Cookie Compliance</strong> is a fully featured Consent Management Platform (CMP) that provides automated compliance features and enhanced design controls in a state-of-the-art web application. Cookie Compliance enables websites to <strong>take a proactive approach to data protection and consent laws</strong>. It is the first solution to offer Intentional Consent, a new consent framework that incorporates the latest guidelines from over 100+ countries, and emerging standards from leading international organizations like the IEEE and European Center for Digital Rights (noyb.eu). Cookie Compliance provides a beautiful, multi-level experience and includes new choices and controls for site visitors to better understand and engage in data privacy decisions.
 
 > Our Cookie Compliance web application introduces a more ethical, proactive way to capture and manage consent.  This early version of the emerging Intentional Consent framework is a result of Hu-manity.co’s ongoing work with top Fortune 500 companies, governments, and standards organizations, who believe that the imbalanced relationship between consumers and corporations is unsustainable when it comes to data privacy and consent online. We are making it available for all website owners and operators who share this belief and support our mission to eliminate the dark patterns in online consent.<br>
 > Matt Sinderbrand - Chief Platform Officer, Hu-manity.co
 
-## Cookie Notice (plugin only)
+## Compliance (plugin only)
 
-Cookie Notice provides a simple, customizable website banner to help your website comply with certain cookie consent requirements.
+Compliance by Hu-manity.co provides a simple, customizable website banner to help your website comply with certain cookie consent requirements.
 
 = Banner features: =
 
@@ -93,35 +93,186 @@ As a part of our proactive approach, Cookie Compliance is configured by default 
 
 == Installation ==
 
-1. Install Cookie Notice either via the WordPress.org plugin directory, or by uploading the files to your server
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to the Cookie Notice settings and set your options.
-4. Click "Add Compliance features" button to start Cookie Compliance integration.
-5. Create Cookie Compliance account and select plan.
-6. Log in to Cookie Compliance web application anytime to customize the settings.
+1. Install Compliance by Hu-manity.co either via the WordPress.org plugin directory, or by uploading the files to your server.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Go to Settings > Compliance in your WordPress admin — the setup wizard will launch automatically on first activation.
+4. Choose your setup path in the welcome screen: connect to Cookie Compliance (Free or Professional) for full compliance features, or select Banner Only to use the plugin standalone.
+5. If connecting: create a Cookie Compliance account or log into an existing one directly from the wizard — no need to leave WordPress.
+6. Select your plan, configure your banner using the guided checklist, and you're live.
+7. Return to Settings > Compliance any time to adjust your configuration, review consent logs in the Audit Trail, or manage your Cookie Compliance connection.
+
+== Privacy ==
+
+Compliance by Hu-manity.co is a Consent Management Platform client. Depending on how you use it, the plugin may send data to Hu-manity.co services on your behalf. This section describes what data leaves your WordPress server and when. It is kept up to date as the plugin evolves; material changes are noted in the changelog.
+
+= Plugin-only mode (Banner Only / Basic) =
+
+If you install the plugin and choose "Banner Only" in the Welcome screen — or never open the Welcome screen at all — the plugin operates entirely on your WordPress site. No account is created and the plugin does not initiate calls to Hu-manity.co services.
+
+= Connected mode (Free or Professional) =
+
+If you create a Cookie Compliance account from the Welcome screen (or log into an existing one), the plugin connects your site to the Hu-manity.co platform. While connected, the plugin sends data over HTTPS to Hu-manity.co's platform services (hosted under `*-api.hu-manity.co`) for the following purposes:
+
+* Account sign-up and sign-in, and registering your site as an application.
+* Fetching and updating your banner configuration.
+* Fetching consent analytics and individual consent records shown in the Audit Trail.
+* Processing subscription payments (Professional plans only).
+
+The data sent depends on the feature you are using and typically includes:
+
+* **Account-identifying data** such as the email address and password used for sign-up or sign-in.
+* **Site-identifying data** such as your site's URL, title, description, and language.
+* **Application credentials** (App ID and Secret Key) issued to your site at registration, included with subsequent platform requests.
+* **Subscription and billing data** for Professional plans, such as the selected plan identifier and a one-time payment token described below.
+* **Integration telemetry** such as the plugin version and which admin interface (React or Legacy) you are using, sent as HTTP headers so we can understand integration adoption and support the plugin.
+* **Operational metadata** such as the timestamp and locale of a request, as is normal for HTTPS API calls.
+
+As the plugin evolves, additional non-personal fields of the same categories listed above may be sent to support new features. Material changes are noted in the changelog.
+
+= Payments (Professional plans only) =
+
+Payment card details are collected by Braintree's hosted-fields SDK running in your browser and are tokenized there. The plugin and Hu-manity.co servers do not receive raw card data. A one-time, non-replayable Braintree token is sent to Hu-manity.co's platform to create the subscription.
+
+= Deactivation feedback =
+
+If you deactivate the plugin and fill in the optional deactivation feedback form, the reason you select, any free-text comment you type, and your site URL are sent once to Hu-manity.co so we can improve the product. Submitting the form is optional; clicking "Skip" sends nothing. This applies to both Plugin-only and Connected modes.
+
+= The banner shown to your site visitors =
+
+The consent banner shown to your site visitors is served from `cdn.hu-manity.co/hu-banner.min.js`. When a visitor interacts with the banner, the banner script (running in the visitor's browser, not the plugin) communicates directly with Hu-manity.co services to record the consent decision — this is what makes consent records available to you in the Audit Trail. This data flow is between the visitor's browser and Hu-manity.co and does not pass through your WordPress server. Because these requests originate in the visitor's browser, the visitor's IP address is visible to Hu-manity.co as part of standard HTTPS network handling.
+
+= Local state set by the plugin =
+
+The plugin stores operational state in three places. None of this is transmitted to Hu-manity.co:
+
+* **On your WordPress server (options and transients)** — for example, a welcome-modal dismissal timestamp (`cookie_notice_welcome_dismissed`) and short-lived caches of API tokens and configuration.
+* **In the admin user's browser (localStorage)** — for example, first-run setup flags such as `cn_setup_wizard_complete_*` and `cn_has_platform_config_*`.
+* **In visitor browsers (a short-lived `hu-form` cookie, 5 minutes)** — set when forms with consent integration are submitted. Used locally by the form-consent flow.
+
+As the plugin evolves, additional keys may be stored in any of these locations. They remain local state on your site or in the user's browser — not data sent to Hu-manity.co. Material changes to this pattern would be noted in the changelog.
+
+= Data the plugin does not send =
+
+* The plugin does not transmit visitor IP addresses, cookies, page URLs, or page content as data fields. IP addresses are, as with any HTTPS request, visible to the receiving server as part of standard network handling.
+* The plugin does not transmit the content of your posts, pages, users, or WordPress database.
+* The plugin does not send data to third parties other than Hu-manity.co and, for Professional plan payments, Braintree (a PayPal service).
+
+= Service providers =
+
+* Hu-manity.co / Cookie Compliance — primary service provider.
+    * Terms of Service: https://cookie-compliance.co/terms-of-service/
+    * Privacy contact: https://cookie-compliance.co/documentation/privacy-contact/
+* Braintree (a PayPal service) — processes Professional plan signups initiated from the plugin (not invoked for Basic or Free).
+* When you manage your subscription from the Cookie Compliance web application, additional payment gateway providers may process your billing information.
+* Hu-manity.co's email subscription service — receives your account email address and name to manage newsletter and operational email preferences. You can unsubscribe at any time via the email footer or by deleting your account.
+
+Account and consent data is processed in the European Union (AWS Ireland region). Hu-manity.co's public marketing websites (hu-manity.co, cookie-compliance.co) are hosted separately in the United States.
+
+= How long we retain your data =
+
+* Plugin-side caches on your WordPress server (API tokens, subscription data, configuration) are short-lived, with TTLs typically up to 24 hours. The visitor `hu-form` cookie expires after 5 minutes.
+* On the Hu-manity.co platform, account information and consent records are retained as long as your Cookie Compliance account is active, and are removed when the account is deleted or via an erasure request.
+
+= What rights you have over your data =
+
+* **Stop further sends.** Deactivate the plugin from the Plugins screen — no further plugin-initiated API calls will be made.
+* **Export consent records.** Site owners can export cookie-consent and privacy-consent logs as CSV from the Cookie Compliance web application.
+* **Delete your account and all associated data.** The Cookie Compliance web application has an account-deletion flow. Triggering it cancels active subscriptions, deletes your apps and banner configuration, removes your consent records from the platform, and nullifies free-text personal data before deleting the account.
+* **Erasure of visitor data (GDPR Article 17 / CCPA Delete).** To request erasure of a specific visitor's records (by email, session ID, IP, or consent ID), contact Hu-manity.co via the privacy contact page above. Hu-manity.co processes the request and erases the matching records from its storage systems within 30 days, in line with GDPR Article 12.
+* **Manage consent (visitors).** Site visitors can adjust their consent at any time through the consent banner.
 
 == Frequently Asked Questions ==
 
-= Is Cookie Notice free? =
-Yes! Cookie Notice is a free software.
+= Is Compliance by Hu-manity.co free? =
+Yes! Compliance by Hu-manity.co is free software.
 
 = Is Cookie Compliance free? =
 Yes, but with limits. Cookie Compliance includes both free and paid plans to choose from depending on your needs and your website traffic.
 
-= Does the Cookie Notice make my site fully compliant with GDPR or US Privacy Laws? =
+= Does Compliance by Hu-manity.co make my site fully compliant with GDPR or US Privacy Laws? =
 No. The plugin-only version DOES NOT include technical compliance features such as automatic script blocking, consent purpose categories, or consent record storage. These features are only available through the Cookie Compliance integration.
 
-= Does the Cookie Compiance integration make my site fully compliant with GDPR and US Privacy Laws? =
-Yes! The plugin + web appliaction version includes technical compliance features to meet requirements for over 100 countries and legal jurisdictions.
+= Does the Cookie Compliance integration make my site fully compliant with GDPR and US Privacy Laws? =
+Yes! The plugin + web application version includes technical compliance features to meet requirements for over 100 countries and legal jurisdictions.
 
 == Screenshots ==
 
-1. Cookie Notice settings, Compliance itegration inactive
-2. Cookie Notice settings, Compliance itegration active
+1. Compliance by Hu-manity.co — Notice settings, Compliance integration inactive
+2. Compliance by Hu-manity.co — Notice settings, Compliance integration active
 3. Cookie Compliance dashboard overview
 4. Cookie Compliance settings
 
 == Changelog ==
+
+= 3.1.2 =
+* Compatibility: Verified and confirmed compatible with WordPress 7.0.
+* Fix: Banner position and banner size now save correctly on sites without a Cookie Compliance subscription — since 3.0.1 these settings appeared to save but silently reverted on every reload.
+* Fix: Reconnecting a domain to a different Cookie Compliance app now refreshes its plan status right away — the visit-limit notice and autoblocking allowance update on save instead of lagging until the next hourly sync.
+* Fix: Account setup now confirms an explicit success response before activating a paid plan, so an incomplete or interrupted server reply can no longer leave an account on the wrong plan.
+* Tweak: Banner-script delivery is now server-controlled, so future banner improvements can roll out gradually and safely without requiring a plugin update. Your current banner is unchanged.
+* Tweak: Configuration and plan changes made in your Cookie Compliance dashboard now apply to your site faster. Previously a publish or plan upgrade could take until the next scheduled sync to take effect; your site now refreshes its settings right away via a secure server signal.
+
+= 3.1.1 =
+* Fix: The cookie compliance banner and per-form privacy consent prompts now render correctly on sites where Cloudflare Rocket Loader or a caching/optimizer plugin (WP Rocket, LiteSpeed Cache, Autoptimize, NitroPack, Jetpack Boost) defers script execution. The plugin's inline configuration and per-form helper scripts now signal these tools to skip them, extending the banner-script protection added in 3.0.3.
+* Tweak: The WordPress dashboard widget now shows a protection scorecard — GPC signal, consent records, and visit quota — replacing the previous usage chart.
+
+= 3.1.0 =
+* New: WP Consent API integration — Compliance now registers as the active Consent Management Platform under the [WP Consent API](https://wordpress.org/plugins/wp-consent-api/) when that plugin is installed, so cooperative plugins like WooCommerce, Google Site Kit, Burst Statistics, WP Statistics, AddToAny, and Pixel Manager for WooCommerce automatically gate themselves on the consent state captured by your banner. Hu-manity's four consent levels map to the WP Consent API's five categories: Strictly Necessary → functional (always allowed), Functional → preferences, Analytics → statistics and statistics-anonymous, Marketing → marketing. Global Privacy Control automatically suppresses the marketing category. A new "WP Consent API" toggle on the Configuration tab lets you turn the integration off; it is on by default when both plugins are active.
+* Tweak: The loading screen now reads "Hang tight — this may take a few seconds on slower connections" and the troubleshooting panel waits 15 seconds before appearing, giving slow connections more breathing room before setup suggestions surface.
+
+= 3.0.6 =
+* Tweak: The Consent Security Policy (CSP) warning on the Compliance settings page now clears immediately once a valid .htaccess is detected — reloading the page, clicking Purge Cache, or clicking Pull Configuration each re-evaluate in real time.
+
+= 3.0.5 =
+* Fix: Disabling Autoblocking via the legacy settings form on multisite sites now saves correctly.
+
+= 3.0.4 =
+* Fix: The Compliance settings page no longer breaks on sites where Cloudflare Rocket Loader or a caching/optimizer plugin (WP Rocket, LiteSpeed Cache, Autoptimize, NitroPack, SG Speed Optimizer, or Jetpack Boost) is configured to process WP admin scripts. The plugin's admin bundle now signals these tools to skip it, extending the same banner-script protection added in 3.0.3.
+* Fix: If the Compliance settings page fails to load, you now see a "Loading Compliance dashboard…" message that reveals troubleshooting steps (caching plugin, browser extension, incognito mode) and a link to support — replacing the silent white screen some users hit when a CDN, optimizer, or browser extension blocked the admin bundle.
+
+= 3.0.3 =
+* Tweak: Send client type, plugin version, and admin UI mode (React or Legacy) as HTTP headers on platform API requests to support integration adoption analytics. No effect on banner behavior, site visitors, or consent data.
+* Docs: Added a Privacy section to the readme describing, by service and data category, what the plugin sends to Hu-manity.co services and when. Placed after Installation per WordPress convention. Covers admin-side state stored on the WordPress site (options, transients, localStorage), the visitor IP visibility implied by the banner's direct browser-to-platform requests, retention of plugin-side caches and platform-side account/consent data, sub-processors (Braintree for plugin-initiated payments, additional payment gateway providers for webapp-managed subscriptions, and Hu-manity.co's email subscription service), data processing location (European Union, AWS Ireland), and concrete data-subject rights (deactivation, CSV export, account deletion, and GDPR Article 17 / CCPA erasure of visitor records within a 30-day SLA per GDPR Article 12).
+* Fix: Added JS optimizer exclusion attributes to the banner script tags to prevent caching and performance plugins from delaying consent recording. Covers WP Rocket (data-nowprocket), Autoptimize (data-noptimize), LiteSpeed Cache (data-no-optimize), NitroPack (nitro-exclude), Jetpack Boost (data-jetpack-boost), and Cloudflare Rocket Loader (data-cfasync). Also adds stable IDs (hu-banner-options, hu-banner-js) so users of plugins without attribute support (W3 Total Cache, SG Optimizer, Swift Performance) can enter these as exclusion keywords in their plugin settings.
+* New: GPC banner mode is now configurable directly from the plugin. The Protection tab's GPC panel exposes three options for what visitors see when their browser signals Global Privacy Control — "Show passive notice" (a brief auto-dismiss confirmation that the preference was honored), "Silent" (no on-screen indication), or "Show full banner" (the standard consent flow). When CCPA or other US privacy laws are selected, the plugin defaults to "Show passive notice" — improving transparency without re-displaying the banner on every page. The active mode is also surfaced on the GPC Support card under Compliance Behavior so site admins can see at a glance how GPC manifests for their visitors. The setting can still be changed at any time in the Cookie Compliance web application.
+
+= 3.0.2 =
+* Fix: Decouple Autoblocking from privacy law selection in React and legacy settings — the toggle now appears for connected users regardless of whether laws are configured, and is no longer mislabeled as a Pro-only feature in the legacy UI.
+* Fix: Preserve boolean types when caching Designer, Account, and Analytics API responses — compliance flags such as gpcSupportMode, doNotTrackMode, onScroll, onClick, uiBlocking, revokeConsent and nested regulations were being silently coerced to strings, which risks breaking strict type checks downstream.
+
+= 3.0.1 =
+* Fix: Resolved missing file error preventing plugin activation for some users who updated during the initial 3.0.0 release
+
+= 3.0.0 =
+* Rebrand: Plugin renamed from "Cookie Notice & Compliance for GDPR / CCPA" to "Compliance by Hu-manity.co". WordPress admin sidebar now reads "Compliance" with Settings and Audit Trail submenus. All internal option keys and slugs remain unchanged — no action required for existing installs.
+* New: Modern React-based admin dashboard replaces the legacy PHP settings pages. Three main tabs — Protection, Settings, and Audit Trail — with a polished, card-based interface.
+* New: Guided setup wizard with banner template picker (6 presets), setup checklist, and quick-start configuration for new installs.
+* New: Welcome Modal with in-plugin account creation, plan selection, and Braintree payment — complete the signup flow without leaving WordPress.
+* New: Protection Chooser — redesigned tier selection (Basic, Professional, Business) with feature comparison cards.
+* New: 5-position banner placement selector (top, bottom, floating left, floating right, floating center) with fixed/floating toggle. Dismiss animation controls added to Banner Design settings.
+* New: Law Selector with geo-aware regulation display and compliance context for GDPR, CCPA, and 100+ jurisdictions.
+* New: Consent Modes panel — configure Google Consent Mode v2, Facebook, and Microsoft consent toggles directly from the plugin.
+* New: Audit Trail tab — view consent log records pulled live, with dynamic consent level labels.
+* New: Conditional Display rule builder — control when and where the consent banner appears.
+* New: Excluded Script Handles setting — exclude specific scripts from autoblocking by handle name.
+* New: Centralized notification system with contextual calls-to-action based on your setup status and subscription tier.
+* New: Portal deep links — jump directly from the plugin to the relevant page in the Cookie Compliance web application.
+* New: Live configuration sync — admin pages pull fresh banner configuration from the platform on load.
+* New: React ErrorBoundary prevents white-screen crashes — admin gracefully recovers from unexpected errors.
+* Improvement: Pro feature indicators show locked features with upgrade prompts for free-tier users.
+* Improvement: Usage dashboard shows near-limit nudge at 70%+ of cycle usage.
+* Improvement: Email-exists recovery flow guides users who try to register with an existing account.
+* Fix: Domain URL normalization on login prevents duplicate app registrations.
+
+= 2.5.16 =
+* Fix: Multisite with global override now correctly reads blocking data and cache-purge transients from network storage
+* Fix: Custom patterns and providers are now always included in huOptions regardless of autoblocking state
+
+= 2.5.15 =
+* Fix: Multisite with global override now correctly loads custom blocking patterns and providers on the frontend
+
+= 2.5.12 =
+* New: Added pull configuration option to sync on demand instead of waiting for cron
 
 = 2.5.11 =
 * Security: Enforce TLS verification for platform API requests.
@@ -580,6 +731,9 @@ Yes! The plugin + web appliaction version includes technical compliance features
 Initial release
 
 == Upgrade Notice ==
+
+= 2.5.12 =
+Added pull configuration option to sync on demand instead of waiting for cron
 
 = 2.5.11 =
 Security hardening (TLS verification, admin capability checks, nonce-protected cache purge) and improved admin notices closing without jQuery conflicts

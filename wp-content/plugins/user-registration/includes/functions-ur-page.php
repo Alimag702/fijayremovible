@@ -83,6 +83,9 @@ function ur_get_page_id( $page ) {
  */
 function ur_get_wpml_page_language( $page_id ) {
 	global $wpdb;
+
+	static $cache = array();
+
 	/**
 	 * Filters the current language for WPML (WordPress Multilingual).
 	 *
@@ -92,12 +95,19 @@ function ur_get_wpml_page_language( $page_id ) {
 	 * @param string $current_language The original current language.
 	 */
 	$current_language = apply_filters( 'wpml_current_language', 'en' );
+	$cache_key        = $page_id . '_' . $current_language;
+
+	if ( isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
+	}
+
+	$original_page_id = $page_id;
 
 	$element_prepared = $wpdb->prepare(
 		"SELECT trid FROM {$wpdb->prefix}icl_translations WHERE element_id=%d AND element_type=%s",
 		array( $page_id, 'post_page' )
 	);
-	$trid       = $wpdb->get_var( $element_prepared ); //phpcs:ignore.
+	$trid = $wpdb->get_var( $element_prepared ); //phpcs:ignore.
 
 	if ( $trid > 0 ) {
 		$page_id = $trid;
@@ -107,8 +117,10 @@ function ur_get_wpml_page_language( $page_id ) {
 		"SELECT element_id FROM {$wpdb->prefix}icl_translations WHERE trid=%d AND element_type=%s AND language_code=%s",
 		array( $page_id, 'post_page', $current_language )
 	);
-	$element_id       = $wpdb->get_var( $element_prepared ); //phpcs:ignore.
-	return $element_id > 0 ? $element_id : $page_id;
+	$element_id = $wpdb->get_var( $element_prepared ); //phpcs:ignore.
+
+	$cache[ $cache_key ] = $element_id > 0 ? $element_id : $original_page_id;
+	return $cache[ $cache_key ];
 }
 
 /**
@@ -121,16 +133,6 @@ function ur_get_wpml_page_language( $page_id ) {
 function ur_get_page_permalink( $page ) {
 	$page_id = ur_get_page_id( $page );
 	$page    = $page_id;
-
-	if ( $page_id > 0 && function_exists( 'pll_current_language' ) ) {
-		$current_language = pll_current_language();
-		if ( ! empty( $current_language ) ) {
-			$translations = pll_get_post_translations( $page_id );
-			$page         = isset( $translations[ pll_current_language() ] ) ? $translations[ pll_current_language() ] : $page_id;
-		}
-	} elseif ( $page_id > 0 && class_exists( 'SitePress', false ) ) {
-		$page = ur_get_wpml_page_language( $page_id );
-	}
 
 	$permalink = 0 < $page ? get_permalink( $page ) : ( 0 < $page_id ? get_permalink( $page_id ) : get_home_url() );
 	/**
@@ -280,11 +282,14 @@ function ur_get_endpoint_url( $endpoint, $value = '', $permalink = '' ) {
 		$url = add_query_arg( $endpoint, $value, $permalink );
 	}
 
+	$urm_disable_logout_confirmation = apply_filters( 'user_registration_disable_logout_confirmation_status', ur_option_checked( 'user_registration_disable_logout_confirmation', false ) );
+
 	if (
 		get_option( 'user_registration_logout_endpoint', 'user-logout' ) === $endpoint &&
-		ur_option_checked( 'user_registration_disable_logout_confirmation', false ) ) {
+		$urm_disable_logout_confirmation ) {
 		$url = wp_nonce_url( $url, 'user-logout' );
 	}
+
 	/**
 	 * Filters the endpoint URL in User Registration.
 	 *
@@ -311,6 +316,8 @@ function ur_nav_menu_items( $items ) {
 	if ( ! is_user_logged_in() ) {
 		$customer_logout = get_option( 'user_registration_logout_endpoint', 'user-logout' );
 
+		$customer_logout = trim( $customer_logout, '/' );
+
 		if ( ! empty( $customer_logout ) && is_array( $items ) ) {
 			foreach ( $items as $key => $item ) {
 				if ( empty( $item->url ) ) {
@@ -330,8 +337,8 @@ function ur_nav_menu_items( $items ) {
 	$customer_logout = get_option( 'user_registration_logout_endpoint', 'user-logout' );
 
 	foreach ( $items as $item ) {
-
-		if ( 0 === strpos( $item->post_name, 'logout' ) && ! empty( $customer_logout ) && ur_option_checked( 'user_registration_disable_logout_confirmation', false ) ) {
+		$urm_disable_logout_confirmation = apply_filters( 'user_registration_disable_logout_confirmation_status', ur_option_checked( 'user_registration_disable_logout_confirmation', false ) );
+		if ( 0 === strpos( $item->post_name, 'logout' ) && ! empty( $customer_logout ) && $urm_disable_logout_confirmation ) {
 			$item->url = wp_nonce_url( $item->url, 'user-logout' );
 		}
 	}

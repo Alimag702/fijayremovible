@@ -1,7 +1,15 @@
 <?php
-if ( ! defined( 'W3TC' ) ) {
-	die();
-}
+/**
+ * File: support_request.php
+ *
+ * Support request email template.
+ *
+ * @package W3TC
+ */
+
+defined( 'ABSPATH' ) || exit;
+defined( 'W3TC' ) || die();
+
 ?>
 <html>
 	<head></head>
@@ -10,8 +18,8 @@ if ( ! defined( 'W3TC' ) ) {
 			<?php
 			echo esc_html__( 'Date:', 'w3-total-cache' ) . esc_html( gmdate( 'm/d/Y H:i:s' ) ) . '<br />';
 			echo esc_html__( 'Version: ', 'w3-total-cache' ) . esc_html( W3TC_VERSION ) . '<br />';
-			echo esc_html__( 'URL: ', 'w3-total-cache' ) . '<a href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a><br />';
-			echo esc_html__( 'Name: ', 'w3-total-cache' ) . esc_html( $name ) . '<br />';
+			echo esc_html__( 'URL: ', 'w3-total-cache' ) . '<a href="' . esc_url( $w3tc_url ) . '">' . esc_html( $w3tc_url ) . '</a><br />';
+			echo esc_html__( 'Name: ', 'w3-total-cache' ) . esc_html( $w3tc_name ) . '<br />';
 			echo esc_html__( 'E-Mail: ', 'w3-total-cache' ) . '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a><br />';
 
 			if ( $twitter ) {
@@ -42,8 +50,12 @@ if ( ! defined( 'W3TC' ) ) {
 
 		<font size="-1" color="#ccc">
 			<?php
-			echo esc_html__( 'E-mail sent from IP: ', 'w3-total-cache' ) . esc_html( $_SERVER['REMOTE_ADDR'] ) . '<br />';
-			echo esc_html__( 'User Agent: ', 'w3-total-cache' ) . esc_html( $_SERVER['HTTP_USER_AGENT'] );
+			echo esc_html__( 'E-mail sent from IP: ', 'w3-total-cache' ) .
+				( isset( $_SERVER['REMOTE_ADDR'] ) ?
+				esc_html( sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) ) : esc_html__( 'Unknown', 'w3-total-cache' ) ) . '<br />';
+			echo esc_html__( 'User Agent: ', 'w3-total-cache' ) .
+				( isset( $_SERVER['HTTP_USER_AGENT'] ) ?
+				esc_html( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) ) : esc_html__( 'Unknown', 'w3-total-cache' ) );
 			?>
 		</font>
 	</body>

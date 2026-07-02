@@ -86,7 +86,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 		 */
 		public function tpae_elementor_editor_script() {
 
-			wp_enqueue_script( 'tpae-wdkit-preview-popup', L_THEPLUS_URL . 'assets/js/wdesignkit/tp-preset-btn.js', array( 'jquery', 'wp-i18n' ), L_THEPLUS_VERSION, true );
+			wp_enqueue_script( 'tpae-wdkit-preview-popup', L_THEPLUS_URL . 'includes/preset/tp-preset-popup.js', array( 'jquery', 'wp-i18n' ), L_THEPLUS_VERSION, true );
 
 			wp_localize_script(
 				'tpae-wdkit-preview-popup',
@@ -106,7 +106,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 		 * @since 6.5.6
 		 */
 		public function tpae_elementor_editor_style() {
-			wp_enqueue_style( 'tp-wdkit-elementor-popup-preset', L_THEPLUS_URL . 'assets/css/wdesignkit/tp-wdkit-install-popup.css', array(), L_THEPLUS_VERSION );
+			wp_enqueue_style( 'tp-wdkit-elementor-popup-preset', L_THEPLUS_URL . 'includes/preset/tp-preset-popup.css', array(), L_THEPLUS_VERSION );
 		}
 
 		/**
@@ -118,6 +118,13 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 
 			check_ajax_referer( 'tp_wdkit_preview_popup', 'security' );
 
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				$response = $this->tpae_response( 'Invalid Permission.', 'Something went wrong.', false, 'invalid-permission' );
+
+				wp_send_json( $response );
+				wp_die();
+			}
+
 			$installed_plugins = get_plugins();
 
 			include_once ABSPATH . 'wp-admin/includes/file.php';
@@ -125,27 +132,23 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/class-automatic-upgrader-skin.php';
 			include_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
 
-			$result   = array();
-			$response = wp_remote_post(
-				'http://api.wordpress.org/plugins/info/1.0/',
+			$result = array();
+
+			if ( ! function_exists( 'plugins_api' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+			}
+
+			$plugin_info = plugins_api(
+				'plugin_information',
 				array(
-					'body' => array(
-						'action'  => 'plugin_information',
-						'request' => serialize(
-							(object) array(
-								'slug'   => 'wdesignkit',
-								'fields' => array(
-									'version' => false,
-								),
-							)
-						),
+					'slug'   => 'wdesignkit',
+					'fields' => array(
+						'version' => false,
 					),
 				)
 			);
 
-			$plugin_info = unserialize( wp_remote_retrieve_body( $response ) );
-
-			if ( ! $plugin_info ) {
+			if ( is_wp_error( $plugin_info ) || ! $plugin_info ) {
 				wp_send_json_error( array( 'content' => __( 'Failed to retrieve plugin information.', 'tpebl' ) ) );
 			}
 
@@ -158,6 +161,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 
 				$installed         = $upgrader->install( $plugin_info->download_link );
 				$activation_result = activate_plugin( $plugin_basename );
+				$this->tpae_wdkit_hook();
 
 				$success = null === $activation_result;
 				$result  = $this->tpae_response( 'Success Install WDesignKit', 'Success Install WDesignKit', $success, '' );
@@ -165,6 +169,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 			} elseif ( isset( $installed_plugins[ $plugin_basename ] ) ) {
 
 				$activation_result = activate_plugin( $plugin_basename );
+				$this->tpae_wdkit_hook();
 
 				$success = null === $activation_result;
 				$result  = $this->tpae_response( 'Success Install WDesignKit', 'Success Install WDesignKit', $success, '' );
@@ -181,6 +186,16 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 		 * @return array
 		 */
 		public function tpae_check_plugin_status() {
+
+			check_ajax_referer( 'tp_wdkit_preview_popup', 'security' );
+
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( array( 'message' => 'Insufficient permissions.' ), 403 );
+			}
+
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
 
 			$installed_plugins = get_plugins();
 
@@ -200,17 +215,43 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 		}
 
 		/**
+		 * Tpae Side Wdkit Hook Call after install
+		 *
+		 * @since 6.4.0
+		 */
+		public function tpae_wdkit_hook() {
+			$my_array = array(
+				'elementor_builder'  => true,
+				'elementor_template' => true,
+			);
+
+			$builder = array( 'nexter-blocks' );
+			do_action( 'wdkit_active_settings', $my_array, $builder );
+		}
+
+		/**
 		 * It is WDesignKit Popup Design for Download and install
 		 *
 		 * @since 6.5.6
 		 */
 		public function tpae_preview_html_popup() {
+
+			$tp_check_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" fill="none"><path fill="gray" d="M12.803 3.988a.5.5 0 0 1 .724.69l-7 7.334a.5.5 0 0 1-.715.008L3.478 9.687a.5.5 0 0 1 .67-.742l.038.035 1.97 1.971 6.647-6.963Z"/></svg>';
+
 			?>
 			<div id="tpae-wdkit-wrap" class="tp-main-container-preset" style="display: none">
-				<div class="tp-middel-sections">
-				<div class="tp-text-top">
-					<?php echo esc_html__( 'Import Pre-Designed Widgets Styles for', 'tpebl' ) . '<br />' . esc_html__( 'The Plus Addons for Elementor', 'tpebl' ); ?>
+				<div class="tp-header-preset">
+					<div class="tp-wdkit-image">
+							<img src="<?php echo esc_url( L_THEPLUS_URL . 'assets/images/wdesignkit/wdkit-tredmark.svg' ); ?>"/>
+					</div>
+					<div class="tp-close-preset">
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" fill="none"><path fill="gray" d="M15.393 4.105a.625.625 0 1 1 .883.884l-5.391 5.392 5.391 5.391.044.047a.625.625 0 0 1-.88.88l-.047-.043L10 11.264 4.61 16.656a.625.625 0 1 1-.884-.884l5.391-5.391-5.391-5.392a.625.625 0 1 1 .884-.884L10 9.497l5.392-5.392Z"/></svg>
+					</div>
 				</div>
+				<div class="tp-middel-sections">
+					<div class="tp-text-top">
+						<?php echo esc_html__( 'Import Pre-Designed Widgets Styles for', 'tpebl' ) . '<br />' . esc_html__( 'The Plus Addons for Elementor', 'tpebl' ); ?>
+					</div>
 
 					<!-- <div class="tp-text-bottom">
 						<?php echo esc_html__( 'Uniquely designed Elementor Templates for every website type made with Elementor & The Plus Addons for Elementor Widgets.', 'tpebl' ); ?>
@@ -218,13 +259,13 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 					<div class="wkit-cb-data">
 						<div class="wkit-tp-preset-checkbox">
 							<span class="wkit-preset-checkbox-content">
-								<svg width="15" height="15" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 0C2.24311 0 0 2.24311 0 5C0 7.75689 2.24311 10 5 10C7.75689 10 10 7.75689 10 5C10 2.24311 7.75689 0 5 0ZM7.79449 3.68421L4.599 6.85464C4.41103 7.04261 4.11028 7.05514 3.90977 6.86717L2.21804 5.32581C2.01754 5.13784 2.00501 4.82456 2.18045 4.62406C2.36842 4.42356 2.6817 4.41103 2.88221 4.599L4.22306 5.82707L7.0802 2.96992C7.2807 2.76942 7.59398 2.76942 7.79449 2.96992C7.99499 3.17043 7.99499 3.48371 7.79449 3.68421Z" fill="white" /></svg>
+								<?php echo wp_kses( $tp_check_svg, array( 'svg' => array( 'xmlns' => true, 'width' => true, 'height' => true, 'fill' => true ), 'path' => array( 'fill' => true, 'd' => true ) ) ); ?>
 								<p class="wkit-preset-label">
 								<?php echo esc_html__( 'Start Quickly Without Designing from Scratch', 'tpebl' ); ?>
 							</p>
 						</span>
 						<span class="wkit-preset-checkbox-content">
-								<svg width="15" height="15" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 0C2.24311 0 0 2.24311 0 5C0 7.75689 2.24311 10 5 10C7.75689 10 10 7.75689 10 5C10 2.24311 7.75689 0 5 0ZM7.79449 3.68421L4.599 6.85464C4.41103 7.04261 4.11028 7.05514 3.90977 6.86717L2.21804 5.32581C2.01754 5.13784 2.00501 4.82456 2.18045 4.62406C2.36842 4.42356 2.6817 4.41103 2.88221 4.599L4.22306 5.82707L7.0802 2.96992C7.2807 2.76942 7.59398 2.76942 7.79449 2.96992C7.99499 3.17043 7.99499 3.48371 7.79449 3.68421Z" fill="white" /></svg>
+								<?php echo wp_kses( $tp_check_svg, array( 'svg' => array( 'xmlns' => true, 'width' => true, 'height' => true, 'fill' => true ), 'path' => array( 'fill' => true, 'd' => true ) ) ); ?>
 								<p class="wkit-preset-label">
 									<?php echo esc_html__( 'Fully Customizable for Any Style', 'tpebl' ); ?>
 								</p>
@@ -232,13 +273,13 @@ if ( ! class_exists( 'Tp_Wdkit_Preset' ) ) {
 						</div>
 						<div class="wkit-tp-preset-checkbox">
 							<span class="wkit-preset-checkbox-content">
-								<svg width="15" height="15" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 0C2.24311 0 0 2.24311 0 5C0 7.75689 2.24311 10 5 10C7.75689 10 10 7.75689 10 5C10 2.24311 7.75689 0 5 0ZM7.79449 3.68421L4.599 6.85464C4.41103 7.04261 4.11028 7.05514 3.90977 6.86717L2.21804 5.32581C2.01754 5.13784 2.00501 4.82456 2.18045 4.62406C2.36842 4.42356 2.6817 4.41103 2.88221 4.599L4.22306 5.82707L7.0802 2.96992C7.2807 2.76942 7.59398 2.76942 7.79449 2.96992C7.99499 3.17043 7.99499 3.48371 7.79449 3.68421Z" fill="white" /></svg>
+									<?php echo wp_kses( $tp_check_svg, array( 'svg' => array( 'xmlns' => true, 'width' => true, 'height' => true, 'fill' => true ), 'path' => array( 'fill' => true, 'd' => true ) ) ); ?>
 									<p class="wkit-preset-label">
 									<?php echo esc_html__( 'Time-Saving and Efficient Workflow', 'tpebl' ); ?>
 								</p>
 							</span>
 							<span class="wkit-preset-checkbox-content">
-								<svg width="15" height="15" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 0C2.24311 0 0 2.24311 0 5C0 7.75689 2.24311 10 5 10C7.75689 10 10 7.75689 10 5C10 2.24311 7.75689 0 5 0ZM7.79449 3.68421L4.599 6.85464C4.41103 7.04261 4.11028 7.05514 3.90977 6.86717L2.21804 5.32581C2.01754 5.13784 2.00501 4.82456 2.18045 4.62406C2.36842 4.42356 2.6817 4.41103 2.88221 4.599L4.22306 5.82707L7.0802 2.96992C7.2807 2.76942 7.59398 2.76942 7.79449 2.96992C7.99499 3.17043 7.99499 3.48371 7.79449 3.68421Z" fill="white" /> </svg>
+								<?php echo wp_kses( $tp_check_svg, array( 'svg' => array( 'xmlns' => true, 'width' => true, 'height' => true, 'fill' => true ), 'path' => array( 'fill' => true, 'd' => true ) ) ); ?>
 								<p class="wkit-preset-label">
 									<?php echo esc_html__( 'Explore Versatile Layout Options', 'tpebl' ); ?>
 								</p>

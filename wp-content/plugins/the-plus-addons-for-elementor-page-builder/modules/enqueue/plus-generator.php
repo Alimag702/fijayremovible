@@ -400,7 +400,7 @@ class L_Plus_Generator {
 		$js_inline1 = 'var theplus_ajax_url = "' . admin_url( 'admin-ajax.php' ) . '";
 		var theplus_ajax_post_url = "' . admin_url( 'admin-post.php' ) . '";
 		var theplus_nonce = "' . wp_create_nonce( 'theplus-addons' ) . '";';
-		echo wp_print_inline_script_tag( $js_inline1 );
+		wp_print_inline_script_tag( $js_inline1 );
 	}
 
 	// Plus Addons Scripts
@@ -409,7 +409,7 @@ class L_Plus_Generator {
 		if ( is_admin_bar_showing() && ! $this->get_caching_option() ) {
 			wp_enqueue_script(
 				'plus-purge-js',
-				$this->pathurl_security( L_THEPLUS_URL . '/assets/js/main/general/theplus-purge.js' ),
+				$this->pathurl_security( L_THEPLUS_URL . 'assets/js/main/general/theplus-purge.js' ),
 				array( 'jquery' ),
 				L_THEPLUS_VERSION,
 				true
@@ -782,7 +782,7 @@ class L_Plus_Generator {
 	 */
 	public function plus_purge_clear_print_style() {
 		if ( ( is_admin_bar_showing() ) ) { ?>
-			<style>#wpadminbar .theplus-purge-clear > .ab-item:before {content: '';background-image: url(<?php echo esc_url( L_THEPLUS_URL . '/assets/images/theplus-logo-small.png' ); ?>) !important;background-size: 20px !important;background-position: center;width: 20px;height: 20px;background-repeat: no-repeat;top: 50%;transform: translateY(-50%);} @media (max-width:660px){ #wpadminbar {position: fixed;} }</style>
+			<style>#wpadminbar .theplus-purge-clear > .ab-item:before {content: '';background-image: url(<?php echo esc_url( L_THEPLUS_URL . 'assets/images/tpae-logo-small.png' ); ?>) !important;background-size: 20px !important;background-position: center;width: 20px;height: 20px;background-repeat: no-repeat;top: 50%;transform: translateY(-50%);} @media (max-width:660px){ #wpadminbar {position: fixed;} }</style>
 			<?php
 		}
 	}
@@ -989,19 +989,46 @@ class L_Plus_Generator {
 
 	public function load_asset_per_location( $instance ) {
 
-		if ( is_admin() || ! ( class_exists( 'ElementorPro\Modules\ThemeBuilder\Module' ) ) ) {
+		if ( is_admin() ) {
 			return false;
 		}
 
-		$locations = $instance->get_locations();
+		// Load assets for Elementor Pro theme builder templates.
+		if ( class_exists( 'ElementorPro\Modules\ThemeBuilder\Module' ) ) {
+			$locations = $instance->get_locations();
+			foreach ( $locations as $location => $settings ) {
+				$documents = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_conditions_manager()->get_documents_for_location( $location );
+				if ( ! empty( $documents ) ) {
+					foreach ( $documents as $document ) {
+						$post_id = $document->get_post()->ID;
+						$this->header_init_load_data( 'post', $post_id );
+					}
+				}
+			}
 
-		foreach ( $locations as $location => $settings ) {
-
-			$documents = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_conditions_manager()->get_documents_for_location( $location );
-			if ( ! empty( $documents ) ) {
-				foreach ( $documents as $document ) {
+			// Load assets for Elementor Pro Popup templates.
+			// Popups are not registered as standard theme locations, so they
+			// are not returned by get_locations() and must be queried separately.
+			$popup_documents = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_conditions_manager()->get_documents_for_location( 'popup' );
+			if ( ! empty( $popup_documents ) ) {
+				foreach ( $popup_documents as $document ) {
 					$post_id = $document->get_post()->ID;
 					$this->header_init_load_data( 'post', $post_id );
+				}
+			}
+		}
+
+		// Load assets for Nexter Extension (nxt_builder) theme builder templates.
+		// Nexter Extension uses its own conditions system, completely separate from
+		// Elementor Pro's conditions manager, so we must query it independently.
+		if ( class_exists( 'Nexter_Builder_Sections_Conditional' ) ) {
+			$nxt_section_types = array( 'header', 'footer', 'section' );
+			foreach ( $nxt_section_types as $section_type ) {
+				$nxt_ids = Nexter_Builder_Sections_Conditional::nexter_sections_condition_hooks( 'sections', $section_type );
+				if ( ! empty( $nxt_ids ) ) {
+					foreach ( $nxt_ids as $post_id ) {
+						$this->header_init_load_data( 'nxt_builder', (int) $post_id );
+					}
 				}
 			}
 		}

@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) )
 class Cookie_Notice_Frontend {
 
 	private $compliance = false;
+	private $matched_handles = [];
 
 	/**
 	 * Class constructor.
@@ -21,6 +22,7 @@ class Cookie_Notice_Frontend {
 		// general actions
 		add_action( 'init', [ $this, 'early_init' ], 9 );
 		add_action( 'wp', [ $this, 'init' ] );
+		add_action( 'rest_api_init', [ $this, 'register_purge_route' ] );
 		add_action( 'wp_head', [ $this, 'wp_print_header_scripts' ] );
 		add_action( 'wp_print_footer_scripts', [ $this, 'wp_print_footer_scripts' ] );
 
@@ -57,7 +59,49 @@ class Cookie_Notice_Frontend {
 			// amp compatibility
 			if ( $cn->options['general']['amp_support'] && cn_is_plugin_active( 'amp' ) )
 				include_once( COOKIE_NOTICE_PATH . 'includes/modules/amp/amp.php' );
+
+			// excluded script handles — stamp data-hu-category="1" so the widget never blocks them
+			if ( $cn->options['general']['app_blocking'] && ! empty( $cn->options['general']['excluded_handles'] ) ) {
+				add_filter( 'script_loader_tag', [ $this, 'exclude_handles_from_blocking' ], 10, 2 );
+
+				if ( $cn->options['general']['debug_mode'] )
+					add_action( 'wp_footer', [ $this, 'debug_excluded_handles' ], 999 );
+			}
 		}
+	}
+
+	/**
+	 * Stamp excluded script handles with data-hu-category="1" (Essential).
+	 *
+	 * @param string $tag    Full <script> tag HTML.
+	 * @param string $handle WordPress script handle.
+	 * @return string
+	 */
+	public function exclude_handles_from_blocking( $tag, $handle ) {
+		$excluded = Cookie_Notice()->options['general']['excluded_handles'];
+
+		if ( in_array( $handle, $excluded, true ) && strpos( $tag, 'data-hu-category' ) === false ) {
+			$tag = str_replace( ' src=', ' data-hu-category="1" src=', $tag );
+			$this->matched_handles[] = $handle;
+		}
+
+		return $tag;
+	}
+
+	/**
+	 * Output debug console.warn lines listing matched / unmatched excluded handles.
+	 *
+	 * @return void
+	 */
+	public function debug_excluded_handles() {
+		$configured = Cookie_Notice()->options['general']['excluded_handles'];
+		$matched    = $this->matched_handles;
+		$unmatched  = array_values( array_diff( $configured, $matched ) );
+
+		echo '<script>' .
+			'console.warn("CC Banner: Excluded script handles — stamped (' . count( $matched ) . '): " + ' . wp_json_encode( $matched ) . ');' .
+			( ! empty( $unmatched ) ? 'console.warn("CC Banner: Excluded script handles — not found on this page (' . count( $unmatched ) . '): " + ' . wp_json_encode( $unmatched ) . ');' : '' ) .
+		'</script>' . "\n";
 	}
 
 	/**
@@ -69,14 +113,10 @@ class Cookie_Notice_Frontend {
 		if ( is_admin() )
 			return;
 
-		// purge cache
-		if (
-			isset( $_GET['hu_purge_cache'], $_GET['_wpnonce'] )
-			&& current_user_can( apply_filters( 'cn_manage_cookie_notice_cap', 'manage_options' ) )
-			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'cn-purge-cache' )
-		) {
-			$this->purge_cache();
-		}
+		// Note: the legacy `?hu_purge_cache=1&_wpnonce=` URL trigger was removed in
+		// 3.1.3 — config purges now arrive server-to-server via the authenticated
+		// REST route (see register_purge_route()). The admin settings "Purge Cache"
+		// button still works via its own AJAX action (settings.php ajax_purge_cache()).
 
 		// get main instance
 		$cn = Cookie_Notice();
@@ -327,13 +367,25 @@ class Cookie_Notice_Frontend {
 		if ( $cn->options['general']['debug_mode'] )
 			$options['debugMode'] = true;
 
-		// custom scripts?
-		if ( $cn->options['general']['app_blocking'] ) {
-			if ( is_multisite() && $cn->is_network_admin() && $cn->is_plugin_network_active() && $cn->network_options['general']['global_override'] )
-				$blocking = get_site_option( 'cookie_notice_app_blocking' );
-			else
-				$blocking = get_option( 'cookie_notice_app_blocking' );
+		// WP Consent API integration toggle. Mirrors the PHP-side gate in
+		// includes/modules/wp-consent-api/wp-consent-api.php::is_enabled() so the
+		// banner's JS bridge (Web Channel src/thirdparty.js) can short-circuit
+		// wp_set_consent calls when the integration is disabled. Without this,
+		// the bridge would keep pushing per-category state into WPCA even after
+		// the PHP-side filters returned false, leaving consumer plugins gated
+		// on banner consent while we no longer claim to be the active CMP.
+		// Default true when missing — matches is_enabled() upgrade semantics.
+		$options['wpConsentApiEnabled'] = ! isset( $cn->options['general']['wp_consent_api'] ) || (bool) $cn->options['general']['wp_consent_api'];
 
+		// blocking data (custom patterns, providers, consent mode defaults)
+		// always include in huOptions so the widget has the full configuration;
+		// the huOptions.blocking flag controls whether scripts are actually blocked
+		if ( $cn->is_network_options() )
+			$blocking = get_site_option( 'cookie_notice_app_blocking' );
+		else
+			$blocking = get_option( 'cookie_notice_app_blocking' );
+
+		if ( ! empty( $blocking ) && is_array( $blocking ) ) {
 			$options['customProviders'] = ! empty( $blocking['providers'] ) && is_array( $blocking['providers'] ) ? $blocking['providers'] : [];
 			$options['customPatterns'] = ! empty( $blocking['patterns'] ) && is_array( $blocking['patterns'] ) ? $blocking['patterns'] : [];
 
@@ -368,13 +420,17 @@ class Cookie_Notice_Frontend {
 				$mcd = [];
 
 				foreach ( $blocking['microsoft_consent_default'] as $storage => $category ) {
-					if ( in_array( $storage, ['ad_storage'], true ) )
+					if ( in_array( $storage, ['ad_storage', 'analytics_storage'], true ) )
 						$mcd[$storage] = (int) $category;
 				}
 
 				if ( ! empty( $mcd ) )
 					$options['microsoftConsentDefault'] = $mcd;
 			}
+		}
+
+		if ( isset( $_GET['cn_preview'] ) && $_GET['cn_preview'] === '1' && current_user_can( 'manage_options' ) ) {
+			$options['forceShow'] = true;
 		}
 
 		return $options;
@@ -387,10 +443,13 @@ class Cookie_Notice_Frontend {
 	 * @return string
 	 */
 	public function get_cc_output( $options ) {
+		// The optimizer/CDN skip attributes below are the literal twin of
+		// Cookie_Notice::optimizer_skip_attrs() — kept inline here for the heredoc.
+		// If that set changes, change these tags too.
 		$output = '
 		<!-- Cookie Compliance -->
-		<script type="text/javascript">var huOptions = ' . wp_json_encode( $options ) . ';</script>
-		<script type="text/javascript" src="' . esc_url( ( is_ssl() ? 'https:' : 'http:' ) . Cookie_Notice()->get_url( 'widget' ) ) . '"></script>';
+		<script type="text/javascript" id="hu-banner-options" data-cfasync="false" data-nowprocket data-noptimize="1" data-no-optimize="1" nitro-exclude data-jetpack-boost="ignore">var huOptions = ' . wp_json_encode( $options, JSON_UNESCAPED_SLASHES ) . '; // nowprocket</script>
+		<script type="text/javascript" id="hu-banner-js" data-cfasync="false" data-nowprocket data-noptimize="1" data-no-optimize="1" nitro-exclude data-jetpack-boost="ignore" src="' . esc_url( ( is_ssl() ? 'https:' : 'http:' ) . Cookie_Notice()->get_url( 'widget' ) ) . '"></script>';
 
 		return apply_filters( 'cn_cookie_compliance_output', $output, $options );
 	}
@@ -408,7 +467,10 @@ class Cookie_Notice_Frontend {
 		if ( ! $this->maybe_display_banner() )
 			return;
 
-		echo '<link rel="dns-prefetch" href="//cdn.hu-manity.co" />';
+		// Derive prefetch host from widget URL so CN_APP_WIDGET_URL overrides are honoured.
+		$widget_url = Cookie_Notice()->get_url( 'widget' );
+		$prefetch_host = '//' . wp_parse_url( 'https:' . $widget_url, PHP_URL_HOST );
+		echo '<link rel="dns-prefetch" href="' . esc_attr( $prefetch_host ) . '" />';
 	}
 
 	/**
@@ -504,9 +566,18 @@ class Cookie_Notice_Frontend {
 			}
 		}
 
+		// #2266: position is API-owned — read from cookie_notice_app_design for connected sites.
+		// Falls back to cookie_notice_options["general"]["position"] for disconnected/legacy-only installs.
+		$app_design      = $cn->is_network_options()
+			? get_site_option( 'cookie_notice_app_design', [] )
+			: get_option( 'cookie_notice_app_design', [] );
+		$banner_position = ! empty( $app_design['position'] )
+			? sanitize_key( $app_design['position'] )
+			: ( $cn->options['general']['position'] ?? 'bottom' );
+
 		// get cookie container args
 		$options = apply_filters( 'cn_cookie_notice_args', [
-			'position'				=> $cn->options['general']['position'],
+			'position'				=> $banner_position,
 			'css_class'				=> $cn->options['general']['css_class'],
 			'button_class'			=> 'cn-button',
 			'colors'				=> $cn->options['general']['colors'],
@@ -521,12 +592,12 @@ class Cookie_Notice_Frontend {
 			'see_more_opt'			=> $cn->options['general']['see_more_opt'],
 			'link_target'			=> $cn->options['general']['link_target'],
 			'link_position'			=> $cn->options['general']['link_position'],
-			'aria_label'			=> 'Cookie Notice'
+			'aria_label'			=> 'Compliance by Hu-manity.co'
 		] );
 
 		// message output
 		$output = '
-		<!-- Cookie Notice plugin v' . esc_attr( $cn->defaults['version'] ) . ' by Hu-manity.co https://hu-manity.co/ -->
+		<!-- Compliance by Hu-manity.co plugin v' . esc_attr( $cn->defaults['version'] ) . ' https://hu-manity.co/ -->
 		<div id="cookie-notice" role="dialog" class="cookie-notice-hidden cookie-revoke-hidden cn-position-' . esc_attr( $options['position'] ) . '" aria-label="' . esc_attr( $options['aria_label'] ) . '" style="background-color: __CN_BG_COLOR__">'
 			. '<div class="cookie-notice-container" style="color: ' . esc_attr( $options['colors']['text'] ) . '">'
 			. '<span id="cn-notice-text" class="cn-text-container">'. ( $options['see_more'] ? do_shortcode( $options['message_text'] ) : $options['message_text'] ) . '</span>'
@@ -541,7 +612,7 @@ class Cookie_Notice_Frontend {
 			. '<span id="cn-revoke-buttons" class="cn-buttons-container"><button id="cn-revoke-cookie" class="cn-revoke-cookie ' . esc_attr( $options['button_class'] ) . ( $options['css_class'] !== '' ? ' cn-button-custom ' . esc_attr( $options['css_class'] ) : '' ) . '" aria-label="' . esc_attr( $options['revoke_text'] ) . '"' . ( $options['css_class'] == '' ? ' style="background-color: ' . esc_attr( $options['colors']['button'] ) . '"' : '' ) . '>' . esc_html( $options['revoke_text'] ) . '</button></span>
 			</div>' : '' ) . '
 		</div>
-		<!-- / Cookie Notice plugin -->';
+		<!-- / Compliance by Hu-manity.co plugin -->';
 
 		add_filter( 'safe_style_css', [ $this, 'allow_style_attributes' ] );
 
@@ -707,12 +778,22 @@ class Cookie_Notice_Frontend {
 			$cookie_time = $cookie_time_rejected = MONTH_IN_SECONDS;
 		}
 
+		// #2266: position is API-owned — read from cookie_notice_app_design for connected sites.
+		// Falls back to cookie_notice_options["general"]["position"] for disconnected/legacy-only installs.
+		// (Same resolution as add_cookie_notice() — duplicated here because this is a separate WP hook.)
+		$app_design      = $cn->is_network_options()
+			? get_site_option( 'cookie_notice_app_design', [] )
+			: get_option( 'cookie_notice_app_design', [] );
+		$banner_position = ! empty( $app_design['position'] )
+			? sanitize_key( $app_design['position'] )
+			: ( $cn->options['general']['position'] ?? 'bottom' );
+
 		// prepare script data
 		$script_data = [
 			'ajaxUrl'				=> admin_url( 'admin-ajax.php' ),
 			'nonce'					=> wp_create_nonce( 'cn_save_cases' ),
 			'hideEffect'			=> $cn->options['general']['hide_effect'],
-			'position'				=> $cn->options['general']['position'],
+			'position'				=> $banner_position,
 			'onScroll'				=> $cn->options['general']['on_scroll'],
 			'onScrollOffset'		=> (int) $cn->options['general']['on_scroll_offset'],
 			'onClick'				=> $cn->options['general']['on_click'],
@@ -806,26 +887,124 @@ class Cookie_Notice_Frontend {
 	}
 
 	/**
-	 * Purge config cache.
+	 * Resolve the active app credentials (network-aware), mirroring purge_cache().
 	 *
-	 * @return void
+	 * @return array { app_id, app_key, network } — empty strings when unpaired.
 	 */
-	public function purge_cache() {
-		// get main instance
+	private function get_app_credentials() {
 		$cn = Cookie_Notice();
 
 		if ( is_multisite() && $cn->is_plugin_network_active() && $cn->network_options['general']['global_override'] ) {
-			$app_id = $cn->network_options['general']['app_id'];
-			$app_key = $cn->network_options['general']['app_key'];
-		} else {
-			$app_id = $cn->options['general']['app_id'];
-			$app_key = $cn->options['general']['app_key'];
+			return [
+				'app_id'  => $cn->network_options['general']['app_id'],
+				'app_key' => $cn->network_options['general']['app_key'],
+				'network' => true,
+			];
 		}
 
-		// compliance active only
-		if ( $app_id !== '' && $app_key !== '' ) {
-			// request for new config data too
-			$cn->welcome_api->get_app_config( $app_id, true );
-		}
+		return [
+			'app_id'  => $cn->options['general']['app_id'],
+			'app_key' => $cn->options['general']['app_key'],
+			'network' => false,
+		];
 	}
+
+	/**
+	 * Register the authenticated server-to-server cache-purge REST route.
+	 *
+	 * Added in 3.1.3. Lets our backend (Designer API on publish, Account API on
+	 * plan change) force a config + tier re-pull immediately, instead of waiting
+	 * on the WP-Cron pull (daily active / hourly inactive). Authentication is the
+	 * shared app secret (app-secret-key header) — no WP login / nonce, by design.
+	 *
+	 * @return void
+	 */
+	public function register_purge_route() {
+		register_rest_route(
+			'cookie-notice/v1',
+			'/purge',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'rest_purge_cache' ],
+				'permission_callback' => [ $this, 'rest_purge_permission_check' ],
+			]
+		);
+	}
+
+	/**
+	 * Permission callback for the purge route.
+	 *
+	 * Fails closed: rejects unpaired sites, non-TLS requests, app-id mismatch, and
+	 * any secret mismatch (constant-time). Returns bool only — no detail leaks to
+	 * the caller on denial.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return bool
+	 */
+	public function rest_purge_permission_check( $request ) {
+		$creds = $this->get_app_credentials();
+
+		// unpaired site — no credentials to verify against
+		if ( $creds['app_id'] === '' || $creds['app_key'] === '' )
+			return false;
+
+		// the secret travels in the header — require TLS
+		if ( ! is_ssl() )
+			return false;
+
+		$req_app_id = (string) $request->get_header( 'app-id' );
+		$req_secret = (string) $request->get_header( 'app-secret-key' );
+
+		if ( $req_app_id === '' || $req_secret === '' )
+			return false;
+
+		// app-id must match the paired app
+		if ( ! hash_equals( (string) $creds['app_id'], $req_app_id ) )
+			return false;
+
+		// constant-time secret compare
+		return hash_equals( (string) $creds['app_key'], $req_secret );
+	}
+
+	/**
+	 * Handle an authenticated purge request.
+	 *
+	 * Mirrors ajax_purge_cache() (settings.php) so the server path and the admin
+	 * "Purge Cache" button behave identically. A short per-site cooldown bounds
+	 * forced re-pull amplification toward our own Designer API.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function rest_purge_cache( $request ) {
+		$cn    = Cookie_Notice();
+		$creds = $this->get_app_credentials();
+
+		// per-site cooldown (2 min) — reject rapid repeats with 429
+		$cooldown    = 120;
+		$cooldown_at = $creds['network'] ? get_site_transient( 'cookie_notice_purge_cooldown' ) : get_transient( 'cookie_notice_purge_cooldown' );
+
+		if ( $cooldown_at !== false )
+			return new WP_REST_Response( [ 'purged' => false, 'reason' => 'cooldown' ], 429 );
+
+		if ( $creds['network'] )
+			set_site_transient( 'cookie_notice_purge_cooldown', current_time( 'timestamp', true ), $cooldown );
+		else
+			set_transient( 'cookie_notice_purge_cooldown', current_time( 'timestamp', true ), $cooldown );
+
+		// force a config + tier re-pull (bypasses the 1h throttle)
+		$cn->welcome_api->get_app_config( $creds['app_id'], true );
+
+		// re-evaluate CSP state (parity with the admin Purge button)
+		$cn->settings->refresh_csp_notice( true );
+
+		// tell the frontend JS widget to bust its client cache
+		if ( $cn->is_network_options() )
+			set_site_transient( 'cookie_notice_config_update', current_time( 'timestamp', true ), 600 );
+		else
+			set_transient( 'cookie_notice_config_update', current_time( 'timestamp', true ), 600 );
+
+		return new WP_REST_Response( [ 'purged' => true ], 200 );
+	}
+
 }

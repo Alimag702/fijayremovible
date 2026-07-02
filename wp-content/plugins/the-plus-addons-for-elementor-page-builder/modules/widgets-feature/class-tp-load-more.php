@@ -66,7 +66,7 @@ if ( ! class_exists( 'Tp_load_more' ) ) {
 			global $post;
 			ob_start();
 
-			$load_attr = isset( $_POST['loadattr'] ) ? wp_unslash( $_POST['loadattr'] ) : '';
+			$load_attr = isset( $_POST['loadattr'] ) ? sanitize_text_field( wp_unslash( $_POST['loadattr'] ) ) : '';
 			if ( empty( $load_attr ) ) {
 				ob_get_contents();
 				exit;
@@ -86,12 +86,18 @@ if ( ! class_exists( 'Tp_load_more' ) ) {
 				die( 'Security checked!' );
 			}
 
-			$paged  = isset( $_POST['paged'] ) && intval( $_POST['paged'] ) ? wp_unslash( $_POST['paged'] ) : '';
-			$offset = isset( $_POST['offset'] ) && intval( $_POST['offset'] ) ? wp_unslash( $_POST['offset'] ) : '';
+			$paged  = isset( $_POST['paged'] ) ? intval( wp_unslash( $_POST['paged'] ) ) : '';
+			$offset = isset( $_POST['offset'] ) ? intval( wp_unslash( $_POST['offset'] ) ) : '';
 			$layout = isset( $load_attr['layout'] ) ? sanitize_text_field( wp_unslash( $load_attr['layout'] ) ) : '';
 
 			$category  = isset( $load_attr['category'] ) ? wp_unslash( $load_attr['category'] ) : '';
-			$post_type = isset( $load_attr['post_type'] ) ? sanitize_text_field( wp_unslash( $load_attr['post_type'] ) ) : '';
+			$post_type = isset( $load_attr['post_type'] ) ? sanitize_key( $load_attr['post_type'] ) : '';
+
+			$tp_pto = $post_type ? get_post_type_object( $post_type ) : null;
+			if ( ! $tp_pto || empty( $tp_pto->public ) ) {
+				wp_die( '', '', array( 'response' => 400 ) );
+			}
+
 			$post_load = isset( $load_attr['load'] ) ? sanitize_text_field( wp_unslash( $load_attr['load'] ) ) : '';
 			$order_by  = isset( $load_attr['order_by'] ) ? sanitize_text_field( wp_unslash( $load_attr['order_by'] ) ) : '';
 			$post_tags = isset( $load_attr['post_tags'] ) ? wp_unslash( $load_attr['post_tags'] ) : '';

@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
@@ -25,18 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Post_Author
  */
-class ThePlus_Post_Author extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 1.0.1
-	 * @version 5.4.2
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
-
+class ThePlus_Post_Author extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name.
 	 *
@@ -64,7 +53,7 @@ class ThePlus_Post_Author extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-user theplus_backend_icon';
+		return 'theplus-i-post-author tpae-editor-logo';
 	}
 
 	/**
@@ -74,7 +63,7 @@ class ThePlus_Post_Author extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-builder' );
+		return array( 'plus-essential', 'plus-single' );
 	}
 
 	/**
@@ -84,56 +73,16 @@ class ThePlus_Post_Author extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Post Author', 'Author', 'Author Box', 'Post Author Box', 'Author Details', 'Author Bio' );
+		return array( 'Tp Post Author Box', 'Author Bio', 'Author Information', 'Post Author Profile', 'Blog Author Details', 'Author Image', 'Author Name', 'Author Social Links', 'Customized Author Box', 'Author Info', 'Blog Post Author', 'Author Box' );
 	}
-
 	/**
-	 * Get Widget Custom Help Url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 1.0.1
-	 * @version 6.1.0
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -152,13 +101,22 @@ class ThePlus_Post_Author extends Widget_Base {
 		$this->add_control(
 			'style',
 			array(
-				'label'   => esc_html__( 'Style', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'style-1',
-				'options' => array(
-					'style-1' => esc_html__( 'Style 1', 'tpebl' ),
-					'style-2' => esc_html__( 'Style 2', 'tpebl' ),
+				'label'       => esc_html__( 'Style', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'style-1',
+				'options'     => array(
+					'style-1' => array(
+						'title' => esc_html__( 'Style 1', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/post-author/style-1.svg' ),
+					),
+					'style-2' => array(
+						'title' => esc_html__( 'Style 2', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/post-author/style-2.svg' ),
+					),
 				),
+				'columns'     => 2,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_responsive_control(
@@ -243,6 +201,52 @@ class ThePlus_Post_Author extends Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/add-post-author-box-in-elementor-blog-post/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://youtu.be/sU-gLRCZnLs',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		if ( ! tpae_wl_pluginads_enabled() ) {
+			$this->start_controls_section(
+				'tpae_theme_builder_sec',
+				array(
+					'label' => esc_html__( 'Use with Theme Builder', 'tpebl' ),
+					'tab'   => Controls_Manager::TAB_CONTENT,
+				)
+			);
+			$this->add_control(
+				'tpae_theme_builder',
+				array(
+					'type'        => 'tpae_theme_builder',
+					'notice'      => esc_html__( 'We recommend adding this widget in the Post Single Page to show author info under each blog post', 'tpebl' ),
+					'button_text' => esc_html__( 'Create Single Page', 'tpebl' ),
+					'page_type'   => 'tp_singular_page',
+				)
+			);
+			$this->end_controls_section();
+		}
+
+		$this->start_controls_section(
 			'section_author_name_style',
 			array(
 				'label' => esc_html__( 'Author Name', 'tpebl' ),
@@ -254,8 +258,8 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Author Name', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 			)
 		);
@@ -337,8 +341,8 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Author Role', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 			)
 		);
@@ -347,6 +351,7 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Label', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => esc_html__( 'Role : ', 'tpebl' ),
 				'placeholder' => esc_html__( 'Enter Label', 'tpebl' ),
@@ -433,8 +438,8 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Bio', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 			)
 		);
@@ -530,8 +535,8 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Avatar', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 			)
 		);
@@ -596,8 +601,8 @@ class ThePlus_Post_Author extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Social', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 			)
 		);
@@ -809,12 +814,9 @@ class ThePlus_Post_Author extends Widget_Base {
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
 		$this->end_controls_section();
-		
+
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -895,8 +897,9 @@ class ThePlus_Post_Author extends Widget_Base {
 				$authorsocial .= '</ul>';
 			}
 		}
-		$output      = '<div class="tp-post-author-info">';
-			/* $ll_bg   = tp_bg_lazyLoad( $settings['boxBg_image'], $settings['boxBgHover_image'] );
+		$output = '<div class="tp-post-author-info">';
+			/*
+			$ll_bg   = tp_bg_lazyLoad( $settings['boxBg_image'], $settings['boxBgHover_image'] );
 			$output .= '<div class="tp-author-details ' . esc_attr( $style ) . ' ' . $ll_bg . '">'; */
 
 			$output .= '<div class="tp-author-details ' . esc_attr( $style ) . ' ">';

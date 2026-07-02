@@ -2,9 +2,9 @@
 Contributors: ShortPixel
 Tags: convert webp, optimize images, image optimization, resize, compress images
 Requires at least: 4.8.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.4.2
+Stable tag: 6.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,7 @@ Make an instant <a href="https://shortpixel.com/image-compression-test" target="
 * AI Background Removal – Instantly remove background from your images with one click, ideal for creating clean product photos. After the background is removed, your image can have a transparent background or be filled with a single solid color.
 * AI Image Titles - In addition to ALT text, captions, and descriptions, you can now generate smart image titles using AI for better SEO.
 * Bulk Remove AI Data - Easily clear all AI-generated image SEO data in one go.
+* You can now add fixed text before/after AI-generated image SEO data for full consistency across your site.
 
 ### 🆕 New! Freshly added AI Image SEO features ###
 
@@ -47,11 +48,13 @@ Make an instant <a href="https://shortpixel.com/image-compression-test" target="
 
 ### Freshly added features ###
 
+* Smart Backups: Save disk space by backing up only the main image. When restoring, thumbnails are automatically regenerated based on current settings.
+* Automatic Backup Cleanup: Set rules to automatically delete old backups after a chosen period.
 * Compress WebP images – ShortPixel now also <a href="https://shortpixel.com/blog/introducing-smartcompress/" target="_blank">smartly compresses</a> all your existing WebP images.
 * Added support for serving CSS, JS and fonts from our global CDN.
 * Save & Restore option for all settings – ideal for agencies and users managing multiple websites.
 * Decide whether AI bots can use your images for machine learning (ML) training, or <a href="https://shortpixel.com/blog/prevent-ai-data-mining-on-images/" target="_blank">block them entirely</a>.
-* You can now exclude images from optimization based on their upload date, perfect for skipping older or already optimized media.
+* You can now exclude images from optimization based on their file zie, perfect for skipping very small images or large images that photographers need to keep in their original, full format.
 * Filter and select images in bulk using date-based criteria, giving you precise control over what gets optimized and when.
 
 ### 🌍 Faster Websites for Global Audiences ###
@@ -355,36 +358,8 @@ before restoring an image from backup;
 `do_action("shortpixel_after_restore_image", $post_id);`
 after succesful restore;
 
-For version 4.22.10 and earlier:
-
-`apply_filters("shortpixel_backup_folder", $backup_folder, $main_file_path, $sizes);`
-just before returning the ShortPixel backup folder, usually /wp-content/uploads/ShortpixelBackups. The `$sizes` are the sizes array from metadata;
-
-For version 5.0.0 and later:
-
-`$directory = apply_filters("shortpixel/file/backup_folder", $directory, $file);`
-just before returning the ShortPixel backup folder, usually /wp-content/uploads/ShortpixelBackups).
-
-`apply_filters('shortpixel_image_exists', file_exists($path), $path, $post_id);`
-post ID is not always set, only if it's an image from Media Library;
-
 `apply_filters('shortpixel_image_urls', $URLs, $post_id);`
 filters the URLs that will be sent to optimisation, `$URLs` is a plain array;
-
-<strong>The filter below is deprecated starting with version 5.0.0!</strong>
-
-`apply_filters('shortpixel/db/chunk_size', $chunk);`
-the `$chunk` is the value ShortPixel chooses to use as the number of selected records in one query (based on total table size), some hosts work better with a different value;
-
-For version 4.22.10 and earlier:
-
-`apply_filters('shortpixel/backup/paths', $PATHs, $mainPath);`
-filters the array of paths of the images sent for backup and can be used to exclude certain paths/images/thumbs from being backed up, based on the image path. `$mainPath` is the path of the main image, while `$PATHs` is an array with all files to be backed up (including thumbnails);
-
-For version 5.0.0 and later:
-
-`apply_filters('shortpixel/image/skip_backup', false, $this->getFullPath(), $this->is_main_file)`
-filters the images that are skipped or not from the backup. Return true for the type of images to be skipped in the backup. If you check if `is_main_file` is true and return false (do not skip backup), while while otherwise returning true, the backup will be kept only for the main image. We suggest using it in conjuction with this action that fires right after the restore from backup is done:
 
 `do_action('shortpixel/image/after_restore', $this, $this->id, $cleanRestore);`
 This action can be used to cleanup the meta data from the database, regenerate thumbnails after restoring the main file, writing the updated meta data, etc.
@@ -446,16 +421,6 @@ Disable the feedback survey when the plugin is deactivated:
 
 `define('SHORTPIXEL_SKIP_FEEDBACK', true);`
 
-Hide the Cloudflare settings by defining these constants in wp-config.php:
-
-`define('SHORTPIXEL_CFTOKEN', 'the Cloudflare API token that has Purge Cache right');`
-`define('SHORTPIXEL_CFZONE', 'The Zone ID from the domain settings in Cloudflare');`
-
-Add HTTP basic authentication credentials by defining these constants in wp-config.php
-
-`define('SHORTPIXEL_HTTP_AUTH_USER', 'user');`
-`define('SHORTPIXEL_HTTP_AUTH_PASSWORD', 'pass');`
-
 == Screenshots ==
 
 1. Select bulk optimization options. (Media -> Bulk ShortPixel)
@@ -488,6 +453,165 @@ Add HTTP basic authentication credentials by defining these constants in wp-conf
 
 == Changelog ==
 
+= 6.5.3 =
+
+🔧 The Reliability & Compatibility Update
+
+Release Date: June 25, 2026
+
+🛠️ Fixes
+
+* Restore Metadata Fix: Restoring an image now correctly restores the original file size in the metadata instead of keeping the optimized size.
+* Improved Host Compatibility: Removed the dependency on PHP's getmypid() function, improving compatibility with hosting environments where it's disabled.
+* JSON Serialization Fix: Resolved a rare issue where JSON serialization could fail in specific edge cases.
+
+🤝 Compatibility Updates
+
+* Breakdance & Oxygen Ready: Added compatibility with upcoming versions of the Breakdance and Oxygen builders to ensure a smooth experience as these platforms evolve.
+
+Update now for improved reliability, broader compatibility, and an even smoother optimization experience!
+
+= 6.5.2 =
+
+☁️ The Offload & Backup Reliability Update
+
+Release Date: June 4, 2026
+
+⚡ Performance Improvements
+
+* Offload Media + AWS S3: Improved performance by reducing useless remote operations for websites using Offload Media with Amazon S3, resulting in a smoother and more efficient optimization workflow.
+
+🛠️ Fixes & Improvements
+
+* Optimization Data Migration: Fixed an error that could occur when migrating legacy image optimization data to the new format.
+* Custom Media Search Stability: Resolved an issue caused by unusual search requests on Custom Media pages.
+* Smart Backups Filename Conflict: Fixed a rare edge case where multiple files requiring conversion, uploaded with the exact same filename during the same month, could cause issues when Smart Backups were enabled.
+* Backup System Enhancements: Various reliability improvements and small fixes across the backup system.
+* Code documentation: Improved the overall code documentation of the plugin.
+
+Update now for a faster, more reliable experience, especially if you’re using AWS S3 and Smart Backups! 🚀☁️
+
+= 6.5.1 =
+
+🛠️ The Hotfix Update
+
+Release Date: May 5, 2026
+
+🐛 Fixes
+
+* Settings Page Fix: Resolved an issue affecting the Settings page in certain edge cases.
+* Backups System Fix: Fixed an issue related to the new backups system that could appear in specific scenarios.
+
+A small but important update to keep everything running smoothly! 🚀
+
+= 6.5.0 =
+
+🧠 The Smart Backups & AI Control Update
+
+Release Date: May 5, 2026
+
+✨ New Features
+
+* Smart Backups: Save disk space by backing up only the main image. When restoring, thumbnails are automatically regenerated based on current settings.
+* Automatic Backup Cleanup: Set rules to automatically delete old backups after a chosen period.
+* Consistent prefix/suffix for AI SEO Data: You can now add fixed text before/after AI-generated image SEO data for full consistency across your site.
+* Custom Media Re-Optimization: Re-optimize images directly from Custom Media bulk actions.
+* Custom Media Pagination: Navigate large media sets more easily with new pagination controls.
+
+⚙️ Improvements
+
+* Smarter Title Replacement: Image titles are only replaced with AI-generated ones if they haven’t been manually edited (when overwrite protection is enabled).
+* Better Error Messaging: Improved the “401 Unauthorized” message in the AI SEO Preview for clearer feedback.
+* PNG Handling Improved: Improved the PNG to JPG conversion to better handle alpha channels.
+* AI Context Limits: Added proper limits to AI context fields to prevent truncation issues.
+* Bulk Stability: Introduced slight delays in Media Library bulk actions to avoid server overload.
+* Paused Processing Logic: Restoring an item now cancels any paused processing to avoid unnecessary actions.
+* UI Enhancements: Improved text clarity and layout across settings, bulk processing, and the ShortPixel panel in wp-admin.
+
+🔄 Compatibility Updates
+
+* NextGen Gallery (Imagely): Integration restored using updated hooks and filters.
+* AI with EXIF Restrictions: AI generation now works even if EXIF blocks training (alternative data retrieval is used).
+* Offload Media Support: Improved compatibility with offloading plugins, including full support for the new Smart Backups.
+* Enable Media Replace: Image SEO data is now cleared when an image is replaced.
+* WPML Support: Manually generate AI SEO data in different languages for multilingual sites.
+
+🛠️ Fixes
+
+* Backup System Refactor: Fixed multiple edge cases and improved reliability across all backup scenarios.
+* Long Processing Safeguards: Added checks for images that take too long to process or become unavailable.
+* Alias API Key Handling: Prevent unnecessary re-queuing for domains not allowed by Alias API keys.
+* AI Disabled Message Cleanup: Removed misleading “AI Generation Disabled” responses to avoid conflicts with editors/builders.
+* Database Optimization: Added indexes for the aipostmeta table for better performance.
+* Queue Stability: Ensure blocked items are released properly on shutdown to avoid stuck processes.
+* JS & jQuery Fixes: Resolved deprecation warnings and improved frontend stability.
+* Filesize Exclusion Fix: Fixed a JavaScript issue that prevented filesize-based exclusions from working correctly.
+
+Update now to unlock smarter backups, better AI control, and improved compatibility across your entire workflow! 🚀
+
+= 6.4.4 =
+
+🌿 The Spring Update
+
+Release Date: March 24, 2026
+
+✨ New Feature
+
+* Exclusions by Filesize: You can now exclude images from optimization based on their file size, giving you even more precise control over what gets processed.
+
+🛠️ Fixes
+
+* Bulk Operation Messaging: When running bulk actions other than optimization, the correct descriptive text is now displayed.
+* PICTURE Tag Fixes:
+  - Fixed issues with certain background images not being handled correctly.
+  - Multiple improvements to ensure correct paths and compatibility with Bedrock setups.
+* Long Domain Handling: Fixed cases where very long domains caused CDN URL replacement to fail.
+* Invalid API Key Feedback: A proper message is now shown in the AI settings preview when an invalid API key is used.
+* AI Disabled Notice Scope: "AI generation disabled" message now appears only in the settings preview to avoid conflicts (especially with the Classic Editor).
+* Async Chatbot Loading: The chatbot now loads asynchronously in settings to prevent slowdowns when CDN responses are delayed.
+* JS Worker Stability: The JavaScript worker no longer stops if invalid JSON is received from the backend.
+* LS Cache Compatibility: Fixed incompatibilities with LiteSpeed Cache and certain custom media folder setups.
+* Custom Media Errors: Resolved errors occurring during optimization of specific custom media folders.
+* open_basedir Improvements: Additional safeguards to prevent warnings with strict open_basedir configurations.
+* PHP 8.4 Deprecation Fix: Fixed a rare deprecation warning on PHP 8.4.
+
+🛡️ Security Fixes
+
+* PHP Object Injection: Patched a potential vulnerability related to AI-generated SEO data (reported by PatchStack).
+* Stored XSS (Author+): Fixed an authenticated stored XSS vulnerability when using AI features (reported by WordFence).
+
+✨ Tweaks & Improvements
+
+* Wording & Layout Updates: Small improvements to texts and settings layout for a cleaner and clearer experience.
+
+Update now for stronger security, improved compatibility, and smarter control over your optimization workflows! 🚀
+
+= 6.4.3 =
+
+❄️ The Snowy Update
+
+Release Date: January 29, 2026
+
+🛡️ Security Fix
+
+* Editor-Level Access Patch: Fixed a potential vulnerability (responsibly reported by the WordFence team) where an authenticated Editor user could access arbitrary files.
+
+🛠️ Fixes & Improvements
+
+* Bulk Restore Display Fix: Resolved an issue where the final step of the bulk restore process wasn't being shown.
+* Bulk Labels Added: Each bulk action (restore, legacy migration, etc.) now shows a clear label for better tracking and transparency.
+* Custom Media Queue Info: Added more detailed status info for Custom Media items in the queue, now similar to what's shown in the Media Library.
+* Respect Image Title Overrides: The AI will no longer overwrite image titles if the "Preserve existing data" option is enabled.
+* No Period on AI Titles: Removed the automatic period added at the end of AI-generated image titles.
+* New Picture Tag Filter: Developers can now hook into a new filter for customizing how next-gen images are delivered via the <picture> tag.
+* Improved CDN Detection: Enhanced logic to detect images declared across multiple lines when replacing with CDN links.
+* Disabled AI Fields Visibility: AI fields that are disabled in settings are now clearly marked in both the Settings preview and the Bulk Processing preview.
+* Bulk Logs Preserved: Logs from bulk processing are now retained even when backups are cleared via the Tools menu.
+* Multisite Settings Hidden: Temporarily hid the multisite settings menu due to related errors - it will return in a future release.
+* Correct Parent Page Context: Ensured that the parent post/page context of an image is properly sent to the AI API for better SEO relevance.
+
+Update now for a more secure, transparent, and intelligent optimization experience! 🚀
+
 = 6.4.2 =
 
 📊 The Optimization Update
@@ -498,7 +622,7 @@ Release Date: January 15, 2026
 
 * Media Library Optimization Display: Fixed an issue where optimized images were always shown as "bonus optimization" — the stats now reflect actual results.
 * Bulk UI Improvements: Cleaned up the layout of the bulk processing screen when only a few options are selected, for a more focused experience.
-* Percentace Hidden for Non-Optimization Actions: Removed the optimization percentage display when running bulk operations like restore or data migration (that don't involve actual image optimization).
+* Percentage Hidden for Non-Optimization Actions: Removed the optimization percentage display when running bulk operations like restore or data migration (that don't involve actual image optimization).
 * AVIF via .htaccess for WebPs: Added support for AVIF delivery using the .htaccess method for images added directly in the WebP format.
 * AI SEO Preview Fix: Prevented display of incorrect data in the AI SEO Preview section within plugin settings.
 * SmartCrop Percentage Display: Fixed the issue where SmartCrop could show a negative improvement percentage if the cropped image ended up larger in size.
@@ -763,193 +887,6 @@ Release Date: May 8, 2025
 
 Update now for faster speeds, smarter automation, and more control than ever! 🚀
 
-= 6.1.4 =
-
-🔧 The Clarity & Stability Update
-
-Release Date: March 27, 2025
-
-🛠️ Fixes & Improvements
-
-* Quota Limit Message: Clearer messaging is now shown on the bulk processing screen when you're out of optimization quota.
-* Admin Notice Styling: Fixed visual issues with some admin notifications that weren’t styled correctly in wp-admin.
-* Duplicate Image Requests: Resolved an issue where some background images caused doubled image requests when using the PICTURE tag for next-gen formats.
-* Redirect Loop Prevention: Added a fail-safe mechanism to avoid potential redirect loops in wp-admin if `register_shutdown_function` fails.
-
-Update now for a cleaner, more stable, and user-friendly experience! 🚀
-
-= 6.1.3 =
-
-🔧 The Smart CDN Update
-
-Release Date: February 13, 2025
-
-🛠️ Fixes & Improvements
-
-* Smarter CDN Replacements: The plugin now verifies if replaced URLs are empty, preventing issues in text templates used by various plugins.
-* JSON Compatibility Fix: Resolved cases where JSON files containing images were broken by the CDN replacer.
-* Background Processing Cleanup: When disabling background mode, the cron job is now properly removed to avoid unnecessary processes.
-
-This update ensures a more reliable CDN integration, preventing conflicts with plugins and structured data. Update now for a smoother experience! 🚀
-
-= 6.1.2 =
-
-🛒 The Seamless Shopping Update
-
-Release Date: February 11, 2025
-
-🛠️ Fixes
-
-* WooCommerce CDN Fixes: Resolved issues where images in the WooCommerce cart and checkout pages weren’t correctly replaced with CDN links.
-* Duplicate Optimization Info: Fixed cases where ShortPixel optimization details appeared twice when using Gutenberg.
-* Background Processing Errors: Corrected cron errors affecting background processing in specific scenarios.
-* Relative URL CDN Delivery: Ensured proper replacement of relative URLs when using CDN delivery for consistent performance.
-* Picture Tag Adjustments: All attributes are now fully supported when delivering next-gen images via the Picture tag method.
-
-🔧 Compatibility Updates
-
-* Avada Live Builder Integration: Automatically disabled the CDN replacer when using Avada Live Builder to prevent conflicts.
-
-✨ Tweaks & Improvements
-
-* UI Refinements: Enhanced CSS styling, clearer texts, and smoother layouts to improve the onboarding experience for new users.
-
-🌍 Language Updates
-
-* Added 2 new strings, updated 3, with no deprecated strings to improve global translation coverage.
-
-Update now to keep your WooCommerce store and website running seamlessly! 🚀
-
-= 6.1.1 =
-
-🔧 The needed Friday release
-
-Release Date: January 24, 2025
-
-🛠️ Fixes
-
-AVIF Notification Disabled: The AVIF notification got a little crazy and started appearing where it shouldn’t. We’ve completely disabled it to avoid any further confusion. Apologies for the inconvenience!
-
-Thank you for your patience and understanding! Update now for a smoother experience. 🚀
-
-= 6.1.0 =
-
-🚀 The Data-mining Update
-
-Release Date: January 23, 2025
-
-🎉 New Features
-
-* AI Training Control: Added data-mining options in the EXIF management settings. You can now decide whether your images can be used for AI training.
-* Improved Switchers Design: Enjoy a cleaner and more user-friendly design for the switchers in settings and bulk processing.
-* AVIF Recheck Option: Added a handy recheck option to notifications about AVIF issues for better troubleshooting.
-
-🛠️ Fixes
-
-* Resolved "Could not save backup" errors caused by specific combinations of thumbnail sizes and SmartCropping.
-* Fixed missing icons or images in certain notifications.
-* Custom Media folders "Last change" timestamps are now updated correctly when changes occur.
-* Proper detection of Custom Media images missing WebP or AVIF formats in all scenarios.
-* Fixed display issues with Custom Media notices when selecting new folders.
-* Removed old Custom Media cron formats when the plugin is deactivated.
-* Prevented errors by ensuring thumbnails aren’t added to the optimization queue when the main image isn’t processable.
-* Resized images through filters get their metadata updated correctly.
-
-✨ Tweaks & Improvements
-
-* WP-CLI Processes: Updated process stats every 3 minutes for accurate numbers.
-* Custom Media Cron: Cron jobs for new file detection won’t run if the Custom Media option is disabled.
-* Added a filter for settings to enable programmatic changes when needed.
-* Updated all plugin links to avoid unnecessary redirects.
-* Added support for CDN on http-only websites.
-* Polished CSS, texts, and layouts for a smoother experience.
-* Old, unused code has been cleaned up.
-
-🌍 Language Updates
-
-* Added 16 new strings, updated 7, and deprecated 67 to enhance global translation support.
-
-Update now to take full advantage of these enhancements and new features! 🌟
-
-= 6.0.5 =
-Release Date: January 16, 2025
-
-🛠️ Fixes
-
-* Resolved an issue where WebP or AVIF formats were not added to bulk processing for Custom Media items.
-* Fixed a deprecation warning that appeared when using PHP 8.3.
-* Corrected a redirect error after saving the API Key, which previously led to the general WordPress settings.
-* Fixed a misleading message displayed when a converted image was restored from backup.
-* Added a proper link to Custom Media images when displaying errors after the bulk processing.
-
-🔧 Compatibility Updates
-
-* CDN Replacer Disabled: Now automatically disabled when using Bricks, Breakdance, or Oxygen builders to avoid conflicts.
-
-✨ Tweaks & Improvements
-
-* Updated Texts: Improved clarity in messages when bulk processing is paused and background mode is active.
-* API Key Box Hidden: Completely hide the API Key box when the SHORTPIXEL_HIDE_API_KEY constant is used.
-
-🌍 Language Updates
-
-* Added 4 new strings, updated 2 strings, and deprecated 4 strings to improve translation coverage.
-
-Update now to enjoy these enhancements and fixes for a smoother experience! 🚀
-
-= 6.0.4 =
-Release date: December 10, 2024
-* Fix: Inline images and SVGs are no longer replaced by CDN links;
-* Fix: The text domain load has been removed from the plugin code to avoid future errors;
-* Fix: When trying to clear the queue, the settings page was not loaded correctly;
-* Fix: Forced generation for PNGs could be enabled even if the PNG2JPG option was disabled;
-* Tweak: Several minor CSS and wording improvements have been added;
-* Tweak: Bulk preparation now runs faster when no images are optimized;
-* Language: 0 new strings added, 2 updated, 0 fuzzed and 0 deprecated.
-
-= 6.0.3 =
-Release date: December 3, 2024
-* Fix: With certain WooCommerce themes and CDN delivery enabled, some images were not loaded on the cart and checkout pages
-* Fix: Removed an unused hook that was triggering errors in some cases;
-* Fix: A JavaScript error was displayed in the browser console when CDN delivery was hidden in the settings;
-* Fix: Divi frontend builder now works when CDN delivery is enabled;
-* Language: 2 new strings added, 0 updated, 0 fuzzed and 0 deprecated.
-
-= 6.0.2 =
-Release date: November 28, 2024
-* Fix: Resizing and SmartCropping can now both be enabled;
-* Fix: Beaver Builder now works when CDN delivery is enabled;
-* Fix: In some cases the picture tag was generated even if it was disabled;
-* Fix: Some notifications still had links pointing to the old settings structure;
-* Fix: The custom media cron generated an error under very specific conditions in PHP 8.2.x;
-* Fix: More CSS changes to make the settings usable when other plugins insert their own CSS in wrong places;
-* Fix: All database options are now removed from the tools section after uninstalling the plugin;
-* Fix: Added a possible fix if the execution of the installation scripts hangs after upgrading to version 6;
-* Fix: Some JavaScript errors were displayed in the Theme Customizer section;
-* Tweak: Added filter to hide the new CDN delivery method;
-* Tweak: Removed a database query for custom media that was no longer needed in wp-admin;
-* Tweak: The save settings button function has been improved and prevents multiple saves at once;
-* Tweak: The default CDN URL has been updated;
-* Language: 1 new strings added, 10 updated, 0 fuzzed and 0 deprecated.
-
-= 6.0.1 =
-Release date: November 22, 2024
-* Fix: Some PHP warnings were displayed for certain images when they were optimized;
-* Fix: The plugin settings are loaded correctly even if the Google Reviews & Ratings plugin is active;
-* Fix: Help icon pop-ups now look better;
-* Language: 0 new strings added, 0 updated, 0 fuzzed and 0 deprecated.
-
-= 6.0.0 =
-Release date: November 21, 2024
-* New: The plugin now also delivers next generation images such as WebP and AVIF via the ShortPixel CDN;
-* New: Complete redesign of the plugin settings and layout;
-* New: Overview page with image status in a single view;
-* New: Simple and advanced settings modes are now available;
-* Tweak: Plugin processing is no longer started for users without appropriate rights (such as Authors);
-* Fix: The filter "optimized/not optimized" from the Media Library now works correctly when the main image is excluded;
-* Fix: The comparator in the NextGen Gallery now looks better;
-* Fix: When using WPML, random optimization errors occurred with some images;
-* Language: Many of the plugin strings have been updated or changed and we thank the translation teams for their efforts..
 
 = EARLIER VERSIONS =
 * please refer to the <a href="https://github.com/short-pixel-optimizer/shortpixel-image-optimiser/blob/master/changelog.txt" target="_blank">changelog.txt</a> file inside the plugin archive.

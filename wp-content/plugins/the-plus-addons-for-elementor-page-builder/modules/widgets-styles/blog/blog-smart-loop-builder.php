@@ -8,6 +8,10 @@
  * @package Theplus
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 $template = str_replace( '{{tpae_excerpt}}', get_the_excerpt(), $content_html );
 $template = str_replace( '{{tpae_image}}', get_the_post_thumbnail(), $template );
 
@@ -15,7 +19,8 @@ $template = str_replace( '{{tpae_permalink}}', get_permalink(), $template );
 $template = str_replace( '{{tpae_image_url}}', get_the_post_thumbnail_url(), $template );
 $template = str_replace( '{{tpae_author_meta}}', get_the_author_meta( 'display_name' ), $template );
 $template = str_replace( '{{tpae_author_url}}', get_author_posts_url( get_the_author_meta( 'ID' ) ), $template );
-$template = str_replace( '{{tpae_author_logo}}', get_custom_logo(), $template );
+$template = str_replace( '{{tpae_author_logo}}', get_avatar( get_the_author_meta('user_email')), $template );
+
 
 $f_created_date = get_the_date( 'Y-m-d' );
 $f_created_time = get_the_date( 'H:i:s' );
@@ -81,7 +86,7 @@ if ( ! empty( $matches[1] ) ) {
 		for ( $i = 0; $i < $match; $i++ ) {
 
 			if ( ! empty( $category_object[ $i ]->name ) ) {
-				array_push( $category_names, '<a href="'.get_category_link( $category_object[ $i ]->cat_ID ).'"><span class="tpae-slb-category">' . wp_kses_post( $category_object[ $i ]->name ) . '</span></a>' );
+				array_push( $category_names, '<a href="' . esc_url( get_category_link( $category_object[ $i ]->cat_ID ) ) . '"><span class="tpae-slb-category">' . wp_kses_post( $category_object[ $i ]->name ) . '</span></a>' );
 			}
 		}
 
@@ -93,7 +98,7 @@ if ( ! empty( $matches[1] ) ) {
 $category_name = '';
 foreach ( $category_object as $category ) {
 	if ( ! empty( $category->name ) ) {
-		$category_name .= '<a href="'.get_category_link( $category->cat_ID).'"><span class="tpae-slb-category">' . wp_kses_post( $category->name ) . '</span></a>';
+		$category_name .= '<a href="' . esc_url( get_category_link( $category->cat_ID ) ) . '"><span class="tpae-slb-category">' . wp_kses_post( $category->name ) . '</span></a>';
 	}
 }
 
@@ -132,7 +137,7 @@ if ( ! empty( $tag_matches[1] ) ) {
 	foreach ( $tag_matches[1] as $match ) {
 		for ( $i = 0; $i < $match; $i++ ) {
 			if ( ! empty( $tag_object[ $i ]->name ) ) {
-				$tag_names[] = '<a href="'.get_tag_link( $tag_object[ $i ]->term_id ).'"><span class="tpae-slb-tag">' . wp_kses_post( $tag_object[ $i ]->name ) . '</span></a>';
+				$tag_names[] = '<a href="' . esc_url( get_tag_link( $tag_object[ $i ]->term_id ) ) . '"><span class="tpae-slb-tag">' . wp_kses_post( $tag_object[ $i ]->name ) . '</span></a>';
 			}
 		}
 		$tags_string = implode( ' ', $tag_names );
@@ -144,11 +149,11 @@ $tag_name = '';
 if ( ! empty( $tag_object ) ) {
 	foreach ( $tag_object as $_tag ) {
 		if ( ! empty( $_tag->name ) ) {
-			$tag_name .= '<a href="'.get_tag_link( $_tag->term_id ).'"><span class="tpae-slb-tag">' . wp_kses_post( $_tag->name ) . '</span></a>';
+			$tag_name .= '<a href="' . esc_url( get_tag_link( $_tag->term_id ) ) . '"><span class="tpae-slb-tag">' . wp_kses_post( $_tag->name ) . '</span></a>';
 		}
 	}
 }
 
 $template = str_replace( '{{tpae_tag}}', trim( $tag_name ), $template );
 
-echo $template;
+echo wp_kses_post( $template );

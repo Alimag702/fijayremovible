@@ -9,8 +9,6 @@ if (!defined('ABSPATH')) {
 use ShortPixel\ShortPixelLogger\ShortPixelLogger as Log;
 use ShortPixel\Model\Image\ImageModel as ImageModel;
 
-use ShortPixel\Controller\Api\ApiController as ApiController;
-use ShortPixel\Controller\Api\RequestManager as RequestManager;
 use ShortPixel\Model\Converter\Converter as Converter;
 
 use ShortPixel\Controller\Optimizer\OptimizeController as OptimizeController;
@@ -18,6 +16,7 @@ use ShortPixel\Controller\Optimizer\OptimizeAiController as OptimizeAiController
 use ShortPixel\Controller\Optimizer\ActionController as ActionController;
 use ShortPixel\Helper\UiHelper;
 use ShortPixel\Model\AiDataModel;
+use stdClass;
 
 class QueueItem
 {
@@ -47,13 +46,23 @@ class QueueItem
       $this->data = new QueueItemData(); // init
    }
 
+   /** Sets required ImageModel to the QueueItem
+    * 
+    * @param ImageModel $imageModel 
+    * @return void 
+    */
    public function setModel(ImageModel $imageModel)
    {
       $this->imageModel = $imageModel;
       $this->item_id = $imageModel->get('id');
    }
 
-   public function setFromData($data)
+   /** Sets the data in QueueItem from data coming from the Shortpixel Queue 
+    * 
+    * @param mixed $data 
+    * @return void 
+    */
+   public function setFromQueueData($data)
    {
       foreach($data as $name => $value)
       {
@@ -61,11 +70,22 @@ class QueueItem
       }
    }
 
+   /** Sets information to the (persistent) data object, which is saved in ShortPixel Queue
+    * 
+    * @param string $name 
+    * @param mixed $value 
+    * @return void 
+    */
    public function setData($name, $value)
    {
       $this->data->$name = $value;
    }
 
+   /** Without parameters returns the current block status of this item, otherwise applied required block ( true / false )
+    * 
+    * @param boolean $block 
+    * @return boolean|void     
+    */
    public function block($block = null)
    {
       if (is_null($block)) {
@@ -75,39 +95,35 @@ class QueueItem
       }
    }
 
-   public function data()
+   /** Returns QueueItemData object for functions requiring this information 
+    * 
+    * @return QueueItemData 
+    */
+   public function data() : QueueItemData
    {
       return $this->data;
    }
 
-   public function result()
+   /** Returns result object which can be interpreted by UI . Creates it if null 
+    * 
+    * @return QueueItemResult 
+    */
+   public function result() : QueueItemResult
    {
-
       if (is_null($this->result))
       {
-         $this->result = new \stdClass;
+         $this->result = new QueueItemResult($this->item_id);
       }
 
-      // check / set defaults.
-      if (false === property_exists($this->result, 'item_id')) {
-         $this->result->item_id = $this->item_id;
-      }
-
-      if (false === property_exists($this->result, 'is_error')) {
-         $this->result->is_error = false;
-      }
-
-      if (false === property_exists($this->result, 'is_done')) {
-         $this->result->is_done = false;
-      }
-
-      $result = $this->result;
-
-      $result->_debug_is_qItemResult = true;
-
-      return $result;
+      return $this->result;
    }
 
+   /** Sets value of a property. 
+    * 
+    * @param string $name 
+    * @param mixed $value 
+    * @return void 
+    */
    public function set($name, $value)
    {
       if (property_exists($this, $name)) {
@@ -134,6 +150,11 @@ class QueueItem
       return $qItem;
    }
 
+   /** Gets property value by name, null if does not exists. 
+    * 
+    * @param mixed $name 
+    * @return mixed 
+    */
    public function __get($name)
    {
       if (property_exists($this, $name)) {
@@ -144,27 +165,10 @@ class QueueItem
       return null;
    }
 
-   public function returnArray()
-   {
-      $array = [
-         'item_id' => $this->item_id,
-         'result' => $this->result,
-         'data' => $this->data->toObject(),
-      ];
-
-      return $array;
-   }
-
-   public function returnObject()
-   {
-      $object = new \stdClass;
-      $object->item_id = $this->item_id;
-      $object->result = $this->result;
-      $object->data = $this->data->toObject();
-
-      return $object;
-   }
-
+   /** Return Array representation of this object, which is used to enqueue the Item.
+    * 
+    * @return array{id: int, value: object, item_count: mixed, order: mixed} 
+    */
    public function returnEnqueue()
    {
       $value = $this->data->toObject();
@@ -172,9 +176,11 @@ class QueueItem
       $item_id = $this->item_id; 
 
       // ImageModel could not be set i.e. migrate or other special actions.
+      // @note This code doesn't do anything with media_id ? 
+      /*
       if (is_object($this->imageModel) && $this->imageModel->getParent() !== false) {
          $media_id = $this->imageModel->getParent();
-      }
+      } */
 
       $enqueue = ['id' => $item_id, 'value' => $value, 'item_count' => $this->item_count];
       
@@ -184,14 +190,21 @@ class QueueItem
       }
 
       return $enqueue; 
-      
    }
 
+   /** Set debug flag, used in edit-media debug info.
+    * 
+    * @return void 
+    */
    public function setDebug()
    {
       $this->debug_active = true;
    }
 
+   /** Initiate new migrate action
+    * 
+    * @return void 
+    */
    public function newMigrateAction()
    {
       $this->newAction(); 
@@ -235,9 +248,7 @@ class QueueItem
        if (isset($args['compressionType'])) 
        {
           $this->data()->compressionType = $args['compressionType'];
-       }
-
-       
+       }       
    }
 
    public function newRemoveLegacyAction()
@@ -248,10 +259,11 @@ class QueueItem
       $this->item_count = 1;
    }
 
+   // @todo This should be moved to QueueItemResult as some point with validation
    public function addResult($data = [])
    {
       // Should list every possible item, arrayfilter out.
-      $validation = [
+/*      $validation = [
          'apiStatus', 
          'message',
          'is_error',
@@ -276,18 +288,12 @@ class QueueItem
          'aiData',   // Returning AI Data
 
       ];
-
-      if (is_null($this->result)) {
-         $this->result = new \stdClass;
-      }
+*/
 
       foreach ($data as $name => $value) {
-         if (false === in_array($name, $validation)) {
-            Log::addWarn("Result $name not in validation");
-         }
-
-         $this->result->$name = $value;
+         $this->result()->$name = $value;
       }
+
    }
 
 
@@ -298,7 +304,7 @@ class QueueItem
     */
    protected function newAction()
    {
-       $this->result = new \stdClass; // new action, new results 
+       $this->result = new QueueItemResult($this->item_id); // new action, new results 
 
        if ($this->data()->hasNextAction()) // Keep this at all times / not optimal still
        {
@@ -480,7 +486,7 @@ class QueueItem
          $preview_only = true; 
       } 
 
-      $aiDataModel = new AiDataModel($item_id);
+      $aiDataModel = AiDataModel::getModelByAttachment($item_id, $this->imageModel->get('type'));
       
       $data = $aiDataModel->getOptimizeData($args);
 

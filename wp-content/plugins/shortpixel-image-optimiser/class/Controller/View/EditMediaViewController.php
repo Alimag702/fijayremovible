@@ -1,6 +1,7 @@
 <?php
 namespace ShortPixel\Controller\View;
 
+use ShortPixel\Controller\Backup\BackupController;
 use ShortPixel\Controller\Front\CDNController;
 use ShortPixel\Controller\Optimizer\OptimizeAiController;
 use ShortPixel\Controller\QueueController;
@@ -15,6 +16,8 @@ use ShortPixel\Helper\UiHelper as UiHelper;
 
 use ShortPixel\Controller\Queue\QueueItems as QueueItems;
 use ShortPixel\Model\AiDataModel;
+use ShortPixel\Model\Converter\Converter;
+use ShortPixel\Model\File\DirectoryModel;
 use ShortPixel\Model\File\FileModel as FileModel;
 
 
@@ -31,12 +34,6 @@ class EditMediaViewController extends \ShortPixel\ViewController
       protected $hooked;
 
 			protected static $instance;
-
-
-      public function __construct()
-      {
-        parent::__construct();
-      }
 
       protected function loadHooks()
       {
@@ -87,7 +84,7 @@ class EditMediaViewController extends \ShortPixel\ViewController
           return $fields;
       }
 
-      public function dometaBox($post)
+       public function dometaBox($post)
       {
           $this->post_id = $post->ID;
 					$this->view->debugInfo = array();
@@ -214,7 +211,6 @@ class EditMediaViewController extends \ShortPixel\ViewController
 
           $optimizeAiController = OptimizeAiController::getInstance();
 
-
 					$thumbnails = $imageObj->get('thumbnails');
 					$processable = ($imageObj->isProcessable()) ? '<span class="green">Yes</span>' : '<span class="red">No</span> (' . $imageObj->getReason('processable') . ')';
           $optimized = ($imageObj->isOptimized()) ? '<span class="green">Yes</span>' : '<span class="red">No</span>';
@@ -224,7 +220,7 @@ class EditMediaViewController extends \ShortPixel\ViewController
 
 					$hasrecord = ($imageObj->hasDBRecord()) ? '<span class="green">Yes</span>' : '<span class="red">No</span> ';
 
-          $debugInfo = array();
+          $debugInfo = [];
           $debugInfo[] = array(__('URL (get attachment URL)', 'shortpixel_image_optiser'), wp_get_attachment_url($this->post_id));
           $debugInfo[] = array(__('File (get attached)'), get_attached_file($this->post_id));
 
@@ -269,14 +265,10 @@ class EditMediaViewController extends \ShortPixel\ViewController
 						 $debugInfo[] = array(__('To Optimize URLS'),  $urls);
 					}
 
-
           $item = QueueItems::getImageItem($imageObj);
 
           if ($imageObj->isProcessable())
 					{
-						// $queueControl = new QueueController();
-
-
              $item->setDebug();
              $item->newOptimizeAction();
 
@@ -299,11 +291,7 @@ class EditMediaViewController extends \ShortPixel\ViewController
 
             if (true === $aiDataModel->isProcessable())
             {
-              //$item->requestAltAction();
-             // $optimizeAiController->parseJsonForQItem($item); 
-              $debugInfo[] = ['Ai - Paramlist ', $aiDataModel->getOptimizeData() ];
-   //           $debugInfo[] = ['Ai - returnDataList' , $item->data()->returndatalist];
-              
+              $debugInfo[] = ['Ai - Paramlist ', $aiDataModel->getOptimizeData() ];            
             }
             else
             {
@@ -316,6 +304,15 @@ class EditMediaViewController extends \ShortPixel\ViewController
 
           }
 
+          $backupController = BackupController::getBackupController(); 
+          
+          $backupModel = $backupController->getModel($imageObj);
+          $backupData = $backupModel->getBackupData(); 
+
+          $needs_regen = ($backupModel->needsRegenerate()) ? '<span class="green">Yes</span>' : '<span class="red">No</span> ';
+
+          $debugInfo[] = ['Backup thumbnails needs regenerate', $needs_regen]; 
+          $debugInfo['backupData'] = ['BackupData', $backupData]; 
 
 
           $debugInfo['imagemetadata'] = array(__('ImageModel Metadata (ShortPixel)'), $imageObj);
@@ -324,38 +321,49 @@ class EditMediaViewController extends \ShortPixel\ViewController
           $debugInfo['wpmetadata'] = array(__('WordPress Get Attachment Metadata'), $meta );
 					$debugInfo[] = array('', '<hr>');
 
-						if ($imageObj->hasBackup())
-            	$backupFile = $imageObj->getBackupFile();
+
+						if ($backupModel->hasBackup($imageObj) )
+            {
+            	$backupFile = $backupModel->getBackupFile($imageObj);
+              if (false === is_object($backupFile))
+              {
+                 $backupFile = $backupModel->getMainBackupFile();
+              }
+            }
 						else {
-							 $backupFile = $fs->getFile($fs->getBackupDirectory($imageObj) . $imageObj->getBackupFileName());
+							 $backupFile = $fs->getFile($fs->getBackupDirectory($imageObj) . $backupModel->getBackupFileName($imageObj));
 						}
 
             $debugInfo[] = array(__('Backup Folder'), (string) $backupFile->getFileDir() );
-						if ($imageObj->hasBackup())
+						if ($backupModel->hasBackup($imageObj))
+            {
 							$backupText = __('Backup File :');
-						else {
+              $debugInfo[] = array( $backupText, (string) $backupFile . '(' . UiHelper::formatBytes($backupFile->getFileSize()) . ')' );
+
+              $debugInfo[] = ['Main Backup:', (string) $backupModel->getMainBackupFile()];
+            }
+              else {
 							$backupText = __('Target Backup File after optimization (no backup) ');
+              $debugInfo[] = [$backupText, (string) $backupFile];
 						}
-            $debugInfo[] = array( $backupText, (string) $backupFile . '(' . UiHelper::formatBytes($backupFile->getFileSize()) . ')' );
 
             $debugInfo[] =  array(__("No Main File Backup Available"), '');
 
-
-
 					if ($imageObj->getMeta()->convertMeta()->isConverted())
 					{
-							$convertedBackup = ($imageObj->hasBackup(array('forceConverted' => true))) ? '<span class="green">Yes</span>' : '<span class="red">No</span>';
-							$backup = $imageObj->getBackupFile(array('forceConverted' => true));
+							//$convertedBackup = ($imageObj->hasBackup(array('forceConverted' => true))) ? '<span class="green">Yes</span>' : '<span class="red">No</span>';
+              $convertedBackup = ($backupModel->hasBackup($imageObj)) ? '<span class="green">Yes</span>' : '<span class="red">No</span>';
+							$backup = $backupModel->getBackupFile($imageObj);
 						 $debugInfo[] = array('Has converted backup', $convertedBackup);
 						 if (is_object($backup))
 						 	$debugInfo[] = array('Backup: ', $backup->getFullPath() );
 				}
 
-          if ($or = $imageObj->hasOriginal())
+          if (true === $imageObj->hasOriginal())
           {
              $original = $imageObj->getOriginalFile();
              $debugInfo[] = array(__('Has Original File: '), $original->getFullPath()  . '(' . UiHelper::formatBytes($original->getFileSize()) . ')');
-             $orbackup = $original->getBackupFile();
+             $orbackup = $backupModel->getBackupFile($original);
 
              $processable = ($original->isProcessable()) ? '<span class="green">Yes</span>' : '<span class="red">No</span> (' . $original->getReason('processable') . ')';
              
@@ -365,10 +373,9 @@ class EditMediaViewController extends \ShortPixel\ViewController
              $debugInfo[] = ['Original Restorable:', $restorable];
 
 
-             if ($orbackup)
+          if ($orbackup)
               $debugInfo[] = array(__('Has Backup Original Image'), $orbackup->getFullPath() . '(' . UiHelper::formatBytes($orbackup->getFileSize()) . ')');
 						$debugInfo[] = array('', '<hr>');
-
           }
 
 
@@ -390,18 +397,19 @@ class EditMediaViewController extends \ShortPixel\ViewController
                 continue;
               }
 
-              $url = $thumbObj->getURL(); 
+            //  $url = $thumbObj->getURL(); 
+              $url = $fs->pathToUrl($thumbObj);
               $filename = $thumbObj->getFullPath();
               $fileDir = $thumbObj->getFileDir();
 
-							$backupFile = $thumbObj->getBackupFile();
-							if ($thumbObj->hasBackup())
+							$backupFile = $backupModel->getBackupFile($thumbObj);
+							if ($backupModel->hasBackup($thumbObj) && is_object($backupFile))
 							{
 								$backup = $backupFile->getFullPath();
 								$backupText = __('Backup File :');
 							}
 							else {
-								$backupFile = $fs->getFile($fs->getBackupDirectory($thumbObj) . $thumbObj->getBackupFileName());
+								$backupFile = $fs->getFile($fs->getBackupDirectory($thumbObj) . $backupModel->getBackupFileName($thumbObj));
 								$backup = $backupFile->getFullPath();
 								$backupText = __('Target Backup File after optimization (no backup) ');
 							}

@@ -117,6 +117,7 @@ class UR_Form_Field_Country extends UR_Form_Field {
 				'GQ' => __( 'Equatorial Guinea', 'user-registration' ),
 				'ER' => __( 'Eritrea', 'user-registration' ),
 				'EE' => __( 'Estonia', 'user-registration' ),
+				'SZ' => __( 'Eswatini', 'user-registration' ),
 				'ET' => __( 'Ethiopia', 'user-registration' ),
 				'FK' => __( 'Falkland Islands', 'user-registration' ),
 				'FO' => __( 'Faroe Islands', 'user-registration' ),
@@ -258,7 +259,6 @@ class UR_Form_Field_Country extends UR_Form_Field {
 				'SD' => __( 'Sudan', 'user-registration' ),
 				'SR' => __( 'Suriname', 'user-registration' ),
 				'SJ' => __( 'Svalbard and Jan Mayen', 'user-registration' ),
-				'SZ' => __( 'Swaziland', 'user-registration' ),
 				'SE' => __( 'Sweden', 'user-registration' ),
 				'CH' => __( 'Switzerland', 'user-registration' ),
 				'SY' => __( 'Syria', 'user-registration' ),
@@ -401,6 +401,12 @@ class UR_Form_Field_Country extends UR_Form_Field {
 			return;
 		}
 
+		$isJson = preg_match( '/^\{.*\}$/s', $value ) ? true : false;
+		if ( $isJson ) {
+			$country_data = json_decode( $value, true );
+			$value = ! empty( $value['country'] ) ? $value['country'] : '';
+		}
+		
 		if ( ! empty( $value ) && ! in_array( $value, $valid_countries, true ) ) {
 			$message = array(
 				/* translators: %s - validation message */

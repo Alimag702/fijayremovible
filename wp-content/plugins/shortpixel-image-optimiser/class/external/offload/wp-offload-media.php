@@ -30,9 +30,13 @@ class wpOffload
 	protected $is_cname = false;
 	protected $cname;
 
-	private static $sources; // cache for url > source_id lookup, to prevent duplicate queries.
+	private static $sources = []; // cache for url > source_id lookup, to prevent duplicate queries.
+	private static $paths = []; 
+	private static $itemCache = [];
 
 	private static $offloadPrevented = array();
+
+	private static $instance; 
 
 	// if might have to do these checks many times for each thumbnails, keep it fastish.
 	//protected $retrievedCache = array();
@@ -41,6 +45,16 @@ class wpOffload
 	{
 		// This must be called before WordPress' init.
 		$this->init($as3cf);
+	}
+
+	public static function getInstance($as3cf)
+	{
+		if (is_null(self::$instance))
+		{
+		 	self::$instance = new wpOffload($as3cf);
+		}
+
+		return self::$instance;
 	}
 
 	public function init($as3cf)
@@ -74,10 +88,9 @@ class wpOffload
 		add_action('shortpixel/converter/prevent-offload', array($this, 'preventOffload'), 10);
 		add_action('shortpixel/converter/prevent-offload-off', array($this, 'preventOffloadOff'), 10);
 
-		add_filter('as3cf_attachment_file_paths', array($this, 'add_webp_paths'));
+		add_filter('as3cf_attachment_file_paths', array($this, 'add_webp_paths'), 10, 3);
 
-		add_filter('as3cf_remove_source_files_from_provider', array($this, 'remove_webp_paths'));
-
+	//	add_filter('as3cf_remove_source_files_from_provider', array($this, 'remove_webp_paths'));
 
 		add_filter('as3cf_pre_update_attachment_metadata', array($this, 'preventUpdateMetaData'), 10, 4);
 		add_filter('as3cf_pre_handle_item_upload', array($this, 'preventInitialUploadHandler'), 10, 3);
@@ -85,7 +98,7 @@ class wpOffload
 		add_filter('shortpixel_get_original_image_path', array($this, 'checkScaledUrl'), 10, 2);
 
 		add_filter('shortpixel/image/urltopath', array($this, 'checkIfOffloaded'), 10, 3);
-		add_filter('shortpixel/file/virtual/translate', array($this, 'getLocalPathByURL'));
+		add_filter('shortpixel/file/virtual/translate', array($this, 'getLocalPathByURL'), 10, 2);
 
 		// for webp picture paths rendered via output
 		add_filter('shortpixel/front/webp_notfound', array($this, 'fixWebpRemotePath'), 10, 4);
@@ -137,6 +150,7 @@ class wpOffload
 	public function preventUpdateMetaData($bool, $data, $post_id, $old_provider_object)
 	{
 		if (isset(self::$offloadPrevented[$post_id])) {
+			Log::addDebug('Offloading of updated metadata prevented for ' . $post_id);
 			return true; // return true to cancel.
 		}
 
@@ -157,10 +171,15 @@ class wpOffload
 			return false;
 		}
 
-		// If there are excluded sizes, there are not in backups. might not be left on remote, or ( if delete ) on server, so just generate the images and move them.
-		$mediaItem->wpCreateImageSizes();
-
 		$result = $this->remove_remote($id);
+
+		if (false === $this->isActive())
+		{
+			return false; 
+		}
+
+		// If there are excluded sizes, there are not in backups. might not be left on remote, or ( if delete ) on server, so just generate the images and move them.
+		$mediaItem->wpCreateImageSizes();		
 		$this->image_upload($mediaItem);
 	}
 
@@ -172,9 +191,15 @@ class wpOffload
 			return false;
 		}
 
+
 		$remove = \DeliciousBrains\WP_Offload_Media\Items\Remove_Provider_Handler::get_item_handler_key_name();
 		$itemHandler = $this->as3cf->get_item_handler($remove);
 
+		// Given option prevents offload pro from downloading, then re-uploading left webp files etc. (see core-pro.php)
+		$itemHandler->handle($a3cfItem, ['verify_exists_on_local' => null]);
+
+
+		return true; 
 
 	}
 
@@ -363,12 +388,47 @@ class wpOffload
 
 	// @param s3 based URL that which is needed for finding local path
 	// @return String Filepath.  Translated file path
-	public function getLocalPathByURL($url)
+	public function getLocalPathByURL($url, $imageModel = null)
 	{
 		$source_id = $this->getSourceIDByURL($url);
 
 		if ($source_id === false) {
 			return false;
+		}
+
+		if (false === is_null($imageModel) && is_object($imageModel))
+		{
+			$size = $imageModel->get('size'); 
+			$name = $imageModel->get('name');
+			
+			// First trick, try to find the ImageModel Thumbnail name from the paths cache. 
+			if (null !== $size && isset(static::$paths[$source_id]) && isset(static::$paths[$source_id][$size]))
+			{
+				return static::$paths[$source_id][$size];
+			}
+			
+			/*elseif (null !== $name && isset(static::$paths[$source_id]) && isset(static::$paths[$source_id][$name])) 
+			{
+				return static::$paths[$source_id][$name];
+			} */
+		}
+
+		/*$position = array_search(basename($url), self::$paths); 
+		if (in_array(basename($url), self::$paths))
+		{
+			
+		} */
+
+		if (isset(self::$paths[$source_id]))
+		{
+			$base_url = basename($url); 
+			foreach(self::$paths[$source_id] as $key => $path)
+			{
+				if (true === str_contains($path, $base_url))
+				{
+					return self::$paths[$source_id][$key];
+				}
+			}
 		}
 
 		$item = $this->getItemById($source_id);
@@ -430,6 +490,7 @@ class wpOffload
 		$meta = wp_get_attachment_metadata($id);
 		wp_update_attachment_metadata($id, $meta);
 
+
 		$this->shouldPrevent = true;
 	}
 
@@ -475,6 +536,12 @@ class wpOffload
 			return $error;
 		}
 
+		if (true === $bool)
+		{
+			Log::addDebug('Offload Prevented via bool for ' . $post_id);
+		}
+		
+
 		return $bool;
 	}
 
@@ -499,6 +566,8 @@ class wpOffload
 		$wp_source = trim(get_attached_file($post_id, apply_filters('emr_unfiltered_get_attached_file', true)));
 
 		$updated = false;
+
+		self::$sources = [];  // Wipe the source cache to prevent lingering stuff. 
 
 		// If image is replaced with another name, the original soruce path will not match.  This could also happen when an image is with -scaled as main is replaced by an image that doesn't have it.  In all cases update the table to reflect proper changes.
 		if (wp_basename($wp_original) !== wp_basename($original_path)) {
@@ -599,18 +668,27 @@ class wpOffload
 	/**  Get Webp Paths that might be generated and offload them as well.
 	 * Paths - size : path values
 	 */
-	public function add_webp_paths($paths)
-	{
+	
+	public function add_webp_paths($paths, $attachment_id, $meta)
+	{ // @todo Check if this works.
+		if (isset(self::$paths[$attachment_id]))
+		{
+			return self::$paths[$attachment_id];
+		}
+
 		$paths = $this->getWebpPaths($paths, true);
+
+		self::$paths[$attachment_id] = $paths; 
 		return $paths;
 	}
 
-
+	/*
 	public function remove_webp_paths($paths)
 	{
 		$paths = $this->getWebpPaths($paths, false);
 		return $paths;
 	}
+	*/
 
 	// GetbyURL can't find thumbnails, only the main image. Check via extrainfo method if we can find needed filetype
 	// @param $bool Boolean

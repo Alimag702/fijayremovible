@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+$featured_image = '';
+
 if ( 'clrepeater' === $content_from ) {
 	$featured_image_url = $client_image;
 } else {
@@ -28,6 +30,8 @@ if ( ! empty( $featured_image_url ) ) {
 
 		if ( ! empty( $feat_id ) ) {
 			$featured_image = tp_get_image_rander( $feat_id, 'full' );
+		} else {
+			$featured_image = '<img src="' . esc_url( $featured_image_url ) . '" loading="lazy" class="tp-lazyload" alt="' . esc_attr( $client_lml ) . '">';
 		}
 	} else {
 		$featured_image = tp_get_image_rander( get_the_ID(), 'full', array(), 'post' );

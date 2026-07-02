@@ -17,25 +17,16 @@
 				//Initialize Form Builder.
 				URFormBuilder.init_form_builder();
 				//Field option tab
-				$(document).on(
-					"click",
-					'ul.ur-tab-lists li[aria-controls="ur-tab-field-options"]',
-					function () {
-						// Hide the form settings in fields panel.
-						$(".ur-selected-inputs")
-							.find("form#ur-field-settings")
-							.hide();
-						//Show field panels
-						$(".ur-builder-wrapper-content").show();
-						$(".ur-builder-wrapper-footer").show();
-						if ($(".ur-selected-item.ur-item-active").length == 0) {
-							//Selecting first ur selected item
-							URFormBuilder.handle_selected_item(
-								$(".ur-selected-item:first")
-							);
-						}
-					}
-				);
+				// $(document).on(
+				// 	"click",
+				// 	'ul.ur-tab-lists li[aria-controls="ur-tab-field-options"]',
+				// 	function () {
+				// 		// Hide the form settings in fields panel.
+				// 		$(".ur-selected-inputs")
+				// 			.find("form#ur-field-settings")
+				// 			.hide();
+				// 	}
+				// );
 				// Handle the field settings when a field is selected in the form builder.
 				$(document).on("click", ".ur-selected-item", function () {
 					URFormBuilder.handle_selected_item($(this));
@@ -112,9 +103,17 @@
 				// Show Help Dialog when quick link is clicked.
 				$("#ur-keyboard-shortcut-link").on("click", function (e) {
 					e.preventDefault();
-					$(".ur-quick-links-content").slideToggle();
+					$(".ur-quick-links-content").toggle();
 					URFormBuilder.ur_show_help();
 				});
+
+				$(".ur-quick-links-content__close-btn").on(
+					"click",
+					function (e) {
+						e.preventDefault();
+						$(".ur-quick-links-content").toggle();
+					}
+				);
 
 				// Save the form when Update Form button is clicked.
 				$(".ur_save_form_action_button").on("click", function () {
@@ -261,6 +260,22 @@
 							bulk_options_container
 								.find(".ur-type-textarea")
 								.val("");
+						}
+					}
+				);
+				$(document).on(
+					"change",
+					".ur-settings-enable-state",
+					function (e) {
+						var checked = $(this).is(":checked");
+						var $wrapper = $(document).find(
+							".ur-selected-item.ur-item-active"
+						);
+
+						if (checked) {
+							$wrapper.find(".ur-state-container-wrapper").show();
+						} else {
+							$wrapper.find(".ur-state-container-wrapper").hide();
 						}
 					}
 				);
@@ -533,6 +548,9 @@
 						$(".ur_save_form_action_button")
 							.find(".ur-spinner")
 							.remove();
+						if (!response.responseJSON) {
+							return;
+						}
 						if (response.responseJSON.success === true) {
 							var success_message =
 								user_registration_form_builder_data.i18n_admin
@@ -970,7 +988,7 @@
 						try {
 							var field_value = $field.val();
 							var length = $(
-								".ur-input-grids .ur-general-setting-block"
+								".ur-input-grids .ur-advance-setting-block"
 							).find(
 								'input[data-field="field_name"][value="' +
 									field_value +
@@ -1067,7 +1085,7 @@
 				var paypal = $("#user_registration_enable_paypal_standard");
 				var stripe = $("#user_registration_enable_stripe");
 				var anet = $("#user_registration_enable_authorize_net");
-
+				var mollie = $("#user_registration_enable_mollie");
 				if (paypal.is(":checked")) {
 					var payment_fields = ["payment_fields"];
 
@@ -1087,6 +1105,10 @@
 						];
 
 						required_fields = required_fields.concat(anet_fields);
+					} else if (mollie.is(":checked")) {
+						var mollie_fields = ["payment_fields"];
+
+						required_fields = required_fields.concat(mollie_fields);
 					}
 				}
 				for (
@@ -2182,6 +2204,40 @@
 						}
 					}
 				});
+				// For membership field: read membership_active_memberships from live #ur-setting-form so multiselect value is saved
+				var field_key = $single_item
+					.find(".ur-field")
+					.attr("data-field-key");
+				if (
+					field_key === "membership" &&
+					$single_item.hasClass("ur-item-active")
+				) {
+					var $activeSelect = $(
+						"#ur-setting-form .ur-general-setting-membership_active_memberships select"
+					);
+					if ($activeSelect.length) {
+						var liveVal = $activeSelect.val();
+						general_setting_data.membership_active_memberships =
+							liveVal != null && Array.isArray(liveVal)
+								? liveVal
+								: liveVal
+								? [].concat(liveVal)
+								: [];
+					}
+					var $showBankToggle = $(
+						"#ur-setting-form .ur-general-setting-user_registration_show_bank_details_on_form input.ur-general-setting-field"
+					);
+					if ($showBankToggle.length) {
+						general_setting_data.user_registration_show_bank_details_on_form =
+							$showBankToggle.is(":checked");
+						if (
+							!general_setting_data.user_registration_show_bank_details_on_form
+						) {
+							general_setting_data.user_registration_show_bank_details_on_form =
+								"false";
+						}
+					}
+				}
 				return general_setting_data;
 			},
 			/**
@@ -2543,6 +2599,7 @@
 								this.manage_required_fields();
 								this.manage_label_hidden_fields();
 								this.manage_image_choice_class();
+								this.manage_state_fields();
 							},
 							single_row: function () {
 								if (
@@ -2826,6 +2883,81 @@
 									"#ur-tab-registered-fields"
 								).find("ul.ur-registered-list");
 
+								//-> Disable payment fields from dragging when membership field is present.
+								var payment_nodes = [];
+								$.each(
+									user_registration_form_builder_data.form_payment_fields,
+									function (index, identifier) {
+										var selector =
+											"#user_registration_" +
+											identifier +
+											"_list";
+										payment_nodes.push($(selector));
+									}
+								);
+								$.each(payment_nodes, function () {
+									var $this = $(this);
+									var has_membership_field =
+										$(".ur-input-grids").find(
+											'.ur-field[data-field-key="membership"]'
+										).length > 0;
+									if (has_membership_field) {
+										$this.draggable("disable");
+										$this.addClass("ur-locked-field");
+										$this.addClass(
+											"ur-membership-payment-field-disabled"
+										);
+									}
+								});
+								// Disable membership field from dragging when payment setting is enabled already.
+								var $checkboxes = $(
+									"[data-field-group='payments'] input[name^='user_registration_enable_']"
+								);
+								$membershipField = $(
+									".ur-registered-list"
+								).find(
+									"li[data-field-id='user_registration_membership']"
+								);
+								if ($checkboxes.is(":checked")) {
+									$membershipField.draggable("disable");
+									$membershipField.addClass(
+										"ur-membership-field-disabled"
+									);
+									$membershipField.addClass(
+										"ur-locked-field"
+									);
+									$membershipField.removeClass(
+										"ur-no-membership-available"
+									);
+								} else if (
+									typeof user_registration_form_builder_data.form_has_membership_available !==
+										"undefined" &&
+									!user_registration_form_builder_data.form_has_membership_available
+								) {
+									$membershipField.draggable("disable");
+									$membershipField.addClass(
+										"ur-no-membership-available"
+									);
+									$membershipField.addClass(
+										"ur-locked-field"
+									);
+									$membershipField.removeClass(
+										"ur-membership-field-disabled"
+									);
+								} else {
+									// enable membership field.
+									$membershipField.draggable("enable");
+									$membershipField.removeClass(
+										"ur-membership-field-disabled"
+									);
+									$membershipField.removeClass(
+										"ur-no-membership-available"
+									);
+									$membershipField.removeClass(
+										"ur-locked-field"
+									);
+								}
+
 								$.each(ul_node.find("li"), function () {
 									var $this = $(this);
 
@@ -2992,7 +3124,6 @@
 													'_advance_setting[field_visibility]"]'
 											)
 											.val();
-
 										$(document.body).trigger(
 											"ur_new_field_created",
 											[
@@ -3011,6 +3142,23 @@
 										"error"
 									);
 									return;
+								});
+							},
+							manage_state_fields: function () {
+								$(
+									'input[data-advance-field="enable_state"]'
+								).each(function () {
+									if ($(this).is(":checked")) {
+										$(this)
+											.closest(".ur-selected-item")
+											.find(".ur-state-container-wrapper")
+											.show();
+									} else {
+										$(this)
+											.closest(".ur-selected-item")
+											.find(".ur-state-container-wrapper")
+											.hide();
+									}
 								});
 							}
 						};
@@ -3184,7 +3332,7 @@
 														".ur-selected-item"
 													)
 													.find(
-														'.ur-general-setting-field-name input[data-field="field_name"]'
+														'input[data-field="field_name"]'
 													)
 													.val();
 												var fieldLabel = $(this)
@@ -3716,7 +3864,9 @@
 										var fieldName = $ele
 											.closest(".ur-selected-item")
 											.find(
-												'.ur-general-setting.ur-general-setting-field-name input[name="ur_general_setting[field_name]"]'
+												'input[name="' +
+													fieldKey +
+													'_advance_setting[field_name]"]'
 											)
 											.val();
 
@@ -3939,6 +4089,22 @@
 							.find("a.nav-tab")
 							.removeClass("active");
 						$(this).addClass("active");
+
+						$(".ur-multiselect").each(function () {
+							var $el = $(this);
+							if ($el.hasClass("select2-hidden-accessible")) {
+								try {
+									$el.select2("destroy");
+								} catch (e) {}
+							}
+							$el.select2();
+							var $wrap = $el.closest(".ur-general-setting");
+							if ($wrap.length) {
+								var $containers =
+									$wrap.find(".select2-container");
+								$containers.slice(1).remove();
+							}
+						});
 					}
 				);
 				$(".ur-tabs").tabs();
@@ -4375,7 +4541,7 @@
 								);
 
 								var old_field_name = wrapper
-									.find(".ur-general-setting-block")
+									.find(".ur-advance-setting-block")
 									.find('input[data-field="field_name"]')
 									.attr("value");
 
@@ -6587,7 +6753,7 @@
 			handle_add_image_captcha_group: function ($this, $wrapper) {
 				var this_index = parseInt($this.attr("data-last-group")),
 					next_index = this_index + 1;
-				(captcha_unique = $this
+				((captcha_unique = $this
 					.closest("ul")
 					.attr("data-unique-captcha")),
 					(cloning_element = $this
@@ -6595,7 +6761,7 @@
 						.find('li[data-group="' + this_index + '"]')
 						.clone(true, true)),
 					(cloning_element_icons =
-						cloning_element.find(".icon-wrap"));
+						cloning_element.find(".icon-wrap")));
 
 				cloning_element.attr("data-group", next_index);
 				cloning_element
@@ -6937,11 +7103,11 @@
 		});
 		$(document.body).on("click", ".ur-button-quick-links", function (e) {
 			e.stopPropagation();
-			$(".ur-quick-links-content").slideToggle();
+			$(".ur-quick-links-content").toggle();
 		});
 		$(document.body).on("click", function (e) {
 			if (!$(".ur-quick-links-content").is(":hidden")) {
-				$(".ur-quick-links-content").slideToggle();
+				$(".ur-quick-links-content").toggle();
 			}
 		});
 
@@ -7304,6 +7470,32 @@
 				}
 
 				$this.val(inputValue);
+			}
+		);
+
+		$(document).on(
+			"change",
+			"#user_registration_form_setting_enable_recaptcha_support",
+			function (e) {
+				var $this = $(this);
+				if (
+					user_registration_form_builder_data.no_captcha_set &&
+					$this.is(":checked")
+				) {
+					// Immediately uncheck the checkbox
+					$this.prop("checked", false);
+					// Hide the dropdown since checkbox is unchecked
+					$(
+						"#user_registration_form_setting_configured_captcha_type_field"
+					).hide();
+					// Show error message using existing function
+					URFormBuilder.show_message(
+						user_registration_form_builder_data.i18n_captcha_not_set_error,
+						"error"
+					);
+					e.stopImmediatePropagation();
+					return false;
+				}
 			}
 		);
 	});

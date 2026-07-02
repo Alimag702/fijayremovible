@@ -391,7 +391,6 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		//  $replace_function = ($this->replace_method == 'preg') ? 'pregReplaceContent' : 'stringReplaceContent';
 
 		$replace_function = 'pregReplaceByString'; // undercooked, will defer to next version
-	//	$replace_function = 'stringReplaceContent';
 		$imageIndexes = array_column($replaceBlocks, 'imageId');
 
 		array_multisort($imageIndexes, SORT_ASC, $replaceBlocks); 
@@ -518,7 +517,16 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 
 	protected function fetchImageMatches($content, $args = [])
 	{
-		$number = preg_match_all('/<img[^>]*>|<source srcset="[^>]*">/i', $content, $matches);
+		// Previous pattern 
+		//$number = preg_match_all('/<img[^>]*>|<source srcset="[^>]*">/i', $content, $matches);
+
+		// Updated pattern via - https://github.com/short-pixel-optimizer/shortpixel-image-optimiser/issues/159
+		//$number = preg_match_all('/<img[^>]*>|<source\s+srcset="[^"]*"[^>]*>/i', $content, $matches);
+
+
+		// Updated pattern via - https://support.shortpixel.com/conversation/242094?folder_id=43  ( not only spaces / words in between)
+		$number = preg_match_all('/<img[^>]*>|<source.*srcset="[^"]*"[^>]*>/i', $content, $matches);
+
 		$matches = $matches[0];
 		return $matches;
 	}
@@ -528,9 +536,6 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 		$number = preg_match_all('/url(\(((?:[^()]+|(?1))+)\))/m', $content, $matches); 
 		$matches = $matches[2]; 
 		
-		//$matches = str_replace('\'', '', $matches);
-	//	Log::addTemp('Inline Matches', $matches);
-
 		$replaceBlocks = []; 
 		foreach($matches as $url)
 		{
@@ -674,7 +679,7 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 	protected function stringReplaceContent($content, $urls, $new_urls)
 	{
 		$replacer = new Replacer();
-		$content = $replacer->replaceContent($content, $urls, $new_urls);
+		$content = $replacer->replaceContent($content, $urls, $new_urls, false, true);
 
 		return $content;
 	}
@@ -696,7 +701,6 @@ class CDNController extends \ShortPixel\Controller\Front\PageConverter
 			return '/(?<!(\/|[a-z]|[0-9]))' . preg_quote($url, '/') . '(?!(\/|[a-z]|[0-9]))/mi'; 
 		}, $urls);
 
-		//Log::addTemp('Patterns X replacecount ', $patterns );
 		$content = preg_replace($patterns, $new_urls, $content);
 
 		return $content;

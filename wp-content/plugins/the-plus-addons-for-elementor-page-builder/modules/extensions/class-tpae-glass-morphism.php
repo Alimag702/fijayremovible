@@ -102,9 +102,17 @@ if ( ! class_exists( 'Tpae_Glass_Morphism' ) ) {
 				array(
 					'label'     => esc_html__( 'Glass Morphism', 'tpebl' ),
 					'type'      => Controls_Manager::SWITCHER,
-					'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-					'label_off' => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'  => esc_html__( 'On', 'tpebl' ),
+					'label_off' => esc_html__( 'Off', 'tpebl' ),
 					'default'   => 'no',
+					'description' => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Turn this on to add a frosted glass look to the element. It creates a soft, blurred background effect that helps the content stand out.', 'tpebl' ),
+							esc_url( L_THEPLUS_TPDOC . 'glassmorphism-effect-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(

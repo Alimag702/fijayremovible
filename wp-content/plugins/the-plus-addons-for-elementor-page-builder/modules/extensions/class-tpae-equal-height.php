@@ -57,6 +57,13 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 		}
 
 		/**
+		 * Document Link For Need help.
+		 *
+		 * @var tp_doc of the class.
+		 */
+		public $tp_doc = L_THEPLUS_TPDOC;
+
+		/**
 		 * Get the widget name.
 		 *
 		 * @since 6.2.7
@@ -86,7 +93,10 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 			// add_action( 'elementor/frontend/widget/before_render', [ $this, 'tp_equalheight_before_render' ], 10, 1 );!
 			add_action( 'elementor/frontend/before_render', array( $this, 'tp_equalheight_before_render' ), 10, 1 );
 
-			add_action( 'elementor/frontend/before_enqueue_scripts', array( $this, 'tp_enqueue_scripts' ), 10 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'tp_register_scripts' ) );
+
+			add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'tp_register_scripts' ), 10 );
+			add_action( 'elementor/editor/after_enqueue_scripts', function() { wp_enqueue_script( 'plus-equal-height' ); } , 10 );
 		}
 
 		/**
@@ -107,10 +117,18 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 				array(
 					'label'        => esc_html__( 'Equal Height', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'If your content boxes have different heights, Turn this on to make elements the same height. You can use a CSS class or the container level to keep your layout even.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'equal-column-height-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(
@@ -119,8 +137,8 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 					'label'     => esc_html__( 'Mode Based on', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'bodl' => 'Div Level',
-						'bouc' => 'Unique Class',
+						'bodl' => esc_html__( 'Div Level', 'tpebl' ),
+						'bouc' => esc_html__( 'Unique Class', 'tpebl' ),
 					),
 					'default'   => 'bodl',
 					'condition' => array(
@@ -129,24 +147,68 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 				)
 			);
 			$element->add_control(
+                'seh_mode_bodl_label',
+                array(
+                    'type'  => Controls_Manager::RAW_HTML,
+                    'raw'   => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Use this option to match the height of elements based on their nesting level. It helps keep layouts consistent when elements are inside different containers.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'equal-column-height-elementor/#Method-1-Using-Div-Level?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
+                    'label_block' => true,
+					'condition' => array(
+						'seh_switch' => 'yes',
+						'seh_mode'   => 'bodl',
+					),
+                )
+            );
+			$element->add_control(
+                'seh_mode_bouc_label',
+                array(
+                    'type'  => Controls_Manager::RAW_HTML,
+                    'raw'   => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Use this option to match height of elements by the CSS class name of the target element or its parent container.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'equal-column-height-elementor/#Method-2-Using-Unique-CSS-Class?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
+                    'label_block' => true,
+					'condition' => array(
+						'seh_switch' => 'yes',
+						'seh_mode'   => 'bouc',
+					),
+                )
+            );
+			$element->add_control(
 				'seh_opt',
 				array(
 					'label'     => esc_html__( 'Select Nested Level', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'widgets' => 'Widgets',
-						'1'       => 'Nested Level 1',
-						'2'       => 'Nested Level 2',
-						'3'       => 'Nested Level 3',
-						'4'       => 'Nested Level 4',
-						'5'       => 'Nested Level 5',
-						'6'       => 'Nested Level 6',
-						'7'       => 'Nested Level 7',
-						'8'       => 'Nested Level 8',
-						'9'       => 'Nested Level 9',
-						'10'      => 'Nested Level 10',
+						'widgets' => esc_html__( 'Widgets', 'tpebl' ),
+						'1'       => esc_html__( 'Nested Level 1', 'tpebl' ),
+						'2'       => esc_html__( 'Nested Level 2', 'tpebl' ),
+						'3'       => esc_html__( 'Nested Level 3', 'tpebl' ),
+						'4'       => esc_html__( 'Nested Level 4', 'tpebl' ),
+						'5'       => esc_html__( 'Nested Level 5', 'tpebl' ),
+						'6'       => esc_html__( 'Nested Level 6', 'tpebl' ),
+						'7'       => esc_html__( 'Nested Level 7', 'tpebl' ),
+						'8'       => esc_html__( 'Nested Level 8', 'tpebl' ),
+						'9'       => esc_html__( 'Nested Level 9', 'tpebl' ),
+						'10'      => esc_html__( 'Nested Level 10', 'tpebl' ),
 					),
 					'default'   => 'widgets',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i>%s</i></p>',
+							esc_html__( 'Count the number of parent containers between the target element and the container with the "elementor-widget-container" class is the nested level.', 'tpebl' ),
+						)
+					),
 					'condition' => array(
 						'seh_switch' => 'yes',
 						'seh_mode'   => 'bodl',
@@ -159,18 +221,24 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 					'label'     => esc_html__( 'Select Sub Nested Level', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'1'  => 'Level 1',
-						'2'  => 'Level 2',
-						'3'  => 'Level 3',
-						'4'  => 'Level 4',
-						'5'  => 'Level 5',
-						'6'  => 'Level 6',
-						'7'  => 'Level 7',
-						'8'  => 'Level 8',
-						'9'  => 'Level 9',
-						'10' => 'Level 10',
+						'1'  => esc_html__( 'Level 1', 'tpebl' ),
+						'2'  => esc_html__( 'Level 2', 'tpebl' ),
+						'3'  => esc_html__( 'Level 3', 'tpebl' ),
+						'4'  => esc_html__( 'Level 4', 'tpebl' ),
+						'5'  => esc_html__( 'Level 5', 'tpebl' ),
+						'6'  => esc_html__( 'Level 6', 'tpebl' ),
+						'7'  => esc_html__( 'Level 7', 'tpebl' ),
+						'8'  => esc_html__( 'Level 8', 'tpebl' ),
+						'9'  => esc_html__( 'Level 9', 'tpebl' ),
+						'10' => esc_html__( 'Level 10', 'tpebl' ),
 					),
 					'default'   => '1',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i>%s</i></p>',
+							esc_html__( 'The number of div`s between the target element and its immediate parent level is the sub nested level.', 'tpebl' ),
+						)
+					),
 					'condition' => array(
 						'seh_switch' => 'yes',
 						'seh_mode'   => 'bodl',
@@ -182,6 +250,7 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 				array(
 					'label'       => esc_html__( 'Enter Unique Class', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
+					'ai'          => false,
 					'placeholder' => esc_html__( '.class-name', 'tpebl' ),
 					'condition'   => array(
 						'seh_switch' => 'yes',
@@ -193,12 +262,12 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 		}
 
 		/**
-		 * Enqueue necessary scripts and styles for the widget.
+		 * Register necessary scripts feature.
 		 *
-		 * @since 6.2.7
+		 * @since 6.4.6
 		 */
-		public function tp_enqueue_scripts() {
-			wp_enqueue_script( 'plus-equal-height', L_THEPLUS_URL . 'modules/extensions/equal-height/plus-equal-height.min.js', array( 'jquery' ), L_THEPLUS_VERSION, true );
+		public function tp_register_scripts() {
+			wp_register_script( 'plus-equal-height', L_THEPLUS_URL . 'modules/extensions/equal-height/plus-equal-height.min.js', array( 'jquery' ), L_THEPLUS_VERSION, true );
 		}
 
 		/**
@@ -212,6 +281,9 @@ if ( ! class_exists( 'Tpae_Equal_Height' ) ) {
 			$seh_switch = ! empty( $settings['seh_switch'] ) ? $settings['seh_switch'] : '';
 
 			if ( 'yes' === $seh_switch ) {
+
+				wp_enqueue_script( 'plus-equal-height' );
+
 				$opt = '';
 
 				$seh_mode = ! empty( $settings['seh_mode'] ) ? $settings['seh_mode'] : '';

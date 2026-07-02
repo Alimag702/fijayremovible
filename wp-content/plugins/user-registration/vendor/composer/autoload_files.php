@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'bd0c90e7d8440ba632bcc936ba2deb8e' => $baseDir . '/includes/Functions/CoreFunctions.php',
+    'bd707f902d8df450f623eb60fbfebe5d' => $vendorDir . '/themegrill/themegrill-sdk/load.php',
 );

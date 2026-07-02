@@ -10,7 +10,8 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
+use TheplusAddons\Widgets\Base\Reload_Preview_Trait;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -19,6 +20,16 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Css_Filter;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
+use ThePlusAddons\Elementor\ScrollAnimation\TP_Global_Scroll_Animation_Helper;
+use ThePlusAddons\Elementor\PostTypeOptions\TP_Post_Type_Options_Helper;
+
+if ( ! class_exists( '\ThePlusAddons\Elementor\ScrollAnimation\TP_Global_Scroll_Animation_Helper' ) ) {
+	include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-global-scroll-animation-helper.php';
+}
+
+if ( ! trait_exists( '\ThePlusAddons\Elementor\PostTypeOptions\TP_Post_Type_Options_Helper' ) ) {
+	include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-post-type-options-helper.php';
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -27,24 +38,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Team_Member_ListOut
  */
-class L_ThePlus_Team_Member_ListOut extends Widget_Base {
+class L_ThePlus_Team_Member_ListOut extends Plus_Widget_Base {
 
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 1.0.1
-	 * @version 5.4.2
-	 *
-	 * @var TpDoc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
+	use Reload_Preview_Trait;
+	use TP_Post_Type_Options_Helper;
 
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
 
 	/**
 	 * Get Widget Name.
@@ -73,7 +71,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-users theplus_backend_icon';
+		return 'theplus-i-team-members tpae-editor-logo';
 	}
 
 	/**
@@ -87,58 +85,15 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 	}
 
 	/**
-	 * Get Custom Url.
+	 * Get Widget keywords.
 	 *
 	 * @since 1.0.1
 	 * @version 5.4.2
 	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
+	public function get_keywords() {
+		return array( 'Tp Team Member Listing', 'Team Listing', 'Team Profile', 'Team Carousel', 'Team Grid', 'Team Masonry', 'Team Profile Filter', 'Team Bio' );
 	}
 
-	/**
-	 * Update is_reload_preview_required.
-	 *
-	 * @since 1.0.0
-	 * @version 5.4.2
-	 */
-	public function is_reload_preview_required() {
-		return true;
-	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register Controls.
 	 *
@@ -155,21 +110,41 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'tpae_preset_controller',
+			array(
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 17498,
+				'label_block' => true,
+			)
+		);
+		$this->add_control(
 			'selctSource',
 			array(
-				'label'   => esc_html__( 'Select Source', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'post',
-				'options' => array(
+				'label'       => esc_html__( 'Select Source', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'post',
+				'options'     => array(
 					'post'     => esc_html__( 'Post Type', 'tpebl' ),
 					'repeater' => esc_html__( 'Repeater', 'tpebl' ),
+				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Choose how you want to add your team members, either dynamically from a Post Type or manually using the Repeater option.', 'tpebl' )
+					)
 				),
 			)
 		);
 		$this->add_control(
 			'how_it_works_Post_Type',
 			array(
-				'label'     => wp_kses_post( "<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "create-elementor-team-members-section-with-custom-post-type/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> Learn How it works  <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"> %s <i class="eicon-help-o"></i> </a>',
+						esc_url( $this->tp_doc . 'create-elementor-team-members-section-with-custom-post-type/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn How it works', 'tpebl' ),
+					)
+				),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'selctSource' => 'post',
@@ -183,6 +158,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Member Name', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'label_block' => true,
 			)
 		);
@@ -191,6 +167,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Member Image', 'tpebl' ),
 				'type'    => Controls_Manager::MEDIA,
+				'ai'      => false,
 				'default' => array(
 					'url' => Utils::get_placeholder_image_src(),
 				),
@@ -201,6 +178,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Designation', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'placeholder' => esc_html__( 'Enter Designation', 'tpebl' ),
 			)
 		);
@@ -344,16 +322,17 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Category (For Filter)', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'e.g. Category1, Category2', 'tpebl' ),
-				'title'       => 'you can add multiple with separated by comma.',
+				'title'       => esc_html__( 'you can add multiple with separated by comma.', 'tpebl' ),
 				'label_block' => true,
 			)
 		);
 		$this->add_control(
 			'tmList',
 			array(
-				'label'       => wp_kses_post( "Member List <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "add-category-wise-filter-in-team-member-grid-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'       => esc_html__( 'Member List', 'tpebl' ),
 				'type'        => Controls_Manager::REPEATER,
 				'fields'      => $repeater->get_controls(),
 				'default'     => array(
@@ -370,25 +349,38 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'style',
 			array(
-				'label'   => esc_html__( 'Style', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'style-1',
-				'options' => array(
-					'style-1' => esc_html__( 'Style 1', 'tpebl' ),
-					'style-2' => esc_html__( 'Style 2 (PRO)', 'tpebl' ),
-					'style-3' => esc_html__( 'Style 3', 'tpebl' ),
-					'style-4' => esc_html__( 'Style 4 (PRO)', 'tpebl' ),
+				'label'       => esc_html__( 'Style', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'style-1',
+				'options'     => array(
+					'style-1' => array(
+						'title' => esc_html__( 'Style 1', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/team-member-listing/style-1.svg' ),
+					),
+					'style-2' => array(
+						'title' => esc_html__( 'Style 2 (PRO)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/team-member-listing/style-2-pro.svg' ),
+					),
+					'style-3' => array(
+						'title' => esc_html__( 'Style 3', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/team-member-listing/style-3.svg' ),
+					),
+					'style-4' => array(
+						'title' => esc_html__( 'Style 4 (PRO)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/team-member-listing/style-4-pro.svg' ),
+					),
 				),
+				'columns'     => 4,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_control(
 			'plus_pro_style_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'style!' => array( 'style-1', 'style-3' ),
 				),
@@ -397,20 +389,38 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'layout',
 			array(
-				'label'   => esc_html__( 'Layout', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'grid',
-				'options' => array(
-					'grid'     => esc_html__( 'Grid', 'tpebl' ),
-					'masonry'  => esc_html__( 'Masonry', 'tpebl' ),
-					'carousel' => esc_html__( 'Carousel (PRO)', 'tpebl' ),
+				'label'       => esc_html__( 'Layout', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'grid',
+				'options'     => array(
+					'grid'     => array(
+						'title' => esc_html__( 'Grid', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/listing-layout/grid.svg' ),
+					),
+					'masonry'  => array(
+						'title' => esc_html__( 'Masonry', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/listing-layout/masonry.svg' ),
+					),
+					'carousel' => array(
+						'title' => esc_html__( 'Carousel (PRO)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/listing-layout/carousel-pro.svg' ),
+					),
 				),
+				'columns'     => 3,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_control(
 			'how_it_works_grid',
 			array(
-				'label'     => wp_kses_post( "<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "show-team-members-in-grid-layout-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> Learn How it works  <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"> %s <i class="eicon-help-o"></i> </a>',
+						esc_url( $this->tp_doc . 'show-team-members-in-grid-layout-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn How it works', 'tpebl' ),
+					)
+				),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'layout' => 'grid',
@@ -420,7 +430,13 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'how_it_works_Masonry',
 			array(
-				'label'     => wp_kses_post( "<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "show-team-members-in-masonry-grid-layout-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> Learn How it works  <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"> %s <i class="eicon-help-o"></i> </a>',
+						esc_url( $this->tp_doc . 'show-team-members-in-masonry-grid-layout-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn How it works', 'tpebl' ),
+					)
+				),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'layout' => 'masonry',
@@ -430,11 +446,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'layout_pro_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'layout' => 'carousel',
 				),
@@ -470,21 +484,25 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'disable_link',
 			array(
-				'label'     => esc_html__( 'Disable Link', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Disable Link', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Disable', 'tpebl' ),
-				'label_off' => esc_html__( 'Enable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => '',
 			)
 		);
 		$this->add_control(
 			'disable_link_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'disable_link' => array( 'yes' ),
 				),
@@ -510,7 +528,6 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 				'multiple'    => true,
 				'label_block' => true,
 				'options'     => $this->tpae_get_categories(),
-				'separator'   => 'before',
 			)
 		);
 		$this->add_control(
@@ -534,7 +551,12 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 				'max'         => 50,
 				'step'        => 1,
 				'default'     => '',
-				'description' => esc_html__( 'Hide posts from the beginning of listing.', 'tpebl' ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Hide posts from the beginning of listing.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
@@ -672,7 +694,13 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'display_thumbnail',
 			array(
-				'label'     => esc_html__( 'Display Image Size', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Display Image Size', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
@@ -685,11 +713,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'display_thumbnail_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'layout!'           => 'carousel',
 					'display_thumbnail' => array( 'yes' ),
@@ -699,7 +725,13 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'filter_category',
 			array(
-				'label'     => esc_html__( 'Category Wise Filter', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Category Wise Filter', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
@@ -713,11 +745,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'filter_category_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'layout!'         => 'carousel',
 					'filter_category' => array( 'yes' ),
@@ -725,7 +755,27 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
-
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/team-member-listing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_title_style',
 			array(
@@ -967,9 +1017,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			'social_common_color_opt',
 			array(
 				'label'     => esc_html__( 'Social Icon Common Options', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 			)
@@ -1168,7 +1218,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_responsive_control(
 			'ImageOverlayHover',
 			array(
-				'label'      => esc_html__( 'Overlay Hover Background Color', 'tpebl' ),
+				'label'      => esc_html__( 'Overlay Background Color', 'tpebl' ),
 				'type'       => Controls_Manager::COLOR,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -1201,11 +1251,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'section_filter_category_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -1294,7 +1342,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'box_border_color',
 			array(
-				'label'     => esc_html__( 'Border Color', 'theplus' ),
+				'label'     => esc_html__( 'Border Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#252525',
 				'selectors' => array(
@@ -1326,7 +1374,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'box_border_hover_color',
 			array(
-				'label'     => esc_html__( 'Border Color', 'theplus' ),
+				'label'     => esc_html__( 'Border Color', 'tpebl' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#252525',
 				'selectors' => array(
@@ -1436,11 +1484,9 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'section_carousel_options_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -1455,21 +1501,25 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		$this->add_control(
 			'messy_column',
 			array(
-				'label'     => esc_html__( 'Messy Columns', 'tpebl' ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Messy Columns', 'tpebl' ),
+						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'On', 'tpebl' ),
-				'label_off' => esc_html__( 'Off', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 			)
 		);
 		$this->add_control(
 			'messy_column_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'messy_column' => array( 'yes' ),
 				),
@@ -1477,188 +1527,10 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 		);
 		$this->end_controls_section();
 
-		$this->start_controls_section(
-			'section_animation_styling',
-			array(
-				'label' => esc_html__( 'On Scroll View Animation', 'tpebl' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
+		$Plus_Listing_block                = 'Plus_Listing_block';
+		$tp_enable_global_scroll_animation = true;
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation.php';
 
-		$this->add_control(
-			'animation_effects',
-			array(
-				'label'   => esc_html__( 'Choose Animation Effect', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'no-animation',
-				'options' => l_theplus_get_animation_options(),
-			)
-		);
-		$this->add_control(
-			'animation_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animated_column_list',
-			array(
-				'label'     => esc_html__( 'List Load Animation', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => '',
-				'options'   => array(
-					''        => esc_html__( 'Content Animation Block', 'tpebl' ),
-					'stagger' => esc_html__( 'Stagger Based Animation', 'tpebl' ),
-					'columns' => esc_html__( 'Columns Based Animation', 'tpebl' ),
-				),
-				'condition' => array(
-					'animation_effects!' => array( 'no-animation' ),
-				),
-			)
-		);
-		$this->add_control(
-			'animation_stagger',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Animation Stagger', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 150,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 6000,
-						'step' => 10,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'   => array( 'no-animation' ),
-					'animated_column_list' => 'stagger',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_duration_default',
-			array(
-				'label'     => esc_html__( 'Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animate_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'         => 'no-animation',
-					'animation_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_effects',
-			array(
-				'label'     => esc_html__( 'Out Animation Effect', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'no-animation',
-				'options'   => l_theplus_get_out_animation_options(),
-				'separator' => 'before',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Out Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration_default',
-			array(
-				'label'     => esc_html__( 'Out Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'             => 'no-animation',
-					'animation_out_effects!'         => 'no-animation',
-					'animation_out_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->end_controls_section();
-
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1672,6 +1544,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 	 */
 	protected function render() {
 		$settings   = $this->get_settings_for_display();
+		$settings   = TP_Global_Scroll_Animation_Helper::resolve_widget_settings( $settings );
 		$query_args = $this->get_query_args();
 		$query      = new \WP_Query( $query_args );
 		$style      = ! empty( $settings['style'] ) ? $settings['style'] : 'style-1';
@@ -1691,52 +1564,12 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 
 		$post_category = ! empty( $settings['post_category'] ) ? $settings['post_category'] : '';
 
-		$content_alignment = ( '' !== $settings['content_alignment'] ) ? 'text-' . $settings['content_alignment'] : '';
+		$content_alignment = ! empty( $settings['post_category'] ) ? 'text-' . $settings['content_alignment'] : '';
 
-		$animation_effects = ! empty( $settings['animation_effects'] ) ? $settings['animation_effects'] : '';
-		$animate_duration  = ! empty( $settings['animate_duration']['size'] ) ? $settings['animate_duration']['size'] : 50;
+		$Plus_Listing_block = 'Plus_Listing_block';
+		$animated_columns   = '';
 
-		$animation_delay = ! empty( $settings['animation_delay']['size'] ) ? $settings['animation_delay']['size'] : 50;
-		$ani_duration    = ! empty( $settings['animation_duration_default'] ) ? $settings['animation_duration_default'] : '';
-		$out_effect      = ! empty( $settings['animation_out_effects'] ) ? $settings['animation_out_effects'] : '';
-		$out_delay       = ! empty( $settings['animation_out_delay']['size'] ) ? $settings['animation_out_delay']['size'] : 50;
-		$out_duration    = ! empty( $settings['animation_out_duration_default'] ) ? $settings['animation_out_duration_default'] : '';
-		$out_speed       = ! empty( $settings['animation_out_duration']['size'] ) ? $settings['animation_out_duration']['size'] : 50;
-
-		$animation_stagger = ! empty( $settings['animation_stagger']['size'] ) ? $settings['animation_stagger']['size'] : 150;
-
-		$ani_col_l = ! empty( $settings['animated_column_list'] ) ? $settings['animated_column_list'] : '';
-
-		$animated_columns = '';
-		if ( 'no-animation' === $animation_effects ) {
-			$animated_class = '';
-			$animation_attr = '';
-		} else {
-			$animate_offset  = '85%';
-			$animated_class  = 'animate-general';
-			$animation_attr  = ' data-animate-type="' . esc_attr( $animation_effects ) . '" data-animate-delay="' . esc_attr( $animation_delay ) . '"';
-			$animation_attr .= ' data-animate-offset="' . esc_attr( $animate_offset ) . '"';
-
-			if ( 'stagger' === $ani_col_l ) {
-				$animated_columns = 'animated-columns';
-				$animation_attr  .= ' data-animate-columns="stagger"';
-				$animation_attr  .= ' data-animate-stagger="' . esc_attr( $animation_stagger ) . '"';
-			} elseif ( 'columns' === $ani_col_l ) {
-				$animated_columns = 'animated-columns';
-				$animation_attr  .= ' data-animate-columns="columns"';
-			}
-
-			if ( 'yes' === $ani_duration ) {
-				$animation_attr .= ' data-animate-duration="' . esc_attr( $animate_duration ) . '"';
-			}
-
-			if ( 'no-animation' !== $out_effect ) {
-				$animation_attr .= ' data-animate-out-type="' . esc_attr( $out_effect ) . '" data-animate-out-delay="' . esc_attr( $out_delay ) . '"';
-				if ( 'yes' === $out_duration ) {
-					$animation_attr .= ' data-animate-out-duration="' . esc_attr( $out_speed ) . '"';
-				}
-			}
-		}
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation-attr.php';
 
 		$desktop_class = '';
 		$tablet_class  = '';
@@ -1789,6 +1622,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 
 					$tm_title = ! empty( $item['memberTitle'] ) ? $item['memberTitle'] : '';
 					$img_id   = ! empty( $item['tmImage']['id'] ) ? $item['tmImage']['id'] : '';
+					$tmImage  = ! empty( $item['tmImage'] ) ? $item['tmImage'] : '';
 
 					$output .= '<div class="grid-item ' . $desktop_class . ' ' . $tablet_class . ' ' . $mobile_class . ' ' . esc_attr( $animated_columns ) . '">';
 
@@ -1914,19 +1748,7 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 			$query_args['offset'] = $offset;
 		}
 
-		global $paged;
-
-		$paged_custom = 1;
-		$paged_custom = $paged;
-
-		if ( get_query_var( 'paged' ) ) {
-			$paged_custom = get_query_var( 'paged' );
-		} elseif ( get_query_var( 'page' ) ) {
-			$paged_custom = get_query_var( 'page' );
-		} else {
-			$paged_custom = 1;
-		}
-		$query_args['paged'] = $paged_custom;
+		$query_args['paged'] = self::get_current_page_number();
 
 		return $query_args;
 	}
@@ -2040,10 +1862,10 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 				$team_social_contnet .= '<li class="linkedin-link"><a rel="' . esc_attr( $linked_link_nofollow ) . '" href="' . esc_url( $linked_link ) . '" target="' . esc_attr( $linked_link_blank ) . '"><i class="fa fa-linkedin" aria-hidden="true"></i></a>';
 			}
 			if ( ! empty( $email_link ) ) {
-				$team_social_contnet .= '<li class="team-profile-link"><a rel="' . esc_attr( $email_link_nofollow ) . '" href="mailto:' . esc_attr( $email_link ) . '" target="' . esc_attr( $email_link_blank ) . '"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>';
+				$team_social_contnet .= '<li class="team-profile-link"><a rel="' . esc_attr( $email_link_nofollow ) . '" href="' . esc_url( 'mailto:' . sanitize_email( $email_link ), array( 'mailto' ) ) . '" target="' . esc_attr( $email_link_blank ) . '"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>';
 			}
 			if ( ! empty( $phone_link ) ) {
-				$team_social_contnet .= '<li class="team-profile-link"><a rel="' . esc_attr( $phone_link_nofollow ) . '" href="tel:' . esc_attr( $phone_link ) . '" target="' . esc_attr( $phone_link_blank ) . '"><i class="fa fa-phone" aria-hidden="true"></i></a>';
+				$team_social_contnet .= '<li class="team-profile-link"><a rel="' . esc_attr( $phone_link_nofollow ) . '" href="' . esc_url( 'tel:' . preg_replace( '/[^0-9+\-\s()]/', '', $phone_link ), array( 'tel' ) ) . '" target="' . esc_attr( $phone_link_blank ) . '"><i class="fa fa-phone" aria-hidden="true"></i></a>';
 			}
 
 				$team_social_contnet .= '</ul>';
@@ -2054,102 +1876,36 @@ class L_ThePlus_Team_Member_ListOut extends Widget_Base {
 	}
 
 	/**
-	 * Get Team-Member-categories
-	 *
-	 * @since 5.6.9
-	 */
-	public function tpae_get_categories() {
-
-		$teams = $this->tpae_get_post_cat();
-
-		if ( ! empty( $teams ) ) {
-			$categories = get_categories(
-				array(
-					'taxonomy'   => $teams,
-					'hide_empty' => 0,
-				)
-			);
-
-			if ( empty( $categories ) || ! is_array( $categories ) ) {
-				return array();
-			}
-		}
-
-		return wp_list_pluck( $categories, 'name', 'term_id' );
-	}
-
-	/**
-	 * Get Team-Member-post
+	 * Get team member taxonomy name.
 	 *
 	 * @since 5.6.9
 	 */
 	public function tpae_get_post_cat() {
-		$post_type_options = get_option( 'post_type_options' );
-		$team_post_type    = ! empty( $post_type_options['team_member_post_type'] ) ? $post_type_options['team_member_post_type'] : '';
-
-		$taxonomy_name = 'theplus_team_member_cat';
-		if ( isset( $team_post_type ) && ! empty( $team_post_type ) ) {
-			if ( 'themes' === $team_post_type ) {
-				$taxonomy_name = $this->tpae_get_options( 'team_member_category_name' );
-			} elseif ( 'plugin' === $team_post_type ) {
-				$get_name = $this->tpae_get_options( 'team_member_category_plugin_name' );
-				if ( isset( $get_name ) && ! empty( $get_name ) ) {
-					$taxonomy_name = $this->tpae_get_options( 'team_member_category_plugin_name' );
-				}
-			} elseif ( 'themes_pro' === $team_post_type ) {
-				$taxonomy_name = 'team_member_category';
-			}
-		} else {
-			$taxonomy_name = 'theplus_team_member_cat';
-		}
-
-		return $taxonomy_name;
+		return $this->tpae_get_taxonomy_name(
+			array(
+				'post_type_key'    => 'team_member_post_type',
+				'default'          => 'theplus_team_member_cat',
+				'themes_option'    => 'team_member_category_name',
+				'plugin_option'    => 'team_member_category_plugin_name',
+				'themes_pro_value' => 'team_member_category',
+			)
+		);
 	}
 
 	/**
-	 * Get tp options
-	 *
-	 * @since 5.6.9
-	 *
-	 * @param string $field use for get type.
-	 */
-	public function tpae_get_options( $field ) {
-
-		$post_type_options = get_option( 'post_type_options' );
-
-		if ( isset( $post_type_options[ $field ] ) && ! empty( $post_type_options[ $field ] ) ) {
-			return $post_type_options[ $field ];
-		}
-
-		return '';
-	}
-
-	/**
-	 * Get post-type name
+	 * Get team member post type name.
 	 *
 	 * @since 6.0.5
 	 */
 	public function l_theplus_team_member_post_name() {
-		$post_type_options = get_option( 'post_type_options' );
-		$team_post_type    = ! empty( $post_type_options['team_member_post_type'] ) ? $post_type_options['team_member_post_type'] : '';
-
-		$post_name = 'theplus_team_member';
-
-		if ( isset( $team_post_type ) && ! empty( $team_post_type ) ) {
-			if ( 'themes' === $team_post_type ) {
-				$post_name = l_theplus_get_option( 'post_type', 'team_member_theme_name' );
-			} elseif ( 'plugin' === $team_post_type ) {
-				$get_name = l_theplus_get_option( 'post_type', 'team_member_plugin_name' );
-				if ( isset( $get_name ) && ! empty( $get_name ) ) {
-					$post_name = l_theplus_get_option( 'post_type', 'team_member_plugin_name' );
-				}
-			} elseif ( 'themes_pro' === $team_post_type ) {
-				$post_name = 'team_member';
-			}
-		} else {
-			$post_name = 'theplus_team_member';
-		}
-
-		return $post_name;
+		return $this->tpae_get_post_type_name(
+			array(
+				'post_type_key'    => 'team_member_post_type',
+				'default'          => 'theplus_team_member',
+				'themes_option'    => 'team_member_theme_name',
+				'plugin_option'    => 'team_member_plugin_name',
+				'themes_pro_value' => 'team_member',
+			)
+		);
 	}
 }

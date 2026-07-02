@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 $config = [
     'elements' => [
         'post-grid' => [
@@ -787,6 +788,13 @@ $config = [
                         'context' => 'view',
                     ],
                 ],
+                'js' => [
+                    [
+                        'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/view/woo-add-to-cart.min.js',
+                        'type' => 'self',
+                        'context' => 'view',
+                    ],
+                ],
             ],
         ],
         'contact-form-7' => [
@@ -1134,6 +1142,23 @@ $config = [
 				    ],
 			    ],
 			    'js'  => [
+                    //gsap
+				    // [
+					//     'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/gsap.min.js',
+					//     'type' => 'lib',
+					//     'context' => 'view',
+				    // ],
+                    // [
+					//     'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/Draggable.min.js',
+					//     'type' => 'lib',
+					//     'context' => 'view',
+				    // ],
+                    // //marquee
+                    // [
+                    //     'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/marquee/marquee.min.js',
+                    //     'type' => 'lib',
+                    //     'context' => 'view',
+                    // ],
 				    [
 					    'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/view/quick-view.min.js',
 					    'type' => 'self',
@@ -1302,16 +1327,6 @@ $config = [
                 ],
                 'js' => [
                     [
-                        'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/gsap.min.js',
-                        'type' => 'lib',
-                        'context' => 'view',
-                    ],
-                    [
-                        'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/scroll-trigger.min.js',
-                        'type' => 'lib',
-                        'context' => 'view',
-                    ],
-                    [
                         'file' => EAEL_PLUGIN_PATH . 'assets/front-end/js/view/svg-draw.min.js',
                         'type' => 'self',
                         'context' => 'view',
@@ -1433,29 +1448,9 @@ $config = [
             'dependency' => [
                 'js' => [
                     [
-                        'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/gsap.min.js',
-                        'type'    => 'lib',
-                        'context' => 'view',
-                    ],
-                    [
-                        'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/MorphSVGPlugin.min.js',
-                        'type'    => 'lib',
-                        'context' => 'view',
-                    ],
-                    [
                         'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/blob-animation/polygon-morphing-animation.min.js',
                         'type'    => 'lib',
                         'context' => 'view',
-                    ],
-                    [
-                        'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/gsap.min.js',
-                        'type'    => 'lib',
-                        'context' => 'edit',
-                    ],
-                    [
-                        'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/gsap/MorphSVGPlugin.min.js',
-                        'type'    => 'lib',
-                        'context' => 'edit',
                     ],
                     [
                         'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/lib-view/blob-animation/polygon-morphing-animation.min.js',
@@ -1471,11 +1466,6 @@ $config = [
                         'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/edit/image-masking.min.js',
                         'type'    => 'self',
                         'context' => 'edit',
-                    ],
-                    [
-                        'file'    => EAEL_PLUGIN_PATH . 'assets/front-end/js/view/image-masking.min.js',
-                        'type'    => 'self',
-                        'context' => 'view',
                     ],
                 ],
             ],

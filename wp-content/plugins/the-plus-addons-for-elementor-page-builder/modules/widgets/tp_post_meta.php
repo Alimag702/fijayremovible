@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
@@ -25,15 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Post_Meta
  */
-class ThePlus_Post_Meta extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
-
+class ThePlus_Post_Meta extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name.
 	 *
@@ -61,7 +53,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-info-circle theplus_backend_icon';
+		return 'theplus-i-post-meta tpae-editor-logo';
 	}
 
 	/**
@@ -71,7 +63,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-builder' );
+		return array( 'plus-essential', 'plus-single' );
 	}
 
 	/**
@@ -81,56 +73,16 @@ class ThePlus_Post_Meta extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Post Meta', 'Custom Fields', 'Post Data', 'Meta Data', 'Advanced Fields' );
+		return array( 'Tp Post Meta', 'Post Content', 'Blog Content', 'Dynamic Post Content', 'Post Excerpt' );
 	}
-
 	/**
-	 * Get Widget categories.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 1.0.1
-	 * @version 6.1.0
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -170,6 +122,70 @@ class ThePlus_Post_Meta extends Widget_Base {
 					'category' => esc_html__( 'Taxonomies', 'tpebl' ),
 					'author'   => esc_html__( 'Author', 'tpebl' ),
 					'comments' => esc_html__( 'Comments', 'tpebl' ),
+				),
+			)
+		);
+		$repeater->add_control(
+			'sortfield_date_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Shows the publish/update date of the post. Useful when you want readers to know when the content was written or modified.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'sortfield' => 'date',
+				),
+			)
+		);
+		$repeater->add_control(
+			'sortfield_cat_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Select a taxonomy to display after choosing the Taxonomies option', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'sortfield' => 'category',
+				),
+			)
+		);
+		$repeater->add_control(
+			'sortfield_author_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Displays the name of the post author. Ideal for blogs, magazines, or multi-author sites.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'sortfield' => 'author',
+				),
+			)
+		);
+		$repeater->add_control(
+			'sortfield_com_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Shows the number of comments on the post. Useful for creating engagement indicators.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'sortfield' => 'comments',
 				),
 			)
 		);
@@ -309,6 +325,53 @@ class ThePlus_Post_Meta extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/add-post-meta-in-elementor-blog-post/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://youtu.be/sU-gLRCZnLs',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		if ( ! tpae_wl_pluginads_enabled() ) {
+			$this->start_controls_section(
+				'tpae_theme_builder_sec',
+				array(
+					'label' => esc_html__( 'Use with Theme Builder', 'tpebl' ),
+					'tab'   => Controls_Manager::TAB_CONTENT,
+				)
+			);
+			$this->add_control(
+				'tpae_theme_builders',
+				array(
+					'type'        => 'tpae_theme_builder',
+					'notice'      => esc_html__( 'We recommend using this widget in the Post Single Page Template to display date, category, author, and other meta details.', 'tpebl' ),
+					'button_text' => esc_html__( 'Create Single Page', 'tpebl' ),
+					'page_type'   => 'tp_singular_page',
+				)
+			);
+			$this->end_controls_section();
+		}
+
 		$this->start_controls_section(
 			'section_meta_info_style',
 			array(
@@ -396,6 +459,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 				'label'     => esc_html__( 'Separator', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
 				'default'   => esc_html__( ',', 'tpebl' ),
+				'ai'        => false,
 				'selectors' => array(
 					'{{WRAPPER}} .tp-post-meta-info .tp-post-meta-info-inner>span:not(:last-child):after' => 'content:"{{VALUE}}";',
 				),
@@ -494,6 +558,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Prefix Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'Enter Prefix', 'tpebl' ),
 				'condition'   => array(
@@ -663,6 +728,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Text', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'default'   => esc_html__( 'in', 'tpebl' ),
 				'condition' => array(
 					'showCategory'   => 'yes',
@@ -999,6 +1065,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 				array(
 					'label'     => esc_html__( 'Prefix Text', 'tpebl' ),
 					'type'      => Controls_Manager::TEXT,
+					'ai'        => false,
 					'default'   => esc_html__( 'By', 'tpebl' ),
 					'condition' => array(
 						'showAuthor' => 'yes',
@@ -1201,6 +1268,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Prefix Text', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'default'   => esc_html__( 'Comment', 'tpebl' ),
 				'condition' => array(
 					'showComment' => 'yes',
@@ -1573,12 +1641,9 @@ class ThePlus_Post_Meta extends Widget_Base {
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
 		$this->end_controls_section();
-		
+
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -1644,8 +1709,10 @@ class ThePlus_Post_Meta extends Widget_Base {
 
 						$category_taxonomies = ! empty( $item['category_taxonomies'] ) ? $item['category_taxonomies'] : 'category';
 
+						$category_prefix = ! empty( $settings['catePrefix'] ) ? $settings['catePrefix'] : '';
+
 						if ( 'pttext' === $cate_prefix_type ) {
-							$cate_prefix = $settings['catePrefix'];
+							$cate_prefix = esc_html( $category_prefix );
 						} elseif ( 'pticon' === $cate_prefix_type ) {
 							ob_start();
 							\Elementor\Icons_Manager::render_icon( $settings['catePrefixIcon'], array( 'aria-hidden' => 'true' ) );
@@ -1683,7 +1750,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 							foreach ( $terms as $term ) {
 								if ( $cate_display_no >= $i ) {
 									// Translators: %s is the name of the term.
-									$category_list .= '<a class="tp-meta-value" href="' . esc_url( get_term_link( $term ) ) . '" alt="' . esc_attr( sprintf( __( '%s', 'tpebl' ), $term->name ) ) . '">' . $term->name . '</a>';
+									$category_list .= '<a class="tp-meta-value" href="' . esc_url( get_term_link( $term ) ) . '" alt="' . esc_attr( sprintf( __( '%s', 'tpebl' ), $term->name ) ) . '">' . esc_html( $term->name ) . '</a>';
 								}
 								++$i;
 							}
@@ -1712,12 +1779,14 @@ class ThePlus_Post_Meta extends Widget_Base {
 							$iconauthor = '<i class="' . esc_attr( $author_icon ) . '"></i>';
 						}
 
-						$output .= '<span class="tp-meta-author" ><span class="tp-meta-author-label tp-meta-label" >' . esc_html( $author_prefix ) . '</span><a class="tp-meta-value" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '" rel="' . esc_attr__( 'author', 'tpebl' ) . '">' . $iconauthor . get_the_author_meta( 'display_name', $author_id ) . '</a></span>';
+						$post            = get_queried_object();
+						$author_page_url = get_author_posts_url( $post->post_author );
+						$output         .= '<span class="tp-meta-author" ><span class="tp-meta-author-label tp-meta-label" >' . esc_html( $author_prefix ) . '</span><a class="tp-meta-value" href="' . esc_url( $author_page_url ) . '" rel="' . esc_attr__( 'author', 'tpebl' ) . '">' . $iconauthor . esc_html( get_the_author_meta( 'display_name', $author_id ) ) . '</a></span>';
 					}
 				}
 
 				if ( 'comments' === $sortfield ) {
-					if ( ! empty( $show_comment ) )  {
+					if ( ! empty( $show_comment ) ) {
 						$count = 0;
 
 						$comment_icon   = '';
@@ -1727,7 +1796,7 @@ class ThePlus_Post_Meta extends Widget_Base {
 						$post_ic = ! empty( $settings['commentIcon'] ) ? $settings['commentIcon'] : '';
 
 						if ( 'none' !== $post_ic ) {
-							$comment_icon = '<i class="' . $post_ic . '"></i>';
+							$comment_icon = '<i class="' . esc_attr( $post_ic ) . '"></i>';
 						}
 
 						if ( ! empty( $comments_count ) ) {

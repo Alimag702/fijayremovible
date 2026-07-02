@@ -42,7 +42,7 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 		public function prepare_items() {
 			global $role, $usersearch, $wpdb;
 
-			$usersearch = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : ''; //phpcs:ignore
+			$usersearch = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( trim( $_REQUEST['s'] ) ) ) : ''; //phpcs:ignore
 
 			$users_per_page = $this->get_items_per_page( 'user_registration-membership_page_user_registration_users_per_page' );
 
@@ -59,24 +59,25 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 
 				if ( ! empty( $membership_id ) && in_array( $membership_id, array_keys( $this->get_all_memberships() ), false ) ) {
 					$subscription_table = TableList::subscriptions_table();
-					$valid_users     = $wpdb->get_results(
+					$valid_users        = $wpdb->get_results(
 						$wpdb->prepare(
 							"SELECT user_id FROM $subscription_table WHERE item_id = %d",
 							$membership_id
 						),
 						ARRAY_A
 					);
-					$valid_users     = wp_list_pluck( $valid_users, 'user_id' );
-					$args['include'] = ! empty( $valid_users ) ? $valid_users : array( 999999999 );
+					$valid_users        = wp_list_pluck( $valid_users, 'user_id' );
+					$args['include']    = ! empty( $valid_users ) ? $valid_users : array( 999999999 );
 				}
 			}
 
 			if ( isset( $_REQUEST['orderby'] ) ) {
-				$args['orderby'] = wp_unslash( $_REQUEST['orderby'] );
+				$args['orderby'] = sanitize_key( wp_unslash( $_REQUEST['orderby'] ) );
 			}
 
 			if ( isset( $_REQUEST['order'] ) ) {
-				$args['order'] = wp_unslash( $_REQUEST['order'] );
+				$order         = strtoupper( sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) );
+				$args['order'] = in_array( $order, array( 'ASC', 'DESC' ), true ) ? $order : 'ASC';
 			}
 
 			/**
@@ -118,9 +119,9 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 		 * Handle what to show on each row for the list-table.
 		 *
 		 * @param object $user_object user object.
-		 * @param mixed $style style params.
-		 * @param mixed $role role params.
-		 * @param mixed $numposts num-posts.
+		 * @param mixed  $style style params.
+		 * @param mixed  $role role params.
+		 * @param mixed  $numposts num-posts.
 		 *
 		 * @return string
 		 * @throws Exception exception type.
@@ -133,18 +134,27 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 				// Set up the user editing link.
 				$edit_link = add_query_arg(
 					array(
-						'action'   => 'edit',
+						'action'    => 'edit',
+						'member_id' => $user_id,
+						'_wpnonce'  => wp_create_nonce( 'bulk-users' ),
+					),
+					admin_url( 'admin.php?page=user-registration-members' ),
+				);
+
+				$member_view_url = add_query_arg(
+					array(
+						'action'   => 'view',
 						'user_id'  => $user_id,
 						'_wpnonce' => wp_create_nonce( 'bulk-users' ),
 					),
-					admin_url( 'admin.php?page=user-registration-users&view_user&action=edit' ),
+					admin_url( 'admin.php?page=user-registration-users&view_user' ),
 				);
 
 				// Add a link to the user's author archive, if not empty.
 				$actions['view'] = sprintf(
 					'<a href="%s" target="_blank">%s</a>',
-					esc_url( admin_url( 'admin.php?page=user-registration-users&view_user&user_id=' . $user_id ) ),
-					__( 'View' )
+					esc_url( $member_view_url ),
+					__( 'View', 'user-registration' )
 				);
 
 				if ( current_user_can( 'edit_user', $user_id ) ) {
@@ -202,28 +212,29 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 					$row .= "<td $attributes>";
 					switch ( $column_name ) {
 						case 'username':
-							$row .= "$avatar " . $user_object['user_login'];
+							$row .= "$avatar " . '<p>' . $user_object['user_login'] . '</p>';
 							break;
 						case 'email':
 							$row .= "<a href='" . esc_url( "mailto:$email" ) . "'>$email</a>";
 							break;
 						case 'membership':
-							$row .= $user_object['post_title'] ?? '';
+							$row .= $user_object['subscriptions'] ?? '';
 							break;
 						case 'subscription_status':
 							$status       = $user_object['status'] ?? '';
 							$status_class = 'user-registration-badge user-registration-badge--secondary-subtle';
 							if ( $status == 'active' ) {
 								$status_class = 'user-registration-badge user-registration-badge--success-subtle';
-							} else if ( $status == 'pending' ) {
+							} elseif ( $status == 'pending' ) {
 								$status_class = 'user-registration-badge user-registration-badge--warning';
 							}
 
-							$expiry_date = new \DateTime( $user_object['expiry_date'] );
+							// TODO: Handle Multiple ( Handle Later )
+							// $expiry_date = new \DateTime( $user_object['expiry_date'] );
 
-							if ( ! empty( $user_object['payment_method'] ) && ( 'subscription' == $user_object['payment_method'] ) && date( 'Y-m-d' ) > $expiry_date->format( 'Y-m-d' ) ) {
-								$status = 'expired';
-							}
+							// if ( ! empty( $user_object['payment_method'] ) && ( 'subscription' == $user_object['payment_method'] ) && date( 'Y-m-d' ) > $expiry_date->format( 'Y-m-d' ) ) {
+							// $status = 'expired';
+							// }
 
 							$row .= sprintf( '<span id="" class="user-registration-badge %s">%s</span>', $status_class, ucfirst( $status ) );
 							break;
@@ -273,20 +284,20 @@ if ( ! class_exists( 'MembersListTable' ) ) {
 
 			<div style="position: relative">
 				<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s"
-					   value="<?php _admin_search_query(); ?>"
-					   placeholder="<?php esc_html_e( 'Search Members ...', 'user-registration' ); ?>"/>
+						value="<?php _admin_search_query(); ?>"
+						placeholder="<?php esc_html_e( 'Search Members ...', 'user-registration' ); ?>"/>
 				<?php wp_nonce_field( 'user-registration-pro-filter-members' ); ?>
 				<button type="submit" id="search-submit">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 						<path fill="#000" fill-rule="evenodd"
-							  d="M4 11a7 7 0 1 1 12.042 4.856 1.012 1.012 0 0 0-.186.186A7 7 0 0 1 4 11Zm12.618 7.032a9 9 0 1 1 1.414-1.414l3.675 3.675a1 1 0 0 1-1.414 1.414l-3.675-3.675Z"
-							  clip-rule="evenodd"></path>
+								d="M4 11a7 7 0 1 1 12.042 4.856 1.012 1.012 0 0 0-.186.186A7 7 0 0 1 4 11Zm12.618 7.032a9 9 0 1 1 1.414-1.414l3.675 3.675a1 1 0 0 1-1.414 1.414l-3.675-3.675Z"
+								clip-rule="evenodd"></path>
 					</svg>
 				</button>
 			</div>
 
 			<div class="" id="user-registration-pro-members-filters" style="display: flex; gap: 10px">
-				<select name="membership_id" id="user_registration_pro_users_form_filter">
+				<select name="membership_id" id="user_registration_pro_users_form_filter" class="ur-enhanced-select">
 					<option
 						value=""><?php echo esc_html__( 'All Membership', 'user-registration' ); ?></option>
 					<?php

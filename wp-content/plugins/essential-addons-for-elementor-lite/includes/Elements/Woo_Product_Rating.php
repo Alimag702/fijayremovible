@@ -319,7 +319,7 @@ class Woo_Product_Rating extends Widget_Base {
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__( 'Customer Rating', 'essential-addons-for-elementor-lite' ),
 				'ai' => [
-					'active' => false,
+					'active' => true,
 				],
 				'condition' => [
 					'show_review_count' => 'yes',
@@ -334,7 +334,7 @@ class Woo_Product_Rating extends Widget_Base {
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__( '( ', 'essential-addons-for-elementor-lite' ),
 				'ai' => [
-					'active' => false,
+					'active' => true,
 				],
 				'condition' => [
 					'show_review_count' => 'yes',
@@ -349,7 +349,7 @@ class Woo_Product_Rating extends Widget_Base {
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__( ' )', 'essential-addons-for-elementor-lite' ),
 				'ai' => [
-					'active' => false,
+					'active' => true,
 				],
 				'condition' => [
 					'show_review_count' => 'yes',
@@ -382,7 +382,7 @@ class Woo_Product_Rating extends Widget_Base {
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__( 'No Customer Rating', 'essential-addons-for-elementor-lite' ),
 				'ai' => [
-					'active' => false,
+					'active' => true,
 				],
 				'condition' => [
 					'show_empty_review' => 'yes',
@@ -478,7 +478,7 @@ class Woo_Product_Rating extends Widget_Base {
 				return;
 			}
 			
-			$product      = Helper::get_product();
+			$product      = Helper::get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 			$rating_count = $product->get_rating_count();
 			$review_count = $product->get_review_count();
 			$average      = $product->get_average_rating();

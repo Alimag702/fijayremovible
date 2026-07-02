@@ -57,10 +57,10 @@ if ( ! class_exists( 'Tpae_White_Label' ) ) {
 		public function tpaep_white_label_update_free( $all_plugins ) {
 			$label_options = get_option( 'theplus_white_label' );
 
-			$plugin_name    = ! empty( $label_options['l_tp_plugin_name'] ) ? $label_options['l_tp_plugin_name'] : '';
-			$tp_plugin_desc = ! empty( $label_options['l_tp_plugin_desc'] ) ? $label_options['l_tp_plugin_desc'] : '';
-			$tp_author_name = ! empty( $label_options['l_tp_author_name'] ) ? $label_options['l_tp_author_name'] : '';
-			$tp_author_uri  = ! empty( $label_options['l_tp_author_uri'] ) ? $label_options['l_tp_author_uri'] : '';
+			$plugin_name    = ! empty( $label_options['l_tp_plugin_name'] ) ? sanitize_text_field( $label_options['l_tp_plugin_name'] ) : '';
+			$tp_plugin_desc = ! empty( $label_options['l_tp_plugin_desc'] ) ? wp_kses_post( $label_options['l_tp_plugin_desc'] ) : '';
+			$tp_author_name = ! empty( $label_options['l_tp_author_name'] ) ? sanitize_text_field( $label_options['l_tp_author_name'] ) : '';
+			$tp_author_uri  = ! empty( $label_options['l_tp_author_uri'] ) ? esc_url_raw( $label_options['l_tp_author_uri'] ) : '';
 
 			if ( ! empty( $all_plugins[ L_THEPLUS_PBNAME ] ) && is_array( $all_plugins[ L_THEPLUS_PBNAME ] ) ) {
 				$all_plugins[ L_THEPLUS_PBNAME ]['Name']        = ! empty( $plugin_name ) ? $plugin_name : $all_plugins[ L_THEPLUS_PBNAME ]['Name'];

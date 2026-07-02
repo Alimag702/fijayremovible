@@ -10,13 +10,18 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Background;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
+use ThePlusAddons\Elementor\ButtonStyle\TP_Global_Button_Style_Helper;
+
+if ( ! trait_exists( '\ThePlusAddons\Elementor\ButtonStyle\TP_Global_Button_Style_Helper' ) ) {
+	include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-global-button-style-helper.php';
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -25,7 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Post_Comment
  */
-class ThePlus_Post_Comment extends Widget_Base {
+class ThePlus_Post_Comment extends Plus_Widget_Base {
+
+	use TP_Global_Button_Style_Helper;
 
 	/**
 	 * Get Widget Name.
@@ -54,7 +61,7 @@ class ThePlus_Post_Comment extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-commenting theplus_backend_icon';
+		return 'theplus-i-post-comment tpae-editor-logo';
 	}
 
 	/**
@@ -64,7 +71,7 @@ class ThePlus_Post_Comment extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-builder' );
+		return array( 'plus-essential', 'plus-single' );
 	}
 
 	/**
@@ -74,55 +81,16 @@ class ThePlus_Post_Comment extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Post Comment', 'Comment', 'Comment Box', 'Comment Section', 'Feedback', 'User Feedback', 'User Comment', 'Add Comment', 'Leave Comment', 'Submit Comment', 'Comment Form', 'Comment Widget', 'Comment Element', 'Elementor Comment', 'Elementor Comment Box', 'Elementor Comment Section', 'Elementor Feedback', 'Elementor User Feedback', 'Elementor User Comment', 'Elementor Add Comment', 'Elementor Leave Comment', 'Elementor Submit Comment', 'Elementor Comment Form' );
+		return array( 'Tp Post Comment', 'Comment Section', 'Blog Comments', 'User Feedback', 'Comment Form' );
 	}
-
 	/**
-	 * Get Widget Custom Help Url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @version 6.1.0
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Get Widget Custom Help Url.
 	 *
@@ -152,6 +120,37 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'type'    => Controls_Manager::TEXT,
 				'label'   => esc_html__( 'Button Text', 'tpebl' ),
 				'default' => esc_html__( 'Submit Now', 'tpebl' ),
+			)
+		);
+		$this->add_control(
+			'btn_type_switch',
+			array(
+				'label'   => esc_html__( 'Button Type', 'tpebl' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'default' => 'basic',
+				'options' => array(
+					'basic'  => array(
+						'title' => esc_html__( 'Basic', 'tpebl' ),
+						'icon'  => 'eicon-button',
+					),
+					'global' => array(
+						'title' => esc_html__( 'Global', 'tpebl' ),
+						'icon'  => 'eicon-globe',
+					),
+				),
+				'toggle'  => false,
+			)
+		);
+		$this->add_control(
+			'btn_global_style_preset',
+			array(
+				'label'     => esc_html__( 'Global Style', 'tpebl' ),
+				'type'      => Controls_Manager::SELECT,
+				'options'   => $this->get_global_button_style_options(),
+				'default'   => '',
+				'condition' => array(
+					'btn_type_switch' => 'global',
+				),
 			)
 		);
 		$this->add_control(
@@ -190,11 +189,43 @@ class ThePlus_Post_Comment extends Widget_Base {
 		$this->add_control(
 			'cmtcount',
 			array(
-				'label'     => esc_html__( 'Comment Count', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'yes',
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label'       => esc_html__( 'Comment Count', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'default'     => 'yes',
+				'label_on'    => esc_html__( 'Enable', 'tpebl' ),
+				'label_off'   => esc_html__( 'Disable', 'tpebl' ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to show the total number of comments on the post.', 'tpebl' ),
+					)
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/customize-post-comments-in-elementor-blog-post/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://youtu.be/sU-gLRCZnLs',
+					),
+				),
 			)
 		);
 		$this->end_controls_section();
@@ -1094,6 +1125,9 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .tp-post-comment #commentform #submit' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+				'condition'  => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -1106,6 +1140,9 @@ class ThePlus_Post_Comment extends Widget_Base {
 					'{{WRAPPER}} .tp-post-comment #commentform #submit' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+				'condition'  => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -1138,19 +1175,32 @@ class ThePlus_Post_Comment extends Widget_Base {
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'btnTypo',
-				'label'    => esc_html__( 'Button Typography', 'tpebl' ),
-				'global'   => array(
+				'name'      => 'btnTypo',
+				'label'     => esc_html__( 'Button Typography', 'tpebl' ),
+				'global'    => array(
 					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
 				),
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
-		$this->start_controls_tabs( 'tabs_btn_color_style' );
+		$this->start_controls_tabs(
+			'tabs_btn_color_style',
+			array(
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
+			)
+		);
 		$this->start_controls_tab(
 			'tab_btn_color_normal',
 			array(
-				'label' => esc_html__( 'Normal', 'tpebl' ),
+				'label'     => esc_html__( 'Normal', 'tpebl' ),
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_control(
@@ -1162,22 +1212,31 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'selectors' => array(
 					'{{WRAPPER}} .tp-post-comment #commentform #submit' => 'color: {{VALUE}}',
 				),
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Background::get_type(),
 			array(
-				'name'     => 'btnBg',
-				'types'    => array( 'classic', 'gradient' ),
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'name'      => 'btnBg',
+				'types'     => array( 'classic', 'gradient' ),
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			array(
-				'name'     => 'btnBorder',
-				'label'    => esc_html__( 'Border', 'tpebl' ),
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'name'      => 'btnBorder',
+				'label'     => esc_html__( 'Border', 'tpebl' ),
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -1189,20 +1248,29 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .tp-post-comment #commentform #submit' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+				'condition'  => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			array(
-				'name'     => 'btnBoxShadow',
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'name'      => 'btnBoxShadow',
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->end_controls_tab();
 		$this->start_controls_tab(
 			'tab_btn_color_hover',
 			array(
-				'label' => esc_html__( 'Hover', 'tpebl' ),
+				'label'     => esc_html__( 'Hover', 'tpebl' ),
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_control(
@@ -1214,22 +1282,31 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'selectors' => array(
 					'{{WRAPPER}} .tp-post-comment #commentform #submit:hover' => 'color: {{VALUE}}',
 				),
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Background::get_type(),
 			array(
-				'name'     => 'btnBgHover',
-				'types'    => array( 'classic', 'gradient' ),
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'name'      => 'btnBgHover',
+				'types'     => array( 'classic', 'gradient' ),
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			array(
-				'name'     => 'btnBorderHover',
-				'label'    => esc_html__( 'Border', 'tpebl' ),
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'name'      => 'btnBorderHover',
+				'label'     => esc_html__( 'Border', 'tpebl' ),
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -1241,13 +1318,19 @@ class ThePlus_Post_Comment extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .tp-post-comment #commentform #submit:hover' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
+				'condition'  => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			array(
-				'name'     => 'btnBoxShadowHover',
-				'selector' => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'name'      => 'btnBoxShadowHover',
+				'selector'  => '{{WRAPPER}} .tp-post-comment #commentform #submit:hover',
+				'condition' => array(
+					'btn_type_switch' => 'basic',
+				),
 			)
 		);
 		$this->end_controls_tab();
@@ -1255,10 +1338,7 @@ class ThePlus_Post_Comment extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -1292,8 +1372,30 @@ class ThePlus_Post_Comment extends Widget_Base {
 			$cmtcount = get_comments_number( $post_id );
 		}
 
+		$btn_type_switch         = ! empty( $settings['btn_type_switch'] ) ? $settings['btn_type_switch'] : 'basic';
+		$btn_global_style_preset = ! empty( $settings['btn_global_style_preset'] ) ? $settings['btn_global_style_preset'] : '';
+
+		$btn_global_css = '';
+		if ( 'global' === $btn_type_switch && ! empty( $btn_global_style_preset ) ) {
+			$btn_global_css = $this->build_global_button_style_css( $btn_global_style_preset, '.tp-widget-' . $uid_pscmnt );
+
+			/*
+			 * Boost specificity so the preset wins over the basic submit-button
+			 * selectors ({{WRAPPER}} .tp-post-comment #commentform #submit),
+			 * which use two IDs.
+			 */
+			$btn_global_css = str_replace(
+				'.pt_plus_button .button-link-wrap',
+				'#commentform .pt_plus_button #submit.button-link-wrap',
+				$btn_global_css
+			);
+		}
+
 		ob_start();
 			echo '<div class="tp-post-comment tp-widget-' . esc_attr( $uid_pscmnt ) . '">';
+		if ( ! empty( $btn_global_css ) ) {
+			echo '<style>' . wp_strip_all_tags( $btn_global_css ) . '</style>';
+		}
 				echo '<div id="comments" class="comments-area">';
 		if ( get_comments_number( $post_id ) > 0 ) {
 			echo '<ul class="comment-list">';
@@ -1335,31 +1437,45 @@ class ThePlus_Post_Comment extends Widget_Base {
 
 		$user_identity = $user->exists() ? $user->display_name : '';
 
+		$parent_id     = isset( $_GET['replytocom'] ) ? intval( $_GET['replytocom'] ) : 0;
+		$parent_author = '';
+
+		if ( $parent_id ) {
+			$parent_comment = get_comment( $parent_id );
+			if ( $parent_comment ) {
+				$parent_author = $parent_comment->comment_author;
+			}
+		}
+
+		$btn_type_switch = ! empty( $settings['btn_type_switch'] ) ? $settings['btn_type_switch'] : 'basic';
+
 		$args = array(
 			'id_form'              => 'commentform',
 			'class_form'           => 'comment-form',
 			'id_submit'            => 'submit',
 			'title_reply'          => esc_html( $post_title ),
 			// Translators: %s is replaced with the title of the post being replied to.
-            'title_reply_to' => esc_html( $leave_txt ) . sprintf( esc_html__( 'Reply to %s', 'tpebl' ), esc_html( $post_title ) ),
+			// 'title_reply_to'       => esc_html( $leave_txt ) . sprintf( esc_html__( 'Reply to %s', 'tpebl' ), esc_html( $post_title ) ),
+			'title_reply_to'       => $parent_id ? sprintf( /* translators: 1: Leave reply text, 2: Parent comment author name */ esc_html__( '%1$s %2$s', 'tpebl' ), esc_html( $leave_txt ), esc_html( $parent_author ) ) : esc_html( $leave_txt ),
+
 			'cancel_reply_link'    => esc_html( $cancel_txt ),
 			'label_submit'         => esc_html( $btn_title ),
 			'comment_field'        => '<div class="tp-row"><div class="tp-col-md-12 tp-col"><label><textarea id="comment" name="comment" cols="45" rows="6" placeholder="' . esc_html( $placeholder_txt ) . '" aria-required="true"></textarea></label></div></div>',
 
-			'must_log_in' => '<p class="must-log-in">' .
+			'must_log_in'          => '<p class="must-log-in">' .
 				sprintf(
 				// Translators: %1$s is replaced with the opening <a> tag, and %2$s is replaced with the closing </a> tag.
-				esc_html__( 'You must be %1$slogged in%2$s to post a comment.', 'tpebl' ),
-				'<a href="' . esc_url( wp_login_url( apply_filters( 'the_permalink', get_permalink() ) ) ) . '">',
-				'</a>'
-			) . '</p>',
+					esc_html__( 'You must be %1$slogged in%2$s to post a comment.', 'tpebl' ),
+					'<a href="' . esc_url( wp_login_url( apply_filters( 'the_permalink', get_permalink() ) ) ) . '">',
+					'</a>'
+				) . '</p>',
 
-			'logged_in_as' => '<p class="logged-in-as">' .
+			'logged_in_as'         => '<p class="logged-in-as">' .
 			sprintf(
 				// Translators: %1$s is replaced with the user's display name, %2$s is replaced with the opening <a> tag for the user profile link, %3$s is replaced with the closing </a> tag for the user profile link, %4$s is replaced with the opening <a> tag for the logout link, and %5$s is replaced with the closing </a> tag for the logout link.
 				esc_html__( 'Logged in as %1$s%2$s. %3$sLog out?%4$s', 'tpebl' ),
 				$user_identity,
-				'<a href="' . esc_url( admin_url( 'profile.php' ) ) . '">'.
+				'<a href="' . esc_url( admin_url( 'profile.php' ) ) . '">' .
 				'</a>',
 				'<a href="' . esc_url( wp_logout_url( apply_filters( 'the_permalink', get_permalink() ) ) ) . '" title="' . esc_attr__( 'Log out of this account', 'tpebl' ) . '">',
 				'</a>'
@@ -1368,6 +1484,11 @@ class ThePlus_Post_Comment extends Widget_Base {
 			'comment_notes_before' => '',
 			'comment_notes_after'  => '',
 		);
+
+		if ( 'global' === $btn_type_switch ) {
+			$args['submit_button'] = '<div class="pt_plus_button button-style-8"><input name="%1$s" type="submit" id="%2$s" class="%3$s button-link-wrap" value="%4$s" /></div>';
+		}
+
 		return $args;
 	}
 }

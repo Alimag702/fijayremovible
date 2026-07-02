@@ -110,53 +110,180 @@ if ( ! class_exists( 'Tp_Notices_Main' ) ) {
 		 * @version 5.6.5
 		 */
 		public function tp_notices_manage() {
-			
+
+			if ( ! get_option( 'tpae_install_time' ) ) {
+				add_option( 'tpae_install_time', current_time( 'mysql' ) );
+			}
+
 			// $envato_plugins = array(
-			// 	'name'        => 'envato-elements',
-			// 	'status'      => '',
-			// 	'plugin_slug' => 'envato-elements/envato-elements.php',
+			// 'name'        => 'envato-elements',
+			// 'status'      => '',
+			// 'plugin_slug' => 'envato-elements/envato-elements.php',
 			// );
 
+			$tpae_pro_plugin    = array(
+				'name'        => 'theplus_elementor_addon',
+				'status'      => '',
+				'plugin_slug' => 'theplus_elementor_addon/theplus_elementor_addon.php',
+			);
+			$nxt_plugin         = array(
+				'name'        => 'the-plus-addons-for-block-editor',
+				'status'      => '',
+				'plugin_slug' => 'the-plus-addons-for-block-editor/the-plus-addons-for-block-editor.php',
+			);
+			$nxt_pro_plugin     = array(
+				'name'        => 'the-plus-addons-for-block-editor-pro',
+				'status'      => '',
+				'plugin_slug' => 'the-plus-addons-for-block-editor-pro/the-plus-addons-for-block-editor-pro.php',
+			);
+			$nxt_ext_plugin     = array(
+				'name'        => 'nexter-extension',
+				'status'      => '',
+				'plugin_slug' => 'nexter-extension/nexter-extension.php',
+			);
+			$nxt_ext_pro_plugin = array(
+				'name'        => 'nexter-pro-extensions',
+				'status'      => '',
+				'plugin_slug' => 'nexter-pro-extensions/nexter-pro-extensions.php',
+			);
+			$ele_plugin         = array(
+				'name'        => 'elementor',
+				'status'      => '',
+				'plugin_slug' => 'elementor/elementor.php',
+			);
+			$ele_pro_plugin     = array(
+				'name'        => 'elementor-pro',
+				'status'      => '',
+				'plugin_slug' => 'elementor-pro/elementor-pro.php',
+			);
+			$temp_kit_plugin    = array(
+				'name'        => 'template-kit-import',
+				'status'      => '',
+				'plugin_slug' => 'template-kit-import/template-kit-import.php',
+			);
+
+			$ele_details     = $this->tpae_check_plugins_depends( $ele_plugin );
+			$ele_pro_details = $this->tpae_check_plugins_depends( $ele_pro_plugin );
+
+			$tpae_pro_details = $this->tpae_check_plugins_depends( $tpae_pro_plugin );
+
+			$nxt_details     = $this->tpae_check_plugins_depends( $nxt_plugin );
+			$nxt_pro_details = $this->tpae_check_plugins_depends( $nxt_pro_plugin );
+
+			$nxt_ext_details     = $this->tpae_check_plugins_depends( $nxt_ext_plugin );
+			$nxt_ext_pro_details = $this->tpae_check_plugins_depends( $nxt_ext_pro_plugin );
+
+			$temp_kit_details = $this->tpae_check_plugins_depends( $temp_kit_plugin );
+
 			if ( is_admin() && current_user_can( 'manage_options' ) ) {
+
 				include L_THEPLUS_PATH . 'includes/notices/class-tp-plugin-page.php';
 
 				if ( empty( $this->whitelabel ) || 'on' !== $this->hidden_label ) {
 					include L_THEPLUS_PATH . 'includes/notices/class-tp-widget-notice.php';
 				}
 
-				// include L_THEPLUS_PATH . 'includes/notices/class-tp-dashboard-overview.php';
+				include L_THEPLUS_PATH . 'includes/notices/class-tp-dashboard-overview.php';
+
+				$current_version = str_replace( '.', '', L_THEPLUS_VERSION );
+
+				$current_cleanup_key  = 'theplus_cleanup_sale_notices_' . $current_version;
+				$previous_cleanup_key = 'theplus_cleanup_sale_notices_' . ( (int) $current_version - 1 );
 
 				/**Remove Key In Databash*/
-				include L_THEPLUS_PATH . 'includes/notices/class-tp-notices-remove.php';
+				if ( ! get_option( $current_cleanup_key ) ) {
+					if ( get_option( $previous_cleanup_key ) ) {
+						delete_option( $previous_cleanup_key );
+					}
+
+					include L_THEPLUS_PATH . 'includes/notices/class-tp-notices-remove.php';
+
+					update_option( $current_cleanup_key, true );
+				}
 			}
 
-			if ( is_admin() ){
-				$this->tp_remove_notice();
+			$license_data = get_option( 'tpaep_licence_data' );
+
+			if ( empty( $this->whitelabel['plugin_news'] ) || 'on' !== $this->whitelabel['plugin_news'] ) {
+
+				$check_license = $license_data ? $license_data['expires'] : '';
+
+				/** Plugin Features Banner*/
+				// if ( ! get_option( 'tpae_pluginfeatures_notice_dismissed' ) ) {
+				// 	include L_THEPLUS_PATH . 'includes/notices/class-tp-plugin-features-banner.php';
+				// }
+
+				if ( ! empty( $ele_pro_details[0]['status'] ) && 'unavailable' == $ele_pro_details[0]['status'] ) {
+					if ( ! empty( $nxt_ext_details[0]['status'] ) && 'unavailable' == $nxt_ext_details[0]['status'] ) {
+						if ( ! empty( $nxt_ext_pro_details[0]['status'] ) && 'unavailable' == $nxt_ext_pro_details[0]['status'] ) {
+							include L_THEPLUS_PATH . 'includes/notices/class-tp-nexter-extension-promo.php';
+						}
+					}
+				}
+
+				if ( ! get_option( 'tpae_nexter_block_notice' ) ) {
+					if ( ! empty( $nxt_details[0]['status'] ) && 'unavailable' == $nxt_details[0]['status'] ) {
+						if ( ! empty( $nxt_pro_details[0]['status'] ) && 'unavailable' == $nxt_pro_details[0]['status'] ) {
+							include L_THEPLUS_PATH . 'includes/notices/class-tp-nexter-notice.php';
+						}
+					}
+				}
+
+				/** Install TPAE Pro notice*/
+				if ( ! get_option( 'tpae_pro_promo_notice' ) ) {
+					if ( ! empty( $tpae_pro_details[0]['status'] ) && 'unavailable' === $tpae_pro_details[0]['status'] ) {
+						include L_THEPLUS_PATH . 'includes/notices/class-tp-tpaepro-notice.php';
+					}
+				}
+
+				/** Activate License*/
+				if ( ! empty( $tpae_pro_details[0]['status'] ) && 'active' === $tpae_pro_details[0]['status'] ) {
+					
+					if ( ! get_option( 'tpae_activate_license_notice' ) ) {
+						if ( empty( $license_data ) && empty( $license_data['license_key'] ) ) {
+							include L_THEPLUS_PATH . 'includes/notices/class-tp-activate-license-notice.php';
+						}
+					}
+
+					/** License Expired*/
+					/** License will Expire in 1 Month*/
+					/** License will Expire in 1 Week*/
+					if ( ! empty( $license_data ) && 'lifetime' !== $license_data['expires'] ) {
+						include L_THEPLUS_PATH . 'includes/notices/class-tp-expired-license-notice.php';
+					}
+				}
+
+				/** Deprecated Widgets Removal Notice*/
+				if ( ! get_option( 'tpae_deprecated_widgets_notice' ) ) {
+					include L_THEPLUS_PATH . 'includes/notices/class-tp-deprecated-widgets-notice.php';
+				}
+
+				/** Ask for Review*/
+				if ( ! get_option( 'tpae_ask_review_notice' ) ) {
+					include L_THEPLUS_PATH . 'includes/notices/class-tp-ask-review-notice.php';
+				}
+
+				/** Join Community Discord*/
+				if ( ! get_option( 'tpae_join_community_notice' ) ) {
+					include L_THEPLUS_PATH . 'includes/notices/class-tp-join-community-notice.php';
+				}
+
 			}
-
-			// if ( empty( $this->whitelabel['plugin_news'] ) || 'on' !== $this->whitelabel['plugin_news'] ) {
-				// include L_THEPLUS_PATH . 'includes/notices/class-tp-halloween-notice.php';
-			// }
-
-			// if ( is_admin() && current_user_can( 'install_plugins' ) ) {.
-				// include L_THEPLUS_PATH . 'includes/notices/class-tp-tpag-install-notice.php';
-			// }.
 
 			// $envato_details = $this->tpae_check_plugins_depends( $envato_plugins );
 			// if ( current_user_can( 'manage_options' ) ) {
-			// 	$current_user_id = get_current_user_id();
-			// 	$meta_value = get_user_meta( $current_user_id, 'elementor_introduction', true );
+			// $current_user_id = get_current_user_id();
+			// $meta_value = get_user_meta( $current_user_id, 'elementor_introduction', true );
 
-			// 	$ai_get_started_announcement = ( ! empty( $meta_value ) && ! empty( $meta_value['ai-get-started-announcement'] ) ) ? $meta_value['ai-get-started-announcement'] : 0;
+			// $ai_get_started_announcement = ( ! empty( $meta_value ) && ! empty( $meta_value['ai-get-started-announcement'] ) ) ? $meta_value['ai-get-started-announcement'] : 0;
 
-			// 	if( '0' != $ai_get_started_announcement ){
-			// 		if( !empty( $envato_details[0]['status'] ) && 'unavailable' == $envato_details[0]['status'] ){
-			// 			$option_eop = get_option( 'tp_editor_onbording_popup' );
-			// 			if ( empty( $option_eop ) || 'yes' !== $option_eop ) {	
-			// 				include L_THEPLUS_PATH . 'includes/notices/class-tp-editor-onbording.php';
-			// 			}
-			// 		}
-			// 	}
+			// if( '0' != $ai_get_started_announcement ){
+			// if( !empty( $envato_details[0]['status'] ) && 'unavailable' == $envato_details[0]['status'] ){
+			// $option_eop = get_option( 'tp_editor_onbording_popup' );
+			// if ( empty( $option_eop ) || 'yes' !== $option_eop ) {
+			// }
+			// }
+			// }
 			// }
 
 			if ( current_user_can( 'install_plugins' ) && current_user_can( 'manage_options' ) && $this->tp_check_plugin_status() ) {
@@ -165,12 +292,13 @@ if ( ! class_exists( 'Tp_Notices_Main' ) ) {
 
 					if ( empty( $option_value ) || 'yes' !== $option_value ) {
 						// if( !empty( $envato_details[0]['status'] ) && 'unavailable' == $envato_details[0]['status'] ){
+						if ( ! empty( $temp_kit_details[0]['status'] ) && 'unavailable' == $temp_kit_details[0]['status'] ) {
 							include L_THEPLUS_PATH . 'includes/notices/class-tp-wdkit-preview-popup.php';
+						}
 						// }
 					}
 				}
 			}
-
 		}
 
 		/**
@@ -211,7 +339,7 @@ if ( ! class_exists( 'Tp_Notices_Main' ) ) {
 			if ( ! function_exists( 'get_plugins' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
-			
+
 			$all_plugins = get_plugins();
 
 			$pluginslug = ! empty( $plugin['plugin_slug'] ) ? sanitize_text_field( wp_unslash( $plugin['plugin_slug'] ) ) : '';
@@ -243,26 +371,6 @@ if ( ! class_exists( 'Tp_Notices_Main' ) ) {
 				require_once \ABSPATH . 'wp-admin/includes/plugin.php';
 
 				return get_plugins();
-			}
-		}
-
-		/**
-		 * Remove OlD Plugin Notice
-		 *
-		 * @since 6.1.1
-		 */
-		public function tp_remove_notice() {
-
-			if ( get_option('tpae_halloween_notice_dismissed') !== false ) {
-				delete_option('tpae_halloween_notice_dismissed');
-			}
-
-			if ( get_option('tpae_bfsale_notice_dismissed') !== false ) {
-				delete_option('tpae_bfsale_notice_dismissed');
-			}
-
-			if ( get_option('tpae_cmsale_notice_dismissed') !== false ) {
-				delete_option('tpae_cmsale_notice_dismissed');
 			}
 		}
 	}

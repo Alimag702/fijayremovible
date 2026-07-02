@@ -5,12 +5,12 @@
     const INSTALLING_TEXT = __("Installing WDesignKit", "tpebl");
     const WAITING_TEXT = __("Waiting...", "tpebl");
 
-    $("document").ready(function () {
+    $(document).ready(function () {
         let templateAddSection = $("#tmpl-elementor-add-section");
 
         if (0 < templateAddSection.length) {
             var oldTemplateButton = templateAddSection.html();
-                oldTemplateButton = oldTemplateButton.replace('<div class="elementor-add-section-drag-title', '<div data-mode="dark" class="elementor-add-section-area-button elementor-action-tp-wdkit-button" title="' + __("WDesignKit") + '"><a href="#" class="tp-wkit-main-logo-div"></a></div><div class="elementor-add-section-drag-title');
+                oldTemplateButton = oldTemplateButton.replace('<div class="elementor-add-section-drag-title', '<div data-mode="dark" class="elementor-add-section-area-button elementor-action-tp-wdkit-button" title="' + __("WDesignKit", "tpebl") + '"><span class="tp-wkit-main-logo-div"></span></div><div class="elementor-add-section-drag-title');
                 templateAddSection.html(oldTemplateButton);
         }
 
@@ -35,12 +35,12 @@
                     },
                     onShow: function () {
                         var dialogLightboxContent = $(".dialog-lightbox-message"),
-                            clonedWrapElement = $("#tp-wdkit-wrap");
+                            clonedWrapElement = $("#tp-wdkit-preview");
 
                             clonedWrapElement = clonedWrapElement.clone(true).show()
                             dialogLightboxContent.html(clonedWrapElement);
 
-                            dialogLightboxContent.on("click", ".tp-close-btn", function () {
+                            dialogLightboxContent.on("click", ".tp-pre-close-btn", function () {
                                 window.tp_wdkit_editor.hide();
                             });
                     },
@@ -54,7 +54,7 @@
                 window.tp_wdkit_editor.show();
             });
 
-            $(document).on('click', '.tp-not-show-again', function (e) {
+            $(document).on('click', '.tp-pre-not-show-again', function (e) {
                 e.preventDefault();
                 $.ajax({
                     url: tp_wdkit_preview_popup.ajax_url,
@@ -71,17 +71,17 @@
                         });
                     },
                     error: function (xhr, status, error) {
-                        console.log('Response:', xhr.responseText);
+                        console.error('TPAE wdkit preview popup dismiss failed:', status, error);
                     }
                 });
             });
 
-            $(document).on('click', '.tp-wdesign-install', function (e) {
+            $(document).on('click', '.tp-pre-learn-more-about .tp-pre-wdesign-install', function (e) {
                 e.preventDefault();
 
                 var $button = $(this);
-                var $loader = $button.find('.tp-wb-loader-circle');
-                var $text = $button.find('.theplus-enable-text');
+                var $loader = $button.find('.tp-pre-loader-circle');
+                var $text = $button.find('.tpae-pre-enable-text');
 
                 if ($text.length > 0) {
                     $text.text(INSTALLING_TEXT);
@@ -104,6 +104,10 @@
                         security: tp_wdkit_preview_popup.nonce,
                     },
                     success: function (res) {
+                        
+                        if(!res.success){
+                            alert('Only site admins can install presets. Please ask your admin to complete the installation.')
+                        }
 
                         $loader.css('display', 'none');
 

@@ -22,7 +22,9 @@ if ( 'tlcontent' === $con_from ) {
 			</div>
 			<div class="post-content-image">
 				<?php
+				if ( ! empty( $show_author_image ) && 'yes' === $show_author_image ) {
 					require L_THEPLUS_WSTYLES . 'testimonial/format-image.php';
+				}
 					require L_THEPLUS_WSTYLES . 'testimonial/post-title.php';
 					require L_THEPLUS_WSTYLES . 'testimonial/post-meta-designation.php';
 				?>

@@ -102,13 +102,11 @@ if ( ! class_exists( 'Tp_User_Experience_Main' ) ) {
 		 */
 		public function tp_user_experience() {
 
-			$tpae_exoption = get_option( 'tpae_onbording_end' );
-
-			if ( empty( $tpae_exoption ) ) {
-				include L_THEPLUS_PATH . 'includes/user-experience/class-tp-onbording.php';
-			}
-
 			include L_THEPLUS_PATH . 'includes/user-experience/class-tp-deactivate-feedback.php';
+
+			if ( ( empty( $this->whitelabel['plugin_news'] ) || 'on' !== $this->whitelabel['plugin_news'] ) || ( empty( $this->whitelabel['help_link'] ) || 'on' !== $this->whitelabel['help_link'] ) || ( empty( $this->whitelabel['plugin_ads'] ) || 'on' !== $this->whitelabel['plugin_ads'] ) ) {
+				include L_THEPLUS_PATH . 'includes/user-experience/update-popup/class-tp-update-popup.php';
+			}
 		}
 	}
 

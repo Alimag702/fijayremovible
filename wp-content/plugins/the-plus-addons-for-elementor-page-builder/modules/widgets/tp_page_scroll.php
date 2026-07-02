@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Group_Control_Typography;
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Page_Scroll
  */
-class L_ThePlus_Page_Scroll extends Widget_Base {
+class L_ThePlus_Page_Scroll extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -36,14 +36,6 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 	public function get_name() {
 		return 'tp-page-scroll';
 	}
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
-
 	/**
 	 * Get Widget Title.
 	 *
@@ -61,7 +53,7 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-rocket theplus_backend_icon';
+		return 'theplus-i-page-scroll tpae-editor-logo';
 	}
 
 	/**
@@ -71,7 +63,7 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-creatives' );
+		return array( 'plus-advanced' );
 	}
 
 	/**
@@ -81,59 +73,16 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Page Piling', 'Page Scroll', 'Scrollable Pages', 'Vertical Scroll', 'Full Page Scroll', 'Scrollable Sections' );
+		return array( 'Tp Page Scroll','Full Page Scroll', 'Vertical Scroll Sections', 'Page Piling', 'Multi-Scroll', 'Horizontal Scrolling Page', 'Scroll-Based Navigation', 'Slide-by-Slide Scrolling', 'Full-Screen Slides', 'Scrolling Transitions', 'Interactive Page Scroll', 'Dot Navigation Scroll', 'Next/Prev Scrolling', 'Smooth Scrolling' );
 	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
-	}
-
 	/**
 	 * It is use for widget add in catch or not.
 	 *
 	 * @since 6.1.2
 	 */
 	// public function is_dynamic_content(): bool {
-	// 	return false;
+	// return false;
 	// }
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if ( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return array(
-			'condition'    => $val,
-			'image'        => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt'    => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title'        => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url'  => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		);
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
 
 	/**
 	 * Register controls.
@@ -150,6 +99,19 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'widget_notice',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Avoid using other widgets on the same page as Page Scroll to prevent unexpected behavior.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+			)
+		);
+		$this->add_control(
 			'page_scroll_opt',
 			array(
 				'label'   => esc_html__( 'Option', 'tpebl' ),
@@ -160,6 +122,82 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 					'tp_page_pilling'      => esc_html__( 'Page Piling (Pro)', 'tpebl' ),
 					'tp_multi_scroll'      => esc_html__( 'Multi Scroll (Pro)', 'tpebl' ),
 					'tp_horizontal_scroll' => esc_html__( 'Horizontal Scroll (Pro)', 'tpebl' ),
+				),
+			)
+		);
+		$this->add_control(
+			'full_page_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Use this option to scroll the page one section at a time. Just add separate sections or templates in the content are, each will act as a full-page slide.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => 'tp_full_page',
+				),
+			)
+		);
+		$this->add_control(
+			'page_pilling_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to switch between sections in place by stacking them over each other like slides, allowing you to add section templates that pile up one by one.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => 'tp_page_pilling',
+				),
+			)
+		);
+		$this->add_control(
+			'multi_scroll_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Split the page into left and right scroll sections that move together. Best for storytelling, product comparisons, or two-column showcase layouts.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => 'tp_multi_scroll',
+				),
+			)
+		);
+		$this->add_control(
+			'horizontal_scroll_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'For better control and styling in horizontal scrolling, we recommend using the Horizontal Scroll widget of the Plus Addons for Elementor.', 'tpebl' ),
+						esc_url( 'https://theplusaddons.com/elementor-widget/horizontal-scroll/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Check Demos', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => 'tp_horizontal_scroll',
+				),
+			)
+		);
+		$this->add_control(
+			'page_scroll_opt_pro',
+			array(
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => array( 'tp_page_pilling', 'tp_multi_scroll', 'tp_horizontal_scroll' ),
 				),
 			)
 		);
@@ -176,10 +214,19 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'fit_screen_note',
+			'full_page_content_label',
 			array(
-				'label' => esc_html__( 'Make sure your templates have full width On and It will suitable to screen height.', 'tpebl' ),
-				'type'  => \Elementor\Controls_Manager::HEADING,
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add your templates here, one per repeater item. Make sure your templates are full-width and fit the screen height for best results.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'page_scroll_opt' => 'tp_full_page',
+				),
 			)
 		);
 		$repeater = new \Elementor\Repeater();
@@ -190,7 +237,32 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 				'type'        => Controls_Manager::SELECT,
 				'default'     => '0',
 				'options'     => l_theplus_get_templates(),
+				'classes'     => 'tp-template-create-btn',
 				'label_block' => 'true',
+			)
+		);
+		$repeater->add_control(
+			'liveeditor',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => '<a class="tp-live-editor" id="tp-live-editor-button" >' . esc_html__( 'Edit Template', 'tpebl' ) . '</a>',
+				'content_classes' => 'tp-live-editor-btn',
+				'label_block'     => true,
+				'condition'       => array(
+					'fp_content_template!' => '0',
+				),
+			)
+		);
+		$repeater->add_control(
+			'create',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => '<a class="tp-live-create" id="tp-live-create-button">' . esc_html__( 'Create Template', 'tpebl' ) . '</a>',
+				'content_classes' => 'tp-live-create-btn',
+				'label_block'     => true,
+				'condition'       => array(
+					'fp_content_template' => '0',
+				),
 			)
 		);
 		$repeater->add_control(
@@ -226,11 +298,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'hscroll_content_template_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -247,11 +317,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'settings_section_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -275,11 +343,12 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'multi_scroll_content_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'condition'   => array(
+					'display_call_to_action_2' => array( 'yes' ),
+				),
 			)
 		);
 		$this->end_controls_section();
@@ -295,22 +364,20 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'show_dots',
 			array(
-				'label'     => esc_html__( 'Dots', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'yes',
-				'condition' => array(
+				'label'       => esc_html__( 'Dots', 'tpebl' ),
+				'type'        => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Enable', 'tpebl' ),
+				'label_off'   => esc_html__( 'Disable', 'tpebl' ),
+				'default'     => 'yes',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Show navigation dots on the page to jump between each section.', 'tpebl' ),
+					)
+				),
+				'condition'   => array(
 					'page_scroll_opt' => 'tp_full_page',
 				),
-			)
-		);
-		$this->add_control(
-			'dots_Note',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i>Works only on the frontend.</i></p>',
-				'label_block' => true,
 			)
 		);
 		$this->add_control(
@@ -341,12 +408,20 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'dots_toolti_Note',
+			'nav_dots_tooltips_label',
 			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i>Add Multiple text separated by comma \',\'</i></p>',
-
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add tooltip names for each dot, separate multiple text with commas.', 'tpebl' ),
+					)
+				),
 				'label_block' => true,
+				'condition'   => array(
+					'page_scroll_opt' => 'tp_full_page',
+					'show_dots'       => 'yes',
+				),
 			)
 		);
 		$this->add_control(
@@ -364,18 +439,15 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'multi_navigation_dots_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt'       => 'tp_multi_scroll',
 					'multi_navigation_dots' => 'yes',
 				),
 			)
 		);
-
 		$this->add_control(
 			'scroll_nav_connection',
 			array(
@@ -390,11 +462,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'scroll_nav_connection_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'scroll_nav_connection' => array( 'yes' ),
 				),
@@ -440,11 +510,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'next_prev_style_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'show_next_prev' => array( 'yes' ),
 				),
@@ -474,11 +542,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'show_paginate_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'show_paginate' => array( 'yes' ),
 				),
@@ -516,11 +582,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_show_footer_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'tp_show_footer' => array( 'yes' ),
 				),
@@ -561,7 +625,6 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
 				'label_off' => esc_html__( 'Disable', 'tpebl' ),
 				'default'   => 'no',
-				'separator' => 'after',
 				'condition' => array(
 					'page_scroll_opt' => array( 'tp_full_page' ),
 				),
@@ -570,11 +633,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_fp_hide_hash_id_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt'    => array( 'tp_full_page' ),
 					'tp_fp_hide_hash_id' => array( 'yes' ),
@@ -595,11 +656,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_keyboard_scrolling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt'       => array( 'tp_full_page' ),
 					'tp_keyboard_scrolling' => array( 'yes' ),
@@ -633,11 +692,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_loop_bottom_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'tp_loop_bottom' => array( 'yes' ),
 				),
@@ -657,11 +714,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_loop_top_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'tp_loop_top' => array( 'yes' ),
 				),
@@ -684,11 +739,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_tablet_off_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt!' => array( 'tp_full_page' ),
 					'tp_tablet_off'    => array( 'yes' ),
@@ -711,11 +764,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_mobile_off_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt!' => array( 'tp_full_page' ),
 					'tp_mobile_off'    => array( 'yes' ),
@@ -739,11 +790,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'tp_continuous_vertical_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'page_scroll_opt!'       => array( 'tp_page_pilling' ),
 					'tp_continuous_vertical' => array( 'yes' ),
@@ -793,11 +842,34 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'section_multi_extra_opt_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=lO0cRdvijOM',
+					),
+				),
 			)
 		);
 		$this->end_controls_section();
@@ -815,11 +887,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'section_hscroll_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -957,11 +1027,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'section_nxt_prv_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -979,11 +1047,9 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'section_nxt_prv_custom_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -1002,16 +1068,13 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 		$this->add_control(
 			'section_paginate_custom_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
 
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1054,17 +1117,17 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 					if ( ! empty( $elem_templates ) ) {
 						$slideid = ! empty( $item['fp-slideid'] ) ? $item['fp-slideid'] : 'fp_' . $id . '_' . $i;
 
-						$full_page_anchors[] = tp_senitize_js_input($slideid);
+						$full_page_anchors[] = tp_senitize_js_input( $slideid );
 
 						$full_page_content .= '<div class="section">';
 
-							if ( has_filter( 'wpml_object_id' ) ) {
-								$elem_templates = apply_filters( 'wpml_object_id', $elem_templates, get_post_type( $elem_templates ), true);
-							}
+						if ( has_filter( 'wpml_object_id' ) ) {
+							$elem_templates = apply_filters( 'wpml_object_id', $elem_templates, get_post_type( $elem_templates ), true );
+						}
 
 							$template_status = get_post_status( $elem_templates );
 						if ( 'publish' === $template_status ) {
-							$full_page_content .= L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( $elem_templates );
+							$full_page_content .= L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( $elem_templates, true );
 						} else {
 							$full_page_content .= '<div class="tab-preview-template-notice"><div class="preview-temp-notice-heading">' . esc_html__( 'Unauthorized Access', 'tpebl' ) . '</b></div><div class="preview-temp-notice-desc"><b>' . esc_html__( 'Note :', 'tpebl' ) . '</b> ' . esc_html__( 'You need to upgrade your permissions to Editor or Administrator level to update this option.', 'tpebl' ) . '</div></div>';
 						}
@@ -1072,6 +1135,11 @@ class L_ThePlus_Page_Scroll extends Widget_Base {
 						$full_page_content .= '</div>';
 
 						++$i;
+					} else {
+						$full_page_content .= '<div class="tab-preview-template-notice">
+								<div class="preview-temp-notice-heading">' . esc_html__( 'Select Template', 'tpebl' ) . '</div>
+								<div class="preview-temp-notice-desc">' . esc_html__( 'Please select a template to display its content.', 'tpebl' ) . '</div>
+							</div>';
 					}
 				}
 			} else {

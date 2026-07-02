@@ -16,15 +16,6 @@ class L_Plus_Library {
 
 	public $l_registered_widgets;
 	/**
-	 *  Return array of registered elements.
-	 *
-	 * @todo filter output
-	 */
-	public function get_l_registered_widgets() {
-		return array_keys( $this->l_registered_widgets );
-	}
-
-	/**
 	 * Return saved settings
 	 *
 	 * @since 2.0
@@ -84,6 +75,7 @@ class L_Plus_Library {
 			'tp_testimonial_listout'  => 'tp-testimonial-listout',
 			'tp_table'                => 'tp-table',
 			'tp_video_player'         => 'tp-video-player',
+			'tp_icon'         		  => 'tp-icon',
 			'tp_wp_forms'             => 'tp-wp-forms',
 		);
 
@@ -106,6 +98,7 @@ class L_Plus_Library {
 
 		if ( ! empty( $elements ) ) {
 			$merge[] = 'plus-alignmnet-effect';
+			$merge[] = 'tp-temp-notice';
 		}
 
 		if ( in_array( 'tp-number-counter', $elements ) ) {
@@ -115,11 +108,16 @@ class L_Plus_Library {
 			$merge[] = 'tp-draw-svg';
 		}
 
+		if ( in_array( 'tp-adv-text-block', $elements ) ) {
+			$merge[] = 'tp-text-block-animation';
+		}
+
 		if ( in_array( 'tp-blog-listout', $elements ) ) {
 			$merge[] = 'plus-listing-masonry';
 			$merge[] = 'plus-listing-metro';
 			$merge[] = 'tp-blog-listout';
 			$merge[] = 'tp-bloglistout-style-1';
+			$merge[] = 'tp-bloglistout-style-5';
 		}
 
 		if ( in_array( 'tp-breadcrumbs-bar', $elements ) ) {
@@ -242,6 +240,7 @@ class L_Plus_Library {
 			$merge[] = 'tp-heading-title-style_9';
 			$merge[] = 'tp-heading-title-style_10';
 			$merge[] = 'tp-heading-title-style_11';
+			$merge[] = 'tp-gsap-heading-animation';
 		}
 
 		if ( in_array( 'tp-progress-bar', $elements ) ) {

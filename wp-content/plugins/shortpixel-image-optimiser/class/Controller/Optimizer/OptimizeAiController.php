@@ -5,9 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  exit; // Exit if accessed directly.
 }
 
-
 use ShortPixel\ShortPixelLogger\ShortPixelLogger as Log;
-
 use ShortPixel\Model\Image\ImageModel as ImageModel;
 use ShortPixel\Model\Queue\QueueItem as QueueItem;
 use ShortPixel\Controller\Api\RequestManager as RequestManager;
@@ -16,9 +14,9 @@ use ShortPixel\Controller\Api\ApiController;
 use ShortPixel\Controller\Queue\Queue;
 use ShortPixel\Controller\Queue\QueueItems as QueueItems;
 use ShortPixel\Model\AiDataModel;
+use ShortPixel\Model\Queue\QueueItemResult;
 use ShortPixel\Replacer\Replacer;
 use ShortPixel\ViewController as ViewController;
-
 
 // Class for AI Operations.  In time split off OptimizeController / Optimize actions to a main queue runner seperately.
 class OptimizeAiController extends OptimizerBase
@@ -186,7 +184,7 @@ class OptimizeAiController extends OptimizerBase
       $qItem->addResult(['apiName' => $this->apiName]);
       $apiStatus = $qItem->result()->apiStatus;
 
-      if ($qItem->result()->is_error)  {
+      if (true === $qItem->result()->is_error)  {
        
         if (true === $qItem->result()->is_done )
         {
@@ -196,7 +194,6 @@ class OptimizeAiController extends OptimizerBase
         }
         else // Do nothing for now / retry (?)
         {
-
         }
 
         return; 
@@ -207,10 +204,9 @@ class OptimizeAiController extends OptimizerBase
       {
         return; 
       }
-      elseif (property_exists($qItem->result(), 'remote_id'))
+      elseif (property_exists($qItem->result(), 'remote_id') && is_numeric($qItem->result()->remote_id) && $qItem->result()->remote_id > 0 )
       {
           $remote_id = $qItem->result()->remote_id;
-          Log::addTemp('Remote ID fetched: ' . $remote_id);
           
           $this->finishItemProcess($qItem, ['remote_id' => $remote_id]);
       }
@@ -226,12 +222,10 @@ class OptimizeAiController extends OptimizerBase
       }
 
       // Result for retrieveAlt
-      if (property_exists($qItem->result(), 'aiData'))
+      if (property_exists($qItem->result(), 'aiData') && false === is_null($qItem->result()->aiData))
       {
             return $this->HandleSuccess($qItem);
       }
-
-
   }
 
   public function formatResultData($aiData, $qItem)
@@ -245,8 +239,10 @@ class OptimizeAiController extends OptimizerBase
          $aiData['filebase'] = $aiData['original_filebase']; 
     }
     
+    $settings = \wpSPIO()->settings();
 
-    $textItems = ['alt', 'caption', 'description', 'post_title'];
+    // removed  'post_title' here because in image title doens't look good. 
+    $textItems = ['alt', 'caption', 'description'];
     foreach($textItems as $textItem)
     {
       
@@ -261,6 +257,29 @@ class OptimizeAiController extends OptimizerBase
          }
     }   
 
+    // Apply prefix and postfix to each field
+    $prefixPostfixMap = [
+        'alt' => ['prefix' => 'ai_alt_prefix', 'postfix' => 'ai_alt_postfix'],
+        'caption' => ['prefix' => 'ai_caption_prefix', 'postfix' => 'ai_caption_postfix'],
+        'description' => ['prefix' => 'ai_description_prefix', 'postfix' => 'ai_description_postfix'],
+        'post_title' => ['prefix' => 'ai_post_title_prefix', 'postfix' => 'ai_post_title_postfix'],
+    //   'filebase' => ['prefix' => 'ai_filename_prefix', 'postfix' => 'ai_filename_postfix'],
+    ];
+
+    foreach ($prefixPostfixMap as $field => $affixes) {
+        if (isset($aiData[$field]) && !empty($aiData[$field])) {
+            $prefix = $settings->{$affixes['prefix']};
+            $postfix = $settings->{$affixes['postfix']};
+            
+            if (!empty($prefix)) {
+                $aiData[$field] = $prefix . ' ' . $aiData[$field];
+            }
+            if (!empty($postfix)) {
+                $aiData[$field] = $aiData[$field] . ' ' . $postfix;
+            }
+        }
+    }
+
     // Re-add Result after formatting so it passed back
     //$qItem->addResult(['aiData' => $aiData]);
 
@@ -268,17 +287,31 @@ class OptimizeAiController extends OptimizerBase
     return $aiData; 
   }
 
+  private function getDataLabels()
+  {
+    $labels = [
+      'alt' => __('Alt', 'shortpixel-image-optimiser'), 
+      'caption' => __('Caption', 'shortpixel-image-optimiser'), 
+      'description' => __('Description', 'shortpixel-image-optimiser'), 
+      'post_title' =>  __('Image Title' , 'shortpixel-image-optimiser'), 
+    ];
+
+    return $labels;
+  }
+
   protected function HandleSuccess(QueueItem $qItem)
   {
         $aiData = $qItem->result()->aiData;  
-        $settings = \wpSPIO()->settings();
+        // $settings = \wpSPIO()->settings();
 
-        $checks = ['alt' => 'ai_gen_alt', 
+        /* $checks = ['alt' => 'ai_gen_alt', 
         'caption' => 'ai_gen_caption', 
         'description' => 'ai_gen_description',
         'filename' => 'ai_gen_filename',
         'post_title' => 'ai_gen_post_title', 
-        ];
+        ]; */
+
+        $aiData = apply_filters('shortpixel/ai/success', $aiData, $qItem); 
 
         $aiData = $this->formatResultData($aiData, $qItem);
 
@@ -318,9 +351,8 @@ class OptimizeAiController extends OptimizerBase
         $data = $this->getAltData($qItem); 
         $qItem->addResult(['aiData' => $data['generated']]); // But the generated data in the result.
 
-        // For Bulk, add labels to display in the result set. Default is same as data, can be overridden
-        $qItem->addResult(['aiDataLabels' => $data['labels']
-        ]);
+        // For Bulk, add labels to display in the result set. Default is same as data, can be overridden . Used in Bulk JS
+        $qItem->addResult(['aiDataLabels' => $this->getDataLabels()  ]);
 
         $this->finishItemProcess($qItem);
         return;
@@ -343,10 +375,14 @@ class OptimizeAiController extends OptimizerBase
             }
 
              // Replacer Part 
-             $url = $qItem->data()->url; 
-             if (is_null($url)) // can be empty on restore action 
+             $urls = $qItem->data()->urls; 
+             if (is_null($urls)) // can be empty on restore action 
              {
                  $url = $qItem->imageModel->getUrl(); 
+             }
+             else 
+             {
+                $url = $urls[0];
              }
 
              $replacer2 = \ShortPixel\Replacer\Replacer::getInstance(); 
@@ -480,7 +516,6 @@ class OptimizeAiController extends OptimizerBase
              } 
         }
 
-        Log::addTemp('New Metadata after replace: ', $metadata);
         wp_update_attachment_metadata($item_id, $metadata);
         
   }
@@ -559,7 +594,7 @@ class OptimizeAiController extends OptimizerBase
             if (count($sources) > 0 && count($replaces) > 0)
             {
                 Log::addInfo('Running Ai Replace : ', [$aiData, $sources, $replaces]); 
-                $content = $replacer2->replaceContent($content, $sources, $replaces);
+                $content = $replacer2->replaceContent($content, $sources, $replaces, false, true);
                 $replacer2->Updater()->updatePost($post_id, $content); 
             }
         }
@@ -643,8 +678,6 @@ class OptimizeAiController extends OptimizerBase
        $aiModel = AiDataModel::getModelByAttachment($item_id, 'media');
        $original = $aiModel->getOriginalData();
        $generated = $aiModel->getGeneratedData();
-
-       Log::addTEmp('Undo ALT on ' . $item_id);
 
        $aiData = [
             'alt' => $original['alt'], 
@@ -739,22 +772,27 @@ public function getAltData(QueueItem $qItem)
     $metadata['current'] = $current; 
     $metadata['action'] = $qItem->data()->action;
     $metadata['item_id'] = $item_id;
-
-    $metadata['labels'] = [
-      'alt' => __('Alt', 'shortpixel-image-optimiser'), 
-      'caption' => __('Caption', 'shortpixel-image-optimiser'), 
-      'description' => __('Description', 'shortpixel-image-optimiser'), 
-      'post_title' =>  __('Image Title' , 'shortpixel-image-optimiser'), 
-    ];
+    $metadata['labels']  = $dataItems; // Used in bulk JS 
 
     return $metadata; 
 }
 
+/**
+ * Generate the AI Data so that it can be shown public-facing. 
+ * 
+ * @param mixed $generated 
+ * @param mixed $current 
+ * @param mixed $original 
+ * @param bool $isPreview 
+ * @return (string[]|mixed)[] 
+ */
 public function formatGenerated($generated, $current, $original, $isPreview = false)
 {
     
   $fields = ['alt', 'caption', 'description', 'post_title'];
   $dataItems = []; 
+
+  $labels = $this->getDataLabels();
 
   // Statii from AiDataModel which means generated is not available (replace for original/current?) 
   $statii = [AiDataModel::F_STATUS_PREVENTOVERRIDE, AiDataModel::F_STATUS_EXCLUDESETTING];
@@ -770,24 +808,15 @@ public function formatGenerated($generated, $current, $original, $isPreview = fa
 
        if (false === is_null($value) && false === is_int($value) && strlen($value) > 1)
        {
-          $dataItems[] = ucfirst($name); 
+
+          $dataItems[] = isset($labels[$name]) ? $labels[$name] : ucfirst($name); 
        }
        if (is_int($value) && in_array($value, $statii))
        {
-         // If preview don't fall back on other stuff, just leave it empty. 
-          if (true === $isPreview)
-          {
-             $value = ''; 
-          }
-          elseif (isset($current[$name]))
-          {
-               $value = $current[$name];
-          }
-          elseif(isset($original[$name]))
-          {
-               $value = $original[$name];
-          }
-          $generated[$name] = $value;
+         
+         // Preview needs to know if generated or excluded. -3 should be capture in the UX!
+         $value = -3; 
+         $generated[$name] = $value;
        }
   } 
 

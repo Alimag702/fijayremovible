@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace ReallySimplePlugins\RSS\Core\Managers;
 
-use ReallySimplePlugins\RSS\Core\Traits\HasNonces;
-use ReallySimplePlugins\RSS\Core\Traits\HasAllowlistControl;
-use ReallySimplePlugins\RSS\Core\Interfaces\ProviderInterface;
-use ReallySimplePlugins\RSS\Core\Interfaces\SingleEndpointInterface;
 use ReallySimplePlugins\RSS\Core\Interfaces\MultiEndpointInterface;
+use ReallySimplePlugins\RSS\Core\Interfaces\SingleEndpointInterface;
+use ReallySimplePlugins\RSS\Core\Traits\HasAllowlistControl;
+use ReallySimplePlugins\RSS\Core\Traits\HasNonces;
 
 final class EndpointManager extends AbstractManager
 {
@@ -88,10 +87,11 @@ final class EndpointManager extends AbstractManager
      */
     public function registerWordPressRestRoutes(): void
     {
+
         $routes = $this->getPluginRestRoutes();
 
         foreach ($routes as $route => $data) {
-            $version = ($data['version'] ??  $this->app->config->getString('env.http.version'));
+            $version = ($data['version'] ??  $this->env->getString('http.version'));
             $callback = ($data['callback'] ?? null);
             $middleware = ($data['middleware'] ?? null);
 
@@ -101,7 +101,7 @@ final class EndpointManager extends AbstractManager
                 'permission_callback' => ($data['permission_callback'] ?? [$this, 'defaultPermissionCallback']),
             ];
 
-            register_rest_route($this->app->config->getUrl('env.http.namespace') . '/' . $version, $route, $arguments);
+            register_rest_route($this->env->getUrl('http.namespace') . '/' . $version, $route, $arguments);
         }
     }
 
@@ -202,5 +202,4 @@ final class EndpointManager extends AbstractManager
         // Convert back to CSV format for register_rest_route usage
         return implode(',', $methodsArray);
     }
-
 }

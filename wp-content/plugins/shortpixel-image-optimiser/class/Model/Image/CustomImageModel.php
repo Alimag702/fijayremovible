@@ -10,28 +10,56 @@ use ShortPixel\Controller\QueueController as QueueController;
 use ShortPixel\Helper\UtilHelper as UtilHelper;
 
 
+/**
+ * Image model for files managed through the ShortPixel custom-folders feature.
+ *
+ * Represents a single image that lives outside the WordPress media library and is
+ * tracked in the plugin's own `shortpixel_meta` database table. Unlike
+ * MediaLibraryModel, this class has no thumbnails and stores all metadata directly
+ * in the custom table rather than WordPress post-meta.
+ *
+ * @package ShortPixel\Model\Image
+ */
 // @todo Custom Model for adding files, instead of meta DAO.
 class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 {
 
+    /** @var int|null ID of the custom folder this image belongs to. */
     protected $folder_id;
+    /** @var string|null MD5 hash of the image's full filesystem path (legacy field). */
     protected $path_md5;
 
+    /** @var string Queue/type identifier used when interacting with QueueController. */
     protected $type = 'custom';
 
+    /** @var array Placeholder – custom images have no thumbnail variants. */
     protected $thumbnails = []; // placeholder, should return empty.
+    /** @var array Placeholder – custom images have no retina variants. */
     protected $retinas = []; // placeholder, should return empty.
 
+    /** @var bool Whether this image has a corresponding record in the database. */
     protected $in_db = false;
+    /** @var bool Whether this object is a stub (not yet persisted) awaiting insertion. */
     protected $is_stub = false;
 
+    /** @var bool Always true for custom images; there is no parent/thumbnail hierarchy. */
     protected $is_main_file = true;
+    
+    public $name = ImageModel::IMAGE_TYPE_MAIN; 
 
-		/** @var array */
+		/** @var array Settings overrides applied by the UI (e.g. forced smartcrop value). */
 		protected $forceSettings = array();  // option derives from setting or otherwise, request to be forced upon via UI to use specific value.
 
 
-		// @param int $id
+		/**
+		 * Load (or stub) a CustomImageModel by its database ID.
+		 *
+		 * When $id is greater than zero the record is fetched from the database via
+		 * loadMeta(). Passing zero or a negative value creates an empty stub that can
+		 * be populated later with setStub().
+		 *
+		 * @param int $id Database ID from the shortpixel_meta table, or 0 for a new stub.
+		 */
     public function __construct($id)
     {
         $this->id = $id;
@@ -58,6 +86,11 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
     }
 
 
+    /**
+     * Return a flat array of URLs to be submitted for optimization.
+     *
+     * @return array List of image URLs ready for the ShortPixel API.
+     */
     public function getOptimizeUrls()
     {
 
@@ -75,6 +108,11 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
        return false; 
     }
 
+    /**
+     * Retrieve the active exclusion patterns applicable to custom-folder images.
+     *
+     * @return array Array of exclusion pattern definitions from UtilHelper::getExclusions().
+     */
     protected function getExcludePatterns()
     {
         $args = array(
@@ -86,6 +124,14 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
         return $patterns;
     }
 
+    /**
+     * Build the full optimization data payload for this image.
+     *
+     * Returns an array with 'urls', 'params', and 'returnParams' keys that describe
+     * the single image (custom images never have thumbnails) to be sent to the API.
+     *
+     * @return array{urls: array, params: array, returnParams: array}
+     */
 		public function getOptimizeData()
 		{
 				$parameters = array(
@@ -128,21 +174,47 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 				return $parameters;
 		}
 
+    /**
+     * Override a specific optimization setting for this image (e.g. force smartcrop on/off).
+     *
+     * @param string $setting Setting key (e.g. 'smartcrop').
+     * @param mixed  $value   Setting value (e.g. ImageModel::ACTION_SMARTCROP).
+     * @return void
+     */
 		public function doSetting($setting, $value)
 		{
 			  $this->forceSettings[$setting] = $value;
 		}
 
+		/**
+		 * Return the public-facing URL of this custom image.
+		 *
+		 * @return string|false URL string, or false if it cannot be determined.
+		 */
 		public function getURL()
 		{
 			  return \wpSPIO()->filesystem()->pathToUrl($this);
 		}
 
+    /**
+     * Return all public URLs associated with this image (always a single-element array).
+     *
+     * @return array
+     */
     public function getAllUrls()
     {
         return array($this->getURL());
     }
 
+    /**
+     * Count associated files of a given type for this custom image.
+     *
+     * Custom images have no thumbnails (always returns 0 for that type). WebP and AVIF
+     * counts reflect whether those companion files exist.
+     *
+     * @param string $type One of 'thumbnails', 'webps', or 'avifs'.
+     * @return int
+     */
     public function count($type)
     {
       // everything is 1 on 1 in the customModel
@@ -188,15 +260,11 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 					return $bool;
 				}
 
-
-
 				// The exclude size on the  image - via regex - if fails, prevents the whole thing from optimization.
 				if ($this->processable_status == ImageModel::P_EXCLUDE_SIZE || $this->processable_status == ImageModel::P_EXCLUDE_PATH)
 				{
 					 return $bool;
 				}
-
-
 
       /*  if ($bool === false && $strict === false)
         {
@@ -229,7 +297,7 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
         return $bool;
     }
 
-		public function isRestorable()
+		public function isRestorable() : bool
 		{
 
 			 $bool = parent::isRestorable();
@@ -240,8 +308,10 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 			 		return $bool;
 				}
 
+        $backupModel = $this->getBackupModel();
+
 				// If not, check this..
-				if ($this->hasBackup() && $this->getMeta('status') == self::FILE_STATUS_PREVENT)
+				if ($backupModel->hasBackup($this, true) && $this->getMeta('status') == self::FILE_STATUS_PREVENT)
 				{
 					 	return true;
 				}
@@ -295,11 +365,11 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
        do_action('shortpixel_before_restore_image', $this->get('id'));
        do_action('shortpixel/image/before_restore', $this);
 
-			 $defaults = array(
+			/* $defaults = array(
 	 			'keep_in_queue' => false, // used for bulk restore.
-	 		);
+	 		); */
 
-	 		$args = wp_parse_args($args, $defaults);
+	 	//	$args = wp_parse_args($args, $defaults);
 
        $bool = parent::restore();
 
@@ -328,10 +398,10 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 				  $return = false;
 			 }
 
-			 if ($args['keep_in_queue'] === false)
+			/* if ($args['keep_in_queue'] === false)
 			 {
 				 $this->dropFromQueue();
-			 }
+			 } */
 			 do_action('shortpixel/image/after_restore', $this, $this->id, $bool);
 
        return $return;
@@ -442,7 +512,6 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 					{
 						 $this->setMeta('avif', $data['avifStatus']);
 					}
-
 
 				}
 
@@ -588,8 +657,9 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 
     public function resetPrevent()
     {
+        $backupModel = $this->getBackupModel(); 
 
-				if ($this->hasBackup())
+				if ($backupModel->hasBackup($this, true))
 					$this->setMeta('status', self::FILE_STATUS_SUCCESS);
 				else
         	$this->setMeta('status', self::FILE_STATUS_UNPROCESSED);
@@ -638,6 +708,8 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
 				 $extra_info = null;
 			}
 
+      $backupModel = $this->getBackupModel();
+
        $data = array(
             'folder_id' => $this->folder_id,
             'compressed_size' => $metaObj->compressedSize,
@@ -647,7 +719,7 @@ class CustomImageModel extends \ShortPixel\Model\Image\ImageModel
             'resize' =>  ($metaObj->resize) ? 1 : 0,
             'resize_width' => $metaObj->resizeWidth,
             'resize_height' => $metaObj->resizeHeight,
-            'backup' => ($this->hasBackup()) ? 1 : 0,
+            'backup' => ($backupModel->hasBackup($this, true)) ? 1 : 0,
             'status' => $metaObj->status,
             'retries' => 0, // this is unused / legacy
             'message' => $message, // this is used for improvement line.

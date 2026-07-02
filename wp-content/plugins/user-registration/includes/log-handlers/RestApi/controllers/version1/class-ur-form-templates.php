@@ -82,7 +82,7 @@ class UR_Form_Templates {
 		if ( isset( $query_params['refresh'] ) ) {
 			delete_transient( 'user_registration_templates_data' );
 		}
-		$template_url      = 'https://d13ue4sfmuf7fw.cloudfront.net/';
+		$template_url      = 'https://assets.wpeverest.com/wpuserregistration/forms/';
 		$template_json_url = $template_url . 'templates1.json';
 
 		$transient_key    = 'user_registration_templates_data';
@@ -154,7 +154,6 @@ class UR_Form_Templates {
 		// Retrieve and sanitize parameters.
 		$title = sanitize_text_field( wp_unslash( $request->get_param( 'title' ) ) );
 		$slug  = sanitize_text_field( wp_unslash( $request->get_param( 'slug' ) ) );
-
 		// Check if the title parameter is empty.
 		if ( empty( $title ) ) {
 			return new WP_Error(

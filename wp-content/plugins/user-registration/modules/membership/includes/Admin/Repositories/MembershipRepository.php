@@ -7,13 +7,15 @@ use WPEverest\URMembership\Admin\Services\MembershipService;
 use WPEverest\URMembership\TableList;
 
 class MembershipRepository extends BaseRepository implements MembershipInterface {
-	protected $table, $members_meta, $posts_meta_table;
+	protected $table, $members_meta, $posts_meta_table, $subscription_table;
 
 	public function __construct() {
-		$this->table            = TableList::posts_table();
-		$this->members_meta     = TableList::users_meta_table();
-		$this->posts_meta_table = TableList::posts_meta_table();
+		$this->table              = TableList::posts_table();
+		$this->members_meta       = TableList::users_meta_table();
+		$this->posts_meta_table   = TableList::posts_meta_table();
+		$this->subscription_table = TableList::subscriptions_table();
 	}
+
 
 	/**
 	 * @return array
@@ -42,7 +44,36 @@ class MembershipRepository extends BaseRepository implements MembershipInterface
 		);
 		$membership_service = new MembershipService();
 		return $membership_service->prepare_membership_data( $memberships );
+	}
 
+	/**
+	 * Get all memberships without status filter for content restriction
+	 *
+	 * @return array
+	 */
+	public function get_all_memberships_without_status_filter() {
+		global $wpdb;
+		$sql = "
+				SELECT wpp.ID,
+				       wpp.post_title,
+				       wpp.post_content,
+				       wpp.post_status,
+				       wpp.post_type,
+				       wpm.meta_value
+				FROM $this->table wpp
+				         JOIN $this->posts_meta_table wpm on wpm.post_id = wpp.ID
+				WHERE wpm.meta_key = 'ur_membership'
+				  AND wpp.post_type = 'ur_membership'
+				ORDER BY 1 DESC
+		";
+
+		$memberships = $wpdb->get_results(
+			$sql,
+			ARRAY_A
+		);
+
+		$membership_service = new MembershipService();
+		return $membership_service->prepare_membership_data_without_status_filter( $memberships );
 	}
 
 	/**
@@ -75,32 +106,52 @@ class MembershipRepository extends BaseRepository implements MembershipInterface
 			),
 			ARRAY_A
 		);
-
 	}
 
 
-	public function get_multiple_membership_by_ID( $ids ) {
+	public function get_multiple_membership_by_ID( $ids, $order = true ) {
 		global $wpdb;
+
+		if ( ! is_array( $ids ) ) {
+			$ids = explode( ',', $ids );
+		}
+
+		$ids = array_filter( array_map( 'absint', $ids ) );
+
+		if ( empty( $ids ) ) {
+			return [];
+		}
+
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
 		$sql = "
-				SELECT wpp.ID,
-				       wpp.post_title,
-				       wpp.post_content,
-				       wpp.post_status,
-				       wpp.post_type,
-				       wpm.meta_value
-				FROM $this->table wpp
-				         JOIN $this->posts_meta_table wpm on wpm.post_id = wpp.ID
-				WHERE wpm.meta_key = 'ur_membership'
-				  AND wpp.post_type = 'ur_membership'
-				  AND wpp.post_status = 'publish'
-				AND wpp.ID IN ($ids)
-				ORDER BY 1 DESC
+			SELECT wpp.ID,
+				wpp.post_title,
+				wpp.post_content,
+				wpp.post_status,
+				wpp.post_type,
+				wpm.meta_value
+			FROM {$this->table} wpp
+			INNER JOIN {$this->posts_meta_table} wpm
+				ON wpm.post_id = wpp.ID
+			WHERE wpm.meta_key = 'ur_membership'
+			AND wpp.post_type = 'ur_membership'
+			AND wpp.post_status = 'publish'
+			AND wpp.ID IN ($placeholders)
 		";
 
-		$memberships        = $wpdb->get_results(
-			$sql,
-			ARRAY_A
-		);
+		if ( $order ) {
+			$sql .= ' ORDER BY wpp.ID DESC';
+			$query_args = $ids;
+		} else {
+			$sql .= " ORDER BY FIELD(wpp.ID, $placeholders)";
+			$query_args = array_merge( $ids, $ids );
+		}
+
+		$query = $wpdb->prepare( $sql, $query_args );
+
+		$memberships = $wpdb->get_results( $query, ARRAY_A );
+
 		$membership_service = new MembershipService();
 		return $membership_service->prepare_membership_data( $memberships );
 	}
@@ -190,5 +241,90 @@ class MembershipRepository extends BaseRepository implements MembershipInterface
 				update_user_meta( $user['user_id'], 'ur_form_id', $form_id );
 			}
 		}
+	}
+
+	/**
+	 * check_deletable_membership
+	 *
+	 * @param $id
+	 * @param $statuses
+	 *
+	 * @return array|false|object|\stdClass|null
+	 */
+	public function check_deletable_membership( $id, $statuses ) {
+		if ( ! is_array( $statuses ) ) {
+			return false;
+		}
+
+		$placeholders = array();
+		$values       = array();
+
+		foreach ( $statuses as $status ) {
+			$placeholders[] = '%s';
+			$values[]       = trim( $status );
+		}
+
+		$placeholders_string = implode( ',', $placeholders );
+		$values              = array_merge( array( $id ), $values );
+
+		return $this->wpdb()->get_row(
+			$this->wpdb()->prepare(
+				"SELECT COUNT(DISTINCT user_id) total from $this->subscription_table
+        		WHERE item_id = %d AND status IN  ($placeholders_string)",
+				$values
+			),
+			ARRAY_A
+		);
+	}
+
+	/**
+	 * Delete membership post using wp_delete_post to trigger WordPress hooks
+	 *
+	 * @param int $id Membership post ID
+	 * @return bool|int|\mysqli_result|null
+	 */
+	public function delete( $id ) {
+		$id = absint( $id );
+		if ( ! $id ) {
+			return false;
+		}
+
+		$post = get_post( $id );
+		if ( ! $post || 'ur_membership' !== $post->post_type ) {
+			return false;
+		}
+
+		$result = wp_delete_post( $id, true );
+		return $result ? true : false;
+	}
+
+	/**
+	 * Delete multiple memberships using wp_delete_post to trigger WordPress hooks
+	 *
+	 * @param string $ids Comma-separated membership IDs
+	 * @return bool|int|\mysqli_result|null
+	 */
+	public function delete_multiple( $ids ) {
+		if ( empty( $ids ) ) {
+			return false;
+		}
+
+		$ids_array = explode( ',', $ids );
+		$ids_array = array_map( 'absint', $ids_array );
+		$ids_array = array_filter( $ids_array );
+
+		if ( empty( $ids_array ) ) {
+			return false;
+		}
+
+		$deleted_count = 0;
+		foreach ( $ids_array as $id ) {
+			$result = $this->delete( $id );
+			if ( $result ) {
+				++$deleted_count;
+			}
+		}
+
+		return $deleted_count > 0;
 	}
 }

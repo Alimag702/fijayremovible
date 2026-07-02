@@ -78,19 +78,30 @@ class UR_Admin_Export_Users {
 		$to_date       = isset( $_POST['to_date'] ) ? sanitize_text_field( wp_unslash( $_POST['to_date'] ) ) : '';
 		$export_format = isset( $_POST['export_format'] ) ? sanitize_text_field( wp_unslash( $_POST['export_format'] ) ) : 'csv';
 
-		$users = get_users(
+		// Build the meta_query to filter users by form ID properly.
+		$form_meta_query = array(
 			array(
-				'ur_form_id' => $form_id,
+				'key'     => 'ur_form_id',
+				'value'   => $form_id,
+				'compare' => '=',
+			),
+		);
+
+		$check_users = get_users(
+			array(
+				'fields'     => 'ID',
+				'meta_query' => $form_meta_query, //phpcs:ignore
+				'number'     => 1,
 			)
 		);
 
-		if ( count( $users ) === 0 ) {
+		if ( count( $check_users ) === 0 ) {
 			echo '<div id="message" class="updated inline notice notice-error"><p><strong>' . esc_html__( 'No users found with this form id.', 'user-registration' ) . '</strong></p></div>';
 			return;
 		}
 
-		// Batch size.
-		$batch_size = apply_filters( 'user_registration_export_users_batch_size', 500 );
+		// Batch size — kept small to avoid bulk usermeta cache exhausting memory.
+		$batch_size = apply_filters( 'user_registration_export_users_batch_size', 50 );
 		$offset     = 0;
 
 		// Open the file for writing.
@@ -118,17 +129,26 @@ class UR_Admin_Export_Users {
 
 		// Loop over users in batches.
 		while ( true ) {
-			// Fetch users in batches.
-			$users = get_users( array(
-				'ur_form_id' => $form_id,
-				'number'     => $batch_size,
-				'offset'     => $offset,
-			) );
+			// Fetch only user IDs to avoid bulk-loading all usermeta in one query.
+			$user_ids = get_users(
+				array(
+					'fields'     => 'ID',
+					'meta_query' => $form_meta_query, //phpcs:ignore
+					'number'     => $batch_size,
+					'offset'     => $offset,
+					'orderby'    => 'registered',
+					'order'      => 'ASC',
+				)
+			);
 
 			// If no users are found, break the loop.
-			if ( empty( $users ) ) {
+			if ( empty( $user_ids ) ) {
 				break;
 			}
+
+			// Load full user objects individually — prevents the single bulk
+			// usermeta SQL query from exhausting available memory.
+			$users = array_map( 'get_userdata', $user_ids );
 
 			// Generate rows for this batch.
 			$rows = $this->generate_rows( $users, $form_id, $unchecked_fields, $checked_additional_fields, $from_date, $to_date );
@@ -137,6 +157,8 @@ class UR_Admin_Export_Users {
 			foreach ( $rows as $row ) {
 				fputcsv( $handle, $row );
 			}
+
+			wp_cache_flush();
 
 			// Increase the offset for the next batch.
 			$offset += $batch_size;
@@ -229,6 +251,24 @@ class UR_Admin_Export_Users {
 
 		$rows = array();
 
+		// Cache expensive calls outside the user loop to prevent repeated DB queries.
+		$user_form_fields        = ur_get_form_fields( $form_id );
+		$columns                 = $this->generate_columns( $form_id, $unchecked_fields );
+		$columns_with_additional = $this->generate_columns( $form_id, $unchecked_fields, $checked_additional_fields );
+		$user_table_data         = ur_get_user_table_fields();
+		$user_meta_data          = ur_get_registered_user_meta_fields();
+
+		// Detect profile picture field once for all users.
+		$urm_form_has_profile_picture = false;
+		$user_profile_picture_key     = '';
+		foreach ( $user_form_fields as $field_key => $field_data ) {
+			if ( isset( $field_data->field_key ) && 'profile_picture' === $field_data->field_key ) {
+				$urm_form_has_profile_picture = true;
+				$user_profile_picture_key     = $field_key;
+				break;
+			}
+		}
+
 		foreach ( $users as $user ) {
 
 			if ( ! isset( $user->data->ID ) ) {
@@ -244,9 +284,20 @@ class UR_Admin_Export_Users {
 				continue;
 			}
 			$user_id_row    = array();
-			$user_extra_row = ur_get_user_extra_fields( $user->data->ID );
+			$user_extra_row = ur_get_user_extra_fields( $user->data->ID, 'export_users' );
 
-			$columns = $this->generate_columns( $form_id, $unchecked_fields );
+			if ( $urm_form_has_profile_picture && ! empty( $user_profile_picture_key ) ) {
+				$profile_picture_id = get_user_meta( $user->data->ID, 'user_registration_profile_pic_url', true );
+
+				if ( is_numeric( $profile_picture_id ) ) {
+					$profile_picture_url = wp_get_attachment_url( $profile_picture_id );
+				} else {
+					$profile_picture_url = '';
+				}
+
+				// Assign profile picture URL to user extra row.
+				$user_extra_row[ $user_profile_picture_key ] = $profile_picture_url;
+			}
 
 			foreach ( $user_extra_row as $user_extra_data_key => $user_extra_data ) {
 
@@ -277,25 +328,19 @@ class UR_Admin_Export_Users {
 				}
 			}
 
-			$user_table_data     = ur_get_user_table_fields();
 			$user_table_data_row = array();
 
 			// Get user table data that are on column.
 			foreach ( $user_table_data as $data ) {
-				$columns = $this->generate_columns( $form_id, $unchecked_fields );
-
 				if ( isset( $columns[ $data ] ) ) {
 					$user_table_data_row = array_merge( $user_table_data_row, array( $data => $user->$data ) );
 				}
 			}
 
-			$user_meta_data     = ur_get_registered_user_meta_fields();
 			$user_meta_data_row = array();
 
 			// Get user meta table data that are on column.
 			foreach ( $user_meta_data as $meta_data ) {
-				$columns = $this->generate_columns( $form_id, $unchecked_fields );
-
 				if ( isset( $columns[ $meta_data ] ) ) {
 					$user_meta_data_row = array_merge( $user_meta_data_row, array( $meta_data => get_user_meta( $user->data->ID, $meta_data, true ) ) );
 				}
@@ -306,6 +351,7 @@ class UR_Admin_Export_Users {
 
 			$profile = user_registration_form_data( $user->ID, $form_id );
 
+			$user_before_merge_value = array();
 			foreach ( $user_extra_row as $key => $value ) {
 				if ( ! metadata_exists( 'user', $user->ID, 'user_registration_' . $key ) && empty( $value ) ) {
 					$profile_key = 'user_registration_' . $key;
@@ -313,22 +359,22 @@ class UR_Admin_Export_Users {
 					if ( isset( $profile[ $profile_key ]['default'] ) ) {
 						$default_value = $profile[ $profile_key ]['default'];
 
-					// Handle array values properly.
-					if ( is_array( $default_value ) ) {
-						// Filter out empty values and join the remaining values into a string.
-						$default_value = implode(
-							', ',
-							array_filter(
-								$default_value,
-								function ( $v ) {
-									return ! empty( $v );
-								}
-							)
-						);
-					} else {
-						// If it's not an array, sanitize the value.
-						$default_value = esc_html( $default_value );
-					}
+						// Handle array values properly.
+						if ( is_array( $default_value ) ) {
+							// Filter out empty values and join the remaining values into a string.
+							$default_value = implode(
+								', ',
+								array_filter(
+									$default_value,
+									function ( $v ) {
+										return ! empty( $v );
+									}
+								)
+							);
+						} else {
+							// If it's not an array, sanitize the value.
+							$default_value = esc_html( $default_value );
+						}
 
 						// Only set non-empty default values.
 						if ( ! empty( $default_value ) ) {
@@ -341,7 +387,9 @@ class UR_Admin_Export_Users {
 			// Merge only non-empty values from $user_before_merge_value.
 			if ( ! empty( $user_before_merge_value ) ) {
 				foreach ( $user_before_merge_value as $key => $value ) {
-					if ( ! empty( $value ) ) {
+					if (
+						! isset( $user_extra_row[ $key ] ) || '' === $user_extra_row[ $key ] || ( is_array( $user_extra_row[ $key ] ) && empty( $user_extra_row[ $key ] ) )
+					) {
 						$user_extra_row[ $key ] = $value;
 					}
 				}
@@ -373,7 +421,7 @@ class UR_Admin_Export_Users {
 				 *
 				 * @see https://stackoverflow.com/a/44774818/9520912
 				 */
-				$user_row = array_merge( array_fill_keys( array_keys( $this->generate_columns( $form_id, $unchecked_fields, $checked_additional_fields ) ), '' ), $user_row );
+				$user_row = array_merge( array_fill_keys( array_keys( $columns_with_additional ), '' ), $user_row );
 				$rows[]   = $user_row;
 			}
 		}

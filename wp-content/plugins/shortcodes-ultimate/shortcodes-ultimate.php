@@ -5,13 +5,14 @@
  * Plugin URI: https://getshortcodes.com/
  * Author: Vova Anokhin
  * Author URI: https://getshortcodes.com/
- * Description: A comprehensive collection of visual components for WordPress
+ * Description: Create tabs, accordions, buttons, sliders, boxes and reusable content elements with 50+ WordPress shortcodes
  * Text Domain: shortcodes-ultimate
+ * Domain Path: /languages
  * License: GPLv3
- * Version: 7.4.8
- * Requires PHP: 5.4
- * Requires at least: 5.0
- * Tested up to: 6.9
+ * Version: 7.8.2
+ * Requires PHP: 7.0
+ * Requires at least: 6.0
+ * Tested up to: 7.0
  *
  */
 if ( !defined( 'ABSPATH' ) ) {
@@ -51,6 +52,7 @@ if ( function_exists( 'su_fs' ) ) {
                             'localhost' => true,
                         ),
                         'is_live'           => true,
+                        'is_org_compliant'  => true,
                     ) );
                 }
                 return $su_fs;
@@ -63,6 +65,6 @@ if ( function_exists( 'su_fs' ) ) {
         }
     }
     define( 'SU_PLUGIN_FILE', __FILE__ );
-    define( 'SU_PLUGIN_VERSION', '7.4.8' );
+    define( 'SU_PLUGIN_VERSION', '7.8.2' );
     require_once dirname( __FILE__ ) . '/plugin.php';
 }

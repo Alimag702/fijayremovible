@@ -21,9 +21,6 @@ if( 'enable' === $remove_db ) {
 	$remove_db_alldata   = ! empty( $theplus_options['tpae_db_alldata'] ) ? $theplus_options['tpae_db_alldata'] : '';
 
 	if( 'enable' === $remove_db_promotion ) {
-		delete_option('tpae_halloween_notice_dismissed');
-		delete_option('tpae_bfsale_notice_dismissed');
-		delete_option('tpae_cmsale_notice_dismissed');
 		delete_option('tp-rateus-notice');
 		delete_option('tp_wdkit_preview_popup');
 		delete_option('tp_editor_onbording_popup');
@@ -39,6 +36,8 @@ if( 'enable' === $remove_db ) {
 		delete_option('theplus_options');
 		delete_option('theplus_api_connection_data');
 		delete_option('theplus_styling_data');
+		delete_option('tp_dynamic_tag_seen');
+		delete_option('tpae_dynamictag_notice_dismissed');
 
 		// Pro
 		delete_option('theplus_activation_redirect');
@@ -50,6 +49,19 @@ if( 'enable' === $remove_db ) {
 	delete_option('theplus_verified');
 	delete_option('theplus_purchase_code');
 	delete_transient('theplus_verify_trans_api_store');
+
+	delete_option( 'tpae_nxt_ext_pnotice' );
+	delete_option( 'tpae_nexter_extension_notice' );
+	delete_option( 'tpae_nexter_block_notice' );
+
+	delete_option( 'tpae_pro_promo_notice' );
+	delete_option( 'tpae_activate_license_notice' );
+	delete_option( 'tpae_expired_license_month_notice' );
+	delete_option( 'tpae_expired_license_week_notice' );
+	delete_option( 'tpae_expired_license_notice' );
+	delete_option( 'tpae_review_show_later' );
+	delete_option( 'tpae_ask_review_notice' );
+	delete_option( 'tpae_join_community_notice' );
 
 	// if ( file_exists( L_THEPLUS_ASSET_PATH . '/theplus.min.css' ) ) {
 	// 	wp_delete_file( L_THEPLUS_ASSET_PATH . DIRECTORY_SEPARATOR . '/theplus.min.css' );

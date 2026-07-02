@@ -44,7 +44,7 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 		 * @since 6.5.6
 		 * @var pro_widgets
 		 */
-		public $pro_widgets = array( 'tp_audio_player', 'tp_chart', 'tp_coupon_code', 'tp_navigation_menu', 'tp_pricing_list', 'tp_protected_content', 'tp_pre_loader', 'tp_row_background', 'tp_site_logo', 'tp_table_content', 'tp_google_map', 'tp_wp_login_register', 'tp_horizontal_scroll_advance', 'tp_mobile_menu', 'tp_scroll_sequence', 'tp_design_tool', 'tp_advanced_buttons', 'tp_advanced_typography', 'tp_advertisement_banner', 'tp_shape_divider', 'tp_animated_service_boxes', 'tp_before_after', 'tp_carousel_remote', 'tp_circle_menu', 'tp_cascading_image', 'tp_draw_svg', 'tp_dynamic_device', 'tp_hotspot', 'tp_wp_bodymovin', 'tp_morphing_layouts', 'tp_mouse_cursor', 'tp_off_canvas', 'tp_timeline', 'tp_unfold', 'tp_dynamic_listing', 'tp_dynamic_smart_showcase', 'tp_product_listout', 'tp_search_bar', 'tp_search_filter', 'tp_social_feed', 'tp_social_reviews', 'tp_social_sharing', 'tp_mailchimp', 'tp_woo_cart', 'tp_woo_checkout', 'tp_woo_compare', 'tp_woo_wishlist', 'tp_wp_quickview', 'tp_woo_multi_step', 'tp_woo_myaccount', 'tp_woo_order_track', 'tp_woo_single_basic', 'tp_woo_single_image', 'tp_woo_single_pricing', 'tp_woo_single_tabs', 'tp_woo_thank_you' );
+		public $pro_widgets = array( 'tp_audio_player', 'tp_chart', 'tp_coupon_code', 'tp_navigation_menu', 'tp_pricing_list', 'tp_protected_content', 'tp_pre_loader', 'tp_row_background', 'tp_site_logo', 'tp_table_content', 'tp_google_map', 'tp_wp_login_register', 'tp_horizontal_scroll_advance', 'tp_image_factory', 'tp_mobile_menu', 'tp_scroll_sequence', 'tp_design_tool', 'tp_advanced_buttons', 'tp_advanced_typography', 'tp_advertisement_banner', 'tp_shape_divider', 'tp_animated_service_boxes', 'tp_before_after', 'tp_carousel_remote', 'tp_circle_menu', 'tp_cascading_image', 'tp_draw_svg', 'tp_dynamic_device', 'tp_hotspot', 'tp_wp_bodymovin', 'tp_morphing_layouts', 'tp_mouse_cursor', 'tp_off_canvas', 'tp_timeline', 'tp_unfold', 'tp_dynamic_listing', 'tp_dynamic_smart_showcase', 'tp_product_listout', 'tp_search_bar', 'tp_search_filter', 'tp_social_feed', 'tp_social_reviews', 'tp_social_sharing', 'tp_mailchimp', 'tp_woo_cart', 'tp_woo_checkout', 'tp_woo_compare', 'tp_woo_wishlist', 'tp_wp_quickview', 'tp_woo_multi_step', 'tp_woo_myaccount', 'tp_woo_order_track', 'tp_woo_single_basic', 'tp_woo_single_image', 'tp_woo_single_pricing', 'tp_woo_single_tabs', 'tp_woo_thank_you' );
 
 		/**
 		 * Returns a singleton instance of the class.
@@ -87,6 +87,8 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 			wp_enqueue_style( 'tpae-copy-paste', L_THEPLUS_URL . 'modules/extensions/copy-paste/tpae-copy-paste.css', array(),  L_THEPLUS_VERSION );
 			wp_enqueue_script( 'tpae-cross-cp', L_THEPLUS_URL . 'modules/extensions/copy-paste/tpae-copy-paste.js', array( 'jquery', 'elementor-editor'), L_THEPLUS_VERSION, true );
 
+			wp_set_script_translations( 'tpae-cross-cp', 'tpebl', L_THEPLUS_PATH . 'languages' );
+
 			wp_localize_script( 'tpae-cross-cp', 'theplus_cross_cp',
 				array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -105,7 +107,7 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 
 			check_ajax_referer( 'plus_cross_cp_import', 'nonce' );
 
-			if ( ! current_user_can( 'edit_posts' ) ) {
+			if ( ! current_user_can( 'edit_posts' ) || ! current_user_can( 'upload_files' ) ) {
 				wp_send_json_error( __( 'Not a Valid', 'tpebl' ), 403 );
 			}
 
@@ -115,7 +117,12 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 				wp_send_json_error( __( 'Empty Content.', 'tpebl' ) );
 			}
 
-			$media_import = array( json_decode( $media_import, true ) );
+			$decoded = json_decode( $media_import, true );
+			if ( ! is_array( $decoded ) ) {
+				wp_send_json_error( __( 'Invalid payload.', 'tpebl' ) );
+			}
+
+			$media_import = array( $decoded );
 			$media_import = self::tp_elements_id_change( $media_import );
 			$media_import = self::tp_import_media_copy_content( $media_import );
 
@@ -220,6 +227,13 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 				wp_die();
 			}
 
+			if ( ! current_user_can( 'manage_options' ) ) {
+				$response = $this->tpae_set_response( false, 'Insufficient permissions.', 'You do not have permission to perform this action.' );
+				wp_send_json( $response );
+				wp_die();
+			}
+
+
 			$type = isset( $_POST['type'] ) ? strtolower( sanitize_text_field( wp_unslash( $_POST['type'] ) ) ) : false;
 
 			switch ( $type ) {
@@ -240,7 +254,7 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 		public function tpae_enable_widget() {
 
 			$plugin_check = $this->tpae_check_plugin_status();
-			$widgets_name = isset( $_POST['widgets_name'] ) ? wp_unslash( $_POST['widgets_name'] ) : array();
+			$widgets_name = isset( $_POST['widgets_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['widgets_name'] ) ) : array();
 
 			if ( 'false' == $plugin_check ) {
 				$tpae_widgets = $this->pro_widgets;
@@ -274,9 +288,10 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 				}
 			}
 
+
 			$type = array(
 				'widgets' => $widgets_name,
-				// 'extensions' => $extensions
+				'extensions' => ''
 			);
 
 			return apply_filters( 'tpae_enable_selected_widgets', $type );
@@ -288,6 +303,10 @@ if ( ! class_exists( 'Tpae_Copy_Paste' ) ) {
 		 * @since 6.5.6
 		 */
 		public function tpae_check_plugin_status() {
+
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
 
 			$installed_plugins = get_plugins();
 

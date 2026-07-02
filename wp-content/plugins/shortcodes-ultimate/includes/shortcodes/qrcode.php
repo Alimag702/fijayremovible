@@ -10,7 +10,7 @@ su_add_shortcode(
 		'group' => 'content',
 		'atts' => array(
 			'data' => array(
-				'default' => '',
+				'default' => 'tel:+55555555555',
 				'name' => __('Data', 'shortcodes-ultimate'),
 				'desc' => sprintf(
 					// translators: %1$s and %2$s will be replaced with %CURRENT_URL% and %PERMALINK% tokens respectively
@@ -98,7 +98,7 @@ function su_shortcode_qrcode($atts = null, $content = null)
 
 	$atts = shortcode_atts(
 		array(
-			'data' => '',
+			'data' => 'tel:+55555555555',
 			'title' => '',
 			'size' => 200,
 			'margin' => 0,

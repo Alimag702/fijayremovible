@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Scroll_Navigation
  */
-class L_ThePlus_Scroll_Navigation extends Widget_Base {
+class L_ThePlus_Scroll_Navigation extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -36,14 +36,6 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 	public function get_name() {
 		return 'tp-scroll-navigation';
 	}
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
-
 	/**
 	 * Get Widget Title.
 	 *
@@ -61,7 +53,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-sort theplus_backend_icon';
+		return 'theplus-i-scroll-navigation tpae-editor-logo';
 	}
 
 	/**
@@ -71,7 +63,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-creatives' );
+		return array( 'plus-creative' );
 	}
 
 	/**
@@ -81,20 +73,8 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Scroll Navigation', 'Scroll Menu', ' Sticky Navigation', 'Sticky Menu', 'Fixed Navigation', 'Fixed Menu', 'Anchor Menu', ' Anchor Navigation', 'Smooth Scroll', 'One Page Navigation' );
+		return array( 'Tp Scroll Animation', 'Scroll Sequence', 'Image Gallery Animation', 'Dynamic Scroll Effects', 'Interactive Image Sequences', 'Image Sequence Animation', 'Sequence Scrolling' );
 	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
-	}
-
 	/**
 	 * It is use for widget add in catch or not.
 	 *
@@ -102,40 +82,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 	 */
 	public function is_dynamic_content(): bool {
 		return false;
-	}
-	
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
-	/**
+	}	/**
 	 * Register controls.
 	 *
 	 * @since 1.0.0
@@ -150,43 +97,69 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="17342" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="17342">%s</a>
-					</div>',
-					esc_url('https://wdesignkit.com/templates/kit/scroll-navigation---kit/17342'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
-				),
-                'label_block'     => true,
-            )
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 17342,
+				'label_block' => true,
+			)
 		);
 		$this->add_control(
 			'scroll_navigation_style',
 			array(
-				'label'   => esc_html__( 'Style', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'style-1',
-				'options' => array(
-					'style-1' => esc_html__( 'Style 1', 'tpebl' ),
-					'style-2' => esc_html__( 'Style 2 (Pro)', 'tpebl' ),
-					'style-3' => esc_html__( 'Style 3 (Pro)', 'tpebl' ),
-					'style-4' => esc_html__( 'Style 4 (Pro)', 'tpebl' ),
-					'style-5' => esc_html__( 'Style 5 (Pro)', 'tpebl' ),
+				'label'       => esc_html__( 'Style', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'style-1',
+				'options'     => array(
+					'style-1' => array(
+						'title' => esc_html__( 'Style 1', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/scroll-navigation/style-1.svg' ),
+					),
+					'style-2' => array(
+						'title' => esc_html__( 'Style 2 (Pro)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/scroll-navigation/style-2-pro.svg' ),
+					),
+					'style-3' => array(
+						'title' => esc_html__( 'Style 3 (Pro)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/scroll-navigation/style-3-pro.svg' ),
+					),
+					'style-4' => array(
+						'title' => esc_html__( 'Style 4 (Pro)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/scroll-navigation/style-4-pro.svg' ),
+					),
+					'style-5' => array(
+						'title' => esc_html__( 'Style 5 (Pro)', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/scroll-navigation/style-5-pro.svg' ),
+					),
 				),
+				'columns'     => 3,
+				'classes'     => 'tpae-visual_choice',
+			)
+		);
+		$this->add_control(
+			'scroll_navigation_style_pro',
+			array(
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
+				'condition'   => array(
+					'scroll_navigation_style!' => 'style-1',
+				),
+			)
+		);
+		$nav_direction_desc = wp_kses_post(
+			sprintf(
+				'<p class="tp-controller-label-text"><i>%s</i></p>',
+				esc_html__( 'Set where the scroll navigation appears on the screen (left, right, center, etc.) based on your layout preference.', 'tpebl' )
 			)
 		);
 		$this->add_control(
 			'scroll_navigation_direction',
 			array(
-				'label'     => esc_html__( 'Direction', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'right',
-				'options'   => array(
+				'label'       => esc_html__( 'Direction', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'right',
+				'options'     => array(
 					'left'         => esc_html__( 'Middle Left', 'tpebl' ),
 					'right'        => esc_html__( 'Middle Right', 'tpebl' ),
 					'top'          => esc_html__( 'Top', 'tpebl' ),
@@ -196,7 +169,8 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 					'bottom_left'  => esc_html__( 'Bottom Left', 'tpebl' ),
 					'bottom_right' => esc_html__( 'Bottom Right', 'tpebl' ),
 				),
-				'condition' => array(
+				'description' => $nav_direction_desc,
+				'condition'   => array(
 					'scroll_navigation_style' => array( 'style-1' ),
 				),
 			)
@@ -204,14 +178,15 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'scroll_navigation_direction_st4',
 			array(
-				'label'     => esc_html__( 'Direction', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'right',
-				'options'   => array(
+				'label'       => esc_html__( 'Direction', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'right',
+				'options'     => array(
 					'left'  => esc_html__( 'Middle Left (Pro)', 'tpebl' ),
 					'right' => esc_html__( 'Middle Right (Pro)', 'tpebl' ),
 				),
-				'condition' => array(
+				'description' => $nav_direction_desc,
+				'condition'   => array(
 					'scroll_navigation_style' => array( 'style-2', 'style-4' ),
 				),
 			)
@@ -238,8 +213,8 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Display Counter', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 				'condition' => array(
@@ -251,17 +226,119 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'scroll_navigation_display_counter_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'scroll_navigation_style'           => array( 'style-2', 'style-4' ),
 					'scroll_navigation_display_counter' => array( 'yes' ),
 				),
 			)
 		);
+		$this->add_control(
+			'scroll_navigation_popover',
+			array(
+				'label'     => esc_html__( 'Navigation Position', 'tpebl' ),
+				'type'      => Controls_Manager::POPOVER_TOGGLE,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
+				'default'   => 'no',
+			)
+		);
+		$this->start_popover();
+		$this->add_responsive_control(
+			'navigation_left',
+			array(
+				'label'      => esc_html__( 'Left', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation' => 'left: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'navigation_right',
+			array(
+				'label'      => esc_html__( 'Right', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation' => 'right: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'navigation_top',
+			array(
+				'label'      => esc_html__( 'Top', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation' => 'top: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'navigation_bottom',
+			array(
+				'label'      => esc_html__( 'Bottom', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation' => 'bottom: {{SIZE}}{{UNIT}};',
+				),
+			)
+		);
+		$this->end_popover();
 		$this->add_control(
 			'scroll_navigation_tooltip_display_style',
 			array(
@@ -279,11 +356,9 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'tooltip_style_options_pro',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'scroll_navigation_tooltip_display_style' => 'on-active-section',
 				),
@@ -294,21 +369,33 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$repeater->add_control(
 			'scroll_navigation_section_id',
 			array(
-				'label'   => esc_html__( 'Section ID', 'tpebl' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => 'section-id',
+				'label'       => esc_html__( 'Section ID', 'tpebl' ),
+				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
+				'default'     => __( 'section-id', 'tpebl' ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enter the section ID of the page section you want to link with this navigation item. Make sure the same ID is added to the target section.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
 			'display_tool_tip',
 			array(
-				'label'     => esc_html__( 'Tooltip', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
-
+				'label'       => esc_html__( 'Tooltip', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'separator'   => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to show helpful text when users hover over the navigation item.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$repeater->add_control(
@@ -316,6 +403,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Tooltip Title', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'default'   => '',
 				'dynamic'   => array( 'active' => true ),
 				'condition' => array(
@@ -329,8 +417,8 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Icon', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 			)
@@ -352,6 +440,22 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			)
 		);
 		$repeater->add_control(
+			'icon_fs_popover_toggle',
+			array(
+				'label'        => esc_html__( 'Font Awesome', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'condition'    => array(
+					'loop_icon_style'       => 'font_awesome',
+					'display_tool_tip_icon' => 'yes',
+				),
+			)
+		);
+		$repeater->start_popover();
+		$repeater->add_control(
 			'loop_icon_fontawesome',
 			array(
 				'label'     => esc_html__( 'Icon Library', 'tpebl' ),
@@ -363,6 +467,23 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				),
 			)
 		);
+		$repeater->end_popover();
+		$repeater->add_control(
+			'icon_f5_popover_toggle',
+			array(
+				'label'        => esc_html__( 'Font Awesome 5', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'condition'    => array(
+					'loop_icon_style'       => 'font_awesome_5',
+					'display_tool_tip_icon' => 'yes',
+				),
+			)
+		);
+		$repeater->start_popover();
 		$repeater->add_control(
 			'loop_icon_fontawesome_5',
 			array(
@@ -378,14 +499,13 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				),
 			)
 		);
+		$repeater->end_popover();
 		$repeater->add_control(
-			'loop_icon_mind_options',
+			'tp_keyboard_scrolling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'loop_icon_style'       => 'icon_mind',
 					'display_tool_tip_icon' => 'yes',
@@ -414,26 +534,56 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Page Scroll Connection', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to link the element with a page scroll interaction so it reacts or syncs based on how the page is scrolled.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'pagescroll_connection_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'pagescroll_connection' => array( 'yes' ),
 				),
 			)
 		);
 		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=vAg6GNktZTQ',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'section_navigation_styling',
 			array(
@@ -564,19 +714,17 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		);
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
-		$this->add_control(
-			'sc_style_pro_option',
-			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
-				'condition'   => array(
-					'scroll_navigation_style!' => 'style-1',
-				),
-			)
-		);
+			$this->add_control(
+				'sc_style_pro_option',
+				array(
+					'type'        => 'tpae_pro_feature',
+					'label_block' => true,
+					'default'     => '',
+					'condition'   => array(
+						'scroll_navigation_style!' => 'style-1',
+					),
+				)
+			);
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_navigation_background_styling',
@@ -588,11 +736,9 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'section_navigation_background_styling_option',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'scroll_navigation_style!' => 'style-1',
 				),
@@ -700,7 +846,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_responsive_control(
 			'scroll_nav_icon_background_border_radious_normal',
 			array(
-				'label'      => esc_html__( 'Icon Background Border Radius', 'tpebl' ),
+				'label'      => esc_html__( 'Border Radius', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', 'em', '%' ),
 				'selectors'  => array(
@@ -741,7 +887,7 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_responsive_control(
 			'scroll_nav_icon_background_border_radious_hover',
 			array(
-				'label'      => esc_html__( 'Icon Background Border Radius', 'tpebl' ),
+				'label'      => esc_html__( 'Border Radius', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', 'em', '%' ),
 				'selectors'  => array(
@@ -779,11 +925,9 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'section_navigation_tooltip_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'scroll_navigation_style!' => 'style-1',
 				),
@@ -812,6 +956,52 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				'size_units' => array( 'px', 'em', '%' ),
 				'selectors'  => array(
 					'{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__inner .tooltiptext' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'scroll_navigation_style' => 'style-1',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'navigation_tooltip_svg_icon',
+			array(
+				'label'      => esc_html__( 'Svg Icon Size', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => 1,
+						'max'  => 150,
+						'step' => 1,
+					),
+				),
+				'default'    => array(
+					'unit' => 'px',
+					'size' => 20,
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__dot span.tooltiptext svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'scroll_navigation_style' => 'style-1',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'navigation_tooltip_height',
+			array(
+				'label'      => esc_html__( 'Tooltip Height', 'tpebl' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => 35,
+						'max'  => 200,
+						'step' => 1,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__dot span.tooltiptext' => 'height: {{SIZE}}{{UNIT}};',
 				),
 				'condition'  => array(
 					'scroll_navigation_style' => 'style-1',
@@ -855,31 +1045,6 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				),
 				'selector'  => '{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__dot span.tooltiptext',
 				'condition' => array(
-					'scroll_navigation_style' => 'style-1',
-				),
-			)
-		);
-		$this->add_responsive_control(
-			'navigation_tooltip_svg_icon',
-			array(
-				'label'      => esc_html__( 'Svg Icon Size', 'tpebl' ),
-				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array( 'px' ),
-				'range'      => array(
-					'px' => array(
-						'min'  => 1,
-						'max'  => 150,
-						'step' => 1,
-					),
-				),
-				'default'    => array(
-					'unit' => 'px',
-					'size' => 20,
-				),
-				'selectors'  => array(
-					'{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__dot span.tooltiptext svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-				),
-				'condition'  => array(
 					'scroll_navigation_style' => 'style-1',
 				),
 			)
@@ -928,27 +1093,6 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				),
 			)
 		);
-		$this->add_responsive_control(
-			'navigation_tooltip_height',
-			array(
-				'label'      => esc_html__( 'Tooltip Height', 'tpebl' ),
-				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array( 'px' ),
-				'range'      => array(
-					'px' => array(
-						'min'  => 35,
-						'max'  => 200,
-						'step' => 1,
-					),
-				),
-				'selectors'  => array(
-					'{{WRAPPER}} .theplus-scroll-navigation .theplus-scroll-navigation__dot span.tooltiptext' => 'height: {{SIZE}}{{UNIT}};',
-				),
-				'condition'  => array(
-					'scroll_navigation_style' => 'style-1',
-				),
-			)
-		);
 		$this->add_control(
 			'scroll_nav_tooltip_arrow',
 			array(
@@ -957,16 +1101,6 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
-				'condition' => array(
-					'scroll_navigation_style' => 'style-1',
-				),
-			)
-		);
-		$this->add_group_control(
-			Group_Control_Box_Shadow::get_type(),
-			array(
-				'name'      => 'scroll_nav_tooltip_shadow',
-				'selector'  => '{{WRAPPER}} .theplus-scroll-navigation__dot span.tooltiptext',
 				'condition' => array(
 					'scroll_navigation_style' => 'style-1',
 				),
@@ -987,6 +1121,16 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				'separator'  => 'after',
 			)
 		);
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			array(
+				'name'      => 'scroll_nav_tooltip_shadow',
+				'selector'  => '{{WRAPPER}} .theplus-scroll-navigation__dot span.tooltiptext',
+				'condition' => array(
+					'scroll_navigation_style' => 'style-1',
+				),
+			)
+		);
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_navigation_dispaly_counter_styling',
@@ -1001,11 +1145,9 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'section_navigation_dispaly_counter_styling_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
@@ -1125,11 +1267,9 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		$this->add_control(
 			'show_scroll_window_offset_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'show_scroll_window_offset' => array( 'yes' ),
 				),
@@ -1137,7 +1277,6 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 		);
 		$this->end_controls_section();
 
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1229,9 +1368,10 @@ class L_ThePlus_Scroll_Navigation extends Widget_Base {
 				}
 
 				$tt_title = ! empty( $item['tooltip_menu_title'] ) ? $item['tooltip_menu_title'] : '';
+				$tt_align = ! empty( $item['scroll_navigation_tooltip_align'] ) ? $item['scroll_navigation_tooltip_align'] : '';
 
 				if ( ! empty( $tt_title || $icons ) ) {
-					$tooltip_title = '<span class="tooltiptext ' . esc_attr( $direction_class ) . ' ' . esc_attr( $tooltip_arrow ) . ' ' . $settings['scroll_navigation_tooltip_align'] . ' ' . esc_attr( $display_tooltip_style_class ) . '">' . $s_icon_img . ' ' . esc_html( $tt_title ) . '</span>';
+					$tooltip_title = '<span class="tooltiptext ' . esc_attr( $direction_class ) . ' ' . esc_attr( $tooltip_arrow ) . ' ' . esc_attr( $tt_align ) . ' ' . esc_attr( $display_tooltip_style_class ) . '">' . $s_icon_img . ' ' . esc_html( $tt_title ) . '</span>';
 				}
 
 				$scroll_navigation .= '<div class="theplus-scroll-navigation__dot">' . $tooltip_title . '</div>';

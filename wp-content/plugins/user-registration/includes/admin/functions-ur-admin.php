@@ -6,6 +6,9 @@
  * @version  1.0.0
  */
 
+use WPEverest\URMembership\Admin\Repositories\MembershipGroupRepository;
+use WPEverest\URMembership\Admin\Repositories\SubscriptionRepository;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -113,6 +116,10 @@ function ur_get_screen_ids() {
 		$ur_screen_id . '_page_user-registration-email-templates',
 		$ur_screen_id . '_page_user-registration-content-restriction',
 		$ur_screen_id . '_page_user-registration-coupons',
+		$ur_screen_id . '_page_member-payment-history',
+		$ur_screen_id . '_page_user-registration-users',
+		$ur_screen_id . '_page_user-registration-members',
+		$ur_screen_id . '_page_user-registration-team',
 		'profile',
 		'user-edit',
 	);
@@ -325,6 +332,9 @@ function ur_create_page( $slug, $option = '', $page_title = '', $page_content = 
 	if ( $valid_page_found ) {
 		if ( $option ) {
 			update_option( $option, $valid_page_found );
+			if ( 'user_registration_login_page_id' === $option ) {
+				update_option( 'user_registration_login_options_login_redirect_url', $valid_page_found );
+			}
 		}
 
 		return $valid_page_found;
@@ -362,6 +372,9 @@ function ur_create_page( $slug, $option = '', $page_title = '', $page_content = 
 
 	if ( $option ) {
 		update_option( $option, $page_id );
+		if ( 'user_registration_login_page_id' === $option ) {
+			update_option( 'user_registration_login_options_login_redirect_url', $page_id );
+		}
 	}
 
 	return $page_id;
@@ -427,7 +440,7 @@ function ur_admin_form_settings( $form_id = 0 ) {
 	$arguments = ur_admin_form_settings_fields( $form_id );
 
 	foreach ( $arguments as $args ) {
-		user_registration_form_field( $args['id'], $args );
+		user_registration_form_settings_field( $args['id'], $args );
 	}
 
 	echo '</div>';
@@ -611,7 +624,7 @@ function promotional_notice_links( $notice_target_links, $is_permanent_dismiss )
 	if ( $is_permanent_dismiss ) {
 
 		?>
-			<a href="#" class="notice-dismiss notice-dismiss-permanently"><?php esc_html_e( 'Never show again', 'user-registration' ); ?></a>
+			<a href="#" class="notice-dismiss notice-nsa notice-dismiss-permanently"><?php esc_html_e( 'Never show again', 'user-registration' ); ?></a>
 		<?php
 	}
 }
@@ -894,3 +907,301 @@ if ( ! function_exists( 'ur_check_notice_already_permanent_dismissed' ) ) {
 		return get_option( 'user_registration_' . $notice_type . '_notice_dismissed', false );
 	}
 }
+
+if ( ! function_exists( 'user_registration_plugin_main_header' ) ) {
+	/**
+	 * Generate the top nav header.
+	 *
+	 * @since 3.3.1
+	 *
+	 * @param string $notice_type Notice Type.
+	 */
+	function user_registration_plugin_main_header() {
+		$all_forms = ur_get_all_user_registration_form();
+		$postfix   = count( $all_forms ) > 1 ? 'Forms' : 'Form';
+
+		$membership_rules_count = 0;
+		if ( function_exists( 'ur_get_membership_rules_count' ) ) {
+			$membership_rules_count = ur_get_membership_rules_count();
+		}
+
+		$all_forms = ur_get_all_user_registration_form();
+
+		// Only include Site Assistant if there are unhandled options
+		$site_assistant_item = ur_should_show_site_assistant_menu() ? array(
+			'dashboard' => array(
+				'page_slug' => 'user-registration-dashboard',
+				'label'     => esc_html__( 'Site Assistant', 'user-registration' ),
+			),
+		) : array();
+
+		$menu_items = apply_filters(
+			'user_registration_plugin_main_header_items',
+			array_merge(
+				$site_assistant_item,
+				array(
+					'analytics' => array(
+						'page_slug' => 'user-registration-analytics',
+						'label'     => esc_html__( 'Analytics', 'user-registration' ),
+					),
+				),
+				ur_check_module_activation( 'membership' ) ? array(
+					'membership' => array(
+						'page_slug' => 'user-registration-membership',
+						'label'     => esc_html__( 'Memberships', 'user-registration' ),
+					),
+				) : array(),
+				// ( ur_check_module_activation( 'membership-groups' ) || ! empty( $membership_groups ) ) ?
+				// array(
+				// 	'groups' => array(
+				// 		'page_slug' => 'user-registration-membership&action=list_groups',
+				// 		'label' 	=> esc_html__( 'Groups', 'user-registration' )
+				// 	)
+				// ) : array(),
+				( ur_check_module_activation( 'content-restriction' ) || $membership_rules_count >= 2 ) ?
+				array(
+					'content-rules' => array(
+						'page_slug' => 'user-registration-content-restriction',
+						'label' 	=> esc_html__( 'Content Rules', 'user-registration' )
+					)
+				) : array(),
+				( count( $all_forms ) > 1 || ur_check_module_activation( 'multiple-registration' ) ) ?
+					array(
+						'all-forms' => array(
+							'page_slug' => 'user-registration',
+							'label'     => esc_html__( 'All Forms', 'user-registration' ),
+							'sub_menu'  => array(
+								'registration-form' => array(
+									'page_slug' => 'user-registration',
+									'label'     => sprintf( esc_html__( 'Registration %s', 'user-registration' ), $postfix ),
+							),
+							'login-form'        => array(
+								'page_slug' => 'user-registration-login-forms',
+								'label'     => esc_html__( 'Login Form', 'user-registration' ),
+							),
+						),
+						),
+					) : array(
+						'registration-form' => array(
+							'page_slug' => 'user-registration',
+							'label'     => sprintf( esc_html__( 'Registration %s', 'user-registration' ), $postfix ),
+						),
+						'login-form'   => array(
+							'page_slug' => 'user-registration-login-forms',
+							'label'     => esc_html__( 'Login Form', 'user-registration' ),
+						),
+					),
+				array(
+					'settings' => array(
+						'page_slug' => 'user-registration-settings',
+						'label'     => esc_html__( 'Settings', 'user-registration' ),
+					),
+				),
+				array(
+					'addons' => array(
+						'page_slug' => 'user-registration-dashboard#features',
+						'label'     => esc_html__( 'Addons', 'user-registration' ),
+					),
+				),
+			)
+		);
+
+		ob_start();
+		?>
+		<div class="ur-admin-page-topnav <?php echo isset( $_GET['page'] ) && ( 'user-registration-dashboard' === $_GET['page'] ) ? 'ur-dashboard-page-topnav' : ''; ?>" id="ur-lists-page-topnav">
+			<div class="ur-page-title__wrapper">
+				<div class="ur-page-title__wrapper--left">
+					<div class="ur-page-title__wrapper--left-logo">
+						<?php echo user_registration_plugin_responsive_main_header( $menu_items ); ?>
+						<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+							<path d="M29.2401 2.25439C27.1109 3.50683 25.107 5.13503 23.3536 6.88846C21.6002 8.64188 19.972 10.6458 18.7195 12.6497C19.5962 14.4031 20.3477 16.1566 20.9739 18.0352C22.1011 15.6556 23.4788 13.5264 25.2323 11.6477V18.4109C25.2323 22.544 22.4769 26.1761 18.4691 27.3033H18.2185C17.9681 24.047 17.2166 20.9158 16.0894 17.91C14.4612 13.7769 11.9563 10.0196 8.69995 6.88846C6.94652 5.13503 4.94263 3.63208 2.81347 2.25439L2.3125 2.00388V18.2857C2.3125 24.9237 7.07177 30.6849 13.7097 31.8121H13.835C15.3379 32.0626 16.8409 32.0626 18.2185 31.8121H18.3438C24.9818 30.6849 29.7411 24.9237 29.7411 18.2857V2.00388L29.2401 2.25439ZM6.82128 18.2857V11.6477C10.7039 16.0313 13.0835 21.4168 13.5845 27.1781C9.57669 26.0509 6.82128 22.4188 6.82128 18.2857ZM15.9642 0C14.0855 0 12.5825 1.50291 12.5825 3.38158C12.5825 5.26025 14.0855 6.7632 15.9642 6.7632C17.8428 6.7632 19.3457 5.26025 19.3457 3.38158C19.3457 1.50291 17.8428 0 15.9642 0Z" fill="#475BB2"/>
+						</svg>
+					</div>
+					<div class="ur-page-title__wrapper--left-menu">
+						<ul class="ur-page-title__wrapper--left-menu__items">
+							<?php
+							foreach ( $menu_items as $key => $item ) {
+								$has_sub_menu = false;
+
+								if ( isset( $item['sub_menu'] ) ) {
+									$has_sub_menu = true;
+								}
+								?>
+								<li class="<?php echo $has_sub_menu ? 'has-sub-menu' : ''; ?>">
+									<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . esc_attr( $item['page_slug'] ) ) ); ?>" class="ur-nav-link">
+										<?php echo esc_html( $item['label'] ); ?>
+									</a>
+									<?php
+									if ( $has_sub_menu ) {
+										?>
+											<div class="ur-page-title__wrapper--left-menu__items-sub ur-sub-menu-dropdown">
+												<ul class="ur-page-title__wrapper--left-menu__items-sub__items">
+											<?php
+
+											foreach ( $item['sub_menu'] as $key => $sub_items ) {
+												?>
+													<li>
+														<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . esc_attr( $sub_items['page_slug'] ) ) ); ?>" >
+														<?php echo esc_html( $sub_items['label'] ); ?>
+														</a>
+													</li>
+													<?php
+											}
+											?>
+												</ul>
+											</div>
+											<?php
+									}
+									?>
+								</li>
+								<?php
+							}
+							?>
+						</ul>
+					</div>
+				</div>
+				<div class="ur-page-title__wrapper--right">
+					<div class="ur-version-tag-separator" bis_skin_checked="1"><hr></div>
+						<a target="" rel="noopener" class="ur-help--link" href="<?php echo esc_url( admin_url( 'admin.php?page=user-registration-dashboard#help' ) ); ?>">
+							<?php esc_html_e( 'Help', 'user-registration' ); ?>
+						</a>
+					<?php
+					if ( ! UR_PRO_ACTIVE ) {
+						?>
+							<div class="ur-version-tag-separator" bis_skin_checked="1"><hr></div>
+							<a target="_blank" rel="noopener" class="ur-free-vs-pro--link" href="https://wpuserregistration.com/free-vs-pro/?utm_campaign=lite-version&utm_source=header&utm_medium=top-menu-link">
+								<?php esc_html_e( 'Free vs Pro', 'user-registration' ); ?>
+							</a>
+						<?php
+					}
+					?>
+					<span class="ur-version-tag tips" data-tip="<?php printf( __( 'You are currently using User Registration & Membership %1$s v%2$s', 'user-registration' ), UR_PRO_ACTIVE ? 'Pro' : '', UR()->version ); ?>" >v<?php echo UR()->version; ?></span>
+					<?php
+					if ( ! UR_PRO_ACTIVE ) {
+						?>
+							<div class="ur-version-tag-separator" bis_skin_checked="1"><hr></div>
+							<a target="_blank" rel="noopener" class="ur-upgrade--link" href="https://wpuserregistration.com/upgrade/?utm_campaign=lite-version&utm_source=header&utm_medium=top-menu-link">
+								<?php esc_html_e( 'Upgrade To Pro', 'user-registration' ); ?>
+							</a>
+						<?php
+					}
+					?>
+					<?php
+					if ( isset( $_GET['page'] ) && 'user-registration-dashboard' === $_GET['page'] ) {
+						?>
+						<div class="ur-version-tag-separator" bis_skin_checked="1"><hr></div>
+						<button type="button" class="ur-announcement-button"><img alt="announcement" src="<?php echo esc_url_raw( UR()->plugin_url() . '/assets/images/announcement.gif' ); ?>" /></button>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+		</div>
+		<?php
+
+		return ob_get_clean();
+	}
+}
+if ( ! function_exists( 'user_registration_plugin_responsive_main_header' ) ) {
+	/**
+	 * Generate the top nav header for small screen devices.
+	 *
+	 * @since 3.3.1
+	 *
+	 * @param string $notice_type Notice Type.
+	 */
+	function user_registration_plugin_responsive_main_header( $menu_items ) {
+
+		ob_start();
+		?>
+		<div class="user-registration-hamburger-menu">
+			<div class="user-registration-hamburger-menu--logo ur-hamburger-menu-open">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+					<path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+					<path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+					<path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+			</div>
+			<div class="user-registration-hamburger-menu--body">
+				<div class="ur-hamburger-menu-close">
+					<!-- <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M10.9393 12L6.9696 15.9697L8.03026 17.0304L12 13.0607L15.9697 17.0304L17.0304 15.9697L13.0607 12L17.0303 8.03039L15.9696 6.96973L12 10.9393L8.03038 6.96973L6.96972 8.03039L10.9393 12Z" fill="#080341"/>
+					</svg> -->
+
+					<svg xmlns="http://www.w3.org/2000/svg" fill="#000" viewBox="0 0 24 24">
+						<path d="M19.561 2.418a1.428 1.428 0 1 1 2.02 2.02L4.44 21.583a1.428 1.428 0 1 1-2.02-2.02L19.56 2.418Z"/>
+						<path d="M2.418 2.418a1.428 1.428 0 0 1 2.02 0l17.144 17.143a1.428 1.428 0 1 1-2.02 2.02L2.418 4.44a1.428 1.428 0 0 1 0-2.02Z"/>
+					</svg>
+				</div>
+				<ul class="user-registration-hamburger-menu--body__items">
+					<?php
+					foreach ( $menu_items as $key => $item ) {
+						$has_sub_menu = false;
+
+						if ( isset( $item['sub_menu'] ) ) {
+							$has_sub_menu = true;
+						}
+						?>
+						<li class="<?php echo $has_sub_menu ? 'has-sub-menu' : ''; ?>">
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . esc_attr( $item['page_slug'] ) ) ); ?>" class="ur-nav-link">
+								<?php echo esc_html( $item['label'] ); ?>
+							</a>
+							<?php
+							if ( $has_sub_menu ) {
+								?>
+									<div class="ur-page-title__wrapper--left-menu__items-sub ur-sub-menu-dropdown">
+										<ul class="ur-page-title__wrapper--left-menu__items-sub__items">
+									<?php
+
+									foreach ( $item['sub_menu'] as $key => $sub_items ) {
+										?>
+											<li>
+												<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . esc_attr( $sub_items['page_slug'] ) ) ); ?>" >
+												<?php echo esc_html( $sub_items['label'] ); ?>
+												</a>
+											</li>
+											<?php
+									}
+									?>
+										</ul>
+									</div>
+									<?php
+							}
+							?>
+						</li>
+						<?php
+					}
+					?>
+				</ul>
+			</div>
+		</div>
+		<?php
+
+		return ob_get_clean();
+	}
+}
+if ( ! function_exists( 'user_registration_set_login_page' ) ) {
+	/**
+	 * Set Login Page on saving a page.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	function user_registration_set_login_page( $post_id, $post ) {
+		$flag = get_option( 'ur_login_page_processed', false );
+
+		if ( ! $flag && $post->post_status == 'publish' ) {
+			if ( ! class_exists( 'UR_Admin_Embed_Wizard' ) ) {
+				include_once __DIR__ . '/class-ur-admin-embed-wizard.php';
+			}
+			$data = UR_Admin_Embed_Wizard::get_meta();
+
+			if ( isset( $data['is_login'] ) && ur_string_to_bool( $data['is_login'] ) ) {
+				update_option( 'user_registration_login_page_id', $post_id );
+				update_option( 'user_registration_login_options_login_redirect_url', $post_id );
+				update_option( 'ur_login_page_processed', true );
+				UR_Admin_Embed_Wizard::delete_meta();
+			}
+		}
+	}
+}
+add_action( 'save_post_page', 'user_registration_set_login_page', 10, 2 );

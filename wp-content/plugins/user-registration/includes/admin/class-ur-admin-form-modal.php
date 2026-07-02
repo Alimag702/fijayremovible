@@ -19,12 +19,20 @@ if ( ! class_exists( 'UR_Admin_Form_Modal', false ) ) :
 	class UR_Admin_Form_Modal {
 
 		/**
+		 * Store editor settings for button visibility control.
+		 *
+		 * @var array
+		 */
+		private $editor_settings = array();
+
+		/**
 		 * Primary class constructor.
 		 */
 		public function __construct() {
 
 			add_action( 'media_buttons', array( $this, 'media_button' ), 15 );
 			add_action( 'ur_smart_tags_list', array( $this, 'select_smart_tags' ), 15, 1 );
+			add_filter( 'wp_editor_settings', array( $this, 'capture_editor_settings' ), 10, 2 );
 		}
 
 		/**
@@ -46,6 +54,25 @@ if ( ! class_exists( 'UR_Admin_Form_Modal', false ) ) :
 				return;
 			}
 
+			// Show Reset Content button if enabled for this editor (independent of other buttons)
+			if ( $this->should_show_reset_content_button( $editor_id ) ) {
+				printf(
+					'<a href="#" class="button ur-reset-content-button" data-editor="%s" title="%s">%s</a>',
+					esc_attr( $editor_id ),
+					esc_attr__( 'Reset email content', 'user-registration' ),
+					esc_html__( 'Reset Content', 'user-registration' )
+				);
+			}
+
+			// Check if the Add Registration button should be shown
+			if ( ! $this->should_show_registration_button( $editor_id ) ) {
+				// Still show smart tags if enabled
+				if ( $this->should_show_smart_tags_button( $editor_id ) ) {
+					do_action( 'ur_smart_tags_list', $editor_id );
+				}
+				return;
+			}
+
 			// Remove Add User Registration Form button from wp-editor in customize my account settings page.
 			if ( isset( $_GET['tab'] ) && 'user-registration-customize-my-account' === $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
@@ -63,9 +90,9 @@ if ( ! class_exists( 'UR_Admin_Form_Modal', false ) ) :
 			$login_icon = '<span class="dashicons dashicons-migrate" style="line-height:25px; font-size:16px"></span>';
 
 			printf(
-				'<a href="#" class="button ur-insert-form-button" data-editor="%s" title="%s">%s %s</a>',
+				'<a href="#" class="button ur-insert-form-button urm-btn-comp-v7" data-editor="%s" title="%s">%s %s</a>',
 				esc_attr( $editor_id ),
-				esc_attr__( 'Add User Registration Form', 'user-registration' ),
+				esc_attr__( 'Add User Registration & Membership Form', 'user-registration' ),
 				wp_kses_post( $icon ),
 				esc_html__( 'Add Registration Form', 'user-registration' )
 			);
@@ -77,6 +104,78 @@ if ( ! class_exists( 'UR_Admin_Form_Modal', false ) ) :
 			 */
 			do_action( 'ur_smart_tags_list', $editor_id );
 			add_action( 'admin_footer', array( $this, 'shortcode_modal' ) );
+		}
+
+		/**
+		 * Check if the Add Registration button should be shown for this editor.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $editor_id Editor ID.
+		 * @return bool True if button should be shown, false otherwise.
+		 */
+		private function should_show_registration_button( $editor_id ) {
+			$show_button = $this->get_editor_setting( $editor_id, 'show-ur-registration-form-button' );
+			return $show_button !== false; // Show by default, hide only if explicitly set to false
+		}
+
+		/**
+		 * Check if the Smart Tags button should be shown for this editor.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $editor_id Editor ID.
+		 * @return bool True if button should be shown, false otherwise.
+		 */
+		private function should_show_smart_tags_button( $editor_id ) {
+			$show_button = $this->get_editor_setting( $editor_id, 'show-smart-tags-button' );
+			return $show_button !== false; // Show by default, hide only if explicitly set to false
+		}
+
+		/**
+		 * Check if the Reset Content button should be shown for this editor.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $editor_id Editor ID.
+		 * @return bool True if button should be shown, false otherwise.
+		 */
+		private function should_show_reset_content_button( $editor_id ) {
+			$show_button = $this->get_editor_setting( $editor_id, 'show-reset-content-button' );
+			return $show_button !== false; // Show by default, hide only if explicitly set to false
+		}
+
+		/**
+		 * Capture editor settings when wp_editor is called.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array  $settings Editor settings.
+		 * @param string $editor_id Editor ID.
+		 * @return array Editor settings.
+		 */
+		public function capture_editor_settings( $settings, $editor_id ) {
+			// Store the settings for this editor
+			$this->editor_settings[ $editor_id ] = $settings;
+			return $settings;
+		}
+
+		/**
+		 * Get editor setting from captured settings.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $editor_id Editor ID.
+		 * @param string $setting_name Setting name to retrieve.
+		 * @return mixed Setting value or null if not found.
+		 */
+		private function get_editor_setting( $editor_id, $setting_name ) {
+
+			if ( isset( $this->editor_settings[ $editor_id ] ) && isset( $this->editor_settings[ $editor_id ][ $setting_name ] ) ) {
+				return $this->editor_settings[ $editor_id ][ $setting_name ];
+			}
+
+			return null;
 		}
 
 		/**
@@ -133,7 +232,20 @@ if ( ! class_exists( 'UR_Admin_Form_Modal', false ) ) :
 		 * @param int $editor_id  editor id.
 		 */
 		public function select_smart_tags( $editor_id ) {
-			$smart_tags_list = UR_Smart_Tags::smart_tags_list();
+			// Check if the Smart Tags button should be shown
+			if ( ! $this->should_show_smart_tags_button( $editor_id ) ) {
+				return;
+			}
+
+			// For membership access tab editor and global restriction message, only show sign_up and log_in smart tags
+			if ( 'urcr-membership-action-message' === $editor_id || 'user_registration_content_restriction_message' === $editor_id ) {
+				$smart_tags_list = array(
+					'{{sign_up}}' => esc_html__( 'Sign Up', 'user-registration' ),
+					'{{log_in}}'  => esc_html__( 'Log In', 'user-registration' ),
+				);
+			} else {
+				$smart_tags_list = UR_Smart_Tags::smart_tags_list();
+			}
 
 			$selector  = '<a id="ur-smart-tags-selector">';
 			$selector .= '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">

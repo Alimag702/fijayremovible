@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ReallySimplePlugins\RSS\Core\Features\Onboarding;
 
-use ReallySimplePlugins\RSS\Core\Bootstrap\App;
 use ReallySimplePlugins\RSS\Core\Services\GlobalOnboardingService;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\EnvironmentConfig;
 
 /**
  * Business logic for the onboarding feature.
@@ -14,11 +14,11 @@ use ReallySimplePlugins\RSS\Core\Services\GlobalOnboardingService;
  */
 class OnboardingFeatureService extends GlobalOnboardingService
 {
-    protected App $app;
+    protected EnvironmentConfig $env;
 
-    public function __construct(App $app)
+    public function __construct(EnvironmentConfig $environmentConfig)
     {
-        $this->app = $app;
+        $this->env = $environmentConfig;
     }
 
     /**
@@ -113,7 +113,7 @@ class OnboardingFeatureService extends GlobalOnboardingService
      */
     public function getQueuedItems(): array
     {
-        $handle = $this->app->config->getString('env.onboarding.queue_option');
+        $handle = $this->env->getString('onboarding.queue_option');
         return get_option($handle, []);
     }
 
@@ -123,7 +123,7 @@ class OnboardingFeatureService extends GlobalOnboardingService
      */
     public function updateQueuedItems(array $queue): bool
     {
-        $handle = $this->app->config->getString('env.onboarding.queue_option');
+        $handle = $this->env->getString('onboarding.queue_option');
         return update_option($handle, $queue, false);
     }
 
@@ -147,7 +147,7 @@ class OnboardingFeatureService extends GlobalOnboardingService
         $this->updateQueuedItems($queue);
 
         // Schedule and spawn the queue event when not yet scheduled
-        $event = $this->app->config->getString('env.onboarding.queue_event');
+        $event = $this->env->getString('onboarding.queue_event');
         if (!wp_next_scheduled($event)) {
             $scheduled = wp_schedule_single_event(time() + 10, $event);
             $spawned = spawn_cron();
@@ -165,8 +165,8 @@ class OnboardingFeatureService extends GlobalOnboardingService
     public function cleanupQueuedItems(): void
     {
         $queuedItems = $this->getQueuedItems();
-        $optionHandle = $this->app->config->getString('env.onboarding.queue_option');
-        $eventHandle = $this->app->config->getString('env.onboarding.queue_event');
+        $optionHandle = $this->env->getString('onboarding.queue_option');
+        $eventHandle = $this->env->getString('onboarding.queue_event');
 
         /**
          * Statuses to keep even when the cleanup is triggered. Can be used to
@@ -176,7 +176,7 @@ class OnboardingFeatureService extends GlobalOnboardingService
         $shouldKeepStatusEvenWhenCleaned = apply_filters('rsssl_cleanup_onboarding_statuses', ['processing']);
 
         // Only keep failed or processing items
-        $cleanedQueue = array_filter($queuedItems, static function ($item) use($shouldKeepStatusEvenWhenCleaned) {
+        $cleanedQueue = array_filter($queuedItems, static function ($item) use ($shouldKeepStatusEvenWhenCleaned) {
             $status = $item['status'] ?? '';
             return in_array($status, $shouldKeepStatusEvenWhenCleaned);
         });
@@ -199,7 +199,7 @@ class OnboardingFeatureService extends GlobalOnboardingService
      */
     public function manuallyProcessQueueNow(): void
     {
-        $eventHandle = $this->app->config->getString('env.onboarding.queue_event');
+        $eventHandle = $this->env->getString('onboarding.queue_event');
         wp_clear_scheduled_hook($eventHandle);
 
         // fire!

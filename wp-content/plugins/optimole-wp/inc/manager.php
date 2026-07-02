@@ -407,7 +407,7 @@ final class Optml_Manager {
 		);
 		add_action( 'template_redirect', [ $this, 'register_after_setup' ] );
 		add_action( 'rest_api_init', [ $this, 'process_template_redirect_content' ], PHP_INT_MIN );
-		add_action( 'shutdown', [ $this, 'close_buffer' ] );
+		add_action( 'shutdown', [ $this, 'close_buffer' ], PHP_INT_MIN );
 		foreach ( self::$loaded_compatibilities as $registered_compatibility ) {
 			$registered_compatibility->register();
 		}
@@ -453,10 +453,11 @@ final class Optml_Manager {
 				if ( ! $this->page_profiler->exists_all( $profile_id ) ) {
 					$missing = $this->page_profiler->missing_devices( $profile_id );
 					$time = time();
-					$hmac = wp_hash( $profile_id . $time . $this->get_current_url(), 'nonce' );
+					$url  = esc_url( esc_js( $this->get_current_url() ) );
+					$hmac = wp_hash( $profile_id . $time . $url, 'nonce' );
 					$js_optimizer = str_replace(
 						[ Profile::PLACEHOLDER, Profile::PLACEHOLDER_MISSING, Profile::PLACEHOLDER_TIME, Profile::PLACEHOLDER_HMAC, Profile::PLACEHOLDER_URL ],
-						[ $profile_id, implode( ',', $missing ), strval( $time ), $hmac, $this->get_current_url() ],
+						[ $profile_id, implode( ',', $missing ), strval( $time ), $hmac, $url ],
 						$js_optimizer
 					);
 					$html = str_replace( Optml_Admin::get_optimizer_script( true ), $js_optimizer, $html );

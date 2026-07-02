@@ -9,13 +9,56 @@
 			 *
 			 * @since 4.2.1
 			 */
-			show_success_message: function(message) {
-				$('.user-registration-membership-notice__container .user-registration-membership-notice__red').removeClass('user-registration-membership-notice__red').addClass('user-registration-membership-notice__blue');
-				$('.user-registration-membership-notice__message').text(message);
-				$('.user-registration-membership-notice__container').css('display', 'block');
-				this.toggleNotice();
-				this.ur_remove_cookie( 'urm_toast_content' );
-				this.ur_remove_cookie( 'urm_toast_success_message' );
+			show_success_message: function (message) {
+				$(
+					".user-registration-membership-notice__container .user-registration-membership-notice__red"
+				)
+					.removeClass("user-registration-membership-notice__red")
+					.addClass("user-registration-membership-notice__blue");
+				$(".user-registration-membership-notice__message").text(
+					message
+				);
+				$(".user-registration-membership-notice__container").css(
+					"display",
+					"block"
+				);
+				//attach near my account title.
+				if (
+					$(document).find(".user-registration-MyAccount").length ===
+					1
+				) {
+					$(
+						".user-registration-membership-notice__container .ur-toaster"
+					);
+				}
+				// this.toggleNotice();
+				this.ur_remove_cookie("urm_toast_content");
+				this.ur_remove_cookie("urm_toast_success_message");
+			},
+			show_error_message: function (message) {
+				$(".user-registration-membership-notice__container")
+					.removeClass("user-registration-membership-notice__blue")
+					.addClass("user-registration-membership-notice__red");
+				$(".user-registration-membership-notice__message").text(
+					message
+				);
+				$(".user-registration-membership-notice__container").css(
+					"display",
+					"block"
+				);
+
+				//attach near my account title.
+				if (
+					$(document).find(".user-registration-MyAccount").length ===
+					1
+				) {
+					$(
+						".user-registration-membership-notice__container .ur-toaster "
+					);
+				}
+				// this.toggleNotice();
+				this.ur_remove_cookie("urm_toast_content");
+				this.ur_remove_cookie("urm_toast_success_message");
 			},
 
 			/**
@@ -23,9 +66,11 @@
 			 *
 			 * @since 4.2.1
 			 */
-			toggleNotice: function() {
-				var noticeContainer = $('.user-registration-membership-notice__container');
-				setTimeout(function() {
+			toggleNotice: function () {
+				var noticeContainer = $(
+					".user-registration-membership-notice__container"
+				);
+				setTimeout(function () {
 					noticeContainer.fadeOut(4000);
 				}, 4000);
 			},
@@ -35,10 +80,17 @@
 			 *
 			 * @since 4.2.1
 			 */
-			ur_get_cookie: function( cookie_key ) {
-				var matches = document.cookie.match(new RegExp(
-					"(?:^|; )" + cookie_key.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-				));
+			ur_get_cookie: function (cookie_key) {
+				var matches = document.cookie.match(
+					new RegExp(
+						"(?:^|; )" +
+							cookie_key.replace(
+								/([\.$?*|{}\(\)\[\]\\\/\+^])/g,
+								"\\$1"
+							) +
+							"=([^;]*)"
+					)
+				);
 				return matches ? decodeURIComponent(matches[1]) : undefined;
 			},
 
@@ -47,11 +99,10 @@
 			 *
 			 * @since 4.2.1
 			 */
-			ur_remove_cookie: function( cookie_key ) {
-				document.cookie = cookie_key + '=; Max-Age=-99999999; path=/';
+			ur_remove_cookie: function (cookie_key) {
+				document.cookie = cookie_key + "=; Max-Age=-99999999; path=/" + (window.location.protocol === 'https:' ? '; Secure' : '') + "; SameSite=Strict";
 			}
-
-		}
+		};
 
 		$.fn.ur_form_submission = function () {
 			// traverse all nodes
@@ -173,9 +224,7 @@
 										);
 
 									var invite_code =
-										document.querySelector(
-											".field-invite_code"
-										);
+										document.querySelector("#invite_code");
 
 									if (
 										"invite_code" === single_data.field_name
@@ -491,7 +540,11 @@
 														)
 												]
 													? "user_registration_" +
-													  $("[name='" + key + "']")
+														$(
+															"[name='" +
+																key +
+																"']"
+														)
 															.closest(
 																".ur-repeater-row"
 															)
@@ -751,15 +804,13 @@
 								'<div class="user-registration-' + type + '"/>'
 							);
 							wrapper.append(message);
-							var my_account_selector = $(
-								".user-registration"
-							).find(".user-registration-MyAccount-navigation");
-							if (my_account_selector.length) {
+
+							if ($("#user-registration").hasClass("vertical")) {
+								wrapper.insertBefore(".ur-frontend-form");
+							} else {
 								wrapper.insertBefore(
 									".user-registration-MyAccount-navigation"
 								);
-							} else {
-								wrapper.insertBefore(".ur-frontend-form");
 							}
 						} else {
 							var wrapper = $(
@@ -920,7 +971,6 @@
 									) {
 										return false;
 									}
-
 									var $this = $(this);
 
 									// Validator messages.
@@ -960,11 +1010,11 @@
 													.val() != ""
 											) {
 												$this
-													.find("#user_pass_error")
+													.find("#user_pass-error")
 													.remove();
 
 												var error_msg_dom =
-													'<label id="user_pass_error" class="user-registration-error" for="user_pass">' +
+													'<label id="user_pass-error" class="user-registration-error" for="user_pass">' +
 													ursL10n.password_strength_error +
 													".</label>";
 												$this
@@ -1110,7 +1160,7 @@
 									var captchaResponse = "";
 									var registration_language = "";
 									if (
-										"hcaptcha" ===
+										"hCaptcha" ===
 										user_registration_params.recaptcha_type
 									) {
 										captchaResponse = $this
@@ -1132,7 +1182,6 @@
 											)
 											.val();
 									}
-
 									try {
 										form_data = JSON.stringify(
 											form.get_form_data(
@@ -1191,6 +1240,19 @@
 											.val();
 									}
 
+									// Append tax details if available
+									var taxDetails =
+										$(document).find("#ur-tax-details");
+
+									if (taxDetails.length > 0) {
+										form_data.tax_rate =
+											taxDetails.data("tax-rate");
+										form_data.tax_calculation_method =
+											taxDetails.data(
+												"tax-calculation-method"
+											);
+									}
+
 									var data = {
 										action: "user_registration_user_form_submit",
 										security:
@@ -1244,29 +1306,46 @@
 										.find("span")
 										.addClass("ur-front-spinner");
 
-									var hit_third_party_api =
-										events.wait_third_party_api($this);
-									if (hit_third_party_api) {
-										var thirdPartyHandlerPromise =
-											new Promise(function (
-												resolve,
-												reject
-											) {
-												$(document).trigger(
-													"user_registration_third_party_api_before_form_submit",
-													[
-														data,
-														$this,
-														$error_message,
-														resolve,
-														reject
-													]
-												);
-											}).then(function (val) {
-												events.ajax_form_submit(val);
-											});
+									if (
+										$registration_form
+											.find(
+												"form.register button.ur-submit-button"
+											)
+											.hasClass(
+												"urm-update-membership-button"
+											)
+									) {
+										$(document).trigger(
+											"user_registration_membership_update_before_form_submit",
+											[data, $this, $error_message]
+										);
 									} else {
-										events.ajax_form_submit(data);
+										var hit_third_party_api =
+											events.wait_third_party_api($this);
+										if (hit_third_party_api) {
+											var thirdPartyHandlerPromise =
+												new Promise(function (
+													resolve,
+													reject
+												) {
+													$(document).trigger(
+														"user_registration_third_party_api_before_form_submit",
+														[
+															data,
+															$this,
+															$error_message,
+															resolve,
+															reject
+														]
+													);
+												}).then(function (val) {
+													events.ajax_form_submit(
+														val
+													);
+												});
+										} else {
+											events.ajax_form_submit(data);
+										}
 									}
 								});
 						});
@@ -1279,7 +1358,7 @@
 						var flag = false;
 						if (
 							$form.find(
-								"#user_registration_authorize_net_gateway[data-gateway='authorize_net']"
+								"#user_registration_authorize_net_gateway[data-gateway='authorize_net']:visible"
 							).length > 0
 						) {
 							flag = true;
@@ -1287,25 +1366,200 @@
 						return flag;
 					},
 					/**
+					 * Handles AJAX error responses for form submission.
+					 *
+					 * @param {Object} xhr - The XMLHttpRequest object
+					 * @param {string} status - The status of the request
+					 * @param {string} error - The error message
+					 * @param {Object} $form - The jQuery form object
+					 * @param {Object} posted_data - The data that was posted
+					 */
+					handle_ajax_error: function (
+						xhr,
+						status,
+						error,
+						$form,
+						posted_data
+					) {
+						// Re-enable submit button
+						$form.find(".ur-submit-button").prop("disabled", false);
+
+						if (
+							$form.find(".field-membership").length > 0 ||
+							$form.find(".field-stripe_gateway").length > 0 ||
+							$form.find(".field-authorize_net_gateway").length >
+								0
+						) {
+							$form
+								.find(".ur-submit-button")
+								.find("span")
+								.removeClass("ur-front-spinner");
+							// Show fallback message
+							form.show_message(
+								user_registration_params.ajax_form_submit_error,
+								"error",
+								$form,
+								"1"
+							);
+						} else {
+							// Add all necessary hidden fields for fallback submission
+							if (
+								$form.find('input[name="ur_fallback_submit"]')
+									.length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="ur_fallback_submit" value="1" />'
+								);
+							}
+
+							// Add action field
+							if (
+								$form.find('input[name="action"]').length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="action" value="user_registration_user_form_submit" />'
+								);
+							}
+
+							// Add security nonce
+							if (
+								$form.find('input[name="security"]').length ===
+								0
+							) {
+								$form.append(
+									'<input type="hidden" name="security" value="' +
+										user_registration_params.user_registration_form_data_save +
+										'" />'
+								);
+							}
+
+							// Add form data
+							if (
+								$form.find('input[name="form_data"]').length ===
+								0
+							) {
+								$form.append(
+									'<input type="hidden" name="form_data" value="' +
+										encodeURIComponent(
+											posted_data.form_data
+										) +
+										'" />'
+								);
+							}
+
+							// Add captcha response
+							if (
+								posted_data.captchaResponse &&
+								$form.find('input[name="captchaResponse"]')
+									.length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="captchaResponse" value="' +
+										posted_data.captchaResponse +
+										'" />'
+								);
+							}
+
+							// Add form ID
+							if (
+								posted_data.form_id &&
+								$form.find('input[name="form_id"]').length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="form_id" value="' +
+										posted_data.form_id +
+										'" />'
+								);
+							}
+
+							// Add registration language
+							if (
+								posted_data.registration_language &&
+								$form.find(
+									'input[name="registration_language"]'
+								).length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="registration_language" value="' +
+										posted_data.registration_language +
+										'" />'
+								);
+							}
+
+							// Add form nonce
+							if (
+								posted_data.ur_frontend_form_nonce &&
+								$form.find(
+									'input[name="ur_frontend_form_nonce"]'
+								).length === 0
+							) {
+								$form.append(
+									'<input type="hidden" name="ur_frontend_form_nonce" value="' +
+										posted_data.ur_frontend_form_nonce +
+										'" />'
+								);
+							}
+
+							// Submit the form traditionally
+							$form[0].submit();
+						}
+					},
+					/**
 					 * Ajax form submission event.
 					 *
 					 */
 					ajax_form_submit: function (posted_data) {
+						var $form = $this;
+
 						$.ajax({
 							url: user_registration_params.ajax_url,
 							data: posted_data,
 							type: "POST",
 							async: true,
+							error: function (xhr, status, error) {
+								events.handle_ajax_error(
+									xhr,
+									status,
+									error,
+									$form,
+									posted_data
+								);
+							},
 							complete: function (ajax_response) {
-								$(document.body).trigger('user_registration_after_form_submit_completion');
+								$(document.body).trigger(
+									"user_registration_after_form_submit_completion"
+								);
 								var ajaxFlag = [];
 								ajaxFlag["status"] = true;
+
+								var response_text = JSON.parse(
+									ajax_response.responseText
+								);
+								if (
+									response_text &&
+									response_text.success &&
+									posted_data &&
+									posted_data.ur_authorize_net
+								) {
+									var response_data = response_text.data;
+									var authorize_net_data = {
+										ur_authorize_net:
+											posted_data.ur_authorize_net
+									};
+									response_data = $.extend(
+										{},
+										response_data,
+										authorize_net_data
+									);
+									response_text.data = response_data;
+								}
+								ajax_response.responseText =
+									JSON.stringify(response_text);
 
 								$(document).trigger(
 									"user_registration_frontend_before_ajax_complete_success_message",
 									[ajax_response, ajaxFlag, $this]
 								);
-
 								if (ajaxFlag["status"]) {
 									$this
 										.find(".ur-submit-button")
@@ -1324,10 +1578,17 @@
 											ajax_response.responseText
 										);
 
-										var timeout = response.data
-											.redirect_timeout
-											? response.data.redirect_timeout
-											: 2000;
+										var timeout =
+											response &&
+											response.data &&
+											response.data.redirect_timeout !==
+												undefined &&
+											response.data.redirect_timeout !==
+												null &&
+											response.data.redirect_timeout !==
+												""
+												? response.data.redirect_timeout
+												: 2000;
 
 										if (
 											typeof response.success !==
@@ -1345,11 +1606,35 @@
 										if (
 											typeof response.success !==
 												"undefined" &&
+											response.success === true &&
+											typeof response.data
+												.mollie_redirect !== "undefined"
+										) {
+											window.setTimeout(function () {
+												window.location =
+													response.data.mollie_redirect;
+											}, timeout);
+										}
+
+										if (
+											typeof response.success !==
+												"undefined" &&
 											response.success === true
 										) {
 											type = "message";
 										}
 
+										if (type === "message") {
+											// Membership/subscription registration: do not show "User successfully registered."; membership module shows "New member has been successfully created." only.
+											if (
+												response.data &&
+												response.data
+													.registration_type ===
+													"membership"
+											) {
+												type = "membership_handled";
+											}
+										}
 										if (type === "message") {
 											$this
 												.find(
@@ -1388,7 +1673,9 @@
 											} else if (
 												response.data
 													.form_login_option ==
-												"payment"
+													"payment" &&
+												typeof response.data.message !==
+													"undefined"
 											) {
 												message.append(
 													"<li>" +
@@ -1722,7 +2009,7 @@
 										}
 									} catch (e) {
 										message.append(
-											"<li>" + e.message + "</li>"
+											$("<li></li>").text(e.message)
 										);
 									}
 
@@ -1832,19 +2119,6 @@
 									display: "none"
 								});
 							}
-						}).fail(function () {
-							form.show_message(
-								"<p>" +
-									user_registration_params.ajax_form_submit_error +
-									"</p>",
-								"error",
-								$this,
-								"1"
-							);
-							$this
-								.find(".ur-submit-button")
-								.prop("disabled", false);
-							return;
 						});
 					},
 					/**
@@ -2155,7 +2429,7 @@
 																			) ===
 																			-1
 																				? "user_registration_" +
-																				  index
+																					index
 																				: index;
 																	}
 
@@ -2298,7 +2572,7 @@
 											}
 										} catch (e) {
 											message.append(
-												"<li>" + e.message + "</li>"
+												$("<li></li>").text(e.message)
 											);
 										}
 
@@ -2365,21 +2639,38 @@
 					$(this).closest("form.register").ur_form_submission();
 				});
 
-				var urm_toast_content = user_registration_frontend_utils.ur_get_cookie('urm_toast_content');
+				var urm_toast_content =
+					user_registration_frontend_utils.ur_get_cookie(
+						"urm_toast_content"
+					);
 
-				if ($('.user-registration-page .notice-container').length === 0) {
+				if (
+					$(".user-registration-page .notice-container").length === 0
+				) {
 					// Adds the toast container on the top of page.
-					$(document).find('.user-registration-page').prepend(urm_toast_content);
+					$(document)
+						.find(".user-registration-page")
+						.prepend(urm_toast_content);
 				}
 
-				var urm_toast_success_message = user_registration_frontend_utils.ur_get_cookie('urm_toast_success_message');
+				var urm_toast_success_message =
+					user_registration_frontend_utils.ur_get_cookie(
+						"urm_toast_success_message"
+					);
 
 				// Displays the toast message.
-				user_registration_frontend_utils.show_success_message(urm_toast_success_message);
+				user_registration_frontend_utils.show_success_message(
+					urm_toast_success_message
+				);
 
-				$('.user-registration-membership__close_notice').on('click', function() {
-					$('.user-registration-membership-notice__container').hide();
-				});
+				$(".user-registration-membership__close_notice").on(
+					"click",
+					function () {
+						$(
+							".user-registration-membership-notice__container"
+						).hide();
+					}
+				);
 
 				// Handle edit-profile form submit event.
 				$(
@@ -2398,10 +2689,12 @@
 								"form.user-registration-EditProfileForm"
 							).ur_form_submission();
 						}
-						if(user_registration_params.ajax_submission_on_edit_profile) {
+						if (
+							user_registration_params.ajax_submission_on_edit_profile
+						) {
 							$(this).submit();
-						}else {
-							$(this).closest('form')[0].submit();
+						} else {
+							$(this).closest("form")[0].submit();
 						}
 					});
 				if ($(".ur-flatpickr-field").length) {
@@ -2514,13 +2807,19 @@
 							);
 							var disallowedListArray = [];
 							if (
+								wp.passwordStrength &&
 								"function" ===
-								typeof wp.passwordStrength
-									.userInputDisallowedList
+									typeof wp.passwordStrength
+										.userInputDisallowedList
 							) {
 								disallowedListArray =
 									wp.passwordStrength.userInputDisallowedList();
-							} else {
+							} else if (
+								wp.passwordStrength &&
+								"function" ===
+									typeof wp.passwordStrength
+										.userInputBlacklist
+							) {
 								disallowedListArray =
 									wp.passwordStrength.userInputBlacklist();
 							}
@@ -2536,7 +2835,7 @@
 									.val()
 							); // Add username in disallowedList.
 
-							var strength = wp.passwordStrength.meter(
+							var strength = wp.passwordStrength?.meter(
 								$this.val(),
 								disallowedListArray
 							);
@@ -2548,12 +2847,12 @@
 							if (strength < minimum_password_strength) {
 								if ($this.val() !== "") {
 									wrapper
-										.find("#" + this_data_id + "_error")
+										.find("#" + this_data_id + "-error")
 										.remove();
 									var error_msg_dom =
 										'<label id="' +
 										this_data_id +
-										'_error" class="user-registration-error" for="' +
+										'-error" class="user-registration-error" for="' +
 										this_name +
 										'">' +
 										ursL10n.password_strength_error +
@@ -2637,6 +2936,84 @@
 				});
 			}
 		});
+
+		$(document).on("urm_show_action_message", function (e, data) {
+			if (data.type == "error") {
+				user_registration_frontend_utils.show_error_message(
+					data.message
+				);
+			} else {
+				user_registration_frontend_utils.show_success_message(
+					data.message
+				);
+			}
+		});
+	};
+	var update_nonce = function (all_forms_ids) {
+		$.ajax({
+			url: user_registration_params.ajax_url,
+			data: {
+				action: "user_registration_get_recent_nonce",
+				form_ids: all_forms_ids,
+				nonce_for: "registration"
+			},
+			type: "POST",
+			async: true,
+			complete: function (ajax_response) {
+				var response = JSON.parse(ajax_response.responseText);
+				if (response.success) {
+					$.each(response.data, function (index, item) {
+						$("#user-registration-form-" + index)
+							.find("#ur_frontend_form_nonce")
+							.val(item);
+					});
+				}
+			}
+		});
+	};
+	var update_nonce = function (all_forms_ids) {
+		$.ajax({
+			url: user_registration_params.ajax_url,
+			data: {
+				action: "user_registration_get_recent_nonce",
+				form_ids: all_forms_ids,
+				nonce_for: "registration"
+			},
+			type: "POST",
+			async: true,
+			complete: function (ajax_response) {
+				var response = JSON.parse(ajax_response.responseText);
+				if (response.success) {
+					$.each(response.data, function (index, item) {
+						$("#user-registration-form-" + index)
+							.find("#ur_frontend_form_nonce")
+							.val(item);
+					});
+				}
+			}
+		});
+	};
+	var update_nonce = function (all_forms_ids) {
+		$.ajax({
+			url: user_registration_params.ajax_url,
+			data: {
+				action: "user_registration_get_recent_nonce",
+				form_ids: all_forms_ids,
+				nonce_for: "registration"
+			},
+			type: "POST",
+			async: true,
+			complete: function (ajax_response) {
+				var response = JSON.parse(ajax_response.responseText);
+				if (response.success) {
+					$.each(response.data, function (index, item) {
+						$("#user-registration-form-" + index)
+							.find("#ur_frontend_form_nonce")
+							.val(item);
+					});
+				}
+			}
+		});
 	};
 
 	function user_registration_count() {
@@ -2718,6 +3095,14 @@
 			}
 		});
 	});
+	var all_forms_ids = "";
+	/**
+	 * Update nonce on page load everytime
+	 */
+	$("form.register").each(function () {
+		all_forms_ids += $(this).data("form-id") + ",";
+	});
+	update_nonce(all_forms_ids);
 	user_registration_form_init();
 
 	/**
@@ -2738,12 +3123,14 @@
 	 *
 	 * @since 4.2.1
 	 */
-	window.addEventListener('load', function() {
-		window.addEventListener('elementor/popup/show', function() {
-			var forms = document.querySelectorAll('.elementor-popup-modal form.register:not(.elementor)');
-			forms.forEach(function(form) {
+	window.addEventListener("load", function () {
+		window.addEventListener("elementor/popup/show", function () {
+			var forms = document.querySelectorAll(
+				".elementor-popup-modal form.register:not(.elementor)"
+			);
+			forms.forEach(function (form) {
 				user_registration_form_init();
-				form.classList.add('elementor');  // Add class to prevent reinitialization
+				form.classList.add("elementor"); // Add class to prevent reinitialization
 			});
 		});
 	});
@@ -2775,6 +3162,241 @@
 			}
 		}
 	);
+
+	$(document).on("change", ".ur-field-address-country", function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+
+		var $el = $(this);
+		var fieldId = $el.data("id");
+		var country = $el.val();
+		var stateEnable = $el.data("state-enabled");
+
+		if (!stateEnable) {
+			return;
+		}
+		var data = {
+			action: "user_registration_update_state_field",
+			security:
+				user_registration_params.user_registration_update_state_field,
+			country: country
+		};
+		var $stateWrapper = $el.siblings(
+			".ur-field-address-state-outer-wrapper"
+		);
+
+		$.ajax({
+			type: "POST",
+			url: user_registration_params.ajax_url,
+			data: data,
+			beforeSend: function () {
+				$stateWrapper.empty();
+				$stateWrapper.append('<span class="ur-front-spinner"></span>');
+			},
+			success: function (response) {
+				var $stateElement;
+
+				if (response.success && response.data.has_state && '' !== response.data.state) {
+					var $select = $('<select class="ur-field-address-state select ur-frontend-field"></select>');
+					$select.attr('name', fieldId + '_state');
+					$select.append($($.parseHTML(response.data.state, null, false)).filter('option'));
+					$stateElement = $select;
+				} else {
+					var $input = $('<input type="text" class="ur-field-address-state input-text ur-frontend-field"/>');
+					$input.attr('name', fieldId + '_state');
+					$stateElement = $input;
+				}
+
+				$( document ).find( '.ur-front-spinner' ).remove();
+
+				$stateWrapper.append($stateElement);
+				$stateElement.trigger('change');
+			}
+		});
+	});
+
+	/**
+	 * Apply tax calculation
+	 *
+	 * @param $el
+	 * @param country
+	 * @param country_change
+	 * @param $stateElement
+	 *
+	 * @since 5.0.0
+	 */
+	function apply_tax_calculation(
+		$el,
+		country,
+		country_change,
+		$stateElement
+	) {
+		var state = "";
+		var regions = user_registration_params.regions_list.regions[country];
+		var defaultRate = regions && regions.rate != null ? regions.rate : 0;
+		var membershipData = {};
+
+		if ($(document).find("#urm-membership-list").length) {
+			membershipData = getMembershipData();
+		} else {
+			membershipData.total = $('.ur-total-amount[type="hidden"]').val();
+		}
+
+		if (country_change) {
+			state = $stateElement.find("option:first").val();
+		} else {
+			state = $stateElement.val();
+		}
+
+		/**
+		 * Check if country exists in regions list
+		 * then check for states
+		 * else apply default rate
+		 */
+		if (
+			user_registration_params.regions_list.regions.hasOwnProperty(
+				country
+			)
+		) {
+			if (regions.hasOwnProperty("states") && "" !== state) {
+				var states = regions.states;
+
+				if (states.hasOwnProperty(state)) {
+					let taxRate = states[state];
+					calculate_total(membershipData, taxRate);
+				} else {
+					if (defaultRate !== undefined && defaultRate !== "") {
+						calculate_total(membershipData, defaultRate);
+					}
+				}
+			} else {
+				calculate_total(membershipData, defaultRate);
+			}
+		} else {
+			calculate_total(membershipData, defaultRate);
+		}
+		$("#ur-local-currency-switch-currency").trigger("change");
+	}
+
+	/**
+	 * Get membership data
+	 *
+	 * @returns {{}}
+	 *
+	 * @since 5.0.0
+	 */
+	function getMembershipData() {
+		var user_data = {};
+		var form_inputs = $("#ur-membership-registration").find(
+			"input.ur_membership_input_class"
+		);
+
+		form_inputs = convert_to_array(form_inputs);
+
+		form_inputs.forEach(function (item) {
+			var $this = $(item);
+
+			if ($this.attr("name") !== undefined) {
+				var name = $this.attr("name").toLowerCase().replace("urm_", "");
+				user_data[name] = $this.val();
+			}
+		});
+
+		var membership_input = $('input[name="urm_membership"]:checked');
+		user_data.membership = membership_input.val();
+		user_data.payment_method = "free";
+		user_data.total = membership_input.data("urm-pg-calculated-amount");
+		if (membership_input.data("urm-pg-type") !== "free") {
+			user_data.payment_method = $(
+				'input[name="urm_payment_method"]:checked:visible'
+			).val();
+		}
+		var date = new Date();
+		user_data.start_date =
+			date.getFullYear() +
+			"-" +
+			(date.getMonth() + 1) +
+			"-" +
+			date.getDate();
+
+		return user_data;
+	}
+
+	/**
+	 * Calculate total with tax
+	 *
+	 * @param membershipData
+	 * @param taxRate
+	 *
+	 * @since 5.0.0
+	 */
+	function calculate_total(membershipData, taxRate) {
+		var total_input = $("#ur-membership-total");
+
+		let membershipPrice = parseFloat(membershipData.total);
+		let taxAmount = 0;
+		if (user_registration_params.is_tax_calculation_activated) {
+			taxAmount = (membershipPrice * taxRate) / 100;
+		}
+		let totalPrice = membershipPrice + taxAmount;
+		let total = parseFloat(totalPrice).toFixed(2);
+
+		$(".urm-membership-tax-value")
+			.find(".ur_membership_input_label")
+			.text(taxRate + "% Tax");
+		var subTotalInput = $("#ur-membership-subtotal");
+		var taxInput = $("#ur-membership-tax");
+
+		if (total_input.length) {
+			if ("left" === user_registration_params.currency_pos) {
+				total_input.text(
+					user_registration_params.currency_symbol + total
+				);
+				subTotalInput.text(
+					user_registration_params.currency_symbol +
+						membershipPrice.toFixed(2)
+				);
+				taxInput.text(
+					user_registration_params.currency_symbol +
+						taxAmount.toFixed(2)
+				);
+			} else {
+				total_input.text(
+					total + user_registration_params.currency_symbol
+				);
+				subTotalInput.text(
+					membershipPrice.toFixed(2) +
+						user_registration_params.currency_symbol
+				);
+				taxInput.text(
+					taxAmount.toFixed(2) +
+						user_registration_params.currency_symbol
+				);
+			}
+		} else {
+			total_input = $(".ur-total-amount[type='hidden']");
+			total_input.val(total);
+			$(document).find("span.ur-total-amount").text(total);
+		}
+
+		$("#ur-tax-details").remove();
+
+		var taxDetailsInput =
+			'<input type="hidden" ' +
+			'id="ur-tax-details" ' +
+			'name="ur_tax_details" ' +
+			'data-tax-rate="' +
+			taxRate +
+			'" ' +
+			'data-tax-calculation-method="' +
+			user_registration_params.tax_calculation_method +
+			'" ' +
+			'data-total="' +
+			total +
+			'">';
+
+		total_input.after(taxDetailsInput);
+	}
 })(jQuery);
 
 function ur_includes(arr, item) {
@@ -2903,4 +3525,53 @@ function customPasswordChecks(password) {
 		return 0;
 	}
 	return 4;
+}
+
+//Shows the content restriction message if botiga theme is used.
+jQuery(document).ready(function ($) {
+	var urcrContentRestrictMsg = $(document).find(".urcr-restrict-msg");
+	if (urcrContentRestrictMsg.length > 1) {
+		urcrContentRestrictMsg.hide().first().show();
+	}
+});
+
+/**
+ * Check if hello elementor theme is active or not to resolve flatpickr design issue.
+ *
+ */
+jQuery(document).ready(function ($) {
+	//Check the hello elementor theme is active or not through its stylesheet.
+	var $isHelloElementorActive =
+		$('link#hello-elementor-css[href*="themes/hello-elementor"]').length >
+		0;
+
+	if (!$isHelloElementorActive) {
+		return;
+	}
+
+	$(document).on("focus", ".ur-flatpickr-field", function () {
+		var $input = $(this);
+
+		setTimeout(function () {
+			$(".flatpickr-calendar:visible .flatpickr-current-month").css(
+				"display",
+				"flex"
+			);
+		}, 50);
+	});
+});
+jQuery(document).ready(function ($) {
+	$(".ur-submit-button.ur-disabled-btn").on("click", function (e) {
+		e.preventDefault();
+	});
+});
+
+/**
+ * A function that converts an object to an array by taking its values, excluding the first two, and preserving the original order.
+ *
+ * @param {jQuery} $object - The jQuery object to be converted to an array.
+ * @return {Array} The array with values from the object, excluding the first two, and in the original order.
+ */
+function convert_to_array($object) {
+	return Object.values($object).reverse().slice(2).reverse();
 }

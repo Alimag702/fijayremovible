@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -28,9 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Post_Title.
  */
-class ThePlus_Syntax_Highlighter extends Widget_Base {
-
-	public $tp_doc = L_THEPLUS_TPDOC;
+class ThePlus_Syntax_Highlighter extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -59,7 +57,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa- tp-syntax-highlighter theplus_backend_icon';
+		return 'theplus-i-syntax-highlighter tpae-editor-logo';
 	}
 
 	/**
@@ -72,30 +70,14 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 		return array( 'plus-essential' );
 	}
 
-	/**      
+	/**
 	 * Get Widget keywords.
 	 *
 	 * @since 1.0.0
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Syntax Highlighter', 'code highlighter', 'code syntax', 'code editor', 'code formatting', 'code styling', 'code display', 'code snippet', 'code block' );
-	}
-
-	/**
-	 * Get Custom url.
-	 *
-	 * @since 1.0.0
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+		return array( 'Tp Syntax Highlighter', 'Code Highlighter', 'Code Syntax Highlighter', 'Highlight Code' );
 	}
 
 	/**
@@ -107,37 +89,6 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 		return false;
 	}
 
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -154,20 +105,12 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="12518" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="12518">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/elementor-syntax-highlighter/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
-				),
-                'label_block'     => true,
-            )
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 12518,
+				'label_block' => true,
+			)
 		);
 		$this->add_control(
 			'languageType',
@@ -239,6 +182,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Source Code', 'tpebl' ),
 				'type'    => Controls_Manager::CODE,
+				'ai'      => false,
 				'dynamic' => array( 'active' => true ),
 				'default' => '<h1>Welcome To Posimyth Innovation</h1>',
 			)
@@ -283,10 +227,11 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Language Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => '',
 				'placeholder' => esc_html__( 'Enter Text', 'tpebl' ),
-				'label_block' => true,
+				'label_block' => false,
 			)
 		);
 		$this->add_control(
@@ -294,10 +239,11 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Copy Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => esc_html__( 'Copy', 'tpebl' ),
 				'placeholder' => esc_html__( 'Enter Text', 'tpebl' ),
-				'label_block' => true,
+				'label_block' => false,
 				'separator'   => 'before',
 			)
 		);
@@ -317,10 +263,11 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Copied Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => esc_html__( 'Copied!', 'tpebl' ),
 				'placeholder' => esc_html__( 'Enter Text', 'tpebl' ),
-				'label_block' => true,
+				'label_block' => false,
 			)
 		);
 		$this->add_control(
@@ -339,21 +286,30 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Copy Error Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => esc_html__( 'Error', 'tpebl' ),
 				'placeholder' => esc_html__( 'Enter Text', 'tpebl' ),
-				'label_block' => true,
+				'label_block' => false,
 			)
 		);
 		$this->add_control(
 			'lineNumber',
 			array(
-				'label'     => wp_kses_post( "Line Number <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "highlight-any-specific-line-in-syntax-highlight-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
+				'label'       => esc_html__( 'Line Number', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'separator'   => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Enable this to display line numbers alongside the code.', 'tpebl' ),
+						esc_url( $this->tp_doc . 'highlight-any-specific-line-in-syntax-highlight-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn More', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
@@ -361,28 +317,38 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Line Highlight', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'dynamic'     => array( 'active' => true ),
 				'default'     => '',
 				'placeholder' => esc_html__( 'Ex: 1,2,3,4-15', 'tpebl' ),
-				'label_block' => true,
+				'label_block' => false,
 			)
 		);
 		$this->add_control(
 			'dnloadBtn',
 			array(
-				'label'     => wp_kses_post( "Download Button <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "add-download-button-in-code-highlighter-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
+				'label'       => esc_html__( 'Download Button', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'separator'   => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Enable this to allow users to download the code.', 'tpebl' ),
+						esc_url( $this->tp_doc . 'add-download-button-in-code-highlighter-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn More', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'dwnldBtnText',
 			array(
-				'label'     => esc_html__( 'Button Text', 'tpebl' ),
+				'label'     => esc_html__( 'Text', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'dynamic'   => array( 'active' => true ),
 				'default'   => esc_html__( 'Download', 'tpebl' ),
 				'condition' => array(
@@ -393,7 +359,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 		$this->add_control(
 			'dwnldBtnIcon',
 			array(
-				'label' => esc_html__( 'Button Icon', 'tpebl' ),
+				'label' => esc_html__( 'Icon', 'tpebl' ),
 				'type'  => Controls_Manager::ICONS,
 			)
 		);
@@ -415,7 +381,27 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
-
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/syntax-highlighter/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 		$this->start_controls_section(
 			'syn_scode_styling',
 			array(
@@ -890,7 +876,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			'display_scrolling_bar',
 			array(
 				'label'     => esc_html__( 'Scrolling Bar', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
+				'type'      => Controls_Manager::SWITCHER,
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
@@ -1052,10 +1038,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -1086,7 +1069,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 		$cpybtniconclass = '';
 		$dowbtniconclass = '';
 
-		$cpybtntext = ! empty( $settings['cpybtntext'] ) ? tp_senitize_js_input($settings['cpybtntext']) : '';
+		$cpybtntext = ! empty( $settings['cpybtntext'] ) ? tp_senitize_js_input( $settings['cpybtntext'] ) : '';
 
 		if ( ! empty( $settings['cpybtnicon']['value'] ) || ! empty( $settings['copiedbtnicon']['value'] ) ) {
 			$cpybtniconclass = ' tpcpicon';
@@ -1099,7 +1082,7 @@ class ThePlus_Syntax_Highlighter extends Widget_Base {
 			ob_end_clean();
 		}
 
-		$copiedbtntext = ! empty( $settings['copiedbtntext'] ) ? tp_senitize_js_input($settings['copiedbtntext']) : '';
+		$copiedbtntext = ! empty( $settings['copiedbtntext'] ) ? tp_senitize_js_input( $settings['copiedbtntext'] ) : '';
 		if ( ! empty( $settings['copiedbtnicon'] ) ) {
 			ob_start();
 			\Elementor\Icons_Manager::render_icon( $settings['copiedbtnicon'], array( 'aria-hidden' => 'true' ) );

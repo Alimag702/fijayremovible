@@ -5,7 +5,6 @@ namespace Elementor\Modules\AtomicWidgets\PropsResolver;
 use Elementor\Modules\AtomicWidgets\PropTypes\Base\Array_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Base\Object_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Contracts\Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Prop_Type_Migrator;
 use Elementor\Modules\AtomicWidgets\PropTypes\Union_Prop_Type;
 use Exception;
 
@@ -47,8 +46,6 @@ abstract class Props_Resolver {
 	}
 
 	protected function transform( $value, $key, Prop_Type $prop_type ) {
-		$value = Prop_Type_Migrator::migrate( $value, $prop_type );
-
 		if ( $prop_type instanceof Union_Prop_Type ) {
 			$prop_type = $prop_type->get_prop_type( $value['$$type'] );
 
@@ -77,10 +74,17 @@ abstract class Props_Resolver {
 				return null;
 			}
 
-			$value['value'] = array_map(
-				fn( $item ) => $this->resolve_item( $item, null, $prop_type->get_item_type() ),
-				$value['value']
-			);
+			$resolved_items = [];
+
+			foreach ( $value['value'] as $item ) {
+				$resolved = $this->resolve_item( $item, null, $prop_type->get_item_type() );
+
+				if ( null !== $resolved ) {
+					$resolved_items[] = $resolved;
+				}
+			}
+
+			$value['value'] = $resolved_items;
 		}
 
 		$transformer = $this->transformers_registry->get( $value['$$type'] );
@@ -93,8 +97,7 @@ abstract class Props_Resolver {
 			$context = Props_Resolver_Context::make()
 				->set_key( $key )
 				->set_disabled( (bool) ( $value['disabled'] ?? false ) )
-				->set_prop_type( $prop_type )
-				->set_transformers_registry( $this->transformers_registry );
+				->set_prop_type( $prop_type );
 
 			return $transformer->transform( $value['value'], $context );
 		} catch ( Exception $e ) {

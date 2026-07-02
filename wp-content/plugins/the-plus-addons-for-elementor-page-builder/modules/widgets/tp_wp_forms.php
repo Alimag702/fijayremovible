@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
@@ -24,17 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Wp_Forms
  */
-class ThePlus_Wp_Forms extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 1.0.1
-	 * @version 5.4.2
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
+class ThePlus_Wp_Forms extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -63,7 +53,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-envelope-open theplus_backend_icon';
+		return 'theplus-i-wp-forms tpae-editor-logo';
 	}
 
 	/**
@@ -83,22 +73,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'WP Forms', 'WordPress Forms', 'Form Builder', 'Elementor Forms', 'Contact Forms', 'Custom Forms', 'Drag and Drop Forms', 'Form Creator', 'Form Designer', 'Form Generator', 'Form Maker', 'Form Plugin', 'Form Widget' );
-	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+		return array( 'Tp wp forms', 'Form Style', 'Contact Form 7 Style', 'WPForms Style', 'Ninja Forms Design', 'Gravity Forms Style', 'Everest Forms Design', 'Form Design', 'Form Customization' );
 	}
 
 	/**
@@ -110,37 +85,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 		return false;
 	}
 
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -163,22 +107,17 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => '0',
 				'options' => $this->l_theplus_wpforms_forms(),
-			)
-		);
-		$this->add_control(
-			'wp_forms_notice',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i>NOTICE :- Dashboard -> WPForms -> Settings.</i></p>',
-				'label_block' => true,
-			)
-		);
-		$this->add_control(
-			'wp_forms_notice_dec',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i>Check Load Assets Globally to load form in wordpress backend.</i></p>',
-				'label_block' => true,
+				'decription' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						sprintf(
+							/* translators: 1: Opening <strong> tag, 2: Closing </strong> tag */
+							__( 'Please create your form first from %1$sDashboard → WPForms → Settings%2$s. Once the form is created, it will appear here. Also, make sure Load Assets Globally is enabled in WPForms settings so the form loads correctly in the backend and editor.', 'tpebl' ),
+							'<strong>',
+							'</strong>'
+						)
+					)
+				),
 			)
 		);
 
@@ -214,6 +153,32 @@ class ThePlus_Wp_Forms extends Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/customize-wpforms-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=fp-R1TNr4RA',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'section_s_label',
 			array(
 				'label' => esc_html__( 'Label', 'tpebl' ),
@@ -223,7 +188,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 		$this->add_responsive_control(
 			'label_padding',
 			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -315,6 +280,18 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			)
 		);
 		$this->add_responsive_control(
+			'desc_inner_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wpforms-container .wpforms-field-description' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
+			)
+		);
+		$this->add_responsive_control(
 			'desc_margin',
 			array(
 				'label'      => esc_html__( 'Margin', 'tpebl' ),
@@ -323,18 +300,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .wpforms-container .wpforms-field-description' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
-			)
-		);
-		$this->add_responsive_control(
-			'desc_inner_padding',
-			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .wpforms-container .wpforms-field-description' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator' => 'after',
 			)
 		);
 		$this->add_group_control(
@@ -408,33 +373,10 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'     => 'input_typography',
-				'selector' => '{{WRAPPER}} .wpforms-container input[type="text"],
-				{{WRAPPER}} .wpforms-container input[type="email"],
-				{{WRAPPER}} .wpforms-container input[type="number"],
-				{{WRAPPER}} .wpforms-container select',
-			)
-		);
-		$this->add_control(
-			'input_placeholder_color',
-			array(
-				'label'     => esc_html__( 'Placeholder Color', 'tpebl' ),
-				'type'      => Controls_Manager::COLOR,
-				'selectors' => array(
-					'{{WRAPPER}} .wpforms-container input::-webkit-input-placeholder,
-					{{WRAPPER}} .wpforms-container  email::-webkit-input-placeholder,
-					{{WRAPPER}} .wpforms-container  number::-webkit-input-placeholder,
-					{{WRAPPER}} .wpforms-container  select::-webkit-input-placeholder' => 'color: {{VALUE}};',
-				),
-			)
-		);
 		$this->add_responsive_control(
 			'input_inner_padding',
 			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -456,6 +398,29 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				{{WRAPPER}} .wpforms-container .wpforms-field select,{{WRAPPER}} .wpforms-container .wpforms-field-sublabel.after,{{WRAPPER}} .wpforms-container .wpforms-field-description' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'input_typography',
+				'selector' => '{{WRAPPER}} .wpforms-container input[type="text"],
+				{{WRAPPER}} .wpforms-container input[type="email"],
+				{{WRAPPER}} .wpforms-container input[type="number"],
+				{{WRAPPER}} .wpforms-container select',
+			)
+		);
+		$this->add_control(
+			'input_placeholder_color',
+			array(
+				'label'     => esc_html__( 'Placeholder Color', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .wpforms-container input::-webkit-input-placeholder,
+					{{WRAPPER}} .wpforms-container  email::-webkit-input-placeholder,
+					{{WRAPPER}} .wpforms-container  number::-webkit-input-placeholder,
+					{{WRAPPER}} .wpforms-container  select::-webkit-input-placeholder' => 'color: {{VALUE}};',
+				),
 			)
 		);
 		$this->start_controls_tabs( 'tabs_input_field_style' );
@@ -705,7 +670,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 		$this->add_responsive_control(
 			'textarea_inner_padding',
 			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -1587,6 +1552,31 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			)
 		);
 		$this->add_responsive_control(
+			'button_inner_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
+					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'button_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
+					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
+			)
+		);
+		$this->add_responsive_control(
 			'button_max_width',
 			array(
 				'type'        => Controls_Manager::SLIDER,
@@ -1609,7 +1599,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 					'{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
 					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button' => 'width: {{SIZE}}{{UNIT}}',
 				),
-				'separator'   => 'after',
 			)
 		);
 		$this->add_group_control(
@@ -1618,31 +1607,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'name'     => 'button_typography',
 				'selector' => '{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
 					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button',
-			)
-		);
-		$this->add_responsive_control(
-			'button_inner_padding',
-			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
-					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			)
-		);
-		$this->add_responsive_control(
-			'button_margin',
-			array(
-				'label'      => esc_html__( 'Margin', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} div.wpforms-container .wpforms-form button[type=submit],
-					{{WRAPPER}} div.wpforms-container .wpforms-form .wpforms-page-button' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator'  => 'after',
 			)
 		);
 		$this->start_controls_tabs( 'tabs_button_style' );
@@ -1877,6 +1841,18 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			)
 		);
 		$this->add_responsive_control(
+			'oute_r_inner_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} div.wpforms-container .wpforms-field,{{WRAPPER}} .wpforms-container .wpforms-submit-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
+			)
+		);
+		$this->add_responsive_control(
 			'oute_r_inner_margin',
 			array(
 				'label'      => esc_html__( 'Margin', 'tpebl' ),
@@ -1885,18 +1861,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} div.wpforms-container .wpforms-field,{{WRAPPER}} .wpforms-container .wpforms-submit-container' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
-			)
-		);
-		$this->add_responsive_control(
-			'oute_r_inner_padding',
-			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} div.wpforms-container .wpforms-field,{{WRAPPER}} .wpforms-container .wpforms-submit-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator'  => 'after',
 			)
 		);
 		$this->start_controls_tabs( 'tabs_oute_r' );
@@ -1996,7 +1960,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 		$this->add_responsive_control(
 			'form_cont_padding',
 			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -2118,6 +2082,18 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			)
 		);
 		$this->add_responsive_control(
+			'response_success_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .wpforms-confirmation-container-full' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
+			)
+		);
+		$this->add_responsive_control(
 			'response_success_margin',
 			array(
 				'label'      => esc_html__( 'Margin', 'tpebl' ),
@@ -2126,18 +2102,6 @@ class ThePlus_Wp_Forms extends Widget_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} .wpforms-confirmation-container-full' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
-			)
-		);
-		$this->add_responsive_control(
-			'response_success_padding',
-			array(
-				'label'      => esc_html__( 'Inner Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .wpforms-confirmation-container-full' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator'  => 'after',
 			)
 		);
 		$this->add_group_control(
@@ -2267,14 +2231,11 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			);
 			$this->end_controls_section();
 		}
-		
+
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation.php';
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -2296,7 +2257,7 @@ class ThePlus_Wp_Forms extends Widget_Base {
 			include THEPLUS_PATH . 'modules/widgets/theplus-widgets-extra.php';
 		}
 
-		$output  = '<div class="pt_plus_wpforms" ' . esc_attr( $animated_class ) . '" ' . $animation_attr . '>';
+		$output = '<div class="pt_plus_wpforms" ' . esc_attr( $animated_class ) . '" ' . $animation_attr . '>';
 
 			$output .= do_shortcode( $this->get_shortcode() );
 

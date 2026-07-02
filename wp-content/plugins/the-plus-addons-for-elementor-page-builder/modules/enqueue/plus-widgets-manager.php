@@ -59,25 +59,28 @@ class Plus_Widgets_Manager {
 		$tablet_slider_dots = isset( $options['tablet_slider_dots'] ) ? $options['tablet_slider_dots'] : 'yes';
 		$mobile_slider_dots = isset( $options['mobile_slider_dots'] ) ? $options['mobile_slider_dots'] : 'yes';
 
+		$has_dots = false;
+
 		if ( 'yes' === $sliderDots ) {
-
-			$slider_dots_style = ! empty( $options['slider_dots_style'] ) ? $options['slider_dots_style'] : 'style-1';
-
+			$slider_dots_style         = ! empty( $options['slider_dots_style'] ) ? $options['slider_dots_style'] : 'style-1';
 			$this->transient_widgets[] = 'tp-carousel-' . $slider_dots_style;
-			$this->transient_widgets[] = 'tp-carousel-style';
+
+			$has_dots = true;
 		}
 		if ( 'yes' === $tablet_slider_dots ) {
-
-			$tablet_slider_dots_style = ! empty( $options['tablet_slider_dots_style'] ) ? $options['tablet_slider_dots_style'] : 'style-1';
-
+			$tablet_slider_dots_style  = ! empty( $options['tablet_slider_dots_style'] ) ? $options['tablet_slider_dots_style'] : 'style-1';
 			$this->transient_widgets[] = 'tp-carousel-' . $tablet_slider_dots_style;
-			$this->transient_widgets[] = 'tp-carousel-style';
+
+			$has_dots = true;
 		}
 		if ( 'yes' === $mobile_slider_dots ) {
-
-			$mobile_slider_dots_style = ! empty( $options['mobile_slider_dots_style'] ) ? $options['mobile_slider_dots_style'] : 'style-1';
-
+			$mobile_slider_dots_style  = ! empty( $options['mobile_slider_dots_style'] ) ? $options['mobile_slider_dots_style'] : 'style-1';
 			$this->transient_widgets[] = 'tp-carousel-' . $mobile_slider_dots_style;
+
+			$has_dots = true;
+		}
+
+		if ( $has_dots ) {
 			$this->transient_widgets[] = 'tp-carousel-style';
 		}
 	}
@@ -91,30 +94,32 @@ class Plus_Widgets_Manager {
 	 */
 	public function tp_carousel_arrow( $options ) {
 
-		$show_arrows = isset( $options['slider_arrows'] ) ? $options['slider_arrows'] : 'no';
-
+		$show_arrows        = isset( $options['slider_arrows'] ) ? $options['slider_arrows'] : 'no';
 		$tablet_show_arrows = isset( $options['tablet_slider_arrows'] ) ? $options['tablet_slider_arrows'] : 'no';
 		$mobile_show_arrows = isset( $options['mobile_slider_arrows'] ) ? $options['mobile_slider_arrows'] : 'no';
 
+		$has_arrows = false;
+
 		if ( 'yes' === $show_arrows ) {
-
-			$slider_arrows_style = ! empty( $options['slider_arrows_style'] ) ? $options['slider_arrows_style'] : 'style-1';
-
+			$slider_arrows_style       = ! empty( $options['slider_arrows_style'] ) ? $options['slider_arrows_style'] : 'style-1';
 			$this->transient_widgets[] = 'tp-arrows-' . $slider_arrows_style;
-			$this->transient_widgets[] = 'tp-arrows-style';
+			
+			$has_arrows = true;
 		}
 		if ( 'yes' === $tablet_show_arrows ) {
-
 			$tablet_slider_arrows_style = ! empty( $options['tablet_slider_arrows_style'] ) ? $options['tablet_slider_arrows_style'] : 'style-1';
-
-			$this->transient_widgets[] = 'tp-arrows-' . $tablet_slider_arrows_style;
-			$this->transient_widgets[] = 'tp-arrows-style';
+			$this->transient_widgets[]  = 'tp-arrows-' . $tablet_slider_arrows_style;
+			
+			$has_arrows = true;
 		}
 		if ( 'yes' === $mobile_show_arrows ) {
-
 			$mobile_slider_arrows_style = ! empty( $options['mobile_slider_arrows_style'] ) ? $options['mobile_slider_arrows_style'] : 'style-1';
+			$this->transient_widgets[]  = 'tp-arrows-' . $mobile_slider_arrows_style;
+			
+			$has_arrows = true;
+		}
 
-			$this->transient_widgets[] = 'tp-arrows-' . $mobile_slider_arrows_style;
+		if ( $has_arrows ) {
 			$this->transient_widgets[] = 'tp-arrows-style';
 		}
 	}
@@ -220,6 +225,31 @@ class Plus_Widgets_Manager {
 						}
 					}
 
+					// Load assets for Elementor Pro Loop Item templates used in Loop Grid/Carousel.
+					// These templates are not theme builder locations, so the asset system
+					// must detect them here by reading the widget settings.
+					if ( ! empty( $element['widgetType'] ) && in_array( $element['widgetType'], array( 'loop-grid', 'loop-carousel' ), true ) ) {
+						$loop_template_ids = array();
+
+						if ( ! empty( $element['settings']['template_id'] ) ) {
+							$loop_template_ids[] = intval( $element['settings']['template_id'] );
+						}
+
+						if ( ! empty( $element['settings']['alternate_templates'] ) && is_array( $element['settings']['alternate_templates'] ) ) {
+							foreach ( $element['settings']['alternate_templates'] as $alt ) {
+								if ( ! empty( $alt['template_id'] ) ) {
+									$loop_template_ids[] = intval( $alt['template_id'] );
+								}
+							}
+						}
+
+						foreach ( $loop_template_ids as $loop_tpl_id ) {
+							if ( $loop_tpl_id > 0 ) {
+								l_theplus_generator()->header_init_load_data( 'post', $loop_tpl_id );
+							}
+						}
+					}
+
 					if ( ! empty( $type ) && ! is_array( $type ) ) {
 
 						if ( isset( $replace[ $type ] ) ) {
@@ -274,16 +304,41 @@ class Plus_Widgets_Manager {
 			$this->transient_widgets[] = 'plus-velocity';
 		}
 
+		if ( ! empty( $options['tp_select_scroll_global_animation'] ) ) {
+			$this->transient_widgets[] = 'plus-velocity';
+		}
+
 		if ( ! empty( $widget_name ) ) {
 
 			if ( 'tp-heading-title' === $widget_name || 'tp-button' === $widget_name || 'tp-contact-form-7' === $widget_name || 'tp-post-search' === $widget_name || 'tp-flip-box' === $widget_name || 'tp-info-box' === $widget_name || 'tp-navigation-menu-lite' === $widget_name || 'tp-tabs-tours' === $widget_name || 'tp-social-icon' === $widget_name ) {
 				$this->transient_widgets[] = 'plus-alignmnet-effect';
 			}
 
+			if('tp-adv-text-block' === $widget_name){
+				$tp_text_animation = ! empty( $options['enable_text_animation'] ) ? $options['enable_text_animation'] : '';
+				if('yes' === $tp_text_animation){
+					$this->transient_widgets[] = "tp-text-block-animation";
+				}
+			}
+			if('tp-heading-title' === $widget_name){
+				$tp_heading_animation = ! empty( $options['enable_text_animation'] ) ? $options['enable_text_animation'] : '';
+				$tp_heading_sub_animation = ! empty( $options['enable_text_animation_sub_txt'] ) ? $options['enable_text_animation_sub_txt'] : '';
+
+				if('yes' === $tp_heading_animation || 'yes' === $tp_heading_sub_animation){
+					$this->transient_widgets[] = "tp-gsap-heading-animation";
+				}
+			}
+
 			if ( 'tp-button' === $widget_name ) {
 
-				$hover_effect = ! empty( $options['btn_hover_effects'] ) ? $options['btn_hover_effects'] : '';
-				$button_style = ! empty( $options['button_style'] ) ? $options['button_style'] : 'style-1';
+				$button_type_switch = ! empty( $options['button_type_switch'] ) ? $options['button_type_switch'] : '';
+
+				if( 'global' === $button_type_switch ){
+					$button_style = 'style-8';
+				} else {
+					$hover_effect = ! empty( $options['btn_hover_effects'] ) ? $options['btn_hover_effects'] : '';
+					$button_style = ! empty( $options['button_style'] ) ? $options['button_style'] : 'style-1';
+				}
 
 				$this->tp_button_style( $button_style );
 
@@ -292,11 +347,23 @@ class Plus_Widgets_Manager {
 				}
 			}
 
+			if('tp-smooth-scroll' === $widget_name){
+				$scroll_option_type = ! empty( $options['scroll_option_type'] ) ? $options['scroll_option_type'] : 'basic';
+				if('advanced' === $scroll_option_type){
+					$this->transient_widgets[] = 'tp-smooth-scroll-lenis';
+				}
+			}
+
 			if ( 'tp-blog-listout' === $widget_name ) {
 
 				$blog_style                = ! empty( $options['style'] ) ? $options['style'] : 'style-1';
 				$this->transient_widgets[] = 'tp-bloglistout-' . $blog_style;
 				$this->transient_widgets[] = 'tp-blog-listout';
+
+				if ( ! empty( $options['display_button'] ) && 'yes' === $options['display_button'] ) {
+					$button_style = ! empty( $options['button_style'] ) ? $options['button_style'] : 'style-7';
+					$this->tp_button_style( $button_style );
+				}
 
 				$this->transient_widgets[] = $this->tpebl_layout_listing( $options );
 			}
@@ -601,6 +668,10 @@ class Plus_Widgets_Manager {
 
 				$this->tp_carousel_dots( $options );
 				$this->tp_carousel_arrow( $options );
+			}
+
+			if ( 'tp-accordion' === $widget_name || 'tp-carousel-anything' === $widget_name || 'tp-navigation-menu-lite' === $widget_name || 'tp-off-canvas' === $widget_name || 'tp-page-scroll' === $widget_name || 'tp-switcher' === $widget_name ) {
+				$this->transient_widgets[] = "tp-temp-notice";
 			}
 		}
 	}

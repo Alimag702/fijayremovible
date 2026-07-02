@@ -64,7 +64,14 @@ class Cta_Box extends Widget_Base
         if( Plugin::$instance->editor->is_edit_mode() ) {
             return false;
         }
-        $content_type       = $this->get_settings('eael_cta_title_content_type');
+
+        $settings = $this->get_data( 'settings' );
+
+        if ( empty( $settings ) || ! is_array( $settings ) ) {
+            return false;
+        }
+
+        $content_type       = sanitize_text_field( $settings['eael_cta_title_content_type'] ?? '' );
         $is_dynamic_content = 'template' === $content_type;
 
         return $is_dynamic_content;
@@ -330,7 +337,7 @@ class Cta_Box extends Widget_Base
                 'label_block' => true,
                 'default'     => esc_html__('Sample Call to Action Heading', 'essential-addons-for-elementor-lite'),
                 'dynamic'     => ['active' => true],
-                'ai'          => [ 'active' => false ],
+                'ai'          => [ 'active' => true ],
                 'condition'   => [
                     'eael_cta_enable_multi_color_title!' => 'yes',
                 ]
@@ -347,7 +354,7 @@ class Cta_Box extends Widget_Base
 				'label_block' => true,
 				'default'     => esc_html__('Title', 'essential-addons-for-elementor-lite'),
 				'dynamic'     => [ 'action' =>true ],
-				'ai'          => [ 'active' => false ],
+				'ai'          => [ 'active' => true ],
 			]
 		);
 
@@ -447,7 +454,7 @@ class Cta_Box extends Widget_Base
                     ],
                 ],
                 'ai' => [
-					'active' => false,
+					'active' => true,
 				],
             ]
         );
@@ -662,7 +669,7 @@ class Cta_Box extends Widget_Base
                 'label_block' => true,
                 'default'     => esc_html__('Click Here', 'essential-addons-for-elementor-lite'),
                 'ai'          => [
-					'active' => false,
+					'active' => true,
 				],
             ]
         );
@@ -771,7 +778,7 @@ class Cta_Box extends Widget_Base
                     'eael_cta_secondary_btn_is_show' => 'yes'
                 ),
                 'ai' => [
-					'active' => false,
+					'active' => true,
 				],
             ]
         );
@@ -2127,7 +2134,7 @@ class Cta_Box extends Widget_Base
 		        $eael_template_id = $settings['eael_primary_templates'];
 		        // WPML Compatibility
 		        if ( ! is_array( $eael_template_id ) ) {
-			        $eael_template_id = apply_filters( 'wpml_object_id', $eael_template_id, 'wp_template', true );
+			        $eael_template_id = apply_filters( 'wpml_object_id', $eael_template_id, 'wp_template', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		        }
 
 		        if ( Plugin::$instance->editor->is_edit_mode() ) {

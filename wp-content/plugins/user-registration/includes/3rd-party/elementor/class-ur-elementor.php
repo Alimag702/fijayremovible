@@ -25,7 +25,6 @@ class UR_Elementor {
 
 	/**
 	 * Initialize elementor hooks.
-	 *
 	 */
 	public function init() {
 
@@ -37,11 +36,11 @@ class UR_Elementor {
 		add_action( 'elementor/elements/categories_registered', array( $this, 'ur_elementor_widget_categories' ) );
 		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'editor_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_widget_styles' ) );
+		add_action( 'elementor/preview/enqueue_styles', array( $this, 'preview_assets' ) );
 	}
 
 	/**
 	 * Register User Registration forms Widget.
-	 *
 	 */
 	public function register_widget() {
 			// Include Widget files.
@@ -57,27 +56,31 @@ class UR_Elementor {
 			ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_Edit_Profile() );
 			ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_Edit_Password() );
 
+			// include if membership module is active
+		if ( function_exists( 'ur_check_module_activation' ) && ur_check_module_activation( 'membership' ) ) {
+			require_once UR_ABSPATH . 'includes/3rd-party/elementor/widgets/class-ur-widgets-membership-listing.php';
+			ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_Membership_Listing() );
+		}
 
-			//include if pro version
-			if(is_plugin_active('user-registration-pro/user-registration.php')){
-				require_once UR_ABSPATH . 'includes/3rd-party/elementor/widgets/class-ur-widgets-profile-details.php';
-				require_once UR_ABSPATH . 'includes/3rd-party/elementor/widgets/class-ur-widgets-popup.php';
-				ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_View_Details() );
-				ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_Popup() );
-			}
+			// include if pro version
+		if ( is_plugin_active( 'user-registration-pro/user-registration.php' ) ) {
+			require_once UR_ABSPATH . 'includes/3rd-party/elementor/widgets/class-ur-widgets-profile-details.php';
+			require_once UR_ABSPATH . 'includes/3rd-party/elementor/widgets/class-ur-widgets-popup.php';
+			ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_View_Details() );
+			ElementorPlugin::instance()->widgets_manager->register( new UR_Elementor_Widget_Popup() );
+		}
 	}
 
 	/**
 	 * Custom Widgets Category.
 	 *
 	 * @param object $elements_manager Elementor elements manager.
-	 *
 	 */
 	public function ur_elementor_widget_categories( $elements_manager ) {
 		$elements_manager->add_category(
 			'user-registration',
 			array(
-				'title' => esc_html__( 'User Registration', 'user-registration' ),
+				'title' => esc_html__( 'User Registration & Membership', 'user-registration' ),
 				'icon'  => 'fa fa-plug',
 			)
 		);
@@ -88,10 +91,15 @@ class UR_Elementor {
 	 */
 	public function editor_assets() {
 		wp_register_style( 'user-registration-admin', UR()->plugin_url() . '/assets/css/admin.css', array(), UR()->version );
-		wp_register_style( 'user-registration-my-account', UR()->plugin_url() . '/assets/css/my-account-layout.css', array( ), UR()->version );
+		wp_register_style( 'user-registration-my-account', UR()->plugin_url() . '/assets/css/my-account-layout.css', array(), UR()->version );
 
 		wp_enqueue_style( 'user-registration-admin' );
 		wp_enqueue_style( 'user-registration-my-account' );
+
+		if ( function_exists( 'ur_check_module_activation' ) && ur_check_module_activation( 'membership' ) ) {
+			wp_register_style( 'user-registration-membership-frontend-style', UR()->plugin_url() . '/assets/css/modules/membership/user-registration-membership-frontend.css', array(), UR()->version );
+			wp_enqueue_style( 'user-registration-membership-frontend-style' );
+		}
 	}
 
 	/**
@@ -100,6 +108,23 @@ class UR_Elementor {
 	public function register_widget_styles() {
 		wp_register_style( 'user-registration-general', UR()->plugin_url() . '/assets/css/user-registration.css', array(), UR()->version );
 		wp_enqueue_style( 'user-registration-general' );
+	}
+
+	/**
+	 * Enqueue membership styles in Elementor preview iframe.
+	 */
+	public function preview_assets() {
+		if ( ! function_exists( 'ur_check_module_activation' ) || ! ur_check_module_activation( 'membership' ) ) {
+			return;
+		}
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_register_style( 'user-registration-membership-frontend-style', UR()->plugin_url() . '/assets/css/modules/membership/user-registration-membership-frontend.css', array(), UR()->version );
+		wp_enqueue_style( 'user-registration-membership-frontend-style' );
+
+		wp_register_script( 'user-registration-membership-frontend-script', UR()->plugin_url() . '/assets/js/modules/membership/frontend/user-registration-membership-frontend' . $suffix . '.js', array( 'jquery' ), UR()->version, true );
+		wp_enqueue_script( 'user-registration-membership-frontend-script' );
 	}
 }
 

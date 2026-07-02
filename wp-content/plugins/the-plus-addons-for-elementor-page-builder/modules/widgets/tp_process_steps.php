@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Tp_Shape_Divider.
  */
-class L_ThePlus_Process_Steps extends Widget_Base {
+class L_ThePlus_Process_Steps extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -39,14 +39,6 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 	public function get_name() {
 		return 'tp-process-steps';
 	}
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
-
 	/**
 	 * Get Widget Title.
 	 *
@@ -64,7 +56,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-ellipsis-h theplus_backend_icon';
+		return 'theplus-i-process-steps tpae-editor-logo';
 	}
 
 	/**
@@ -74,7 +66,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-creatives' );
+		return array( 'plus-creative' );
 	}
 
 	/**
@@ -84,20 +76,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Process', 'Steps', 'Procedure', 'Method', 'Workflow', 'Sequence', 'Order', 'Stages', 'Phases', 'Actions', 'Tasks', 'Activities', 'Operation', 'Protocol', 'Technique', 'Approach', 'System', 'Plan', 'Strategy', 'Path', 'Route', 'Formula', 'Algorithm', 'Blueprint', 'Roadmap' );
+		return array( 'Tp Process Steps', 'Step-by-Step Flow', 'Horizontal Steps', 'Vertical Steps', 'Numbered Steps', 'Icon Steps', 'Image Steps', 'Lottie Steps', 'Interactive Process Steps', 'Custom Process Steps' );
 	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
-	}
-
 	/**
 	 * It is use for widget add in catch or not.
 	 *
@@ -105,40 +85,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 	 */
 	public function is_dynamic_content(): bool {
 		return false;
-	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
-	/**
+	}	/**
 	 * Register controls.
 	 *
 	 * @since 3.0.0
@@ -150,31 +97,45 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$this->start_controls_section(
 			'section_process_steps',
 			array(
-				'label' => esc_html__( 'Process/Steps', 'tpebl' ),
+				'label' => esc_html__( 'Layout', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 		$this->add_control(
 			'ps_style',
 			array(
-				'label'   => esc_html__( 'Style', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'style_1',
-				'options' => array(
-					'style_1' => esc_html__( 'Vertical', 'tpebl' ),
-					'style_2' => esc_html__( 'Horizontal', 'tpebl' ),
+				'label'       => esc_html__( 'Style', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'style_1',
+				'options'     => array(
+					'style_1' => array(
+						'title' => esc_html__( 'Vertical', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/process-step/vertical.svg' ),
+					),
+					'style_2' => array(
+						'title' => esc_html__( 'Horizontal', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/widget-style/process-step/horizontal.svg' ),
+					),
 				),
+				'columns'     => 2,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_control(
 			'pro_ste_display_counter',
 			array(
-				'label'     => esc_html__( 'Display Counter', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
+				'label'       => esc_html__( 'Display Counter', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Show or hide a counter indicator for each item.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
@@ -202,9 +163,9 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'pro_ste_display_special_bg',
 			array(
 				'label'     => esc_html__( 'Special Background', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 			)
@@ -213,9 +174,9 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'pro_ste_display_info_box',
 			array(
 				'label'     => esc_html__( 'Normal Layout In Mobile', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 				'condition' => array(
@@ -288,10 +249,10 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$this->add_control(
 			'default_active',
 			array(
-				'label'   => esc_html__( 'Default Active', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => '0',
-				'options' => array(
+				'label'       => esc_html__( 'Default Active', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '0',
+				'options'     => array(
 					'0'      => esc_html__( '1', 'tpebl' ),
 					'1'      => esc_html__( '2', 'tpebl' ),
 					'2'      => esc_html__( '3', 'tpebl' ),
@@ -305,13 +266,19 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 					'50'     => esc_html__( 'None', 'tpebl' ),
 					'custom' => esc_html__( 'Custom', 'tpebl' ),
 				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Choose which item should be active or highlighted by default when the page loads.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'default_active_custom',
 			array(
 				'label'     => esc_html__( 'Custom', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'type'      => Controls_Manager::NUMBER,
 				'min'       => 1,
 				'max'       => 100,
 				'step'      => 1,
@@ -323,12 +290,21 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 				),
 			)
 		);
+		$this->end_controls_section();
+		$this->start_controls_section(
+			'content_section',
+			array(
+				'label' => esc_html__( 'Content', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
 		$repeater = new \Elementor\Repeater();
 		$repeater->add_control(
 			'loop_title',
 			array(
 				'label'   => esc_html__( 'Title', 'tpebl' ),
 				'type'    => Controls_Manager::TEXT,
+				'ai'      => false,
 				'default' => esc_html__( 'The Plus', 'tpebl' ),
 				'dynamic' => array( 'active' => true ),
 			)
@@ -338,18 +314,18 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Description', 'tpebl' ),
 				'type'    => Controls_Manager::WYSIWYG,
+				'ai'      => false,
 				'default' => esc_html__( 'I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'tpebl' ),
 			)
 		);
 		$repeater->add_control(
 			'loop_image_icon',
 			array(
-				'label'       => esc_html__( 'Select Icon', 'tpebl' ),
-				'type'        => Controls_Manager::SELECT,
-				'description' => esc_html__( 'You can select Icon, Custom Image or Text using this option.', 'tpebl' ),
-				'default'     => 'icon',
-				'separator'   => 'before',
-				'options'     => array(
+				'label'     => esc_html__( 'Select Icon', 'tpebl' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'icon',
+				'separator' => 'before',
+				'options'   => array(
 					''       => esc_html__( 'None', 'tpebl' ),
 					'icon'   => esc_html__( 'Icon', 'tpebl' ),
 					'image'  => esc_html__( 'Image', 'tpebl' ),
@@ -456,6 +432,22 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			)
 		);
 		$repeater->add_control(
+			'icon_fs_popover_toggle',
+			array(
+				'label'        => esc_html__( 'Font Awesome', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+				'condition'    => array(
+					'loop_image_icon' => 'icon',
+					'loop_icon_style' => 'font_awesome',
+				),
+			)
+		);
+		$repeater->start_popover();
+		$repeater->add_control(
 			'loop_icon_fontawesome',
 			array(
 				'label'     => esc_html__( 'Icon Library', 'tpebl' ),
@@ -470,14 +462,13 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 				),
 			)
 		);
+		$repeater->end_popover();
 		$repeater->add_control(
 			'icons_mind_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'loop_icon_style' => 'icon_mind',
 				),
@@ -499,9 +490,9 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'loop_icn_link',
 			array(
 				'label'     => esc_html__( 'Icon Link', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 			)
 		);
@@ -524,8 +515,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$repeater->add_control(
 			'sep_pre_ste_background_n_head',
 			array(
-				'label'     => 'Normal Background Option',
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'label'     => esc_html__( 'Normal Background Option', 'tpebl' ),
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -540,8 +531,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$repeater->add_control(
 			'sep_pre_ste_background_h_head',
 			array(
-				'label'     => 'Hover Background Option',
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'label'     => esc_html__( 'Hover Background Option', 'tpebl' ),
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -557,8 +548,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$repeater->add_control(
 			'dis_counter_custom_text_head',
 			array(
-				'label'     => 'Display Counter Custom Text',
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'label'     => esc_html__( 'Display Counter Custom Text', 'tpebl' ),
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -567,6 +558,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Custom Text', 'tpebl' ),
 				'type'    => Controls_Manager::TEXT,
+				'ai'      => false,
 				'default' => esc_html__( 'Step', 'tpebl' ),
 				'dynamic' => array( 'active' => true ),
 			)
@@ -587,7 +579,6 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 						'loop_title' => 'The Plus 3',
 					),
 				),
-				'separator'   => 'before',
 				'fields'      => $repeater->get_controls(),
 				'title_field' => '{{{ loop_title }}}',
 			)
@@ -596,23 +587,53 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'connection_switch',
 			array(
 				'label'     => esc_html__( 'Carousel Anything Connection', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this option to connect the process steps with the Carousel Anything widget, allowing to connect each step with a slide for detailed and clearer user experience.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'carousel_pro_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 				'condition'   => array(
 					'connection_switch' => 'yes',
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/process-steps/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=3ude_wxrqVo',
+					),
 				),
 			)
 		);
@@ -732,14 +753,6 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
-
-		$this->add_control(
-			'tab_icon_heading',
-			array(
-				'label' => esc_html__( 'Icon Options', 'tpebl' ),
-				'type'  => \Elementor\Controls_Manager::HEADING,
-			)
-		);
 		$this->add_responsive_control(
 			'tab_icon_size',
 			array(
@@ -805,7 +818,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'tab_image_heading',
 			array(
 				'label'     => esc_html__( 'Image Options', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -845,7 +858,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'tab_text_heading',
 			array(
 				'label'     => esc_html__( 'Text Options', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -904,7 +917,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			'tab_bg_heading',
 			array(
 				'label'     => esc_html__( 'Background Options', 'tpebl' ),
-				'type'      => \Elementor\Controls_Manager::HEADING,
+				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
 			)
 		);
@@ -1077,6 +1090,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Transform CSS', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'rotate(10deg) scale(1.1)', 'tpebl' ),
 				'selectors'   => array(
@@ -1109,6 +1123,7 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Transform CSS', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'rotate(10deg) scale(1.1)', 'tpebl' ),
 				'selectors'   => array(
@@ -1261,8 +1276,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Loop Animation', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'separator' => 'before',
 			)
@@ -1272,8 +1287,8 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Hover Animation', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 			)
@@ -1965,18 +1980,14 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 		$this->add_control(
 			'animation_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
 			)
 		);
 		$this->end_controls_section();
 
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-
 	}
 
 	/**
@@ -2087,7 +2098,12 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 						$loop_img_src1 = '';
 						if ( ! empty( $item['loop_select_image']['url'] ) ) {
 							$loop_select_image = $item['loop_select_image']['id'];
-							$loop_img_src1     = tp_get_image_rander( $loop_select_image, $item['thumbnail_size'], array( 'class' => 'tp-icon-img' ) );
+							if ( ! empty( $loop_select_image ) ) {
+								$loop_img_src1 = tp_get_image_rander( $loop_select_image, $item['thumbnail_size'], array( 'class' => 'tp-icon-img' ) );
+							} else {
+								$image_alt     = ! empty( $item['loop_select_image']['alt'] ) ? $item['loop_select_image']['alt'] : '';
+								$loop_img_src1 = '<img src="' . esc_url( $item['loop_select_image']['url'] ) . '" class="tp-icon-img" alt="' . esc_attr( $image_alt ) . '">';
+							}
 						}
 
 						$list_img = '<div class="tp-ps-icon-img tp-pro-step-icon-img" >' . $loop_img_src1 . '</div>';
@@ -2150,7 +2166,12 @@ class L_ThePlus_Process_Steps extends Widget_Base {
 				if ( ! empty( $settings['seprator_border_style_n'] ) && 'border_img_custom' === $settings['seprator_border_style_n'] ) {
 					if ( ! empty( $settings['seprator_cusom_img']['url'] ) ) {
 						$seprator_cusom_img = $settings['seprator_cusom_img']['id'];
-						$sepimg1            = tp_get_image_rander( $seprator_cusom_img, 'full', array( 'class' => 'tp-sep-custom-img-inner' ) );
+						if ( ! empty( $seprator_cusom_img ) ) {
+							$sepimg1 = tp_get_image_rander( $seprator_cusom_img, 'full', array( 'class' => 'tp-sep-custom-img-inner' ) );
+						} else {
+							$image_alt = ! empty( $settings['seprator_cusom_img']['alt'] ) ? $settings['seprator_cusom_img']['alt'] : '';
+							$sepimg1   = '<img src="' . esc_url( $settings['seprator_cusom_img']['url'] ) . '" class="tp-sep-custom-img-inner" alt="' . esc_attr( $image_alt ) . '">';
+						}
 						$dis_sep_custom_img = '<span class="separator_custom_img">' . $sepimg1 . '</span>';
 					}
 				}

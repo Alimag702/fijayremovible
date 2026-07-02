@@ -147,7 +147,11 @@ class UR_Logger implements UR_Logger_Interface {
 	 */
 	public function log( $level, $message, $context = array() ) {
 
-		if ( isset( $context['source'])  && $context['source'] !== 'fatal-errors' && ! ur_option_checked( 'user_registration_enable_log', false ) )  {
+		if (
+		isset( $context['source'] )
+		&& ! in_array( $context['source'], array( 'fatal-errors', 'ur_mail_logs' ), true )
+		&& ! ur_option_checked( 'user_registration_enable_log', false )
+		) {
 			return false;
 		}
 
@@ -269,6 +273,21 @@ class UR_Logger implements UR_Logger_Interface {
 	 */
 	public function notice( $message, $context = array() ) {
 		$this->log( UR_Log_Levels::NOTICE, $message, $context );
+	}
+
+	/**
+	 * Adds a success level message.
+	 *
+	 * Successful operation completion.
+	 * Example: Payment processed successfully, upgrade completed.
+	 *
+	 * @see UR_Logger::log
+	 *
+	 * @param string $message Message.
+	 * @param array  $context Context.
+	 */
+	public function success( $message, $context = array() ) {
+		$this->log( UR_Log_Levels::SUCCESS, $message, $context );
 	}
 
 	/**

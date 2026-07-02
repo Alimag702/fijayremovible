@@ -4,24 +4,28 @@ declare(strict_types=1);
 
 namespace ReallySimplePlugins\RSS\Core\Features\Onboarding;
 
-use ReallySimplePlugins\RSS\Core\Bootstrap\App;
 use ReallySimplePlugins\RSS\Core\Services\CertificateService;
 use ReallySimplePlugins\RSS\Core\Services\RelatedPluginService;
 use ReallySimplePlugins\RSS\Core\Services\SettingsConfigService;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\UriConfig;
 
 class OnboardingStepsGenerator
 {
     public array $steps = [];
     private bool $proPluginEnabled;
 
-    private App $app;
     private RelatedPluginService $pluginService;
     private SettingsConfigService $settingsService;
     private CertificateService $certificateService;
+    private UriConfig $uriConfig;
 
-    public function __construct(App $app, RelatedPluginService $pluginService, SettingsConfigService $settingsService, CertificateService $certificateService)
-    {
-        $this->app = $app;
+    public function __construct(
+        RelatedPluginService $pluginService,
+        SettingsConfigService $settingsService,
+        CertificateService $certificateService,
+        UriConfig $uriConfig
+    ) {
+        $this->uriConfig = $uriConfig;
         $this->pluginService = $pluginService;
         $this->settingsService = $settingsService;
         $this->certificateService = $certificateService;
@@ -29,30 +33,30 @@ class OnboardingStepsGenerator
         $this->proPluginEnabled = defined('rsssl_pro');
     }
 
-	public function generate(bool $isUpgradeFromFree = false): array
-	{
-		if ($isUpgradeFromFree) {
-			$steps = [
-				$this->activateLicenseStep(),
-				$this->proStep(),
-			];
-		} else {
-			$steps = [
-				$this->activateSslStep(),
-				$this->emailStep(),
-				$this->essentialFeaturesStep(),
-				$this->activateLicenseStep(),
-				$this->relatedPluginsStep(),
-				$this->proStep(),
-			];
-		}
+    public function generate(bool $isUpgradeFromFree = false): array
+    {
+        if ($isUpgradeFromFree) {
+            $steps = [
+                $this->activateLicenseStep(),
+                $this->proStep(),
+            ];
+        } else {
+            $steps = [
+                $this->activateSslStep(),
+                $this->emailStep(),
+                $this->essentialFeaturesStep(),
+                $this->activateLicenseStep(),
+                $this->relatedPluginsStep(),
+                $this->proStep(),
+            ];
+        }
 
-		// Remove empty steps
-		$steps = array_filter($steps);
+        // Remove empty steps
+        $steps = array_filter($steps);
 
-		// Re-order keys to prevent issues after array_filter
-		return array_values($steps);
-	}
+        // Re-order keys to prevent issues after array_filter
+        return array_values($steps);
+    }
 
     /**
      * The activate SSL step include items related to SSL detection and
@@ -141,10 +145,10 @@ class OnboardingStepsGenerator
 
         if ($this->proPluginEnabled === false) {
             $subtitle .= ' ' . sprintf(
-                    wp_kses_post(__('Please %sconsider upgrading to Pro%s to enjoy all simple and performant security features.', 'really-simple-ssl')),
-                    '<a href="' . $this->app->config->getUrl('uri.rsp.upgrade_from_free') . '" target="_blank">',
-                    '</a>'
-                );
+                wp_kses_post(__('Please %sconsider upgrading to Pro%s to enjoy all simple and performant security features.', 'really-simple-ssl')),
+                '<a href="' . $this->uriConfig->getUrl('rsp.upgrade_from_free') . '" target="_blank">',
+                '</a>'
+            );
         }
 
         // If pro is not enabled we do some upselling with premium features

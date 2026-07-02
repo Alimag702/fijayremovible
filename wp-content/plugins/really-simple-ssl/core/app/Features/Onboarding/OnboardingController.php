@@ -1,32 +1,42 @@
 <?php
+
 namespace ReallySimplePlugins\RSS\Core\Features\Onboarding;
 
-use ReallySimplePlugins\RSS\Core\Traits\HasNonces;
 use ReallySimplePlugins\RSS\Core\Bootstrap\App;
-use ReallySimplePlugins\RSS\Core\Services\EmailService;
-use ReallySimplePlugins\RSS\Core\Support\Helpers\Storage;
+use ReallySimplePlugins\RSS\Core\Interfaces\DoActionInterface;
 use ReallySimplePlugins\RSS\Core\Interfaces\FeatureInterface;
 use ReallySimplePlugins\RSS\Core\Services\CertificateService;
-use ReallySimplePlugins\RSS\Core\Services\SecureSocketsService;
-use ReallySimplePlugins\RSS\Core\Support\Utility\StringUtility;
+use ReallySimplePlugins\RSS\Core\Services\EmailService;
 use ReallySimplePlugins\RSS\Core\Services\RelatedPluginService;
+use ReallySimplePlugins\RSS\Core\Services\SecureSocketsService;
 use ReallySimplePlugins\RSS\Core\Services\SettingsConfigService;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storage;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\EnvironmentConfig;
+use ReallySimplePlugins\RSS\Core\Support\Utility\StringUtility;
+use ReallySimplePlugins\RSS\Core\Traits\HasNonces;
 
-class OnboardingController implements FeatureInterface
+class OnboardingController implements FeatureInterface, DoActionInterface
 {
     use HasNonces;
 
-    private App $app;
     private EmailService $emailService;
     private OnboardingFeatureService $service;
     private SecureSocketsService $sslService;
     private RelatedPluginService $pluginService;
     private SettingsConfigService $settingsService;
     private CertificateService $certificateService;
+    private EnvironmentConfig $env;
 
-    public function __construct(App $app, OnboardingFeatureService $service, SecureSocketsService $sslService, EmailService $emailService, RelatedPluginService $pluginService, SettingsConfigService $settingsService, CertificateService $certificateService)
-    {
-        $this->app = $app;
+    public function __construct(
+        OnboardingFeatureService $service,
+        SecureSocketsService $sslService,
+        EmailService $emailService,
+        RelatedPluginService $pluginService,
+        SettingsConfigService $settingsService,
+        CertificateService $certificateService,
+        EnvironmentConfig $environmentConfig
+    ) {
+        $this->env = $environmentConfig;
         $this->service = $service;
         $this->sslService = $sslService;
         $this->emailService = $emailService;
@@ -38,8 +48,8 @@ class OnboardingController implements FeatureInterface
     public function register(): void
     {
         add_filter('rsssl_run_test', [$this, 'processOnboardingTest'], 10, 3);
-        add_filter('rsssl_do_action', [$this, 'processOnboardingAction'], 10, 3);
-        add_action($this->app->config->getString('env.onboarding.queue_event'), [$this, 'processQueuedEvent']);
+        add_filter('rsssl_do_action', [$this, 'rssslDoAction'], 10, 3);
+        add_action($this->env->getString('onboarding.queue_event'), [$this, 'processQueuedEvent']);
     }
 
     /**
@@ -49,7 +59,7 @@ class OnboardingController implements FeatureInterface
      */
     public function processOnboardingTest(array $response, string $action, array $data)
     {
-        switch($action) {
+        switch ($action) {
             case 'activate_ssl':
                 $data['is_rest_request'] = true;
                 $response = $this->sslService->activateSSL($data);
@@ -76,7 +86,7 @@ class OnboardingController implements FeatureInterface
      * @uses processUpdateEmailAction, processActivateAction
      * @uses processDownloadAction
      */
-    public function processOnboardingAction(array $response, string $action, array $data): array
+    public function rssslDoAction(array $response, string $action, $data): array
     {
         $actionableMethod = 'process' . StringUtility::snakeToPascalCase($action) . 'Action';
 
@@ -143,15 +153,15 @@ class OnboardingController implements FeatureInterface
             $this->onActivateSslClick();
         }
 
-	    // For an upgrade from free, we should check the rsssl_free_deactivated
-	    // option. When upgrading from Pro from Free, rsssl_deactivate_alternate
-	    // is called in the Free plugin. Therefore, we have to check this option.
-	    // This is not something we can easily change, because the free plugin has
-	    // to be updated before we can check this in Pro.
-	    $isUpgradeFromFree = get_option('rsssl_free_deactivated');
-	    delete_option('rsssl_free_deactivated');
+        // For an upgrade from free, we should check the rsssl_free_deactivated
+        // option. When upgrading from Pro from Free, rsssl_deactivate_alternate
+        // is called in the Free plugin. Therefore, we have to check this option.
+        // This is not something we can easily change, because the free plugin has
+        // to be updated before we can check this in Pro.
+        $isUpgradeFromFree = get_option('rsssl_free_deactivated');
+        delete_option('rsssl_free_deactivated');
 
-        $stepsGenerator = $this->app->make(OnboardingStepsGenerator::class);
+        $stepsGenerator = App::getInstance()->make(OnboardingStepsGenerator::class);
         $onboardingSteps = $stepsGenerator->generate($isUpgradeFromFree);
 
         //if the user called with a refresh action, clear the cache
@@ -212,7 +222,7 @@ class OnboardingController implements FeatureInterface
         }
 
         return [
-            'success'=> $success
+            'success' => $success
         ];
     }
 
@@ -312,5 +322,4 @@ class OnboardingController implements FeatureInterface
         $this->service->updateQueuedItems($queuedItems);
         $this->service->cleanupQueuedItems();
     }
-
 }

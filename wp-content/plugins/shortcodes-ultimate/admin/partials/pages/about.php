@@ -25,7 +25,7 @@
 					<svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill="currentcolor" d="m16 0c8.831 0 16 7.169 16 16s-7.169 16-16 16-16-7.169-16-16 7.169-16 16-16zm-4 20.5c0 .501.273.962.712 1.203s.974.224 1.397-.045c2.049-1.304 5.128-3.263 7.072-4.5.396-.252.635-.689.635-1.158s-.239-.906-.635-1.158c-1.944-1.237-5.023-3.196-7.072-4.5-.423-.269-.958-.286-1.397-.045s-.712.702-.712 1.203z"/></svg>
 					<span><?php esc_html_e( 'See the plugin in action', 'shortcodes-ultimate' ); ?></span>
 				</button>
-				<iframe class="su-admin-about-getting-started-video-iframe su-admin-u-hidden" id="su-admin-about-getting-started-video-iframe" src="https://player.vimeo.com/video/507942335?color=0073D7&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+				<iframe class="su-admin-about-getting-started-video-iframe su-admin-u-hidden" id="su-admin-about-getting-started-video-iframe" width="560" height="315" src="https://www.youtube.com/embed/74j34_QjvJk?si=-zE5mbMHbezJGQCh&vq=hd1080" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 			</div>
 		</div>
 
@@ -55,16 +55,15 @@
 					<h2><?php esc_html_e( 'Upgrade to PRO', 'shortcodes-ultimate' ); ?></h2>
 					<div class="su-admin-about-upgrade-features-list">
 						<ul>
-							<li><?php esc_html_e( 'Parallax Section shortcode', 'shortcodes-ultimate' ); ?></li>
-							<li><?php esc_html_e( 'Custom PHP shortcodes', 'shortcodes-ultimate' ); ?></li>
-							<li><?php esc_html_e( 'Content Slider shortcode', 'shortcodes-ultimate' ); ?></li>
+							<li><?php esc_html_e( 'Elementor support', 'shortcodes-ultimate' ); ?></li>
 							<li><?php esc_html_e( 'Personal email support', 'shortcodes-ultimate' ); ?></li>
+							<li><?php esc_html_e( 'Parallax Section shortcode', 'shortcodes-ultimate' ); ?></li>
+							<li><?php esc_html_e( 'Content Slider shortcode', 'shortcodes-ultimate' ); ?></li>
 							<li><?php esc_html_e( 'Testimonail shortcode', 'shortcodes-ultimate' ); ?></li>
-							<li><?php esc_html_e( '24 styles for Heading', 'shortcodes-ultimate' ); ?></li>
 							<li><?php esc_html_e( 'Progress Bar shortcode', 'shortcodes-ultimate' ); ?></li>
-							<li><?php esc_html_e( '14 styles for Spoiler', 'shortcodes-ultimate' ); ?></li>
 							<li><?php esc_html_e( 'Exit Popup shortcode', 'shortcodes-ultimate' ); ?></li>
-							<li><?php esc_html_e( '13 styles for Tabs', 'shortcodes-ultimate' ); ?></li>
+							<li><?php esc_html_e( 'Custom HTML & PHP shortcodes', 'shortcodes-ultimate' ); ?></li>
+							<li><?php esc_html_e( 'Over 50 additional styles for selected shortcodes', 'shortcodes-ultimate' ); ?></li>
 						</ul>
 					</div>
 				</div>
@@ -72,7 +71,7 @@
 					<div class="su-admin-about-upgrade-buy-pricing">
 						<div class="su-admin-about-upgrade-buy-pricing-price">
 							<span class="su-admin-about-upgrade-buy-pricing-currency">$</span>
-							<span class="su-admin-about-upgrade-buy-pricing-value">39</span>
+							<span class="su-admin-about-upgrade-buy-pricing-value">49</span>
 						</div>
 						<div class="su-admin-about-upgrade-buy-pricing-period"><?php esc_html_e( 'per year', 'shortcodes-ultimate' ); ?></div>
 					</div>

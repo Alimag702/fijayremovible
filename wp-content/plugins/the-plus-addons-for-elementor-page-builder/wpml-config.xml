@@ -566,6 +566,33 @@
                 <field type="Page Scroll : Previous Button Text" editor_type="LINE">prev_txt</field>
             </fields>
         </widget>
+		<widget name="tp-plus-form">
+            <fields>
+                <field>form_title</field>
+                <field>tabs</field>
+                <field>button_submit</field>
+                <field>email_subject</field>
+                <field>email_heading</field>
+                <field>email_message</field>
+                <field>success_message</field>
+                <field>required_fields</field>
+                <field>invalid_form</field>
+                <field>form_error</field>
+                <field>server_error</field>
+                <field>email_to</field>
+                <field>email_from</field>
+                <field>email_from_name</field>
+                <field>email_reply_to</field>
+                <field>form_title_display</field>
+            </fields>
+            <fields-in-item items_of="tabs">
+                <field>field_label</field>
+                <field>place_holder</field>
+                <field>dropdown_options</field>
+                <field>field_help</field>
+                <field>field_ad</field>
+            </fields-in-item>
+        </widget>
 		<widget name="tp-post-author">
             <conditions>
                 <condition key="widgetType">tp-post-author</condition>

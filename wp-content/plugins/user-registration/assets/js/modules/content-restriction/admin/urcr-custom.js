@@ -4,7 +4,8 @@ jQuery(document).ready(function () {
 	$multipleSelect.select2({
 		dropdownAutoWidth: true,
 		containerCss: { display: 'block' },
-		width: '20%'
+		width: '20%',
+		minimumResultsForSearch: -1
 	});
 
 	var $metaOverride = jQuery('#urcr_meta_override_global_settings'),
@@ -12,16 +13,19 @@ jQuery(document).ready(function () {
 		$allowToField = jQuery('.urcr_allow_to_field'),
 		$rolesField = jQuery('.urcr_meta_roles_field'),
 		$membershipsField = jQuery('.urcr_meta_memberships_field');
+		$restrictedMessage = jQuery('.urcr_meta_content_field');
 
 	// Function to toggle visibility based on global override checkbox
 	function toggleGlobalOverride() {
 		if ($metaOverride.is(':checked')) {
 			$allowToField.show();
+			$restrictedMessage.show();
 			toggleFieldsBasedOnAllowTo();
 		} else {
 			$allowToField.hide();
 			$rolesField.hide();
 			$membershipsField.hide();
+			$restrictedMessage.hide();
 		}
 	}
 
@@ -43,7 +47,8 @@ jQuery(document).ready(function () {
 	$allowTo.on('change', toggleFieldsBasedOnAllowTo);
 
 	// Initial Setup on Page Load
-	jQuery(window).on('load', toggleGlobalOverride);
+	// jQuery(window).on('load', toggleGlobalOverride);
+	toggleGlobalOverride();
 
 	// Content Restriction Section
 	var $allowAccessTo = jQuery('#user_registration_content_restriction_allow_access_to');

@@ -8,6 +8,10 @@
  * @package    ThePlus
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! class_exists( 'Tp_Form_Handler' ) ) {
 
 	/**
@@ -50,34 +54,33 @@ if ( ! class_exists( 'Tp_Form_Handler' ) ) {
 
 			ob_start();
 
-			$email_data = isset( $_POST['email_data'] ) ? wp_unslash( $_POST['email_data'] ) : '';
+			$email_data = isset( $_POST['email_data'] ) ? sanitize_text_field( wp_unslash( $_POST['email_data'] ) ) : '';
 			if ( empty( $email_data ) ) {
-				ob_get_contents();
-				exit;
 				ob_end_clean();
+				exit;
 			}
 
-			$email_data = L_tp_plus_simple_decrypt( sanitize_text_field( $email_data ), 'dy' );
-			$email_data = json_decode( $email_data, true );
+			$email_data = L_tp_plus_simple_decrypt( $email_data, 'dy' );
+			$email_data = is_string( $email_data ) ? json_decode( $email_data, true ) : null;
 			if ( ! is_array( $email_data ) ) {
-				ob_get_contents();
-				exit;
 				ob_end_clean();
+				exit;
 			}
 
-			$security_nonce = $email_data['nonce'];
-
-			$nonce = isset( $security_nonce ) ? sanitize_text_field( wp_unslash( $security_nonce ) ) : '';
+			$nonce = isset( $email_data['nonce'] ) ? sanitize_text_field( $email_data['nonce'] ) : '';
 			if ( ! wp_verify_nonce( $nonce, 'tp-form-nonce' ) ) {
 				$result['message'] = 'Nonce verification failed.';
 				wp_send_json( $result );
 			}
 
-			$form_data_json = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
-			$form_data      = json_decode( $form_data_json, true );
+			$form_data_raw = isset( $_POST['form_data'] ) ? wp_unslash( $_POST['form_data'] ) : '';
+			$form_data     = is_string( $form_data_raw ) ? json_decode( $form_data_raw, true ) : null;
+			if ( ! is_array( $form_data ) ) {
+				$form_data = array();
+			}
 
-			$form_fields_json = isset( $_POST['form_fields'] ) ? sanitize_text_field( wp_unslash( $_POST['form_fields'] ) ) : '';
-			$form_fields      = json_decode( $form_fields_json, true );
+			$form_fields_raw = isset( $_POST['form_fields'] ) ? wp_unslash( $_POST['form_fields'] ) : '';
+			$form_fields     = is_string( $form_fields_raw ) ? json_decode( $form_fields_raw, true ) : null;
 
 			if ( ! isset( $form_fields ) || ! is_array( $form_fields ) ) {
 				$result['message'] = 'form_fields data is missing or not an array.';
@@ -97,8 +100,18 @@ if ( ! class_exists( 'Tp_Form_Handler' ) ) {
 
 			$redirection = ! empty( $email_data['redirection'] ) ? $email_data['redirection'] : null;
 
-			$redirection_url         = isset( $redirection['url'] ) ? $redirection['url'] : '';
+			$redirection_url         = isset( $redirection['url'] ) ? esc_url_raw( $redirection['url'] ) : '';
 			$is_external_redirection = isset( $redirection['is_external'] ) ? $redirection['is_external'] : false;
+
+			// Block dangerous schemes and bound same-site redirects to the current host.
+			if ( '' !== $redirection_url ) {
+				$scheme = strtolower( (string) wp_parse_url( $redirection_url, PHP_URL_SCHEME ) );
+				if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
+					$redirection_url = '';
+				} elseif ( empty( $is_external_redirection ) ) {
+					$redirection_url = wp_validate_redirect( $redirection_url, '' );
+				}
+			}
 
 			$email_sent = false;
 

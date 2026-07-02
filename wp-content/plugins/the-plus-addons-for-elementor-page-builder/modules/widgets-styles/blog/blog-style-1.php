@@ -53,6 +53,11 @@ if ( 'metro' === $layout ) {
 				}
 				?>
 			</div>
+			<?php
+			if ( 'metro' === $layout && 'yes' === $display_btn && ! empty( $the_button ) ) {
+				echo $the_button;
+			}
+			?>
 		</div>
 		<?php
 		if ( 'metro' === $layout ) {

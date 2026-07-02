@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -28,17 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Hovercard
  */
-class ThePlus_Hovercard extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 1.0.0
-	 * @version 5.4.2
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
+class ThePlus_Hovercard extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -60,14 +50,14 @@ class ThePlus_Hovercard extends Widget_Base {
 		return esc_html__( 'Hover Card', 'tpebl' );
 	}
 
-    /**
+	/**
 	 * Get Widget Icon.
 	 *
 	 * @since 1.0.0
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-square theplus_backend_icon';
+		return 'theplus-i-hover-card tpae-editor-logo';
 	}
 
 	/**
@@ -77,7 +67,7 @@ class ThePlus_Hovercard extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-creatives' );
+		return array( 'plus-creative' );
 	}
 
 	/**
@@ -87,23 +77,7 @@ class ThePlus_Hovercard extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Hover card', 'Card hover', 'Card on hover', 'Elementor hover card', ' Elementor card hover', 'Elementor card on hover' );
-	}
-
-	/**
-	 * Get Widget Custom Help Url.
-	 *
-	 * @since 1.0.0
-	 * @version 6.1.0
-	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+		return array( 'Tp Hover Card', 'Interactive Card', 'Animated Hover Card', 'Custom Hover Layout', 'Responsive Hover Card', 'Customizable Card' );
 	}
 
 	/**
@@ -114,38 +88,7 @@ class ThePlus_Hovercard extends Widget_Base {
 	public function is_dynamic_content(): bool {
 		return false;
 	}
-	
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
 
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -162,22 +105,13 @@ class ThePlus_Hovercard extends Widget_Base {
 			)
 		);
 		$this->add_control(
-            'smart-preset-button',
-            array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-                    '<div class="tpae-preset-main-raw-main">
-                        <a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="17376" target="_blank" rel="noopener noreferrer">%s</a>
-                        <a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="17376">%s</a>
-                    </div>',
-                    esc_url('https://theplusaddons.com/widgets/advanced-elementor-hover-card/'),
-                    esc_html__('Live Demo', 'tpebl'),
-                    esc_html__('Import Presets', 'tpebl')
-                ),
-                'label_block'     => true,
-            )
-        );
-
+			'tpae_preset_controller',
+			array(
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 17376,
+				'label_block' => true,
+			)
+		);
 		$repeater = new \Elementor\Repeater();
 		$repeater->start_controls_tabs( 'tabs_tag_open_close' );
 
@@ -190,10 +124,10 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'open_tag',
 			array(
-				'label'   => esc_html__( 'Open Tag', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'div',
-				'options' => array(
+				'label'       => esc_html__( 'Open Tag', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'div',
+				'options'     => array(
 					'div'  => esc_html__( 'Div', 'tpebl' ),
 					'span' => esc_html__( 'Span', 'tpebl' ),
 					'h1'   => esc_html__( 'H1', 'tpebl' ),
@@ -206,6 +140,12 @@ class ThePlus_Hovercard extends Widget_Base {
 					'p'    => esc_html__( 'p', 'tpebl' ),
 					'a'    => esc_html__( 'a', 'tpebl' ),
 					'none' => esc_html__( 'None', 'tpebl' ),
+				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Select the HTML tag to wrap the hover card content.', 'tpebl' )
+					)
 				),
 			)
 		);
@@ -227,11 +167,17 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'open_tag_class',
 			array(
-				'label'     => esc_html__( 'Enter Class', 'tpebl' ),
-				'type'      => Controls_Manager::TEXT,
-				'default'   => '',
-				'dynamic'   => array( 'active' => true ),
-				'condition' => array(
+				'label'       => esc_html__( 'Enter Class', 'tpebl' ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => '',
+				'dynamic'     => array( 'active' => true ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Add a custom CSS class to style or target this hover card.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -246,10 +192,10 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'close_tag',
 			array(
-				'label'   => esc_html__( 'Close Tag', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'close',
-				'options' => array(
+				'label'       => esc_html__( 'Close Tag', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'close',
+				'options'     => array(
 					'close' => esc_html__( 'Default', 'tpebl' ),
 					'div'   => esc_html__( 'Div', 'tpebl' ),
 					'span'  => esc_html__( 'Span', 'tpebl' ),
@@ -264,6 +210,12 @@ class ThePlus_Hovercard extends Widget_Base {
 					'a'     => esc_html__( 'a', 'tpebl' ),
 					'none'  => esc_html__( 'None', 'tpebl' ),
 				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Select how the HTML closing tag should be applied.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$repeater->end_controls_tab();
@@ -272,10 +224,10 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'content_tag',
 			array(
-				'type'      => Controls_Manager::SELECT,
-				'label'     => esc_html__( 'Content', 'tpebl' ),
-				'default'   => 'none',
-				'options'   => array(
+				'type'        => Controls_Manager::SELECT,
+				'label'       => esc_html__( 'Content', 'tpebl' ),
+				'default'     => 'none',
+				'options'     => array(
 					'none'   => esc_html__( 'None', 'tpebl' ),
 					'text'   => esc_html__( 'Text', 'tpebl' ),
 					'image'  => esc_html__( 'Image', 'tpebl' ),
@@ -283,15 +235,24 @@ class ThePlus_Hovercard extends Widget_Base {
 					'style'  => esc_html__( 'Style', 'tpebl' ),
 					'script' => esc_html__( 'Script', 'tpebl' ),
 				),
-				'separator' => 'before',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Choose the content type to display inside the hover card.', 'tpebl' )
+					)
+				),
+				'separator'   => 'before',
 			)
 		);
 		$repeater->add_control(
 			'text_content',
 			array(
-				'label'     => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-					esc_html__( 'Text', 'tpebl' ),
-					esc_url( $this->tp_doc . 'use-text-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Text', 'tpebl' ),
+						esc_url( $this->tp_doc . 'use-text-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
 				),
 				'type'      => Controls_Manager::TEXTAREA,
 				'dynamic'   => array( 'active' => true ),
@@ -320,9 +281,12 @@ class ThePlus_Hovercard extends Widget_Base {
 			'media_content',
 			array(
 				'type'      => Controls_Manager::MEDIA,
-				'label'   => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-					esc_html__( 'Media', 'tpebl' ),
-					esc_url( $this->tp_doc . 'use-image-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Media', 'tpebl' ),
+						esc_url( $this->tp_doc . 'use-image-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
 				),
 				'dynamic'   => array( 'active' => true ),
 				'default'   => array(
@@ -336,9 +300,12 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'html_content',
 			array(
-				'label'     => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-					esc_html__( 'HTML Content', 'tpebl' ),
-					esc_url( $this->tp_doc . 'use-html-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'HTML Content', 'tpebl' ),
+						esc_url( $this->tp_doc . 'use-html-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
 				),
 				'type'      => Controls_Manager::WYSIWYG,
 				'default'   => esc_html__( 'I am text block. Click edit button to change this text.', 'tpebl' ),
@@ -351,9 +318,12 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'style_content',
 			array(
-				'label'     => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-					esc_html__( 'Custom Style', 'tpebl' ),
-					esc_url( $this->tp_doc . 'use-style-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Custom Style', 'tpebl' ),
+						esc_url( $this->tp_doc . 'use-style-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
 				),
 				'type'      => Controls_Manager::TEXTAREA,
 				'dynamic'   => array( 'active' => true ),
@@ -366,9 +336,12 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'script_content',
 			array(
-				'label'     => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-					esc_html__( 'Custom Script', 'tpebl' ),
-					esc_url( $this->tp_doc . 'use-script-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Custom Script', 'tpebl' ),
+						esc_url( $this->tp_doc . 'use-script-content-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
 				),
 				'type'      => Controls_Manager::TEXTAREA,
 				'dynamic'   => array( 'active' => true ),
@@ -379,14 +352,19 @@ class ThePlus_Hovercard extends Widget_Base {
 			)
 		);
 
-		if( ! tp_senitize_role( 'unfiltered_html' ) ){
+		if ( ! tp_senitize_role( 'unfiltered_html' ) ) {
 			$repeater->add_control(
 				'script_c_notice',
 				array(
 					'type'        => Controls_Manager::RAW_HTML,
-					'raw'         => '<p class="tp-controller-notice"><i>You are not a admin user so <b>Custom Script</b> option dose not work for you tell your admin to give you rights.</i></p>',
+					'raw'         => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s </i></p>',
+							esc_html__( 'You are not a admin user so <b>Custom Script</b> option dose not work for you tell your admin to give you rights.', 'tpebl' ),
+						)
+					),
 					'label_block' => true,
-					'condition' => array(
+					'condition'   => array(
 						'content_tag' => 'script',
 					),
 				)
@@ -407,17 +385,23 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'position',
 			array(
-				'type'      => Controls_Manager::SELECT,
-				'label'     => esc_html__( 'Position', 'tpebl' ),
-				'default'   => 'relative',
-				'options'   => array(
+				'type'        => Controls_Manager::SELECT,
+				'label'       => esc_html__( 'Position', 'tpebl' ),
+				'default'     => 'relative',
+				'options'     => array(
 					'relative' => esc_html__( 'Relative', 'tpebl' ),
 					'absolute' => esc_html__( 'Absolute', 'tpebl' ),
 				),
-				'selectors' => array(
+				'selectors'   => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}}' => 'position: {{VALUE}}',
 				),
-				'condition' => array(
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Set how the hover card is positioned relative to other elements.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -425,10 +409,10 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'display',
 			array(
-				'type'      => Controls_Manager::SELECT,
-				'label'     => esc_html__( 'Display', 'tpebl' ),
-				'default'   => 'initial',
-				'options'   => array(
+				'type'        => Controls_Manager::SELECT,
+				'label'       => esc_html__( 'Display', 'tpebl' ),
+				'default'     => 'initial',
+				'options'     => array(
 					'block'        => esc_html__( 'Block', 'tpebl' ),
 					'inline-block' => esc_html__( 'Inline Block', 'tpebl' ),
 					'flex'         => esc_html__( 'Flex', 'tpebl' ),
@@ -436,10 +420,16 @@ class ThePlus_Hovercard extends Widget_Base {
 					'initial'      => esc_html__( 'Initial', 'tpebl' ),
 					'inherit'      => esc_html__( 'Inherit', 'tpebl' ),
 				),
-				'selectors' => array(
+				'selectors'   => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} ' => 'display: {{VALUE}}',
 				),
-				'condition' => array(
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Control how the hover card is displayed.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -451,10 +441,10 @@ class ThePlus_Hovercard extends Widget_Base {
 				'label'     => esc_html__( 'Flex Direction', 'tpebl' ),
 				'default'   => 'unset',
 				'options'   => array(
-					'column'         => esc_html__( 'column', 'tpebl' ),
-					'column-reverse' => esc_html__( 'column-reverse', 'tpebl' ),
-					'row'            => esc_html__( 'row', 'tpebl' ),
-					'unset'          => esc_html__( 'unset', 'tpebl' ),
+					'column'         => esc_html__( 'Column', 'tpebl' ),
+					'column-reverse' => esc_html__( 'Column Reverse', 'tpebl' ),
+					'row'            => esc_html__( 'Row', 'tpebl' ),
+					'unset'          => esc_html__( 'Unset', 'tpebl' ),
 				),
 				'selectors' => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} ' => 'flex-direction: {{VALUE}}',
@@ -468,12 +458,18 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'display_alignmet_opt',
 			array(
-				'label'     => esc_html__( 'Alignment CSS Options', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'condition' => array(
+				'label'       => esc_html__( 'Alignment CSS Options', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'default'     => 'no',
+				'label_on'    => esc_html__( 'Enable', 'tpebl' ),
+				'label_off'   => esc_html__( 'Disable', 'tpebl' ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Enable alignment controls using CSS.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -752,12 +748,18 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'width_height',
 			array(
-				'label'     => esc_html__( 'Width/Height Options', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'condition' => array(
+				'label'       => esc_html__( 'Width/Height Options', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'default'     => 'no',
+				'label_on'    => esc_html__( 'Enable', 'tpebl' ),
+				'label_off'   => esc_html__( 'Disable', 'tpebl' ),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Enable custom width and height controls.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -911,6 +913,12 @@ class ThePlus_Hovercard extends Widget_Base {
 				'selectors'   => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} ' => 'z-index: {{SIZE}};',
 				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Control the stacking order of the hover card.', 'tpebl' )
+					)
+				),
 				'condition'   => array(
 					'open_tag!' => 'none',
 				),
@@ -919,17 +927,23 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'overflow',
 			array(
-				'label'     => esc_html__( 'Overflow', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'visible',
-				'options'   => array(
+				'label'       => esc_html__( 'Overflow', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'visible',
+				'options'     => array(
 					'hidden'  => esc_html__( 'Hidden', 'tpebl' ),
 					'visible' => esc_html__( 'Visible', 'tpebl' ),
 				),
-				'selectors' => array(
+				'selectors'   => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} ' => 'overflow:{{VALUE}} !important;',
 				),
-				'condition' => array(
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Define how content behaves when it overflows the container.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -937,18 +951,24 @@ class ThePlus_Hovercard extends Widget_Base {
 		$repeater->add_control(
 			'visibility',
 			array(
-				'label'     => esc_html__( 'Visibility', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'unset',
-				'options'   => array(
+				'label'       => esc_html__( 'Visibility', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'unset',
+				'options'     => array(
 					'unset'   => esc_html__( 'Unset', 'tpebl' ),
 					'hidden'  => esc_html__( 'Hidden', 'tpebl' ),
 					'visible' => esc_html__( 'Visible', 'tpebl' ),
 				),
-				'selectors' => array(
+				'selectors'   => array(
 					'{{WRAPPER}} {{CURRENT_ITEM}} ' => 'visibility:{{VALUE}} !important;',
 				),
-				'condition' => array(
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s </i></p>',
+						esc_html__( 'Control when the hover card is visible.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'open_tag!' => 'none',
 				),
 			)
@@ -1115,9 +1135,12 @@ class ThePlus_Hovercard extends Widget_Base {
 			$repeater->add_control(
 				'cst_hover',
 				array(
-					'label'     => sprintf( '%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
-						esc_html__( 'Custom Hover', 'tpebl' ),
-						esc_url( $this->tp_doc . 'add-hover-effect-with-custom-hover-class-in-elementor-hover-card/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					'label'     => wp_kses_post(
+						sprintf(
+							'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+							esc_html__( 'Custom Hover', 'tpebl' ),
+							esc_url( $this->tp_doc . 'add-hover-effect-with-custom-hover-class-in-elementor-hover-card/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+						)
 					),
 					'type'      => Controls_Manager::SWITCHER,
 					'default'   => 'no',
@@ -2730,10 +2753,12 @@ class ThePlus_Hovercard extends Widget_Base {
 		$this->add_control(
 			'how_it_works',
 			array(
-				// 'label' => wp_kses_post( "<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "create-custom-layout-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> Learn How it works  <i class='eicon-help-o'></i> </a>" ),
-				'label' => sprintf( '<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s <i class="eicon-help-o"></i></a>',
-					esc_url( $this->tp_doc . 'create-custom-layout-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
-					esc_html__( 'Learn How it works', 'tpebl' )
+				'label' => wp_kses_post(
+					sprintf(
+						'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s <i class="eicon-help-o"></i></a>',
+						esc_url( $this->tp_doc . 'create-custom-layout-with-hover-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn How it works', 'tpebl' )
+					)
 				),
 				'type'  => Controls_Manager::HEADING,
 			)
@@ -2748,12 +2773,34 @@ class ThePlus_Hovercard extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/hover-card/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => esc_html__( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=wRZlRe_H5_U',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -2789,7 +2836,7 @@ class ThePlus_Hovercard extends Widget_Base {
 		foreach ( $hover_cnt as $item ) {
 
 			$open_tag = '';
-			if ( ! empty( $item['open_tag'] ) && $item['open_tag'] != 'none' ) {
+			if ( ! empty( $item['open_tag'] ) && $item['open_tag'] !== 'none' ) {
 				$open_tag = l_theplus_validate_html_tag( $item['open_tag'] );
 
 				$this->add_render_attribute( 'loop_attr' . $i, 'class', 'elementor-repeater-item-' . $item['_id'] );
@@ -2800,9 +2847,9 @@ class ThePlus_Hovercard extends Widget_Base {
 			if ( ! empty( $item['open_tag_class'] ) ) {
 				$this->add_render_attribute( 'loop_attr' . $i, 'class', $item['open_tag_class'] );
 			}
-			if ( $item['content_tag'] == 'image' && ! empty( $item['media_content']['url'] ) ) {
+			if ( $item['content_tag'] === 'image' && ! empty( $item['media_content']['url'] ) ) {
 				$img_bg_cls = '';
-				if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] == 'background' ) {
+				if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] === 'background' ) {
 					$img_bg_cls = ' image-tag-hide';
 				}
 				$this->add_render_attribute( 'loop_attr_img' . $i, 'class', 'elementor-repeater-item-' . $item['_id'] . '.loop-inner' . $img_bg_cls );
@@ -2810,14 +2857,14 @@ class ThePlus_Hovercard extends Widget_Base {
 
 			$close_tag = '';
 
-			if ( ! empty( $item['close_tag'] ) && $item['close_tag'] == 'close' ) {
+			if ( ! empty( $item['close_tag'] ) && $item['close_tag'] === 'close' ) {
 				$close_tag = l_theplus_validate_html_tag( $open_tag );
-			} elseif ( ! empty( $item['close_tag'] ) && $item['close_tag'] != 'close' && $item['close_tag'] != 'none' ) {
+			} elseif ( ! empty( $item['close_tag'] ) && $item['close_tag'] !== 'close' && $item['close_tag'] !== 'none' ) {
 				$close_tag = l_theplus_validate_html_tag( $item['close_tag'] );
 			}
 
 			/*a link*/
-			if ( ! empty( $item['open_tag'] ) && $item['open_tag'] == 'a' ) {
+			if ( ! empty( $item['open_tag'] ) && $item['open_tag'] === 'a' ) {
 				if ( ! empty( $item['a_link']['url'] ) ) {
 					$this->add_render_attribute( 'loop_attr' . $i, 'href', esc_url( $item['a_link']['url'] ) );
 					if ( $item['a_link']['is_external'] ) {
@@ -2836,34 +2883,38 @@ class ThePlus_Hovercard extends Widget_Base {
 			/*Open Tag end*/
 
 			/*content start*/
-			if ( ! empty( $item['content_tag'] ) && $item['content_tag'] != 'none' ) {
-				if ( $item['content_tag'] == 'text' && ! empty( $item['text_content'] ) ) {
+			if ( ! empty( $item['content_tag'] ) && $item['content_tag'] !== 'none' ) {
+				if ( $item['content_tag'] === 'text' && ! empty( $item['text_content'] ) ) {
 					$loopitem .= wp_kses_post( $item['text_content'] );
 				}
 
-				if ( $item['content_tag'] == 'image' && ! empty( $item['media_content']['url'] ) ) {
-					if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] == 'background' ) {
+				if ( $item['content_tag'] === 'image' && ! empty( $item['media_content']['url'] ) ) {
+					if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] === 'background' ) {
 						$loopitem .= '<div class="tp-image-as-background" style="background-image:url(' . esc_url( $item['media_content']['url'] ) . ')"></div>';
 					} else {
 						$loopitem .= '<img ' . $this->get_render_attribute_string( 'loop_attr_img' . $i ) . ' src="' . esc_url( $item['media_content']['url'] ) . '" />';
 					}
 				}
 
-				if ( $item['content_tag'] == 'html' && ! empty( $item['html_content'] ) ) {
+				if ( $item['content_tag'] === 'html' && ! empty( $item['html_content'] ) ) {
 					$loopitem .= wp_kses_post( $item['html_content'] );
 				}
-				if ( $item['content_tag'] == 'style' && ! empty( $item['style_content'] ) ) {
-					$loopitem .= '<style>' . esc_attr( $item['style_content'] ) . '</style>';
+				if ( $item['content_tag'] === 'style' && ! empty( $item['style_content'] ) ) {
+					if ( current_user_can( 'manage_options' ) ) {
+						$sanitized_style = preg_replace( '#</\s*(style|script)#i', '<\\/\\1', (string) $item['style_content'] );
+						$loopitem       .= '<style>' . $sanitized_style . '</style>';
+					}
 				}
-				if ( $item['content_tag'] == 'script' && ! empty( $item['script_content'] ) ) {
-					$loopitem .= wp_print_inline_script_tag( $item['script_content'] );
+				if ( $item['content_tag'] === 'script' && ! empty( $item['script_content'] ) ) {
+					$sanitized_script = current_user_can( 'manage_options' ) ? wp_kses_post( $item['script_content'] ) : '';
+					$loopitem        .= wp_print_inline_script_tag( $sanitized_script );
 				}
 			}
 
 			/*content start*/
 
 			/*Close Tag start*/
-			if ( ! empty( $item['close_tag'] ) && $item['close_tag'] != 'none' ) {
+			if ( ! empty( $item['close_tag'] ) && $item['close_tag'] !== 'none' ) {
 				$loopitem .= '</' . l_theplus_validate_html_tag( $close_tag ) . '>';
 			}
 			/*Close Tag end*/
@@ -2917,26 +2968,26 @@ class ThePlus_Hovercard extends Widget_Base {
 
 			/*style tag for hover start*/
 			$get_ele_pre = '';
-			if ( ( ! empty( $item['cst_hover'] ) && $item['cst_hover'] == 'yes' ) || ( ! empty( $item['cst_text_hover'] ) && $item['cst_text_hover'] == 'yes' ) || ( ! empty( $item['cst_image_hover'] ) && $item['cst_image_hover'] == 'yes' ) ) {
+			if ( ( ! empty( $item['cst_hover'] ) && $item['cst_hover'] === 'yes' ) || ( ! empty( $item['cst_text_hover'] ) && $item['cst_text_hover'] === 'yes' ) || ( ! empty( $item['cst_image_hover'] ) && $item['cst_image_hover'] === 'yes' ) ) {
 
 				$get_ele_pre = '.elementor-element' . $this->get_unique_selector() . ' ' . esc_attr( $item['cst_hover_class'] ) . ':hover .elementor-repeater-item-' . esc_attr( $item['_id'] );
 
 				if ( ! empty( $item['cst_hover_class'] ) ) {
-					if ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] == 'solid' ) {
+					if ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] === 'solid' ) {
 						if ( ! empty( $item['b_color_solid'] ) ) {
 							$loopcss .= esc_attr( $get_ele_pre ) . '{background-color:' . esc_attr( $item['b_color_solid'] ) . ' !important;}';
 						}
-					} elseif ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] == 'gradient' ) {
-						if ( ! empty( $item['b_gradient_style'] ) && $item['b_gradient_style'] == 'linear' ) {
+					} elseif ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] === 'gradient' ) {
+						if ( ! empty( $item['b_gradient_style'] ) && $item['b_gradient_style'] === 'linear' ) {
 							if ( ! empty( $item['b_gradient_color1'] ) && ! empty( $item['b_gradient_color2'] ) ) {
 								$loopcss .= esc_attr( $get_ele_pre ) . '{background-image: linear-gradient(' . esc_attr( $item['b_gradient_angle']['size'] ) . esc_attr( $item['b_gradient_angle']['unit'] ) . ', ' . esc_attr( $item['b_gradient_color1'] ) . ' ' . esc_attr( $item['b_gradient_color1_control']['size'] ) . esc_attr( $item['b_gradient_color1_control']['unit'] ) . ', ' . esc_attr( $item['b_gradient_color2'] ) . ' ' . esc_attr( $item['b_gradient_color2_control']['size'] ) . esc_attr( $item['b_gradient_color2_control']['unit'] ) . ') !important}';
 							}
-						} elseif ( ! empty( $item['b_gradient_style'] ) && $item['b_gradient_style'] == 'radial' ) {
+						} elseif ( ! empty( $item['b_gradient_style'] ) && $item['b_gradient_style'] === 'radial' ) {
 							if ( ! empty( $item['b_gradient_color1'] ) && ! empty( $item['b_gradient_color2'] ) ) {
 								$loopcss .= esc_attr( $get_ele_pre ) . '{background-image: radial-gradient(at ' . esc_attr( $item['b_gradient_position'] ) . ', ' . esc_attr( $item['b_gradient_color1'] ) . ' ' . esc_attr( $item['b_gradient_color1_control']['size'] ) . esc_attr( $item['b_gradient_color1_control']['unit'] ) . ', ' . esc_attr( $item['b_gradient_color2'] ) . ' ' . esc_attr( $item['b_gradient_color2_control']['size'] ) . esc_attr( $item['b_gradient_color2_control']['unit'] ) . ') !important}';
 							}
 						}
-					} elseif ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] == 'image' ) {
+					} elseif ( ! empty( $item['b_color_option'] ) && $item['b_color_option'] === 'image' ) {
 						if ( ! empty( $item['b_h_image']['url'] ) ) {
 							$loopcss .= esc_attr( $get_ele_pre ) . '{background-image:url(' . esc_url( $item['b_h_image']['url'] ) . ') !important;background-position:' . esc_attr( $item['b_h_image_position'] ) . ' !important;background-attachment:' . esc_attr( $item['b_h_image_attach'] ) . ' !important;background-repeat:' . esc_attr( $item['b_h_image_repeat'] ) . ' !important;background-size:' . esc_attr( $item['b_h_image_size'] ) . ' !important;}';
 						}
@@ -2952,7 +3003,7 @@ class ThePlus_Hovercard extends Widget_Base {
 						}
 					}
 
-					if ( ! empty( $item['box_shadow_hover_cst'] ) && $item['box_shadow_hover_cst'] == 'yes' ) {
+					if ( ! empty( $item['box_shadow_hover_cst'] ) && $item['box_shadow_hover_cst'] === 'yes' ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . '{box-shadow: ' . esc_attr( $item['box_shadow_horizontal']['size'] ) . 'px ' . esc_attr( $item['box_shadow_vertical']['size'] ) . 'px ' . esc_attr( $item['box_shadow_blur']['size'] ) . 'px ' . esc_attr( $item['box_shadow_spread']['size'] ) . 'px ' . esc_attr( $item['box_shadow_color'] ) . ' !important;}';
 					}
 
@@ -2962,7 +3013,7 @@ class ThePlus_Hovercard extends Widget_Base {
 					if ( ! empty( $item['transform_hover_cst'] ) ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . '{ transform: ' . esc_attr( $item['transform_hover_cst'] ) . ' !important;-ms-transform: ' . esc_attr( $item['transform_hover_cst'] ) . ' !important;-moz-transform:' . esc_attr( $item['transform_hover_cst'] ) . ' !important;-webkit-transform: ' . esc_attr( $item['transform_hover_cst'] ) . ' !important;}';
 					}
-					if ( ! empty( $item['css_filter_hover_cst'] ) && $item['css_filter_hover_cst'] == 'yes' ) {
+					if ( ! empty( $item['css_filter_hover_cst'] ) && $item['css_filter_hover_cst'] === 'yes' ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . '{filter:brightness( ' . esc_attr( $item['css_filter_brightness']['size'] ) . '% ) contrast( ' . esc_attr( $item['css_filter_contrast']['size'] ) . '% ) saturate( ' . esc_attr( $item['css_filter_saturation']['size'] ) . '% ) blur( ' . esc_attr( $item['css_filter_blur']['size'] ) . 'px ) hue-rotate( ' . esc_attr( $item['css_filter_hue']['size'] ) . 'deg ) !important}';
 					}
 					if ( ! empty( $item['opacity_hover_cst']['size'] ) ) {
@@ -2989,20 +3040,20 @@ class ThePlus_Hovercard extends Widget_Base {
 							$loopcss .= esc_attr( $get_ele_pre ) . ' img{border-radius: ' . esc_attr( $item['image_h_border_radius']['top'] ) . esc_attr( $item['image_h_border_radius']['unit'] ) . ' ' . esc_attr( $item['image_h_border_radius']['right'] ) . esc_attr( $item['image_h_border_radius']['unit'] ) . ' ' . esc_attr( $item['image_h_border_radius']['bottom'] ) . esc_attr( $item['image_h_border_radius']['unit'] ) . ' ' . esc_attr( $item['image_h_border_radius']['left'] ) . esc_attr( $item['image_h_border_radius']['unit'] ) . ' !important;}';
 						}
 					}
-					if ( ! empty( $item['image_box_shadow_hover_cst'] ) && $item['image_box_shadow_hover_cst'] == 'yes' ) {
+					if ( ! empty( $item['image_box_shadow_hover_cst'] ) && $item['image_box_shadow_hover_cst'] === 'yes' ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . ' img{box-shadow: ' . esc_attr( $item['image_box_shadow_horizontal']['size'] ) . 'px ' . esc_attr( $item['image_box_shadow_vertical']['size'] ) . 'px ' . esc_attr( $item['image_box_shadow_blur']['size'] ) . 'px ' . esc_attr( $item['image_box_shadow_spread']['size'] ) . 'px ' . esc_attr( $item['image_box_shadow_color'] ) . ' !important;}';
 					}
 					if ( ! empty( $item['image_opacity_hover_cst']['size'] ) ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . ' img{ opacity: ' . esc_attr( $item['image_opacity_hover_cst']['size'] ) . ' !important;}';
 					}
-					if ( ! empty( $item['image_css_filter_hover_cst'] ) && $item['image_css_filter_hover_cst'] == 'yes' ) {
+					if ( ! empty( $item['image_css_filter_hover_cst'] ) && $item['image_css_filter_hover_cst'] === 'yes' ) {
 						$loopcss .= esc_attr( $get_ele_pre ) . ' img{filter:brightness( ' . esc_attr( $item['image_css_filter_brightness']['size'] ) . '% ) contrast( ' . esc_attr( $item['image_css_filter_contrast']['size'] ) . '% ) saturate( ' . esc_attr( $item['image_css_filter_saturation']['size'] ) . '% ) blur( ' . esc_attr( $item['image_css_filter_blur']['size'] ) . 'px ) hue-rotate( ' . esc_attr( $item['image_css_filter_hue']['size'] ) . 'deg ) !important}';
 					}
 				}
 			}
 
 			/*style tag for hover end*/
-			if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] == 'background' ) {
+			if ( ! empty( $item['content_tag_image_opt'] ) && $item['content_tag_image_opt'] === 'background' ) {
 				$loopcss .= '.tp-image-as-background{position:absolute;display:block;width:100%;height:100%;background-size:cover;}';
 			}
 
@@ -3021,5 +3072,4 @@ class ThePlus_Hovercard extends Widget_Base {
 
 	protected function content_template() {
 	}
-
 }

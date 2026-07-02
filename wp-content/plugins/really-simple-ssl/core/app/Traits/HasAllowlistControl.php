@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace ReallySimplePlugins\RSS\Core\Traits;
 
 use ReallySimplePlugins\RSS\Core\Bootstrap\App;
+use ReallySimplePlugins\RSS\Core\Support\Helpers\Storages\EnvironmentConfig;
 
 trait HasAllowlistControl
 {
-
     /**
      * Check if the current code execution allows access to the admin area.
      * This is the case when:
@@ -21,7 +21,7 @@ trait HasAllowlistControl
      */
     public function adminAccessAllowed(): bool
     {
-        $wpcli = defined( 'WP_CLI' ) && WP_CLI;
+        $wpcli = defined('WP_CLI') && WP_CLI;
         $currentUserCanVisitAdmin = ((is_admin() || is_network_admin()) && current_user_can('manage_security'));
 
         return $currentUserCanVisitAdmin || $this->restRequestIsAllowed() || wp_doing_cron() || $wpcli;
@@ -45,7 +45,8 @@ trait HasAllowlistControl
      */
     public function restRequestIsAllowed(): bool
     {
-        $pluginNamespace = App::config()->getString('env.http.namespace');
+        $env = App::getInstance()->get(EnvironmentConfig::class);
+        $pluginNamespace = $env->getString('http.namespace');
 
         $validWpJsonRequest = (
             isset($_SERVER['REQUEST_URI'])

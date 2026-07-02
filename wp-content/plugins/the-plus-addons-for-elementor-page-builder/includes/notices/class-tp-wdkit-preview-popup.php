@@ -101,7 +101,6 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 			add_action( 'wp_ajax_tp_install_wdkit', array( $this, 'tp_install_wdkit' ) );
 
 			add_action( 'wp_ajax_tp_dont_show_again', array( $this, 'tp_dont_show_again' ) );
-			add_action( 'wp_ajax_nopriv_tp_dont_show_again', array( $this, 'tp_dont_show_again' ) );
 
 			add_action( 'elementor/editor/footer', array( $this, 'tp_wdkit_preview_html_popup' ) );
 		}
@@ -152,6 +151,13 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 
 			check_ajax_referer( 'tp_wdkit_preview_popup', 'security' );
 
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				$response = $this->tp_response( 'Invalid Permission.', 'Something went wrong.', false );
+
+				wp_send_json( $response );
+				wp_die();
+			}
+
 			$installed_plugins = get_plugins();
 
 			include_once ABSPATH . 'wp-admin/includes/file.php';
@@ -159,28 +165,26 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/class-automatic-upgrader-skin.php';
 			include_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
 
-			$result   = array();
-			$response = wp_remote_post(
-				'http://api.wordpress.org/plugins/info/1.0/',
+			$result = array();
+
+			if ( ! function_exists( 'plugins_api' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+			}
+
+			$plugin_info = plugins_api(
+				'plugin_information',
 				array(
-					'body' => array(
-						'action'  => 'plugin_information',
-						'request' => serialize(
-							(object) array(
-								'slug'   => 'wdesignkit',
-								'fields' => array(
-									'version' => false,
-								),
-							)
-						),
+					'slug'   => 'wdesignkit',
+					'fields' => array(
+						'version' => false,
 					),
 				)
 			);
 
-			$plugin_info = unserialize( wp_remote_retrieve_body( $response ) );
-
-			if ( ! $plugin_info ) {
+			if ( is_wp_error( $plugin_info ) || ! $plugin_info ) {
 				wp_send_json_error( array( 'content' => __( 'Failed to retrieve plugin information.', 'tpebl' ) ) );
+
+				wp_die();
 			}
 
 			$skin     = new \Automatic_Upgrader_Skin();
@@ -192,6 +196,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 
 				$installed         = $upgrader->install( $plugin_info->download_link );
 				$activation_result = activate_plugin( $plugin_basename );
+				$this->tpae_wdkit_hook();
 
 				$success = null === $activation_result;
 				$result  = $this->tp_response( 'Success Install WDesignKit', 'Success Install WDesignKit', $success, '' );
@@ -199,6 +204,7 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 			} elseif ( isset( $installed_plugins[ $plugin_basename ] ) ) {
 
 				$activation_result = activate_plugin( $plugin_basename );
+				$this->tpae_wdkit_hook();
 
 				$success = null === $activation_result;
 				$result  = $this->tp_response( 'Success Install WDesignKit', 'Success Install WDesignKit', $success, '' );
@@ -209,6 +215,21 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 		}
 
 		/**
+		 * Tpae Side Wdkit Hook Call after install
+		 *
+		 * @since 6.4.0
+		 */
+		public function tpae_wdkit_hook() {
+			$my_array = array(
+				'elementor_builder'  => true,
+				'elementor_template' => true,
+			);
+
+			$builder = array( 'nexter-blocks' );
+			do_action( 'wdkit_active_settings', $my_array, $builder );
+		}
+
+		/**
 		 * Close Popup Permanently
 		 *
 		 * @since 6.5.6
@@ -216,6 +237,12 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 		public function tp_dont_show_again() {
 
 			check_ajax_referer( 'tp_wdkit_preview_popup', 'security' );
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Invalid permissions.', 'tpebl' ) ) );
+
+				wp_die();
+			}
 
 			$option_value = get_option( $this->db_preview_popup_key );
 			if ( ! empty( $option_value ) && 'yes' === $option_value ) {
@@ -236,6 +263,10 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 		 * @return array
 		 */
 		private function check_plugin_status() {
+
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
 
 			$installed_plugins = get_plugins();
 
@@ -260,37 +291,42 @@ if ( ! class_exists( 'Tp_Wdkit_Preview_Popup' ) ) {
 		public function tp_wdkit_preview_html_popup() {
 			$plugin_status = $this->check_plugin_status(); ?>
 			
-			<div id="tp-wdkit-wrap" class="tp-main-container" style="display: none">
-				<div class="tp-top-sections">
-					<div class="tp-message">
-						<a class="tp-not-show-again" href="#"><?php echo esc_html__( 'Don’t Show Again', 'tpebl' ); ?></a>
+			<div id="tp-wdkit-preview" class="tp-pre-container" style="display: none">
+				<div class="tp-pre-top-sections">
+					<div class="tp-pre-message">
+						<a class="tp-pre-not-show-again" href="#"><?php echo esc_html__( 'Don’t Show Again', 'tpebl' ); ?></a>
 					</div>
-					<div class="tp-close-btn">
-						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7071 1.70711C14.0976 1.31658 14.0976 0.683417 13.7071 0.292893C13.3166 -0.0976312 12.6834 -0.0976312 12.2929 0.292893L7 5.58579L1.70711 0.292893C1.31658 -0.0976312 0.683417 -0.0976312 0.292893 0.292893C-0.0976312 0.683417 -0.0976312 1.31658 0.292893 1.70711L5.58579 7L0.292893 12.2929C-0.0976312 12.6834 -0.0976312 13.3166 0.292893 13.7071C0.683417 14.0976 1.31658 14.0976 1.70711 13.7071L7 8.41421L12.2929 13.7071C12.6834 14.0976 13.3166 14.0976 13.7071 13.7071C14.0976 13.3166 14.0976 12.6834 13.7071 12.2929L8.41421 7L13.7071 1.70711Z" fill="white" fill-opacity="0.8" /></svg>
+					<div class="tp-pre-close-btn">
+						<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="#000000"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7071 1.70711C14.0976 1.31658 14.0976 0.683417 13.7071 0.292893C13.3166 -0.0976312 12.6834 -0.0976312 12.2929 0.292893L7 5.58579L1.70711 0.292893C1.31658 -0.0976312 0.683417 -0.0976312 0.292893 0.292893C-0.0976312 0.683417 -0.0976312 1.31658 0.292893 1.70711L5.58579 7L0.292893 12.2929C-0.0976312 12.6834 -0.0976312 13.3166 0.292893 13.7071C0.683417 14.0976 1.31658 14.0976 1.70711 13.7071L7 8.41421L12.2929 13.7071C12.6834 14.0976 13.3166 14.0976 13.7071 13.7071C14.0976 13.3166 14.0976 12.6834 13.7071 12.2929L8.41421 7L13.7071 1.70711Z" fill="#000000" fill-opacity="0.8" /></svg>
 					</div>
 				</div>
-				<div class="tp-middel-sections">
-					<div class="tp-text-top">
-						<?php echo esc_html__( 'Get 1000+ Predesigned Elementor Templates & Sections', 'tpebl' ); ?>
+				<div class="tp-pre-middel-sections">
+					<div class="tp-pre-text-top">
+						<?php echo esc_html__( 'Get 1000+ Predesigned ', 'tpebl' ); ?>
+						<br>
+						<?php echo esc_html__( 'Elementor Templates & Sections', 'tpebl' ); ?>
 					</div>
-					<div class="tp-text-bottom">
-						<?php echo esc_html__( 'Uniquely designed Elementor Templates for every website type made with Elementor & The Plus Addons for Elementor Widgets.', 'tpebl' ); ?>
+					<div class="tp-pre-text-bottom">
+						<?php echo esc_html__( 'Uniquely designed Elementor Templates for every website type made ', 'tpebl' ); ?>
+						<br>
+						<?php echo esc_html__( 'with Elementor & The Plus Addons for Elementor Widgets.', 'tpebl' ); ?>
+
 					</div>
-					<div class="tp-learn-more-about">
+					<div class="tp-pre-learn-more-about">
 						<?php if ( false === $plugin_status['installed'] ) { ?>
-							<a class="tp-wdesign-install" href="#">
-								<span class="theplus-enable-text"><?php echo esc_html__( 'Enable Templates', 'tpebl' ); ?></span>
-								<div class="tp-wkit-publish-loader">
-									<div class="tp-wb-loader-circle"></div>
+							<a class="tp-pre-wdesign-install" href="#">
+								<span class="tpae-pre-enable-text"><?php echo esc_html__( 'Enable Templates', 'tpebl' ); ?></span>
+								<div class="tp-wkit-pre-loader">
+									<div class="tp-pre-loader-circle"></div>
 								</div>
 							</a>
 						<?php } else { ?>
-							<a class="tp-wdesign-install" href="#"><span class="tp-visit-plugin"><?php echo esc_html__( 'Visit Plugin', 'tpebl' ); ?></span></a>
+							<a class="tp-pre-wdesign-install" href="#"><span class="tp-visit-plugin"><?php echo esc_html__( 'Visit Plugin', 'tpebl' ); ?></span></a>
 						<?php } ?>
-							<a class="tp-wdesign-about" href="https://wdesignkit.com/browse/template?plugin=%5B1003%5D&temp_type=pagetemplate"><?php echo esc_html__( 'Learn More', 'tpebl' ); ?></a>
+							<a class="tp-pre-wdesign-about" target="_blank" href="https://wdesignkit.com/templates?temp_type_req=pagetemplate&builder_req=1001"><?php echo esc_html__( 'Learn More', 'tpebl' ); ?></a>
 					</div>
 				</div>
-				<div class="tp-image-sections"></div>
+				<div class="tp-pre-image-sections"></div>
 			</div> 
 			<?php
 		}

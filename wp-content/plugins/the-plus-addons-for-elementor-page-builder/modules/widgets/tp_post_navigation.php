@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -27,15 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Post_Navigation
  */
-class ThePlus_Post_Navigation extends Widget_Base {
-
-	/**
-	 * Document Link For Need help
-	 *
-	 * @var tp_doc of the class
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
-
+class ThePlus_Post_Navigation extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name
 	 *
@@ -63,7 +55,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-exchange theplus_backend_icon';
+		return 'theplus-i-post-prev-next tpae-editor-logo';
 	}
 
 	/**
@@ -73,7 +65,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-builder' );
+		return array( 'plus-essential', 'plus-single' );
 	}
 
 	/**
@@ -83,56 +75,16 @@ class ThePlus_Post_Navigation extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Post', 'Navigation', 'Post Navigation', 'Previous', 'Next', 'Previous Post', 'Next Post' );
+		return array( 'Tp Post Prev/Next', 'Post Navigation', 'Blog Post Nav', 'Prev Next Buttons', 'Post Prev Next', 'Blog Post Navigation', 'Next Post Button', 'Previous Post Button', 'Blog Navigation Buttons' );
 	}
-
 	/**
-	 * Get Custom url
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 5.0.0
-	 * @version 5.4.2
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if ( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return array(
-			'condition'    => $val,
-			'image'        => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt'    => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title'        => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url'  => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		);
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-
 	/**
 	 * Register controls
 	 *
@@ -152,25 +104,46 @@ class ThePlus_Post_Navigation extends Widget_Base {
 		$this->add_control(
 			'style',
 			array(
-				'label'   => esc_html__( 'Style', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'style-1',
-				'options' => array(
-					'style-1' => esc_html__( 'Style 1', 'tpebl' ),
-					'style-2' => esc_html__( 'Style 2', 'tpebl' ),
-					'style-3' => esc_html__( 'Style 3', 'tpebl' ),
-					'style-4' => esc_html__( 'Style 4', 'tpebl' ),
+				'label'       => esc_html__( 'Style', 'tpebl' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'default'     => 'style-1',
+				'options'     => array(
+					'style-1' => array(
+						'title' => esc_html__( 'Style 1', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/post-navigation/style-1.svg' ),
+					),
+					'style-2' => array(
+						'title' => esc_html__( 'Style 2', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/post-navigation/style-2.svg' ),
+					),
+					'style-3' => array(
+						'title' => esc_html__( 'Style 3', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/post-navigation/style-3.svg' ),
+					),
+					'style-4' => array(
+						'title' => esc_html__( 'Style 4', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/post-navigation/style-4.svg' ),
+					),
 				),
+				'columns'     => 2,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_control(
 			'showcsttexonomy',
 			array(
-				'label'     => esc_html__( 'Related', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'no',
+				'label'       => esc_html__( 'Related', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this to show previous and next posts from the same taxonomy.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
@@ -213,9 +186,10 @@ class ThePlus_Post_Navigation extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Previous Post', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
-				'default'     => 'Previous Post',
-				'placeholder' => 'Previous Post',
-				'label_block' => true,
+				'ai'          => false,
+				'default'     => esc_html__( 'Previous Post', 'tpebl' ),
+				'placeholder' => esc_html__( 'Previous Post', 'tpebl' ),
+				'label_block' => false,
 			)
 		);
 		$this->add_control(
@@ -223,12 +197,59 @@ class ThePlus_Post_Navigation extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Next Post', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
-				'default'     => 'Next Post',
-				'placeholder' => 'Next Post',
-				'label_block' => true,
+				'ai'          => false,
+				'default'     => esc_html__( 'Next Post', 'tpebl' ),
+				'placeholder' => esc_html__( 'Next Post', 'tpebl' ),
+				'label_block' => false,
 			)
 		);
 		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/add-post-next-previous-button-in-elementor-blog-post/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://youtu.be/sU-gLRCZnLs',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		if ( ! tpae_wl_pluginads_enabled() ) {
+			$this->start_controls_section(
+				'tpae_theme_builder_sec',
+				array(
+					'label' => esc_html__( 'Use with Theme Builder', 'tpebl' ),
+					'tab'   => Controls_Manager::TAB_CONTENT,
+				)
+			);
+			$this->add_control(
+				'tpae_theme_builder',
+				array(
+					'type'        => 'tpae_theme_builder',
+					'notice'      => esc_html__( 'We recommend using this widget in the Post Single Page Template to allow users to move between posts.', 'tpebl' ),
+					'button_text' => esc_html__( 'Create Single Page', 'tpebl' ),
+					'page_type'   => 'tp_singular_page',
+				)
+			);
+			$this->end_controls_section();
+		}
 
 		$this->start_controls_section(
 			'section_np_icon_style',
@@ -410,7 +431,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 				'label'     => esc_html__( 'Prev/Next Content', 'tpebl' ),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
-					'style!' => array( 'style-3', 'style-4' ),
+					'style' => 'style-1',
 				),
 			)
 		);
@@ -487,8 +508,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 					),
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .tp-nav-style-1 .tp-post-nav .post-prev' => 'padding-right: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .tp-nav-style-1 .tp-post-nav .post-next' => 'padding-left: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .tp-post-navigation .tp-post-nav' => 'flex-wrap: nowrap;justify-content: space-between;gap: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);
@@ -1196,10 +1216,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -1221,6 +1238,9 @@ class ThePlus_Post_Navigation extends Widget_Base {
 		$uid_psnav = uniqid( 'tp-nav' );
 
 		$showcsttexonomy = isset( $settings['showcsttexonomy'] ) ? $settings['showcsttexonomy'] : 'no';
+
+		$prev_post = null;
+		$next_post = null;
 
 		if ( isset( $showcsttexonomy ) && 'yes' === $showcsttexonomy ) {
 			$showcsttexonomy_select = ! empty( $settings['showcsttexonomy_select'] ) ? $settings['showcsttexonomy_select'] : '';
@@ -1256,7 +1276,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 			} else {
 				$prevpostimg .= '<div class="post-image">';
 
-					$prevpostimg .= '<img src="' . L_THEPLUS_URL . '/assets/images/placeholder-grid.jpg" class="tp-nav-trans" />';
+					$prevpostimg .= '<img src="' . L_THEPLUS_URL . 'assets/images/tp-placeholder.jpg" class="tp-nav-trans" />';
 
 				$prevpostimg .= '</div>';
 			}
@@ -1316,7 +1336,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 			} else {
 				$nextpostimg .= '<div class="post-image">';
 
-					$nextpostimg .= '<img src="' . L_THEPLUS_URL . '/assets/images/placeholder-grid.jpg" class="tp-nav-trans" />';
+					$nextpostimg .= '<img src="' . L_THEPLUS_URL . 'assets/images/tp-placeholder.jpg" class="tp-nav-trans" />';
 
 				$nextpostimg .= '</div>';
 			}
@@ -1340,7 +1360,7 @@ class ThePlus_Post_Navigation extends Widget_Base {
 					}
 
 					$nextnav .= '<a href="' . esc_url( get_permalink( $next_post->ID ) ) . '" class="post_nav_link next tp-nav-trans" rel="' . esc_attr__( 'next', 'tpebl' ) . '">';
-					$nextnav .= '<div class="tp-post-nav-hover-con ' . esc_attr( $lazyclass ) . '" style="background-image: url(' . esc_url( $img1[0] ) . ');background-size: cover;background-attachment: fixed;background-position: center center;background-repeat:no-repeat;">' . $nextpostcon . '</div></a>';
+					$nextnav .= '<div class="tp-post-nav-hover-con ' . esc_attr( $lazyclass ) . '" style="background-image: url(' . esc_url( ! empty( $img1[0] ) ? $img1[0] : '' ) . ');background-size: cover;background-attachment: fixed;background-position: center center;background-repeat:no-repeat;">' . $nextpostcon . '</div></a>';
 				} elseif ( 'style-4' === $style ) {
 					$nextnav .= '<a href="' . esc_url( get_permalink( $next_post->ID ) ) . '" class="post_nav_link next tp-nav-trans" rel="' . esc_attr__( 'next', 'tpebl' ) . '">';
 

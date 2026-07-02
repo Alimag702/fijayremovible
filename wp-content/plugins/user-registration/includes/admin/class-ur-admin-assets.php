@@ -42,9 +42,9 @@ class UR_Admin_Assets {
 
 		wp_register_style( 'user-registration-settings', UR()->plugin_url() . '/assets/css/settings.css', array( 'nav-menus' ), UR_VERSION );
 		wp_register_style( 'jquery-ui-style', UR()->plugin_url() . '/assets/css/jquery-ui/jq-smoothness.css', array(), $jquery_version );
-		wp_register_style( 'flatpickr', UR()->plugin_url() . '/assets/css/flatpickr/flatpickr.min.css', array(), '4.6.9' );
-		wp_register_style( 'perfect-scrollbar', UR()->plugin_url() . '/assets/css/perfect-scrollbar/perfect-scrollbar.css', array(), '1.5.0' );
-		wp_register_style( 'sweetalert2', UR()->plugin_url() . '/assets/css/sweetalert2/sweetalert2.min.css', array(), '10.16.7' );
+		wp_register_style( 'flatpickr', UR()->plugin_url() . '/assets/css/flatpickr/flatpickr.min.css', array(), UR_VERSION );
+		wp_register_style( 'perfect-scrollbar', UR()->plugin_url() . '/assets/css/perfect-scrollbar/perfect-scrollbar.css', array(), UR_VERSION );
+		wp_register_style( 'sweetalert2', UR()->plugin_url() . '/assets/css/sweetalert2/sweetalert2.min.css', array(), UR_VERSION );
 
 		wp_register_style( 'user-registration-dashboard-widget', UR()->plugin_url() . '/assets/css/dashboard.css', array(), UR_VERSION );
 
@@ -52,8 +52,9 @@ class UR_Admin_Assets {
 
 		wp_register_style( 'jquery-confirm-style', UR()->plugin_url() . '/assets/css/jquery-confirm/jquery-confirm.css', array(), $jquery_version );
 
-		wp_register_style( 'tooltipster', UR()->plugin_url() . '/assets/css/tooltipster/tooltipster.bundle.min.css', array(), '4.6.2' );
-		wp_register_style( 'tooltipster-borderless-theme', UR()->plugin_url() . '/assets/css/tooltipster/tooltipster-sideTip-borderless.min.css', array(), '4.6.2' );
+		wp_register_style( 'tooltipster', UR()->plugin_url() . '/assets/css/tooltipster/tooltipster.bundle.min.css', array(), UR_VERSION );
+		wp_register_style( 'tooltipster-borderless-theme', UR()->plugin_url() . '/assets/css/tooltipster/tooltipster-sideTip-borderless.min.css', array(), UR_VERSION );
+		wp_register_style( 'ur-toast', UR()->plugin_url() . '/assets/css/ur-toast.css', array(), UR_VERSION );
 
 		// Add RTL support for admin styles.
 		wp_style_add_data( 'user-registration-menu', 'rtl', 'replace' );
@@ -63,9 +64,7 @@ class UR_Admin_Assets {
 
 		wp_enqueue_style( 'ur-notice' );
 		wp_register_style( 'user-registration-menu', UR()->plugin_url() . '/assets/css/menu.css', array(), UR_VERSION );
-		if ( 'plugins' === $screen_id ) {
-			wp_enqueue_style( 'user-registration-menu' );
-		}
+		wp_enqueue_style( 'user-registration-menu' );
 
 		wp_register_style( 'user-registration-admin', UR()->plugin_url() . '/assets/css/admin.css', array( 'nav-menus', 'wp-color-picker' ), UR_VERSION );
 
@@ -88,7 +87,7 @@ class UR_Admin_Assets {
 			wp_enqueue_style( 'user-registration-metabox' );
 			wp_enqueue_style( 'user-registration-form-modal-css' );
 
-			wp_enqueue_style( 'select2', UR()->plugin_url() . '/assets/css/select2/select2.css', array(), '4.0.6' );
+			wp_enqueue_style( 'select2', UR()->plugin_url() . '/assets/css/select2/select2.css', array(), UR_VERSION );
 		}
 		// Enqueue flatpickr on user profile screen.
 		if ( 'user-edit' === $screen_id || 'profile' === $screen_id || 'user-registration-membership_page_add-new-registration' === $screen_id ) {
@@ -136,45 +135,51 @@ class UR_Admin_Assets {
 			false
 		);
 
-		wp_register_script(
-			'user-registration-form-builder',
-			UR()->plugin_url() . '/assets/js/admin/form-builder' . $suffix . '.js',
-			array(
-				'jquery',
-				'selectWoo',
-				'wp-color-picker',
-				'jquery-blockui',
-				'jquery-ui-sortable',
-				'jquery-ui-widget',
-				'jquery-ui-core',
-				'jquery-ui-tabs',
-				'jquery-ui-draggable',
-				'jquery-ui-droppable',
-				'ur-backbone-modal',
-				'ur-enhanced-select',
-				'perfect-scrollbar',
-				'sweetalert2',
-				'tooltipster',
-				'user-registration-scroll-ui-js',
-			),
-			UR_VERSION,
-			false
-		);
+		if ( 'user-registration-membership_page_user-registration-login-forms' !== $screen_id ) {
 
-		wp_register_script(
-			'user-registration-form-settings',
-			UR()->plugin_url() . '/assets/js/admin/form-settings' . $suffix . '.js',
-			array(
-				'user-registration-admin',
+			wp_register_script(
 				'user-registration-form-builder',
-			),
-			UR_VERSION,
-			false
-		);
+				UR()->plugin_url() . '/assets/js/admin/form-builder' . $suffix . '.js',
+				array(
+					'jquery',
+					'selectWoo',
+					'wp-color-picker',
+					'jquery-blockui',
+					'jquery-ui-sortable',
+					'jquery-ui-widget',
+					'jquery-ui-core',
+					'jquery-ui-tabs',
+					'jquery-ui-draggable',
+					'jquery-ui-droppable',
+					'ur-backbone-modal',
+					'ur-enhanced-select',
+					'perfect-scrollbar',
+					'sweetalert2',
+					'tooltipster',
+					'user-registration-scroll-ui-js',
+					'flatpickr',
+				),
+				UR_VERSION,
+				false
+			);
+			wp_register_script(
+				'user-registration-form-settings',
+				UR()->plugin_url() . '/assets/js/admin/form-settings' . $suffix . '.js',
+				array(
+					'user-registration-admin',
+					'user-registration-form-builder',
+				),
+				UR_VERSION,
+				false
+			);
+		}
 
-		wp_register_script( 'jquery-blockui', UR()->plugin_url() . '/assets/js/jquery-blockui/jquery.blockUI' . $suffix . '.js', array( 'jquery' ), '2.70', true );
+		wp_register_script( 'popper', UR()->plugin_url() . "/assets/js/popper/popper$suffix.js", [], UR_VERSION, true );
+		wp_register_script( 'tippy', UR()->plugin_url() . "/assets/js/tippy/tippy$suffix.js", [ 'popper' ], UR_VERSION, true );
+
+		wp_register_script( 'jquery-blockui', UR()->plugin_url() . '/assets/js/jquery-blockui/jquery.blockUI' . $suffix . '.js', array( 'jquery' ), UR_VERSION, true );
 		wp_register_script( 'tooltipster', UR()->plugin_url() . '/assets/js/tooltipster/tooltipster.bundle' . $suffix . '.js', array( 'jquery' ), UR_VERSION, true );
-		wp_register_script( 'jquery-confirm', UR()->plugin_url() . '/assets/js/jquery-confirm/jquery-confirm' . $suffix . '.js', array( 'jquery' ), '2.70', true );
+		wp_register_script( 'jquery-confirm', UR()->plugin_url() . '/assets/js/jquery-confirm/jquery-confirm' . $suffix . '.js', array( 'jquery' ), UR_VERSION, true );
 		wp_register_script(
 			'ur-backbone-modal',
 			UR()->plugin_url() . '/assets/js/admin/backbone-modal' . $suffix . '.js',
@@ -196,7 +201,7 @@ class UR_Admin_Assets {
 			'wp-color-picker-alpha',
 			UR()->plugin_url() . '/assets/js/wp-color-picker/wp-color-picker-alpha' . $suffix . '.js',
 			array( 'wp-color-picker' ),
-			'2.1.4',
+			UR_VERSION,
 			false
 		);
 		wp_register_script(
@@ -210,10 +215,10 @@ class UR_Admin_Assets {
 			false
 		);
 
-		wp_register_script( 'flatpickr', UR()->plugin_url() . '/assets/js/flatpickr/flatpickr.min.js', array( 'jquery' ), '4.6.9', false );
-		wp_register_script( 'perfect-scrollbar', UR()->plugin_url() . '/assets/js/perfect-scrollbar/perfect-scrollbar.min.js', array( 'jquery' ), '1.5.0', false );
-		wp_register_script( 'ur-chartjs', UR()->plugin_url() . '/assets/js/chartjs/Chart.min.js', array( 'jquery' ), '3.2.1', false );
-		wp_register_script( 'sweetalert2', UR()->plugin_url() . '/assets/js/sweetalert2/sweetalert2.min.js', array( 'jquery' ), '10.16.7', false );
+		wp_register_script( 'flatpickr', UR()->plugin_url() . '/assets/js/flatpickr/flatpickr.min.js', array( 'jquery' ), UR_VERSION, false );
+		wp_register_script( 'perfect-scrollbar', UR()->plugin_url() . '/assets/js/perfect-scrollbar/perfect-scrollbar.min.js', array( 'jquery' ), UR_VERSION, false );
+		wp_register_script( 'ur-chartjs', UR()->plugin_url() . '/assets/js/chartjs/Chart.min.js', array( 'jquery' ), UR_VERSION, false );
+		wp_register_script( 'sweetalert2', UR()->plugin_url() . '/assets/js/sweetalert2/sweetalert2.min.js', array( 'jquery' ), UR_VERSION, false );
 		wp_register_script( 'ur-setup', UR()->plugin_url() . '/assets/js/admin/ur-setup' . $suffix . '.js', array( 'jquery', 'sweetalert2', 'updates', 'wp-i18n' ), UR_VERSION, false );
 
 		wp_localize_script(
@@ -221,6 +226,8 @@ class UR_Admin_Assets {
 			'ur_setup_params',
 			array(
 				'ajax_url'                     => admin_url( 'admin-ajax.php' ),
+				'rest_url'                     => esc_url_raw( rest_url( 'user-registration/v1/' ) ),
+				'rest_nonce'                   => wp_create_nonce( 'wp_rest' ),
 				'create_form_nonce'            => wp_create_nonce( 'user_registration_create_form' ),
 				'template_licence_check_nonce' => wp_create_nonce( 'user_registration_template_licence_check' ),
 				'captcha_setup_check_nonce'    => wp_create_nonce( 'user_registration_captcha_setup_check' ),
@@ -237,7 +244,7 @@ class UR_Admin_Assets {
 				 *
 				 * @param string URL
 				 */
-				'upgrade_url'                  => apply_filters( 'user_registration_upgrade_url', 'https://wpuserregistration.com/pricing/?utm_source=form-template&utm_medium=button&utm_campaign=ur-upgrade-to-pro' ),
+				'upgrade_url'                  => apply_filters( 'user_registration_upgrade_url', 'https://wpuserregistration.com/upgrade/?utm_source=form-template&utm_medium=button&utm_campaign=ur-upgrade-to-pro' ),
 				'upgrade_button'               => esc_html__( 'Upgrade Plan', 'user-registration' ),
 				'upgrade_message'              => esc_html__( 'This template requires premium addons. Please upgrade to the Premium plan to unlock all these awesome Templates.', 'user-registration' ),
 				'upgrade_title'                => esc_html__( 'is a Premium Template', 'user-registration' ),
@@ -247,8 +254,9 @@ class UR_Admin_Assets {
 				'download_failed'              => esc_html__( 'Download Failed. Please download and activate addon manually.', 'user-registration' ),
 				'download_successful_title'    => esc_html__( 'Installation Successful.', 'user-registration' ),
 				'download_successful_message'  => esc_html__( 'Addons have been Installed and Activated. You have to reload the page.', 'user-registration' ),
-				'save_changes_text'            => esc_html__( 'Save Changes and Reload', 'user-registration' ),
-				'reload_text'                  => esc_html__( 'Just Reload', 'user-registration' ),
+				'i18n_activation_success'      => esc_html__( 'Successfully activated. Reloading...', 'user-registration' ),
+				//              'save_changes_text'            => esc_html__( 'Save Changes and Reload', 'user-registration' ),
+				'reload_text' => esc_html__( 'Ok', 'user-registration' ),
 			)
 		);
 
@@ -272,13 +280,14 @@ class UR_Admin_Assets {
 			'ur-notice',
 			'ur_notice_params',
 			array(
-				'ajax_url'          => admin_url( 'admin-ajax.php' ),
-				'important_nonce'   => wp_create_nonce( 'important-nonce' ),
-				'info_nonce'        => wp_create_nonce( 'info-nonce' ),
-				'review_nonce'      => wp_create_nonce( 'review-nonce' ),
-				'allow-usage_nonce' => wp_create_nonce( 'allow-usage-nonce' ),
-				'survey_nonce'      => wp_create_nonce( 'survey-nonce' ),
-				'promotional_nonce' => wp_create_nonce( 'promotional-nonce' ),
+				'ajax_url'               => admin_url( 'admin-ajax.php' ),
+				'important_nonce'        => wp_create_nonce( 'important-nonce' ),
+				'info_nonce'             => wp_create_nonce( 'info-nonce' ),
+				'review_nonce'           => wp_create_nonce( 'review-nonce' ),
+				'allow-usage_nonce'      => wp_create_nonce( 'allow-usage-nonce' ),
+				'survey_nonce'           => wp_create_nonce( 'survey-nonce' ),
+				'promotional_nonce'      => wp_create_nonce( 'promotional-nonce' ),
+				'urm-admin-notice_nonce' => wp_create_nonce( 'urm-admin-notice-nonce' ),
 			)
 		);
 
@@ -312,6 +321,17 @@ class UR_Admin_Assets {
 			);
 		}
 
+		if ( isset( $_GET['page'] ) && 'user-registration' === $_GET['page'] ) {
+			wp_localize_script(
+				'user-registration-admin',
+				'user_registration_all_forms',
+				array(
+					'ajax_all_forms_nonce' => wp_create_nonce( 'all-forms-ajax-nonce' ),
+					'ajax_url'             => admin_url( 'admin-ajax.php' ),
+				)
+			);
+		}
+
 		// UserRegistration admin pages.
 		if ( in_array( $screen_id, ur_get_screen_ids(), true ) ) {
 			wp_enqueue_script( 'user-registration-admin' );
@@ -323,69 +343,93 @@ class UR_Admin_Assets {
 			wp_enqueue_script( 'jquery-ui-widget' );
 			wp_enqueue_script( 'ur-copy' );
 
-			$form_id = isset( $_GET['edit-registration'] ) ? absint( $_GET['edit-registration'] ) : 0;//phpcs:ignore WordPress.Security.NonceVerification
-			$params  = array(
-				'required_form_html'                     => self::get_form_required_html(),
-				'ajax_url'                               => admin_url( 'admin-ajax.php' ),
-				'user_input_dropped'                     => wp_create_nonce( 'user_input_dropped_nonce' ),
-				'ur_form_save'                           => wp_create_nonce( 'ur_form_save_nonce' ),
-				'ur_new_row_added'                       => wp_create_nonce( 'ur_new_row_added_nonce' ),
-				'number_of_grid'                         => UR_Config::$ur_form_grid,
-				'active_grid'                            => UR_Config::$default_active_grid,
-				'is_edit_form'                           => isset( $_GET['edit-registration'] ) ? true : false, //phpcs:ignore WordPress.Security.NonceVerification
-				'is_form_builder'                        => ( isset( $_GET['page'] ) && 'add-new-registration' === $_GET['page'] ) ? true : false, //phpcs:ignore WordPress.Security.NonceVerification
-				'post_id'                                => $form_id,
-				'ur_embed_page_list'                     => wp_create_nonce( 'ur_embed_page_list_nonce' ),
-				'ur_embed_action'                        => wp_create_nonce( 'ur_embed_action_nonce' ),
-				'admin_url'                              => admin_url( 'admin.php?page=add-new-registration&edit-registration=' ),
-				'form_required_fields'                   => ur_get_required_fields(),
-				'form_one_time_draggable_fields'         => ur_get_one_time_draggable_fields(),
+			$form_id             = isset( $_GET['edit-registration'] ) ? absint( $_GET['edit-registration'] ) : 0;//phpcs:ignore WordPress.Security.NonceVerification
+			$ur_enabled_captchas = array();
+			$ur_captchas         = ur_get_captcha_integrations();
+			foreach ( $ur_captchas as $key => $value ) {
+				if ( get_option( 'user_registration_captcha_setting_recaptcha_enable_' . $key, false ) ) {
+					$ur_enabled_captchas[ $key ] = $value;
+				}
+			}
+			$no_captcha_set        = ( count( $ur_enabled_captchas ) < 1 );
+			$captcha_not_set_error = sprintf(
+			/* translators: %s - Integration tab url */
+				'%s <a href="%s" class="ur-captcha-error" rel="noreferrer noopener" target="_blank">here</a> to add the captcha keys and save your changes.',
+				esc_html__( 'Captcha setup is incomplete. Click', 'user-registration' ),
+				esc_url( admin_url( 'admin.php?page=user-registration-settings&tab=registration_login&section=captcha' ) )
+			);
+			$params = array(
+				'required_form_html'                       => self::get_form_required_html(),
+				'ajax_url'                                 => admin_url( 'admin-ajax.php' ),
+				'user_input_dropped'                       => wp_create_nonce( 'user_input_dropped_nonce' ),
+				'ur_form_save'                             => wp_create_nonce( 'ur_form_save_nonce' ),
+				'ur_new_row_added'                         => wp_create_nonce( 'ur_new_row_added_nonce' ),
+				'number_of_grid'                           => UR_Config::$ur_form_grid,
+				'active_grid'                              => UR_Config::$default_active_grid,
+				'is_edit_form'                             => isset( $_GET['edit-registration'] ) ? true : false, //phpcs:ignore WordPress.Security.NonceVerification
+				'is_form_builder'                          => ( isset( $_GET['page'] ) && 'add-new-registration' === $_GET['page'] ) ? true : false, //phpcs:ignore WordPress.Security.NonceVerification
+				'post_id'                                  => $form_id,
+				'ur_embed_page_list'                       => wp_create_nonce( 'ur_embed_page_list_nonce' ),
+				'ur_embed_action'                          => wp_create_nonce( 'ur_embed_action_nonce' ),
+				'admin_url'                                => admin_url( 'admin.php?page=add-new-registration&edit-registration=' ),
+				'form_required_fields'                     => ur_get_required_fields(),
+				'form_one_time_draggable_fields'           => ur_get_one_time_draggable_fields(),
+				'form_payment_fields'                      => function_exists( 'user_registration_payment_fields' ) ? user_registration_payment_fields() : array(),
 				'form_repeater_row_not_droppable_fields_lists' => function_exists( 'user_registration_repeater_row_not_droppable_fields_lists' ) ? user_registration_repeater_row_not_droppable_fields_lists() : array(),
-				'form_repeater_row_empty'                => esc_html__( 'Please add at least one field to Repeater Row', 'user-registration' ),
+				'form_repeater_row_empty'                  => esc_html__( 'Please add at least one field to Repeater Row', 'user-registration' ),
 				/* translators: %field%: Field Label */
 				'form_one_time_draggable_fields_locked_title' => esc_html__( '%field% field is Locked.', 'user-registration' ),
 				/* translators: %field%: Field Label */
 				'form_one_time_draggable_fields_locked_message' => esc_html__( '%field% field can be used only one time in the form.', 'user-registration' ),
-				'i18n_admin'                             => self::get_i18n_admin_data(),
-				'i18n_shortcut_key_title'                => esc_html__( 'Keyboard Shortcut Keys', 'user-registration' ),
-				'i18n_publish_form_button_text'          => esc_html__( 'Publish form', 'user-registration' ),
-				'i18n_update_form_button_text'           => esc_html__( 'Update form', 'user-registration' ),
-				'i18n_shortcut_keys'                     => array(
+				'form_membership_payment_fields_disabled_message' => esc_html__( 'Payment fields cannot be used alongside the membership field.', 'user-registration' ),
+				'form_membership_field_disabled_message'   => esc_html__( 'Membership field cannot be used alongside the payment fields.', 'user-registration' ),
+				'form_has_membership_available'             => function_exists( 'ur_has_membership_available' ) ? ur_has_membership_available() : false,
+				/* translators: %field%: Field Text */
+				'form_membership_payment_settings_disabled_title' => esc_html__( '%field% setting is disabled.', 'user-registration' ),
+				'form_membership_payment_settings_disabled_message' => esc_html__( 'Payment setting is not available when membership field is present in the form.', 'user-registration' ),
+				'i18n_admin'                               => self::get_i18n_admin_data(),
+				'i18n_shortcut_key_title'                  => esc_html__( 'Keyboard Shortcut Keys', 'user-registration' ),
+				'i18n_publish_form_button_text'            => esc_html__( 'Publish form', 'user-registration' ),
+				'i18n_update_form_button_text'             => esc_html__( 'Update form', 'user-registration' ),
+				'i18n_captcha_not_set_error'               => $captcha_not_set_error,
+				'i18n_shortcut_keys'                       => array(
 					'Ctrl+S' => esc_html__( 'Save Builder', 'user-registration' ),
 					'Ctrl+W' => esc_html__( 'Close Builder', 'user-registration' ),
 					'Ctrl+P' => esc_html__( 'Preview Form', 'user-registration' ),
 					'Ctrl+U' => esc_html__( 'Go to Users', 'user-registration' ),
 					'Ctrl+H' => esc_html__( 'Open Help', 'user-registration' ),
 				),
-				'add_new'                                => esc_html__( 'Add New', 'user-registration' ),
-				'max_upload_size_ini'                    => wp_max_upload_size() / 1024,
-				'ur_preview'                             => add_query_arg(
+				'add_new'                                  => esc_html__( 'Add New', 'user-registration' ),
+				'max_upload_size_ini'                      => wp_max_upload_size() / 1024,
+				'ur_preview'                               => add_query_arg(
 					array(
 						'ur_preview' => 'true',
 						'form_id'    => $form_id,
 					),
 					home_url()
 				),
-				'ur_placeholder'                         => UR()->plugin_url() . '/assets/images/UR-placeholder.png',
+				'ur_placeholder'                           => UR()->plugin_url() . '/assets/images/UR-placeholder.png',
 				'ur_user_list_table'             => admin_url( 'users.php?ur_specific_form_user=' . $form_id . '&ur_user_filter_action=Filter' ), //phpcs:ignore;
 				'user_registration_very_weak_password_info' => esc_html__( 'Minimum one letter', 'user-registration' ),
-				'user_registration_weak_password_info'   => esc_html__( 'Minimum one uppercase letter and must be 4 characters and no repetitive words or common words', 'user-registration' ),
-				'user_registration_medium_password_info' => esc_html__( 'Minimum one uppercase letter, a number, must be 7 characters and no repetitive words or common words', 'user-registration' ),
-				'user_registration_strong_password_info' => esc_html__( 'Minimum one uppercase letter, a number, a special character, must be 9 characters and no repetitive words or common words', 'user-registration' ),
-				'user_registration_custom_password_info' => esc_html__( 'Set custom passwords by defining criteria such as length, uppercase and lowercase letters, digits, and special characters for enhanced security.', 'user-registration' ),
-				'ajax_form_submit_error_title'           => esc_html__( 'Form could not be saved', 'user-registration' ),
-				'ajax_form_submit_error'                 => esc_html__( 'Something went wrong while saving form through AJAX request.', 'user-registration' ),
-				'ajax_form_submit_troubleshooting_link'  => esc_url_raw( 'https://docs.wpuserregistration.com/docs/how-to-handle-ajax-submission-error' ),
-				'isPro'                                  => is_plugin_active( 'user-registration-pro/user-registration.php' ),
-				'ur_upgrade_plan_link'                   => esc_url( 'https://wpuserregistration.com/pricing/?utm_source=plugin&utm_medium=button&utm_campaign=ur-upgrade-to-pro' ),
-				'ur_remove_password_field_link'          => esc_url( 'https://docs.wpuserregistration.com/docs/remove-password-field/' ),
-				'ur_form_non_deletable_fields'           => ur_non_deletable_fields(),
-				'ur_assets_url'             => UR()->plugin_url() . '/assets/',
+				'user_registration_weak_password_info'     => esc_html__( 'Minimum one uppercase letter and must be 4 characters and no repetitive words or common words', 'user-registration' ),
+				'user_registration_medium_password_info'   => esc_html__( 'Minimum one uppercase letter, a number, must be 7 characters and no repetitive words or common words', 'user-registration' ),
+				'user_registration_strong_password_info'   => esc_html__( 'Minimum one uppercase letter, a number, a special character, must be 9 characters and no repetitive words or common words', 'user-registration' ),
+				'user_registration_custom_password_info'   => esc_html__( 'Set custom passwords by defining criteria such as length, uppercase and lowercase letters, digits, and special characters for enhanced security.', 'user-registration' ),
+				'ajax_form_submit_error_title'             => esc_html__( 'Form could not be saved', 'user-registration' ),
+				'ajax_form_submit_error'                   => esc_html__( 'Something went wrong while saving form through AJAX request.', 'user-registration' ),
+				'ajax_form_submit_troubleshooting_link'    => esc_url_raw( 'https://docs.wpuserregistration.com/docs/how-to-handle-ajax-submission-error' ),
+				'isPro'                                    => is_plugin_active( 'user-registration-pro/user-registration.php' ),
+				'ur_upgrade_plan_link'                     => esc_url( 'https://wpuserregistration.com/upgrade/?utm_source=plugin&utm_medium=button&utm_campaign=ur-upgrade-to-pro' ),
+				'ur_remove_password_field_link'            => esc_url( 'https://docs.wpuserregistration.com/docs/remove-password-field/' ),
+				'ur_form_non_deletable_fields'             => ur_non_deletable_fields(),
+				'ur_assets_url'                            => UR()->plugin_url() . '/assets/',
 				'i18n_prompt_no_membership_group_selected' => __( 'Membership Field requires a membership group to be selected.', 'user-registration' ),
 				'i18n_default_redirection_notice_for_membership' => esc_html__( 'If the form includes a membership field, users will be redirected to the membership thank you page after submission.', 'user-registration' ),
-				'form_has_membership_field' => check_membership_field_in_form($form_id),
-				'paypal_settings'                                => array(
-					'global'                    => array(
+				'i18n_email_confirmation_disabled_notice'  => esc_html__( 'If email confirmation is not enabled in email settings, users will not receive a confirmation email when this login option is selected.', 'user-registration' ),
+				'email_confirmation_disabled'              => ur_string_to_bool( get_option( 'user_registration_enable_email_confirmation', true ) ) ? 'no' : 'yes',
+				'form_has_membership_field'                => check_membership_field_in_form( $form_id ),
+				'paypal_settings'                          => array(
+					'global' => array(
 						'paypal_mode'   => get_option( 'user_registration_global_paypal_mode', 'test' ),
 						'paypal_email'  => get_option( 'user_registration_global_paypal_email_address', get_option( 'admin_email' ) ),
 						'cancel_url'    => get_option( 'user_registration_global_paypal_cancel_url', home_url() ),
@@ -393,13 +437,14 @@ class UR_Admin_Assets {
 						'client_id'     => get_option( 'user_registration_global_paypal_client_id', '' ),
 						'client_secret' => get_option( 'user_registration_global_paypal_client_secret', '' ),
 					),
-					'form' => array(
+					'form'   => array(
 						'paypal_mode'  => ur_get_single_post_meta( $form_id, 'user_registration_paypal_mode', 'test' ),
 						'paypal_email' => ur_get_single_post_meta( $form_id, 'user_registration_paypal_email_address', get_option( 'admin_email' ) ),
 						'cancel_url'   => ur_get_single_post_meta( $form_id, 'user_registration_paypal_cancel_url', home_url() ),
 						'return_url'   => ur_get_single_post_meta( $form_id, 'user_registration_paypal_return_url', wp_login_url() ),
-					)
+					),
 				),
+				'no_captcha_set'                           => $no_captcha_set,
 			);
 
 			wp_localize_script(
@@ -422,12 +467,12 @@ class UR_Admin_Assets {
 					'no_file_selected'          => esc_html__( 'No file selected.', 'user-registration' ),
 					'export_error_message'      => esc_html__( 'Please choose at least one form to export.', 'user-registration' ),
 					'smart_tags_dropdown_title' => esc_html__( 'Smart Tags', 'user-registration' ),
-					'smart_tags_dropdown_search_placeholder' => esc_html__( 'Search Tags...', 'user-registration' )
+					'smart_tags_dropdown_search_placeholder' => esc_html__( 'Search Tags...', 'user-registration' ),
 				)
 			);
 			wp_localize_script( 'user-registration-form-builder', 'user_registration_form_builder_data', $params );
 
-			wp_register_script( 'ur-components', UR()->plugin_url() . '/assets/js/ur-components/ur-components' . $suffix . '.js', array( 'jquery' ), 'UR_VERSION', true );
+			wp_register_script( 'ur-components', UR()->plugin_url() . '/assets/js/ur-components/ur-components' . $suffix . '.js', array( 'jquery' ), UR_VERSION, true );
 			wp_enqueue_script( 'ur-components' );
 			wp_localize_script(
 				'ur-components',
@@ -499,36 +544,6 @@ class UR_Admin_Assets {
 		wp_enqueue_script( 'ur-live-user-notice' );
 
 		wp_register_script(
-			'ur-google-recaptcha',
-			'https://www.google.com/recaptcha/api.js?onload=onloadURCallback&render=explicit',
-			array(),
-			'2.0.0'
-		);
-
-		$recaptcha_site_key_v3 = get_option( 'user_registration_captcha_setting_recaptcha_site_key_v3' );
-
-		wp_register_script(
-			'ur-google-recaptcha-v3',
-			'https://www.google.com/recaptcha/api.js?render=' . $recaptcha_site_key_v3,
-			array(),
-			'3.0.0'
-		);
-
-		wp_register_script(
-			'ur-recaptcha-hcaptcha',
-			'https://hcaptcha.com/1/api.js?onload=onloadURCallback&render=explicit',
-			array(),
-			UR_VERSION
-		);
-
-		wp_register_script(
-			'ur-recaptcha-cloudflare',
-			'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onloadURCallback',
-			array(),
-			UR_VERSION
-		);
-
-		wp_register_script(
 			'ur-enhanced-select-custom',
 			UR()->plugin_url() . '/assets/js/admin/enhanced-select-custom' . $suffix . '.js',
 			array(
@@ -596,8 +611,8 @@ class UR_Admin_Assets {
 			'i18n_smart_phone_field'                      => _x( 'Selected default phone field must be in smart format.', 'user-registration admin', 'user-registration' ),
 			'i18n_default_phone_field'                    => _x( 'Select Smart Phone Fields for SMS Verification', 'user-registration admin', 'user-registration' ),
 			'i18n_anet_field'                             => _x( 'Authorize.net', 'user-registration admin', 'user-registration' ),
-			'i18n_are_you_sure_want_to_delete_row'        => _x( 'Are you sure want to delete this row?', 'user registration admin', 'user-registration' ),
-			'i18n_are_you_sure_want_to_delete_field'      => _x( 'Are you sure want to delete this field?', 'user registration admin', 'user-registration' ),
+			'i18n_are_you_sure_want_to_delete_row'        => _x( 'Are you sure you want to delete this row?', 'user registration admin', 'user-registration' ),
+			'i18n_are_you_sure_want_to_delete_field'      => _x( 'Are you sure you want to delete this field?', 'user registration admin', 'user-registration' ),
 			'i18n_at_least_one_row_is_required_to_create_a_registration_form' => _x( 'At least one row is required to create a registration form.', 'user registration admin', 'user-registration' ),
 			'i18n_cannot_delete_row'                      => _x( 'Cannot delete row', 'user registration admin', 'user-registration' ),
 			'i18n_user_email_and_password_fields_are_required_to_create_a_registration_form' => _x( 'Email and Password fields are required to create a registration form.', 'user registration admin', 'user-registration' ),
@@ -640,7 +655,7 @@ class UR_Admin_Assets {
 			'i18n_google_sheets_sheet_empty_error'        => esc_html__( 'Look like your sheet is empty ! Please try again', 'user-registration' ),
 			'i18n_urfr_qna_field_empty_error'             => esc_html__( 'Form Restriction: Empty Question or Answer field.', 'user-registration' ),
 			'i18n_urfr_field_required_error'              => esc_html__( 'Form Restriction: Q&A restriction requires at least one question and answer.', 'user-registration' ),
-			'i18n_delete_pass_available_in_pro'           => esc_html__( 'Subscribe to User Registration Pro to get the Autogenerated Password feature which lets you remove the password field.', 'user-registration' ),
+			'i18n_delete_pass_available_in_pro'           => esc_html__( 'Subscribe to User Registration & Membership Pro to get the Autogenerated Password feature which lets you remove the password field.', 'user-registration' ),
 			'i18n_auto_generate_password'                 => esc_html__( 'To remove the password field, enable the auto-generate password feature in form  settings.', 'user-registration' ),
 			'i18n_this_field_is_required'                 => esc_html__( ' is required.', 'user-registration' ),
 			'i18n_learn_more'                             => esc_html__( 'Learn More', 'user-registration' ),
@@ -655,7 +670,7 @@ class UR_Admin_Assets {
 				'user-registration'
 			),
 			'upgrade_plan'                                => esc_html__( 'Upgrade Plan', 'user-registration' ),
-			'upgrade_link'                                => esc_url( 'https://wpuserregistration.com/pricing/?utm_source=integration-settings&utm_medium=premium-addon-popup&utm_campaign=' . urlencode( UR()->utm_campaign ) ),
+			'upgrade_link'                                => esc_url( 'https://wpuserregistration.com/upgrade/?utm_source=integration-settings&utm_medium=premium-addon-popup&utm_campaign=' . urlencode( UR()->utm_campaign ) ),
 			'user_registration_locked_form_fields_notice_nonce' => wp_create_nonce( 'locked_form_fields_notice_nonce' ),
 			'license_activation_required_title'           => __( 'License Activation Required', 'user-registration' ),
 			'license_activation_required_message'         => __( 'Please activate your <strong>User Registration & Membership License</strong> to use this integration', 'user-registration' ),
@@ -666,8 +681,8 @@ class UR_Admin_Assets {
 			'min_length_less_than_max_length'             => esc_html__( 'Minimum length count should be less than maximum length count for', 'user-registration' ),
 			'invalid_max_length'                          => esc_html__( 'Invalid maximum length count for', 'user-registration' ),
 			'invalid_min_length'                          => esc_html__( 'Invalid minimum length count for', 'user-registration' ),
-			'i18n_min_max_mode'                          => _x( 'The max and min length limit mode for %field% must be same.', 'user registration admin', 'user-registration' ),
-			'i18n_min_max_text_input'                          => _x( 'The max length limit for %field% must be greater than min length.', 'user registration admin', 'user-registration' ),
+			'i18n_min_max_mode'                           => _x( 'The max and min length limit mode for %field% must be same.', 'user registration admin', 'user-registration' ),
+			'i18n_min_max_text_input'                     => _x( 'The max length limit for %field% must be greater than min length.', 'user registration admin', 'user-registration' ),
 			'i18n_prompt_no_membership_group_selected'    => __( 'Please select a membership group for the selected membership field.', 'user-registration' ),
 			'i18n_prompt_no_membership_available'         => __( 'Please create at least one active membership to use a membership field.', 'user-registration' ),
 			'i18n_empty_membership_text'                  => __( 'No active membership\'s available', 'user-registration' ),

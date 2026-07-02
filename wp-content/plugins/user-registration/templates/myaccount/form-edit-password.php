@@ -36,17 +36,24 @@ ur_do_deprecated_action( 'user_registration_before_edit_account_form', array(), 
  * and execute custom code or modifications before the change password form is displayed.
  */
 do_action( 'user_registration_before_change_password_form' );
-
-$layout = get_option( 'user_registration_my_account_layout', 'horizontal' );
-
-if ( 'vertical' === $layout ) {
-	?>
-	<div class="user-registration-MyAccount-content__header">
+$layout         = get_option( 'user_registration_my_account_layout', 'vertical' );
+$endpoint_label = ur_get_account_menu_items()['edit-password'];
+?>
+<div class="user-registration-MyAccount-content__header">
+	<div class="user-registration-MyAccount-content__header-content ur-myaccount-changepassword-header-content">
+		<a class="urm-back-button" href="<?php echo esc_url( ur_get_account_endpoint_url( 'edit-profile' ) ); ?>">
+			<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+		</a>
 		<h1><?php echo wp_kses_post( $endpoint_label ); ?></h1>
 	</div>
+</div>
+
+<div class="user-registration-message-container">
 	<?php
-}
-?>
+	ur_print_notices();
+	?>
+</div>
+
 <div class="user-registration-MyAccount-content__body">
 	<div class="ur-frontend-form login" id="ur-frontend-form">
 		<form class="user-registration-EditAccountForm edit-password" action="" method="post" data-enable-strength-password="<?php echo esc_attr( $enable_strong_password ); ?>" data-minimum-password-strength="<?php echo esc_attr( $minimum_password_strength ); ?>" >
@@ -87,7 +94,7 @@ if ( 'vertical' === $layout ) {
 						<p class="user-registration-form-row user-registration-form-row--wide form-row form-row-wide hide_show_password">
 							<label for="password_current"><?php esc_html_e( 'Current password', 'user-registration' ); ?></label>
 							<span class="password-input-group">
-							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_current" id="password_current" />
+							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_current" id="password_current" required />
 									<?php
 									if ( ur_option_checked( 'user_registration_login_option_hide_show_password', false ) ) {
 										echo '<a href="javaScript:void(0)" class="password_preview dashicons dashicons-hidden" title="' . esc_attr__( 'Show Password', 'user-registration' ) . '"></a>';
@@ -99,7 +106,7 @@ if ( 'vertical' === $layout ) {
 						<p class="user-registration-form-row user-registration-form-row--wide form-row form-row-wide hide_show_password">
 							<label for="password_1"><?php esc_html_e( 'New password', 'user-registration' ); ?></label>
 							<span class="password-input-group">
-							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_1" id="password_1" />
+							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_1" id="password_1" required />
 							<?php
 							if ( ur_option_checked( 'user_registration_login_option_hide_show_password', false ) ) {
 								echo '<a href="javaScript:void(0)" class="password_preview dashicons dashicons-hidden" title="' . esc_attr__( 'Show Password', 'user-registration' ) . '"></a>';
@@ -110,7 +117,7 @@ if ( 'vertical' === $layout ) {
 						<p class="user-registration-form-row user-registration-form-row--wide form-row form-row-wide hide_show_password">
 							<label for="password_2"><?php esc_html_e( 'Confirm new password', 'user-registration' ); ?></label>
 							<span class="password-input-group">
-							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_2" id="password_2" />
+							<input type="password" class="user-registration-Input user-registration-Input--password input-text" name="password_2" id="password_2" required />
 							<?php
 							if ( ur_option_checked( 'user_registration_login_option_hide_show_password' ) ) {
 								echo '<a href="javaScript:void(0)" class="password_preview dashicons dashicons-hidden" title="' . esc_attr__( 'Show Password', 'user-registration' ) . '"></a>';

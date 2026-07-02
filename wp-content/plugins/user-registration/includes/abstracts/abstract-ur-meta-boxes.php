@@ -25,6 +25,9 @@ abstract class UR_Meta_Boxes {
 		global $thepostid, $post;
 
 		$get_meta_data = get_post_meta( $post->ID, $field['id'], true );
+		$has_checkbox = get_post_meta( $post->ID, 'urcr_meta_checkbox', true );
+
+
 
 		$thepostid              = empty( $thepostid ) ? $post->ID : $thepostid;
 		$field['class']         = isset( $field['class'] ) ? $field['class'] : 'urfl-checkbox';
@@ -43,17 +46,9 @@ abstract class UR_Meta_Boxes {
 
 		echo '<div class="ur-metabox-field-detail">';
 
-		if ( isset( $field['disabled'] ) && $field['disabled'] ) {
+		$non_checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" >';
 
-			$non_checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" disabled >';
-
-			$checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" checked disabled >';
-		} else {
-			$non_checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" >';
-
-			$checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" checked >';
-
-		}
+		$checked = '<input type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" checked >';
 
 		$metabox__allowedtags = array(
 			'input' => array(
@@ -67,7 +62,7 @@ abstract class UR_Meta_Boxes {
 			),
 		);
 
-		if ( 'on' === $get_meta_data ) {
+		if ( ( 'on' === $get_meta_data && 'on' === $has_checkbox ) || $get_meta_data) {
 			echo wp_kses( $checked, $metabox__allowedtags );
 		} else {
 			echo wp_kses( $non_checked, $metabox__allowedtags );
@@ -266,4 +261,59 @@ abstract class UR_Meta_Boxes {
 		echo '</div>';
 		echo '</div>';
 	}
+
+	public function ur_metabox_textarea( $field ) {
+		global $thepostid, $post;
+
+		$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
+
+		$saved_value = get_post_meta( $post->ID, $field['id'], true );
+		$default_value = isset( $field['default'] ) ? $field['default'] : '';
+
+		$field['value'] = ! empty( $saved_value ) ? $saved_value : $default_value;
+		$field['class']         = isset( $field['class'] ) ? $field['class'] : 'urfl-textarea';
+		$field['style']         = isset( $field['style'] ) ? $field['style'] : '';
+		$field['wrapper_class'] = isset( $field['wrapper_class'] ) ? $field['wrapper_class'] : '';
+		$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
+		$field['desc']          = isset( $field['desc'] ) ? $field['desc'] : '';
+
+		echo '<div class="ur-metabox-field ' . esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ) . '">';
+		echo '<div class="ur-metabox-field-row">';
+		echo '<div class="ur-metabox-field-label">';
+		echo '<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+		echo wp_kses_post( ur_help_tip( $field['desc'] ) );
+		echo '</div>';
+		echo '<div class="ur-metabox-field-detail">';
+
+		if ( isset( $field['type'] ) && 'tinymce' === $field['type'] ) {
+			$editor_settings = array(
+				'textarea_name' => esc_attr( $field['name'] ),
+				'editor_class'  => esc_attr( $field['class'] ),
+				'textarea_rows' => 5,
+				'media_buttons' => true,  // Show media upload button
+				'teeny'         => false, // Use full TinyMCE editor
+				'quicktags'     => false,  // Enable QuickTags
+				'show-smart-tags-button' => false,
+				'tinymce'    => array(
+					'skin' => 'lightgray',
+					'toolbar1' => 'undo,redo,formatselect,fontselect,fontsizeselect,bold,italic,forecolor,alignleft,aligncenter,alignright,alignjustify,bullist,numlist,outdent,indent,removeformat',
+					'statusbar' => false,
+					'toolbar2' => '',
+					'toolbar3' => '',
+					'toolbar4' => '',
+					'plugins' => 'wordpress,wpautoresize,wplink,wpdialogs,wptextpattern,wpview,colorpicker,textcolor,hr,charmap,link,fullscreen,lists',
+				)
+			);
+			wp_editor( $field['value'], $field['id'], $editor_settings );
+		} else {
+			echo '<textarea id="' . esc_attr( $field['id'] ) . '" name="' . esc_attr( $field['name'] ) . '" class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '" rows="5">' . esc_textarea( $field['value'] ) . '</textarea>';
+		}
+
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+	}
+
+
+
 }

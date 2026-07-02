@@ -57,6 +57,13 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 		}
 
 		/**
+		 * Document Link For Need help.
+		 *
+		 * @var tp_doc of the class.
+		 */
+		public $tp_doc = L_THEPLUS_TPDOC;
+
+		/**
 		 * Get the widget name.
 		 *
 		 * @since 6.2.7
@@ -104,10 +111,18 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 				array(
 					'label'        => esc_html__( 'Box Shadows', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Turn this on to add a shadow around the widget or container. You can set different shadows for normal view and when someone hovers over it.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'neumorphism-effect-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(
@@ -116,8 +131,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'     => esc_html__( 'Apply to', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'default'     => 'Default',
-						'customclass' => 'Add Custom Class',
+						'default'     => esc_html__( 'Default', 'tpebl' ),
+						'customclass' => esc_html__( 'Add Custom Class', 'tpebl' ),
 					),
 					'default'   => 'default',
 					'condition' => array(
@@ -132,8 +147,14 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXTAREA,
 					'default'     => '',
 					'placeholder' => esc_html__( 'e.g. .class-name', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-					'description' => '<a rel="noopener noreferrer" target="_blank" href="https://theplusaddons.com/help/advanced-shadows/">Read Documentation</a>',
+					'description' => wp_kses_post(
+						sprintf(
+							'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+							esc_url( 'https://theplusaddons.com/help/advanced-shadows/' ),
+							esc_html__( 'Read Documentation', 'tpebl' )
+						),
+					),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_boxshadow'       => 'yes',
 						'adv_shadow_boxshadow_apply' => 'customclass',
@@ -158,8 +179,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Box Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeater->add_control(
@@ -168,8 +188,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'   => esc_html__( 'Type', 'tpebl' ),
 					'type'    => Controls_Manager::SELECT,
 					'options' => array(
-						'bst_inset'  => 'Inset',
-						'bst_outset' => 'Outset',
+						'bst_inset'  => esc_html__( 'Inset', 'tpebl' ),
+						'bst_outset' => esc_html__( 'Outset', 'tpebl' ),
 					),
 					'default' => 'bst_outset',
 				)
@@ -262,6 +282,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_boxshadow' => 'yes',
 					),
@@ -282,8 +303,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 				array(
 					'label'        => esc_html__( 'Hover Box Shadows', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
 					'condition'    => array(
@@ -299,8 +320,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Box Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeaterh->add_control(
@@ -309,8 +329,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'   => esc_html__( 'Type', 'tpebl' ),
 					'type'    => Controls_Manager::SELECT,
 					'options' => array(
-						'bst_inset'  => 'Inset',
-						'bst_outset' => 'Outset',
+						'bst_inset'  => esc_html__( 'Inset', 'tpebl' ),
+						'bst_outset' => esc_html__( 'Outset', 'tpebl' ),
 					),
 					'default' => 'bst_outset',
 				)
@@ -404,6 +424,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_boxshadow'     => 'yes',
 						'adv_shadow_boxshadow_h_s' => 'yes',
@@ -420,10 +441,18 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'        => esc_html__( 'Text Shadows', 'tpebl' ),
 					'separator'    => 'before',
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Turn this on to add a shadow to text content of a widget or container. You can set different text shadows for normal view and when someone hovers over it.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'change-text-shadow-on-hover-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(
@@ -432,8 +461,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'     => esc_html__( 'Apply to', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'default'     => 'Default',
-						'customclass' => 'Add Custom Class',
+						'default'     => esc_html__( 'Default', 'tpebl' ),
+						'customclass' => esc_html__( 'Add Custom Class', 'tpebl' ),
 					),
 					'default'   => 'default',
 					'condition' => array(
@@ -448,8 +477,14 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXTAREA,
 					'default'     => '',
 					'placeholder' => esc_html__( 'e.g. .class-name', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-					'description' => '<a rel="noopener noreferrer" target="_blank" href="https://theplusaddons.com/help/advanced-shadows/">Read Documentation</a>',
+					'description' => wp_kses_post(
+						sprintf(
+							'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+							esc_url( 'https://theplusaddons.com/help/advanced-shadows/' ),
+							esc_html__( 'Read Documentation', 'tpebl' )
+						),
+					),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_textshadow'       => 'yes',
 						'adv_shadow_textshadow_apply' => 'customclass',
@@ -474,8 +509,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Text Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeater1->add_control(
@@ -550,6 +584,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_textshadow' => 'yes',
 					),
@@ -570,8 +605,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 				array(
 					'label'        => esc_html__( 'Hover Text Shadows', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
 				)
@@ -584,8 +619,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Text Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeater1_h->add_control(
@@ -661,6 +695,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_textshadow'     => 'yes',
 						'adv_shadow_textshadow_h_s' => 'yes',
@@ -677,10 +712,18 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'        => esc_html__( 'Drop Shadows', 'tpebl' ),
 					'separator'    => 'before',
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Turn this on to add a drop shadow to the widget or container. It helps elements stand out visually, and you can set different shadows for the normal and hover states.', 'tpebl' ),
+							esc_url( $this->tp_doc . 'change-drop-shadow-on-hover-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(
@@ -689,8 +732,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'     => esc_html__( 'Apply to', 'tpebl' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => array(
-						'default'     => 'Default',
-						'customclass' => 'Add Custom Class',
+						'default'     => esc_html__( 'Default', 'tpebl' ),
+						'customclass' => esc_html__( 'Add Custom Class', 'tpebl' ),
 					),
 					'default'   => 'default',
 					'condition' => array(
@@ -705,8 +748,14 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXTAREA,
 					'default'     => '',
 					'placeholder' => esc_html__( 'e.g. .class-name', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-					'description' => '<a rel="noopener noreferrer" target="_blank" href="https://theplusaddons.com/help/advanced-shadows/">Read Documentation</a>',
+					'description' => wp_kses_post(
+						sprintf(
+							'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+							esc_url( 'https://theplusaddons.com/help/advanced-shadows/' ),
+							esc_html__( 'Read Documentation', 'tpebl' )
+						),
+					),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_dropshadow'       => 'yes',
 						'adv_shadow_dropshadow_apply' => 'customclass',
@@ -731,8 +780,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Drop Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeater2->add_control(
@@ -807,6 +855,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_dropshadow' => 'yes',
 					),
@@ -827,8 +876,8 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 				array(
 					'label'        => esc_html__( 'Hover Drop Shadows', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
-					'label_on'     => esc_html__( 'Enable', 'tpebl' ),
-					'label_off'    => esc_html__( 'Disable', 'tpebl' ),
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
 				)
@@ -841,8 +890,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'type'        => Controls_Manager::TEXT,
 					'default'     => esc_html__( 'Drop Shadow 1', 'tpebl' ),
 					'placeholder' => esc_html__( 'Enter label', 'tpebl' ),
-					'dynamic'     => array( 'active' => true ),
-
+					'ai'          => false,
 				)
 			);
 			$repeater2_h->add_control(
@@ -918,6 +966,7 @@ if ( ! class_exists( 'Tpae_Advanced_Shadow' ) ) {
 					'label'       => esc_html__( 'Transition css', 'tpebl' ),
 					'type'        => Controls_Manager::TEXT,
 					'placeholder' => esc_html__( 'e.g. all .3s linear', 'tpebl' ),
+					'ai'          => false,
 					'condition'   => array(
 						'adv_shadow_dropshadow'     => 'yes',
 						'adv_shadow_dropshadow_h_s' => 'yes',

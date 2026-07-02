@@ -15,13 +15,15 @@ i.documentation {
   color: #1caecb;
   cursor: pointer;
   position: relative;
-  top: 3px;
 }
 i.documentation.up {
   top: -3px;
 }
 i.documentation.down {
   top: 10px;
+}
+i.documentation.right {
+  float: right;
 }
 
 .update-nag {
@@ -479,6 +481,9 @@ div.spio-modal-title {
   width: 15px;
   vertical-align: text-top;
 }
+.wrap.is-shortpixel-settings-page header .top-buttons .header-button .shortpixel-icon.star {
+  filter: brightness(0) saturate(100%) invert(90%) sepia(54%) saturate(7093%) hue-rotate(314deg) brightness(117%) contrast(93%);
+}
 .wrap.is-shortpixel-settings-page .shortpixel-icon {
   width: 25px;
   height: 25px;
@@ -549,6 +554,9 @@ div.spio-modal-title {
 .wrap.is-shortpixel-settings-page .shortpixel-icon.feedback {
   background-image: url("../images/icon/feedback.svg");
 }
+.wrap.is-shortpixel-settings-page .shortpixel-icon.heart {
+  background-image: url("../images/icon/heart.svg");
+}
 .wrap.is-shortpixel-settings-page .shortpixel-icon.help {
   background-image: url("../images/icon/help.svg");
 }
@@ -612,6 +620,9 @@ div.spio-modal-title {
 .wrap.is-shortpixel-settings-page .shortpixel-icon.shortpixel {
   background-image: url("../images/icon/shortpixel.svg");
 }
+.wrap.is-shortpixel-settings-page .shortpixel-icon.star {
+  background-image: url("../images/icon/star.svg");
+}
 .wrap.is-shortpixel-settings-page .shortpixel-illustration {
   display: inline-block;
   background-repeat: no-repeat;
@@ -670,7 +681,7 @@ div.spio-modal-title {
 .wrap.is-shortpixel-settings-page .setting-tab .shortpixel-compression-options label input:checked + span {
   background-color: #116C7E;
 }
-.wrap.is-shortpixel-settings-page .setting-tab select[name=exif_ai] {
+.wrap.is-shortpixel-settings-page .setting-tab select[name=exif_ai], .wrap.is-shortpixel-settings-page .setting-tab select[name=autoRemoveBackupsPeriod] {
   border: 1px solid #1ABDCA;
   color: #116C7E;
   margin-top: 15px;
@@ -698,7 +709,7 @@ div.spio-modal-title {
   font-weight: 700;
 }
 .wrap.is-shortpixel-settings-page .setting-tab input[name=resizeWidth], .wrap.is-shortpixel-settings-page .setting-tab input[name=resizeHeight] {
-  width: 100px;
+  width: 100px !important;
   background: url("../images/icon/arrows-left-right.svg") 4px center no-repeat #fff;
   padding-left: 25px;
   border: 1px solid #1ABDCA;
@@ -977,7 +988,6 @@ div.spio-modal-title {
   width: 1rem;
   height: 1rem;
   opacity: 1;
-  display: inline-block;
 }
 .wrap.is-shortpixel-settings-page section#tab-webp img#exifviewer-img-1 {
   margin-bottom: -7px;
@@ -1822,6 +1832,8 @@ div.spio-modal-title {
   visibility: hidden;
   height: 0;
   transition: 500ms height;
+  margin: 0;
+  padding: 0;
 }
 .wrap.is-shortpixel-settings-page #tab-exclusions .exclude-patterns-setting .new-exclusion .size-option > div {
   margin: 8px 0;

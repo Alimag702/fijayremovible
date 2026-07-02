@@ -8,6 +8,8 @@
  * @version 1.2.0
  */
 
+use WPEverest\URMembership\Admin\Repositories\MembershipGroupRepository;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -399,5 +401,100 @@ function ur_update_322_option_migrate() {
 
 	if ( $activation_date && $current_date >= $days_to_validate ) {
 		update_option( 'user_registration_quick_setup_completed', true );
+	}
+}
+
+/**
+ * URM v5.0 migration functions.
+ *
+ * @return void
+ */
+function urm_update_50_option_migrate() {
+
+	$args      = array(
+		'order'         => 'ASC',
+		'numberposts'   => -1,
+		'status'        => 'publish',
+		'post_type'     => array( 'user_registration' ),
+		'orderby'       => 'ID',
+		'order'         => 'DESC',
+		'no_found_rows' => true,
+		'nopaging'      => true,
+	);
+	$all_forms = get_posts( $args );
+
+	if ( count( $all_forms ) > 1 ) {
+		$enabled_features = get_option( 'user_registration_enabled_features', array() );
+		if ( ! isset( $enabled_features['user-registration-multiple-registration'] ) ) {
+			$enabled_features[] = 'user-registration-multiple-registration';
+			update_option( 'user_registration_enabled_features', $enabled_features );
+		}
+	}
+
+	$group_args = array(
+		'order'         => 'ASC',
+		'numberposts'   => -1,
+		'status'        => 'publish',
+		'post_type'     => array( 'ur_membership_groups' ),
+		'orderby'       => 'ID',
+		'order'         => 'DESC',
+		'no_found_rows' => true,
+		'nopaging'      => true,
+	);
+
+	$all_groups = get_posts( $group_args );
+
+	if ( count( $all_groups ) > 0 ) {
+		$enabled_features = get_option( 'user_registration_enabled_features', array() );
+		if ( ! isset( $enabled_features['user-registration-membership-groups'] ) ) {
+			$enabled_features[] = 'user-registration-membership-groups';
+			update_option( 'user_registration_enabled_features', $enabled_features );
+		}
+	}
+}
+
+/**
+ * Migrate global thank you page to per-form redirect settings (v5.1.5).
+ * Runs only for forms that contain the membership field.
+ *
+ * @return void
+ */
+function ur_update_515_redirect_thank_you_page_migrate() {
+
+	if ( ! function_exists( 'ur_check_module_activation' ) || ! ur_check_module_activation( 'membership' ) ) {
+		return;
+	}
+
+	$thank_you_page_id = get_option( 'user_registration_thank_you_page_id', '' );
+
+	$posts = get_posts(
+		array(
+			'post_type'      => 'user_registration',
+			'posts_per_page' => -1,
+			'post_status'    => 'any',
+		)
+	);
+
+	foreach ( $posts as $post ) {
+		$form_content = isset( $post->post_content ) ? $post->post_content : '';
+		if ( false === strpos( $form_content, '"field_key":"membership"' ) ) {
+			continue;
+		}
+
+		if ( empty( $thank_you_page_id ) || ! get_post_status( $thank_you_page_id ) ) {
+			update_post_meta( $post->ID, 'user_registration_form_setting_redirect_after_registration', 'no-redirection' );
+		} else {
+			if ( 'no-redirection' === ( get_post_meta( $post->ID, 'user_registration_form_setting_redirect_after_registration', true ) ) ) {
+				update_post_meta( $post->ID, 'user_registration_form_setting_redirect_after_registration', 'internal-page' );
+				update_post_meta( $post->ID, 'user_registration_form_setting_redirect_page', $thank_you_page_id );
+			} else {
+				update_post_meta( $post->ID, 'user_registration_form_setting_redirect_after_registration', 'internal-page' );
+
+				if ( empty( get_post_meta( $post->ID, 'user_registration_form_setting_redirect_page', true ) ) ) {
+					update_post_meta( $post->ID, 'user_registration_form_setting_redirect_page', $thank_you_page_id );
+				}
+			}
+
+		}
 	}
 }

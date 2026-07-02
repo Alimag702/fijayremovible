@@ -30,17 +30,9 @@ final class Shortcodes_Ultimate_Admin_About extends Shortcodes_Ultimate_Admin {
 		}
 
 		wp_enqueue_script(
-			'vimeo',
-			'https://player.vimeo.com/api/player.js',
-			array(),
-			'2.15.0',
-			true
-		);
-
-		wp_enqueue_script(
 			'shortcodes-ultimate-admin-about',
 			plugins_url( 'js/about/index.js', __FILE__ ),
-			array( 'vimeo' ),
+			array(),
 			filemtime( plugin_dir_path( __FILE__ ) . 'js/about/index.js' ),
 			true
 		);

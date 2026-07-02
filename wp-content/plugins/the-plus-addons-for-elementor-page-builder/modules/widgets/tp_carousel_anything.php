@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -29,22 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_ThePlus_Carousel_Anything
  */
-class L_ThePlus_Carousel_Anything extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
-
-	
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
+class L_ThePlus_Carousel_Anything extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -73,19 +58,7 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-sliders theplus_backend_icon';
-	}
-
-	/**
-	 * Get custom URL.
-	 *
-	 * @since 1.2.0
-	 * @version 5.4.2
-	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
+		return 'theplus-i-carousel-anything tpae-editor-logo';
 	}
 
 	/**
@@ -95,7 +68,7 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-creatives' );
+		return array( 'plus-essential' );
 	}
 
 	/**
@@ -105,7 +78,7 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'carousel', 'slider', 'slideshow', 'image carousel', 'image slider', 'image slideshow', 'carousel widget', 'slider widget', 'slideshow widget' );
+		return array( 'Tp Carousel Anything', 'Template Carousel', 'Vertical Carousel', 'Infinite Loop Slider', 'Multi-Column Carousel', 'Autoplay Carousel', 'Draggable Slider', 'Horizontal Carousel', 'Slider', 'Autoplay Slideshow', 'Slideshow', 'Mousewheel Slider' );
 	}
 
 	/**
@@ -114,39 +87,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 	 * @since 6.1.2
 	 */
 	// public function is_dynamic_content(): bool {
-	// 	return false;
+	// return false;
 	// }
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
 
 	/**
 	 * Register controls.
@@ -164,29 +106,34 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="17360" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="17360">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/elementor-carousel-slider/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 17360,
+				'label_block' => true,
+			)
+		);
+		$this->add_control(
+			'carousel_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add your slides here, then select a template or paste a template shortcode for each slide to display your content.', 'tpebl' ),
+					)
 				),
-                'label_block' => true,
-            )
+				'label_block' => true,
+			)
 		);
 		$repeater = new \Elementor\Repeater();
 		$repeater->add_control(
 			'tab_title',
 			array(
-				'label'       => esc_html__( 'Title', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'ai'  => false,
-				'default'     => esc_html__( 'Slide 1', 'tpebl' ),
+				'label'   => esc_html__( 'Title', 'tpebl' ),
+				'type'    => Controls_Manager::TEXT,
+				'ai'      => false,
+				'default' => esc_html__( 'Slide 1', 'tpebl' ),
 			)
 		);
 		$repeater->add_control(
@@ -204,12 +151,45 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$repeater->add_control(
 			'content_template',
 			array(
-				'label'       => wp_kses_post( "Select Content <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "connect-carousel-remote-with-carousel-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
-				'type'        => Controls_Manager::SELECT,
-				'default'     => '0',
-				'options'     => l_theplus_get_templates(),
-				'condition'   => array(
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"> <i class="eicon-help-o"></i> </a>',
+						esc_html__( 'Select Content', 'tpebl' ),
+						esc_url( $this->tp_doc . 'connect-carousel-remote-with-carousel-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => '0',
+				'options'   => l_theplus_get_templates(),
+				'classes'   => 'tp-template-create-btn',
+				'condition' => array(
 					'content_template_type' => 'dropdown',
+				),
+			)
+		);
+		$repeater->add_control(
+			'liveeditor',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => '<a class="tp-live-editor" id="tp-live-editor-button">' . esc_html__( 'Edit Template', 'tpebl' ) . '</a>',
+				'content_classes' => 'tp-live-editor-btn',
+				'label_block'     => true,
+				'condition'       => array(
+					'content_template_type' => 'dropdown',
+					'content_template!'     => '0',
+				),
+			)
+		);
+		$repeater->add_control(
+			'create',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => '<a class="tp-live-create" id="tp-live-create-button">' . esc_html__( 'Create Template', 'tpebl' ) . '</a>',
+				'content_classes' => 'tp-live-create-btn',
+				'label_block'     => true,
+				'condition'       => array(
+					'content_template_type' => 'dropdown',
+					'content_template'      => '0',
 				),
 			)
 		);
@@ -221,7 +201,7 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'dynamic'     => array(
 					'active' => true,
 				),
-				'ai'  => false,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => '[elementor-template id="70"]',
 				'condition'   => array(
@@ -258,9 +238,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slide_random_order',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Slide Random Order <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Slide Random Order', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -268,16 +249,19 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Turn this on to shuffle your slides automatically every time the page loads. It helps keep your carousel content fresh and engaging for returning visitors.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'tab_content_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slide_random_order' => array( 'yes' ),
 				),
@@ -292,36 +276,58 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'label_off'   => esc_html__( 'Off', 'tpebl' ),
 				'default'     => 'no',
 				'separator'   => 'before',
-			)
-		);
-		$this->add_control(
-			'slide_overflow_hidden_Note',
-			array(
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => '<b>Note:</b> If any content goes outside of section and conflict with another. We suggest to turn this option on.',
-				'content_classes' => 'tp-controller-notice',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enable this if any part of your content goes outside the carousel section or overlaps with other elements. It keeps your design neat and visually contained.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'carousel_unique_id',
 			array(
-				'label'       => wp_kses_post( "Unique Carousel ID <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "connect-infobox-with-carousel-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'       => esc_html__( 'Unique Carousel ID', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '',
-				'ai'  => false,
+				'ai'          => false,
 				'separator'   => 'before',
-			)
-		);
-		$this->add_control(
-			'carousel_unique_id_Note',
-			array(
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => '<b>Note:</b> Keep this blank or Setup Unique id for carousel which you can use with "Carousel Remote" widget.',
-				'content_classes' => 'tp-controller-notice',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Add a unique ID here if you want to connect this carousel with the Carousel Remote widget for synced navigation.', 'tpebl' ),
+						esc_url( $this->tp_doc . 'connect-infobox-with-carousel-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn More', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->end_controls_section();
-
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/carousel-anything/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => esc_html__( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=yszLgc0TJPA',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_carousel_options_styling',
 			array(
@@ -344,11 +350,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'vertical_direction',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_direction' => array( 'vertical' ),
 				),
@@ -401,12 +404,17 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'slide_fade_inout_notice',
+			'fadeinout_note',
 			array(
-				'type'            => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : Just for single column layout.',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Just for single column layout.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
 					'slider_direction' => 'horizontal',
 					'slide_fade_inout' => 'fadeinout',
 				),
@@ -427,11 +435,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'Slider_animation_effect',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_animation' => array( 'linear' ),
 				),
@@ -447,7 +452,13 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_desktop_column',
 			array(
-				'label'   => wp_kses_post( "Desktop Columns <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "multiple-columned-elementor-carousel-slider/' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'   => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"> </i></a>',
+						esc_html__( 'Desktop Columns', 'tpebl' ),
+						esc_url( $this->tp_doc . 'multiple-columned-elementor-carousel-slider/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'    => Controls_Manager::SELECT,
 				'default' => '1',
 				'options' => array(
@@ -465,14 +476,12 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'1' => esc_html__( 'One Column', 'tpebl' ),
 					'2' => esc_html__( 'All Visible Columns', 'tpebl' ),
 				),
-			)
-		);
-		$this->add_control(
-			'steps_slide_Note',
-			array(
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => '<b>Note:</b> Select option of column scroll on previous or next in carousel.',
-				'content_classes' => 'tp-controller-notice',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Choose how many columns move per navigation click.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_responsive_control(
@@ -497,22 +506,34 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_draggable',
 			array(
-				'label'     => esc_html__( 'Draggable', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Show', 'tpebl' ),
-				'label_off' => esc_html__( 'Hide', 'tpebl' ),
-				'default'   => 'yes',
+				'label'       => esc_html__( 'Draggable', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'yes',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Allow users to drag slides manually.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'multi_drag',
 			array(
-				'label'     => esc_html__( 'Multi Drag', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Show', 'tpebl' ),
-				'label_off' => esc_html__( 'Hide', 'tpebl' ),
-				'default'   => 'no',
-				'condition' => array(
+				'label'       => esc_html__( 'Multi Drag', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Let users drag multiple slides at once.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'slider_draggable' => 'yes',
 				),
 			)
@@ -520,9 +541,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_infinite',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Infinite Mode <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Infinite Mode', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -530,16 +552,21 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Enable endless looping of slides.', 'tpebl' ),
+						esc_url( $this->tp_doc . 'carousel-infinite-loop-scroll-in-elementor-slider/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn More', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'infinite_mode_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_infinite' => array( 'yes' ),
 				),
@@ -548,9 +575,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_pause_hover',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Pause On Hover <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Pause On Hover', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -558,16 +586,19 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Pause autoplay when users hover over the carousel.', 'tpebl' ),
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'pause_hover_option',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_pause_hover' => array( 'yes' ),
 				),
@@ -576,19 +607,26 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_adaptive_height',
 			array(
-				'label'     => esc_html__( 'Adaptive Height', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Show', 'tpebl' ),
-				'label_off' => esc_html__( 'Hide', 'tpebl' ),
-				'default'   => 'no',
+				'label'       => esc_html__( 'Adaptive Height', 'tpebl' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'label_on'    => esc_html__( 'Show', 'tpebl' ),
+				'label_off'   => esc_html__( 'Hide', 'tpebl' ),
+				'default'     => 'no',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Adjust slide height automatically based on content.', 'tpebl' )
+					)
+				),
 			)
 		);
 		$this->add_control(
 			'slider_autoplay',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Autoplay <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Autoplay', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -601,21 +639,23 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'autoplay_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_autoplay' => array( 'yes' ),
 				),
 			)
 		);
-
 		$this->add_control(
 			'slider_dots',
 			array(
-				'label'     => wp_kses_post( "Show Dots <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "showhide-arrows-dots-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"> </i></a>',
+						esc_html__( 'Show Dots', 'tpebl' ),
+						esc_url( $this->tp_doc . 'showhide-arrows-dots-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
@@ -646,11 +686,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'dot_style',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_dots_style!' => array( 'style-1' ),
 				),
@@ -673,9 +710,9 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .slick-dots.style-1 li,{{WRAPPER}}  .slick-dots.style-2 li,{{WRAPPER}}  .slick-dots.style-3 li' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'slider_dots'       => 'yes',
-					'slider_dots_style' => array( 'style-1'),
-					'slider_dots_style!' => array( 'style-2', 'style-3'),
+					'slider_dots'        => 'yes',
+					'slider_dots_style'  => array( 'style-1' ),
+					'slider_dots_style!' => array( 'style-2', 'style-3' ),
 				),
 			)
 		);
@@ -695,9 +732,9 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-dots.style-1 li button:before' => 'color: {{VALUE}};',
 				),
 				'condition' => array(
-					'slider_dots_style' => array( 'style-1'),
-					'slider_dots_style!' => array( 'style-2', 'style-3', 'style-5'),
-					'slider_dots'       => 'yes',
+					'slider_dots_style'  => array( 'style-1' ),
+					'slider_dots_style!' => array( 'style-2', 'style-3', 'style-5' ),
+					'slider_dots'        => 'yes',
 				),
 			)
 		);
@@ -722,8 +759,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-slider.slick-dotted' => 'padding-bottom: {{SIZE}}{{UNIT}};',
 				),
 				'condition'  => array(
-					'slider_dots_style' => array( 'style-1'),
-					'slider_dots' => 'yes',
+					'slider_dots_style' => array( 'style-1' ),
+					'slider_dots'       => 'yes',
 				),
 			)
 		);
@@ -743,9 +780,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'direction_dots',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Direction Dots <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Direction Dots', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -761,11 +799,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'direction_dots_option',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'direction_dots' => array( 'yes' ),
 				),
@@ -774,9 +809,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'hover_show_dots',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'On Hover Dots <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'On Hover Dots', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -792,11 +828,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'hover_dots_option',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'hover_show_dots' => array( 'yes' ),
 				),
@@ -805,7 +838,13 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_arrows',
 			array(
-				'label'     => wp_kses_post( "Show Arrows <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "showhide-arrows-dots-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"> </i></a>',
+						esc_html__( 'Show Arrows', 'tpebl' ),
+						esc_url( $this->tp_doc . 'showhide-arrows-dots-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
@@ -835,11 +874,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'arrow_style',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_arrows_style!' => array( 'style-1' ),
 				),
@@ -856,9 +892,9 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-prev.style-4:before,{{WRAPPER}} .list-carousel-slick .slick-nav.style-4:before' => 'border-color: {{VALUE}};',
 				),
 				'condition' => array(
-					'slider_arrows_style' => array( 'style-1'),
-					'slider_arrows_style!' => array( 'style-3', 'style-4', 'style-6'),
-					'slider_arrows'       => 'yes',
+					'slider_arrows_style'  => array( 'style-1' ),
+					'slider_arrows_style!' => array( 'style-3', 'style-4', 'style-6' ),
+					'slider_arrows'        => 'yes',
 				),
 			)
 		);
@@ -873,9 +909,9 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-prev.style-2 .icon-wrap:before,{{WRAPPER}} .list-carousel-slick .slick-prev.style-2 .icon-wrap:after,{{WRAPPER}} .list-carousel-slick .slick-next.style-2 .icon-wrap:before,{{WRAPPER}} .list-carousel-slick .slick-next.style-2 .icon-wrap:after,{{WRAPPER}} .list-carousel-slick .slick-prev.style-5 .icon-wrap:before,{{WRAPPER}} .list-carousel-slick .slick-prev.style-5 .icon-wrap:after,{{WRAPPER}} .list-carousel-slick .slick-next.style-5 .icon-wrap:before,{{WRAPPER}} .list-carousel-slick .slick-next.style-5 .icon-wrap:after' => 'background: {{VALUE}};',
 				),
 				'condition' => array(
-					'slider_arrows_style' => array( 'style-1'),
-					'slider_arrows_style!' => array('style-2', 'style-3', 'style-4', 'style-5', 'style-6'),
-					'slider_arrows'       => 'yes',
+					'slider_arrows_style'  => array( 'style-1' ),
+					'slider_arrows_style!' => array( 'style-2', 'style-3', 'style-4', 'style-5', 'style-6' ),
+					'slider_arrows'        => 'yes',
 				),
 			)
 		);
@@ -890,9 +926,9 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-prev.style-4:hover:before,{{WRAPPER}} .list-carousel-slick .slick-nav.style-4:hover:before' => 'border-color: {{VALUE}};',
 				),
 				'condition' => array(
-					'slider_arrows_style' => array( 'style-1'),
-					'slider_arrows_style!' => array( 'style-2', 'style-3', 'style-4'),
-					'slider_arrows'       => 'yes',
+					'slider_arrows_style'  => array( 'style-1' ),
+					'slider_arrows_style!' => array( 'style-2', 'style-3', 'style-4' ),
+					'slider_arrows'        => 'yes',
 				),
 			)
 		);
@@ -907,18 +943,19 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 					'{{WRAPPER}} .list-carousel-slick .slick-prev.style-2:hover .icon-wrap::before,{{WRAPPER}} .list-carousel-slick .slick-prev.style-2:hover .icon-wrap::after,{{WRAPPER}} .list-carousel-slick .slick-next.style-2:hover .icon-wrap::before,{{WRAPPER}} .list-carousel-slick .slick-next.style-2:hover .icon-wrap::after,{{WRAPPER}} .list-carousel-slick .slick-prev.style-5:hover .icon-wrap::before,{{WRAPPER}} .list-carousel-slick .slick-prev.style-5:hover .icon-wrap::after,{{WRAPPER}} .list-carousel-slick .slick-next.style-5:hover .icon-wrap::before,{{WRAPPER}} .list-carousel-slick .slick-next.style-5:hover .icon-wrap::after' => 'background: {{VALUE}};',
 				),
 				'condition' => array(
-					'slider_arrows_style' => array( 'style-1'),
-					'slider_arrows_style!' => array( 'style-2', 'style-3', 'style-4', 'style-5', 'style-6'),
-					'slider_arrows'       => 'yes',
+					'slider_arrows_style'  => array( 'style-1' ),
+					'slider_arrows_style!' => array( 'style-2', 'style-3', 'style-4', 'style-5', 'style-6' ),
+					'slider_arrows'        => 'yes',
 				),
 			)
 		);
 		$this->add_control(
 			'outer_section_arrow',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'Outer Content Arrow <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'Outer Content Arrow', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -927,20 +964,17 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
-					'slider_arrows'       => 'yes',
-					'slider_arrows_style' => array( 'style-1'),
-					'slider_arrows_style!' => array('style-2', 'style-5', 'style-6'),
+					'slider_arrows'        => 'yes',
+					'slider_arrows_style'  => array( 'style-1' ),
+					'slider_arrows_style!' => array( 'style-2', 'style-5', 'style-6' ),
 				),
 			)
 		);
 		$this->add_control(
 			'outer_content_arrow',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'outer_section_arrow' => array( 'yes' ),
 				),
@@ -949,9 +983,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'hover_show_arrow',
 			array(
-				'label' => wp_kses_post(
+				'label'     => wp_kses_post(
 					sprintf(
-						'On Hover Arrow <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" />',
+						esc_html__( 'On Hover Arrow', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' )
 					)
 				),
@@ -967,11 +1002,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'show_arrow_style',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'hover_show_arrow' => array( 'yes' ),
 				),
@@ -980,10 +1012,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'slider_center_mode',
 			array(
-				// 'label'     => wp_kses_post( "Center Mode <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "increase-center-slide-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
-				'label' => wp_kses_post(
-				sprintf(
-						'Center Mode <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" /> <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <img class="pro-badge-img" src="%s" alt="PRO" style="width:32px; vertical-align:middle;" /> <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Center Mode', 'tpebl' ),
 						esc_url( L_THEPLUS_URL . 'assets/images/pro-features/pro-tag.svg' ),
 						esc_url( $this->tp_doc . 'increase-center-slide-in-elementor-carousel/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
 					)
@@ -998,11 +1030,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'center_mode_effect',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'slider_center_mode' => array( 'yes' ),
 				),
@@ -1043,11 +1072,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'tab_carousel_tablet_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 			)
 		);
 		$this->end_controls_tab();
@@ -1060,11 +1086,8 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->add_control(
 			'tab_carousel_mobile_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 			)
 		);
 		$this->end_controls_tab();
@@ -1072,7 +1095,6 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		$this->end_controls_section();
 		/*carousel option*/
 
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1116,9 +1138,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 
 		$slider_animation = ( isset( $settings['slider_animation'] ) ? $settings['slider_animation'] : 'ease' );
 
-		$data_slider    .= ' data-slider_animation="' . esc_attr( $slider_animation ) . '"';
+		$data_slider .= ' data-slider_animation="' . esc_attr( $slider_animation ) . '"';
 
 		$carousel_direction = ! empty( $settings['carousel_direction'] ) ? $settings['carousel_direction'] : 'ltr';
+		$carousel_direction = in_array( $carousel_direction, array( 'ltr', 'rtl' ), true ) ? $carousel_direction : 'ltr';
 
 		$carousel_slider = '';
 
@@ -1162,12 +1185,12 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		}
 		?>
  
-		<div id="<?php echo esc_attr( $uid ); ?>" class="theplus-carousel-anything-wrapper <?php echo esc_attr( $isotope ); ?> <?php echo esc_attr( $arrow_class ); ?> <?php echo esc_attr( $data_carousel ); ?> <?php echo esc_attr( $uid ); ?> "data-id="<?php echo esc_attr( $uid ); ?>" data-connection="<?php echo esc_attr( $tab_id ); ?>" <?php echo $carousel_slider; ?> dir=<?php echo esc_attr( $carousel_direction ); ?> <?php echo $data_slider; ?> <?php echo $carousel_bg_conn; ?>>
+		<div id="<?php echo esc_attr( $uid ); ?>" class="theplus-carousel-anything-wrapper <?php echo esc_attr( $isotope ); ?> <?php echo esc_attr( $arrow_class ); ?> <?php echo esc_attr( $data_carousel ); ?> <?php echo esc_attr( $uid ); ?> "data-id="<?php echo esc_attr( $uid ); ?>" data-connection="<?php echo esc_attr( $tab_id ); ?>" <?php echo $carousel_slider; ?> dir="<?php echo esc_attr( $carousel_direction ); ?>"<?php echo $data_slider; ?> <?php echo $carousel_bg_conn; ?>>
 			<div class="plus-carousel-inner post-inner-loop">
 			<?php
 			if ( ! empty( $settings['carousel_content'] ) ) {
 				foreach ( $settings['carousel_content'] as $index => $item ) :
-					$tab_count = $index + 1;
+					$tab_count               = $index + 1;
 					$tab_content_setting_key = $this->get_repeater_setting_key( 'tab_content', 'carousel_content', $index );
 					$this->add_render_attribute(
 						$tab_content_setting_key,
@@ -1189,23 +1212,30 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 
 								$template_status = $this->get_elementor_template_status( $content_template_id );
 								if ( 'publish' === $template_status ) {
-									echo '<div class="plus-content-editor">' . L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( substr( $item['content_template_id'], 24, -2 ) ) . '</div>';
+									echo '<div class="plus-content-editor">' . L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( substr( $item['content_template_id'], 24, -2 ), true ) . '</div>';
 								} else {
 									echo '<div class="tab-preview-template-notice"><div class="preview-temp-notice-heading">' . esc_html__( 'Unauthorized Access', 'tpebl' ) . '</b></div><div class="preview-temp-notice-desc"><b>' . esc_html__( 'Note :', 'tpebl' ) . '</b> ' . esc_html__( 'You need to upgrade your permissions to Editor or Administrator level to update this option.', 'tpebl' ) . '</div></div>';
 								}
-							}else{
+							} else {
 								$content_template = isset( $item['content_template'] ) ? intval( $item['content_template'] ) : 0;
 
-								if ( has_filter( 'wpml_object_id' ) ) {
-									$content_template = apply_filters('wpml_object_id', $content_template, get_post_type( $content_template ), true);
-								}
+								if ( empty( $content_template ) || '0' === $content_template ) {
+									echo '<div class="tab-preview-template-notice">
+											<div class="preview-temp-notice-heading">' . esc_html__( 'Select Template', 'tpebl' ) . '</div>
+											<div class="preview-temp-notice-desc">' . esc_html__( 'Please select a template to display its content.', 'tpebl' ) . '</div>
+										</div>';
+								} else {
+									if ( has_filter( 'wpml_object_id' ) ) {
+										$content_template = apply_filters( 'wpml_object_id', $content_template, get_post_type( $content_template ), true );
+									}
 
-								$template_status  = get_post_status( $content_template );
+									$template_status = get_post_status( $content_template );
 
-								if( 'publish' === $template_status ){
-									echo '<div class="plus-content-editor">' . L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( $content_template ) . '</div>';
-								}else{
-									echo '<div class="tab-preview-template-notice"><div class="preview-temp-notice-heading">' . esc_html__( 'Unauthorized Access', 'tpebl' ) . '</b></div><div class="preview-temp-notice-desc"><b>' . esc_html__( 'Note :', 'tpebl' ) . '</b> ' . esc_html__( 'You need to upgrade your permissions to Editor or Administrator level to update this option.', 'tpebl' ) . '</div></div>';
+									if ( 'publish' === $template_status ) {
+										echo '<div class="plus-content-editor">' . L_Theplus_Element_Load::elementor()->frontend->get_builder_content_for_display( $content_template, true ) . '</div>';
+									} else {
+										echo '<div class="tab-preview-template-notice"><div class="preview-temp-notice-heading">' . esc_html__( 'Unauthorized Access', 'tpebl' ) . '</b></div><div class="preview-temp-notice-desc"><b>' . esc_html__( 'Note :', 'tpebl' ) . '</b> ' . esc_html__( 'You need to upgrade your permissions to Editor or Administrator level to update this option.', 'tpebl' ) . '</div></div>';
+									}
 								}
 							}
 
@@ -1231,10 +1261,10 @@ class L_ThePlus_Carousel_Anything extends Widget_Base {
 		// Match the ID from the shortcode using regex
 		if ( preg_match( '/id="(\d+)"/', $shortcode, $matches ) ) {
 			$content_template_id = intval( $matches[1] ); // Extract and sanitize the ID
-	
+
 			// Call get_post_status function
 			$template_status = get_post_status( $content_template_id );
-	
+
 			return $template_status;
 		}
 

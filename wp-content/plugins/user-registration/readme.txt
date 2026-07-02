@@ -1,228 +1,234 @@
-=== User Registration & Membership – Custom Registration Form, Login Form, and User Profile  ===
+=== User Registration & Membership - Free & Paid Memberships, Subscriptions, Content Restriction, User Profile, Custom User Registration & Login Builder ===
 Contributors: WPEverest
-Tags: user registration, registration, user profile, registration form, login form,
+Tags: membership, subscription, content restriction, user profile, user registration
 Requires at least: 5.5
-Requires PHP: 7.2
-Tested up to: 6.8.1
-Stable tag: 4.2.2
+Requires PHP: 7.4
+Tested up to: 7.0
+Stable tag: 5.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-The most flexible User Registration and Membership plugin for WordPress with a user profile page, email notification, user roles assignment, and more.
+Build membership sites with tiered plans, content restriction, drag-&-drop custom registration & login form builder, and built-in payment system.
 
 == Description ==
 
-**The most flexible User Registration and Membership plugin for WordPress - URM**
+==The Complete Membership Solution for WordPress ==
 
-Are you a beginner with absolutely zero coding skills? No problem! User Registration & Membership lets you create awesome membership websites and dynamic registration forms in minutes.
+Tired of juggling separate plugins for membership plans, user management, payment gateways, and user profile?
 
-You can seamlessly integrate members into your website with the comprehensive membership ecosystem, featuring registration forms, membership groups, login forms, user profiles, content restriction, and a variety of other powerful tools.
+User Registration & Membership (URM) helps you monetize your site by creating membership plans and accepting payments for gated content.
 
-This free, lightweight, and fully responsive plugin also includes a beautifully designed login form ready to use. It automatically creates a user profile account for registered members.
+* Membership: Build membership plans, setup billing, and manage user access in a single connected flow.
 
-And you can get started for FREE! The free plan provides you with all the core features to kick-start your own membership website.
+* Custom User Registration Forms: Design custom registration form and for your users with drag-and-drop form builder.
 
-[youtube https://youtu.be/lrkXhZ7hS8g ]
+* Payment Integration: Monetize your membership site with one-time fee, recurring subscription, and upgrade paths. Accept subscription payments through Stripe, PayPal, and bank transfer.
 
-[All Features](https://wpuserregistration.com/features/?utm_source=wporg&utm_medium=all-features-link&utm_campaign=ur-upgrade-to-pro) | [Documentation](https://docs.wpuserregistration.com/) | [Community](https://www.facebook.com/groups/userregistration/)
+* Content Restriction: Restrict complete site, or individual pages and posts by membership subscription.
 
-[Test User Registration & Membership Premium for Free ](https://userregistration.demoswp.net/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)
+[👉 Get Started Today](https://wpuserregistration.com/?utm_source=wporg&utm_medium=readme&utm_campaign=urm-free)
 
-### Create High-converting Registration Forms and Memberships websites with Our Feature-rich Plugin
-* **Powerful Custom Registration Forms:** Designing WordPress custom registration forms has never been easier. Simply drag and drop fields and visually create user register forms.
+[👉 Try Our Demo](https://userregistration.demoswp.net/?utm_source=wporg&utm_medium=readme&utm_campaign=try-demo)
 
-* **In-built Login Form:** No need to make a separate login form for users as you get an in-built login form with User Registration & Membership.
+==Complete Membership Solution==
 
-* **Easy Drag & Drop Builder:** Simply drag & drop the form fields into a blank slate & create a registration form in no time. Create membership forms or registration form as you wish. No code, no fuss.
+https://youtu.be/czohMTVfLrw
 
-* **Quick Form Preview:** Enables form functionality checking before publishing, improving UX.
+* __Membership Groups and Plans__: Create membership tiers with different access levels and benefits. Combine related plans into membership groups for organized front-end listing.
 
-[youtube https://youtu.be/jbiBJdowxG0 ]
+* __Pre-Installed Membership Pages__: Launch your membership site in minutes instead of hours with professional pages ready to use or customize: Registration, Login, My Account, Lost Password, Reset Password, Pricing, and Thank You pages.
 
-* **Versatile Membership Websites:** Use the User Registration & Membership plugin and create a full-fledged membership website. Create membership groups and plans with multiple tiers of content access and benefits, then, sell them to your website members for a recurring fee.
+* __Content Restriction__: Set restrictions globally, per page/post, or for specific content blocks within pages. Build complex access rules using membership plans, user roles, registration and login status.
 
-* **Membership groups:** Combine related plans into a membership group and display them on the front end. The group helps you segment your members and deliver specialized content based on their interests.
+* __Membership Upgrade Path__: Define clear upgrade paths between membership tiers and let users switch seamlessly without interrupting their access or membership status.
 
-* **Create Easy Content Restriction Rules:** Enable content restriction for members in posts, pages, & categories. You can also create advanced custom content access rules based on memberships, roles, capabilities, user state, & more.
+* __Masteriyo Course Integration__: Sell courses through memberships using our Masteriyo LMS integration.
 
-[youtube https://youtu.be/eNQSzJqSTt0 ]
+* __10+ Membership Gutenberg Blocks__: Create custom membership pages using our custom blocks: registration, my account, membership pricing, buy now block etc.
 
-* **25 + Custom Form Fields Added to Default User Fields:** User Registration & Membership unlocks the limitations posed by the default WordPress fields while registering users. Use more than 25 custom form fields like Country, Privacy Policy, & Profile Picture to design any kind of form you need.
+* __Membership Analytics__: Quickly glance over total registration, approved users, and pending requests with dedicated analytics dashboard.
 
-* **Email Notifications:** Send customized email notifications to your users & admin after registration. Additionally, you can send notifications regarding payments & changes made to profile details as well.
+ __Custom User Registration__
 
-* **User Profile Account Page:** User Registration & Membership automatically creates a WordPress user profile account for all your registered users. Even better is the fact that you’re still in complete control of the customization of this page.
+https://youtu.be/jbiBJdowxG0
 
-* **Global Search Settings:** Admins can search in the Global Settings to quickly access the required settings.
+* __Registration Form Builder__: Build custom WordPress registration forms. Drag fields onto the canvas, arrange them visually, and configure settings with simple clicks.
 
-* **Strong Spam Protection:** Block spam attacks like fake registrations & spam submissions with our Google reCaptcha, honeypot, Cloudflare, Turnstile and custom captcha features like image, math and Q&A captcha.
+* __Login Form__: Start with a pre-built login form and customize it to your needs. Choose form styles, configure login methods, add CAPTCHA, and set login/logout redirects.
 
-* **Assign User Roles & Capabilities:** Assign default WordPress user roles like Editor, Author, Subscriber, & more while creating registration forms.
+* __Live Form Preview__: Preview registration and login forms in real-time to ensure everything looks and functions properly.
 
-* **Smart Tags:** Personalize email notifications with user-specific data.
+*  __Pre-built Form Templates__: Save hours of setup time with professionally designed registration form templates. Use them as-is or customize fields and styling to match your specific needs. View All Form Templates
 
-* **AJAX Form Submission:** Provides seamless & fast form submissions without page reloading.
+* __Ajax Form Submission__: Say goodbye to slow form submissions that reload the entire page. Users get instant confirmation or error messages.
 
-* **Gutenberg Support:** User Registration & Membership fully support the Block Editor. You can add login & registration forms to any page using the User Registration Block.
+* __User Role Assignment__: Assignment WordPress user roles (Administrator, Editor, Author, Contributor, Subscriber) to members during registration.
 
-* **Form Templates:** Kickstart your registration process with our pre-designed form templates. Use as-it-is or modify it according to your needs.
+* __Flexible Approval Method__: Choose from auto-approval, email verification, and manual admin approval for new registration for quality control.
 
-* **Easily Import/Export Forms:** If you own multiple websites, you don’t have to create registration forms from scratch every single time. You can save time by exporting & importing forms as JSON files, including form settings.
+__Payment and Monetization__
 
-* **[Premium] Track User Journey:** Get detailed information about the pages a user visited on your website & the time they spent on the pages.
+* __Multiple Revenue Modules__: Offer fixed-term memberships, recurring subscription or lifetime access.
 
-* **[Premium] Login and Registration Popups:** Turn simple inline registration & login forms into popups for better user engagement & conversion.
+* __Trusted Payment Gateways__: Accept secure payment with trusted global payment gateways even in the free version:
+  * __PayPal__
+  * __Stripe__
+ * __Bank Transfer__
 
-* **[Premium] User Registration Data in Graphs & Charts:** Receive accurate stats on every user registration form through graphs & charts.
+* __Payment History__: Comprehensive transaction tracking with payment status, date, gateway, and more. complete history accessible to admins and members.
 
-* **[Premium] Passwordless Login:** Enable user authentication through a secure email link, eliminating the need for passwords.
 
-### Add-ons & Integrations
+==User Registration & Membership PRO Features
 
-* **[Premium] [Multi-Step Form:](https://wpuserregistration.com/features/multi-step-form/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Use multi-step forms that let you break long forms into multiple sections for a cleaner & more engaging presentation.
+__Membership and User Management__
 
-* **[Premium] [Customize My Account:](https://wpuserregistration.com/features/customize-my-account/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Manage the in-built My Account page by adding custom tabs as well as editing & deleting default tabs. User Registration also allows you to edit design elements of the page such as Color, Buttons, Navigation, & more.
+* Membership plans with tiered access control
+*  Admin approval for new registrations
+*  Member Directory with search filters searchable directories
+* Role-based redirection after login
+* Profile completeness indicator
+* Advanced content restriction with complex rules
+* User journey tracking
+* Payment history tracking
+* Social Connect (Facebook, Google, Twitter, LinkedIn login)
+* Profile Connect (sync with other plugins)
+* Block simultaneous logins
 
-* **[Premium] [WooCommerce Integration:](https://wpuserregistration.com/features/woocommerce-integration/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Integrate WooCommerce with our plugin & add WooCommerce Shipping/Billing Address fields to your user registration forms.
+__Advanced Content Restriction__
 
-* **[Premium] [Drag and Drop Multi File Upload:](https://wpuserregistration.com/features/file-uploads/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** The multiple file upload feature is perfect for collecting more than one document or image file. You only have to set the maximum file upload limit from the field options.
+* Content drop for membership content
+* URL-based restriction
+* File download protection
+* Conditional Content Restriction using AND, OR, and NOT logic.
 
-* **[Premium] [Set Fields Visibility:](https://wpuserregistration.com/features/field-visibility/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Hide specific user registration fields in the published forms & user profile page. You can decide whether the field is visible in the registration form, profile details, or both.
 
-* **[Premium] [Import Users:](https://wpuserregistration.com/features/import-users/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Import users to any registration form on your WordPress website. Just upload the CSV file with user information & map it with the registration form of your choice.
+__Registration Form Fields & Functionality__
 
-* **[Premium] [Frontend User Listing:](https://wpuserregistration.com/features/frontend-listing/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** List registered users in the front end to help visitors & users view the profile of all the listed members.
+ *  60+  form fields
+ * Conditional logic (show/hide fields based on user input)
+ * Multi-step forms with progress indicators
+ * Conversational forms (chat-like layout)
+ * Field visibility control
+ * Form restriction by custom rules
+ * Popup forms (modal display)
+ * Calculations
+ * Signature field
+* Invite codes
+ * Repeater field (multiple entries per field group)
+ * Save and Continue (save partial progress)
 
-* **[Premium] [Style Customizer Tool:](https://wpuserregistration.com/features/style-customizer/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** You might find the default form template a bit boring. So, User Registration offers a live form designer for you to customize form elements like Field Styles, Form Wrapper, & Button Styles without writing any code.
 
-* **[Premium] [Invite Codes for Registration:](https://wpuserregistration.com/features/invite-codes/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** User Registration allows access to the registration page to only users with an invitation code. You can either create a code on your own or generate random codes.
+__Monetization and Payment Processing__
 
-* **[Premium] [Two Factor Authentication:](https://wpuserregistration.com/features/two-factor-authentication/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** The Two Factor Authentication add-on, also known as 2FA, for providing OTP-based verification for the users for maintaining a secure site & preventing data breaching.
+* Trial Period
+* Multiple memberships per user
+* Sell memberships to team
+* Authorize.net
+* Mollie integration
+* Registration coupons and discounts
+* Payment history dashboard
+* Membership plan upgrades with pro-rated billing
+* Discount coupon and codes
+* Tax and EU VAT
+* Sell in local currency
+* Invoice generation
 
-* **[Premium] Collect Payments via Credit Cards & PayPal:** User Registration works flawlessly with both [PayPal](https://wpuserregistration.com/features/paypal/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro) & [Credit Cards & Ideal Payments(Stripe)](https://wpuserregistration.com/features/stripe/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro), so you can easily receive payments during registration.
 
-* **[Premium] [Connect Registration Forms with 1000+ Services via Zapier:](https://wpuserregistration.com/features/zapier/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Zapier passes information to all the applications your registration forms are connected with. This helps you save time by automating tasks like collecting form responses, sending texts, & reminders.
 
-* **[Premium] Integrations with Email Marketing Services:** Promote your business with the correct email marketing tools like [Mailchimp](https://wpuserregistration.com/features/mailchimp/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro) , [MailerLite](https://wpuserregistration.com/features/mailerlite/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro), [ActiveCampaign](https://wpuserregistration.com/features/activecampaign/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro) & [Klaviyo](https://wpuserregistration.com/features/klaviyo/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro).
+__Security & Spam Protection__
 
-* **[Premium] [Collect Geolocation Data for Users:](https://wpuserregistration.com/features/geolocation/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** This premium add-on enables you to collect & save the geolocation data of users who register on your website. It’s easy to do this when you have fields like Country, City, & Postcode.
+* Email verification
+* Google reCAPTCHA (V2, V3)
+* hCaptcha
+* Cloudflare Turnstile
+* Akismet
+* Honeypot spam protection
+* SMS verification via Twilio
+* Two-factor authentication (2FA)
+* Auto-generated passwords
+* Passwordless login
+* Custom CAPTCHA field (math/Q&A)
+* Whitelisted domains
 
-* **[Premium] [LearnDash Integration:](https://wpuserregistration.com/features/learndash/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Integrating LearnDash with User Registration allows you to add a LearnDash course field in your registration form. This automatically enrolls the users into their specified LearnDash course.
 
-* **[Premium] [Smart Conditional Logic:](https://wpuserregistration.com/features/conditional-logic/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Personalize registration forms for users & make them more interactive with conditional logic.
 
-* **[Premium] [Save & Continue:](https://wpuserregistration.com/features/save-and-continue/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Users can save their progress on a registration form & come back to it later to submit the form.
+__Design & Customization__
 
-* **[Premium] [Personalized Communication with Private Notes:](https://wpuserregistration.com/features/private-notes/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)** Share important updates, personalized messages, etc., with users. Plus, users can respond to these notes with their queries & receive answers.
+* Email customizer
+* Customize My Account page
+* Style Customizer (visual form designer)
+* Email Templates
+* Advanced styling options for forms
+* Analytics & Tracking
+* Advanced analytics dashboard
+* User journey tracking
+* Advanced user/form analytics
+* Dashboard with views, submissions, conversions
 
-* **[Premium] [Enable Form Restrictions:](https://wpuserregistration.com/features/form-restriction/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)**  Restrict access to your WordPress registration forms with custom conditions.
 
-And there’s more we haven’t listed here.
 
-👉 [Explore all features now!](https://wpuserregistration.com/features/?utm_source=wporg&utm_medium=link&utm_campaign=ur-upgrade-to-pro)
 
-### Who is User Registration & Membership for?
-* Online coaches
-* Schools & Universities
-* Ecommerce websites
-* Business agencies
-* Online magazines
-* Non-profit organizations
-* Online certification programs
-* Conference & seminar organizers
-* Content sellers
-* Workshops
-* Restaurants
-* Sports event organizers
-* Government offices
-* Job board websites
-* Forums
-* Medical institutions
-* Bloggers
-* Gym & yoga studios
+__Advanced Features__
 
-### Create Different Registration Form Types without Any Coding Skills
-* Employee Registration
-* Event Registration
-* JobSeeker Registration
-* Appointment Form
-* Membership Form
-* Document Application Form
-* Social Registration
-* Student Registration
-* WooCommerce Registration
-* Multi-Step Registration
-* Course Registration
-And many more...
+* PDF form submission (auto-generate PDFs)
+* Frontend post submission
+* Bulk user import (CSV)
+* Invite codes for registration
+* Geolocation data collection
+* Private admin notes
+* Form access by user role
+* Cloud storage (Google Drive, Dropbox)
 
-👉 [Explore all pre-built User Registration demos.](https://demo.wpeverest.com/user-registration/)
 
-### Know your way around user registration with our tutorials
-* [How to Create User Registration Form in WordPress Easily?](https://wpuserregistration.com/blog/create-user-registration-form-in-wordpress/)
 
-* [How to Create a Custom User Profile Page in WordPress?](https://wpuserregistration.com/blog/create-user-profile-page-in-wordpress/)
+__Marketing and CRM Integrations__
 
-* [How to Create a Multi-step Registration Form in WordPress?](https://wpuserregistration.com/blog/multi-step-registration-form/)
+* Custom Email Notifications
+* Mailchimp
+* MailerLite
+* MailPoet
+* ActiveCampaign
+* Klaviyo
+* Brevo (formerly Sendinblue)
+* Kit (formerly ConvertKit)
+* Salesforce
+* Zapier (5,000+ apps)
+* Google Sheets
+* Webhooks
 
-* [How to Register Users with an Invitation Code in WordPress?](https://wpuserregistration.com/blog/register-users-with-invitation-code/)
+ [👉 Get User Registration & Membership Pro](https://wpuserregistration.com/pricing/?utm_source=wporg&utm_medium=readme&utm_campaign=pro_features&utm_content=get_pro)
 
-* [How to Create a Custom WooCommerce Registration Form Easily?](https://wpuserregistration.com/blog/woocommerce-registration-form/)
+==Know your way around user registration with our tutorials==
 
-* [How to Change Default WordPress Login URL to Custom URL?](https://wpuserregistration.com/blog/default-wordpress-login-page-url-change/)
+* [How to Create a Membership Website in WordPress for Free (with Content Restriction)](https://wpuserregistration.com/blog/how-to-create-a-membership-website-in-wordpress/?utm_source=wporg&utm_medium=readme&utm_campaign=tutorials)
+* [How to Create a Custom User Profile Page in WordPress?](https://wpuserregistration.com/blog/create-user-profile-page-in-wordpress/?utm_source=wporg&utm_medium=readme&utm_campaign=tutorials)
+* [How to Create User Registration Form in WordPress Easily?](https://wpuserregistration.com/blog/create-user-registration-form-in-wordpress/?utm_source=wporg&utm_medium=readme&utm_campaign=tutorials)
+* [How to Register Users with an Invitation Code in WordPress?](https://wpuserregistration.com/blog/register-users-with-invitation-code/?utm_source=wporg&utm_medium=readme&utm_campaign=tutorials)
+* [How to Change Default WordPress Login URL to Custom URL?](https://wpuserregistration.com/blog/default-wordpress-login-page-url-change/?utm_source=wporg&utm_medium=readme&utm_campaign=tutorials)
 
-== Get in Touch with us  ==
-
-👉 [Facebook Group](https://www.facebook.com/groups/userregistration)
-
-👉 [Twitter](https://twitter.com/user_register)
-
-👉 [Youtube](https://www.youtube.com/@UserRegistration)
-
-== Explore More Products from Our Team ==
-
-Love User Registration & Membership? Why not check out more WordPress themes & plugins from us?
-
-* [Masteriyo](https://masteriyo.com/) – A Powerful & Easy WordPress LMS Plugin.
-
-* [Everest Forms](https://everestforms.net/) – The Best Form Builder Plugin for WordPress.
-
-* [BlockArt Blocks](https://wordpress.org/plugins/blockart-blocks/) – Free Gutenberg Custom Blocks Plugin.
-
-* [Magazine Blocks](https://wpblockart.com/magazine-blocks/) – Gutenberg Blocks Plugin to Build Magazine-style Sites.
-
-* [Zakra](https://zakratheme.com/) – Best WordPress Multipurpose Theme Powering 60K+ Websites.
-
-* [ThemeGrill](https://themegrill.com/wordpress-themes/free/) – Beautiful Free WordPress Themes for Every Niche.
+Get in Touch with us: [Official Community](https://www.facebook.com/groups/userregistration) | [Twitter](https://twitter.com/user_register)
 
 == Frequently Asked Questions ==
 
-= Do I need to have coding skills to use the User Registration and Membership Plugin? =
+= Is User Registration & Membership only for custom registration forms?
+No. User Registration & Membership is a full membership plugin. Registration and login are part of the system, but the core focus is managing memberships, payments, and content access from one place.
 
-No, you don't need any coding skills. One can simply drag and drop fields, arrange them and use built-in shortcodes to display the form.
+= Can I create memberships using the free plan?
+Yes. The free version of User Registration and Membership lets you create functional membership plans with payment support and content restriction. Paid plans add advanced features like recurring subscriptions, additional gateways, and automation.
 
-= Does the plugin work with any WordPress themes?
+= How long does it take to set up a membership site with URM?
+Most sites can set up a working membership flow in under 30 minutes. This includes creating a membership plan, setting up registration, and restricting content.
 
-Yes, the plugin is designed to work with any themes that have been coded following WordPress guidelines.
+= Who is User Registration & Membership built for?
+User Registration and Membership is designed for site owners running paid memberships, gated content, online communities, client portals, and course-based sites on WordPress.
 
-= How can admin access registered users data?
+= How do payments work for memberships?
+URM supports payments through Stripe, PayPal, and bank transfer, with additional gateways available in Pro. Payments stay connected to membership access, renewals, and upgrades automatically.
 
-All the users registered via the registration forms and their data can be accessed from the Users menu in the WordPress Dashboard.
+= Can I connect memberships with third-party marketing tools?
+Yes. User Registration & Membership integrates with popular email marketing services, including Mailchimp, MailerLite, ActiveCampaign, and Klaviyo.
 
-= Can a user edit their profile informaton after registration?
-
-Yes, a registered user can access their profile details via the account page. One can create an [account profile page](https://docs.wpuserregistration.com/registration-form-and-login-form/how-to-show-account-profile/) for their user using the shortcode available.
-
-= Does the plugin come with a login form as well?
-
-Yes, the plugin has a shortcode for the login form.
-
-= Can I add custom fields to my registration forms?
-
-Yes, our form builder allows you to effortlessly add and arrange custom fields in your forms.
-
-= Is the User Registration and Membership plugin compatible with my version of WordPress?
-
-User Registration is updated regularly to ensure compatibility with the latest versions of WordPress. Please check the `Requires at least` and `Tested up to` fields in our `readme.txt` file to see if it's compatible with your version.
+Connect with thousands more services through Zapier.
 
 = What should I do if User Registration and Membership is having problems?
 
@@ -234,29 +240,526 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Screenshots ==
 
-1. Setup Wizard
-2. Form Fields
-3. Field Options
-4. Form Settings
-5. Login Form Builder
-6. Membership Creation Page
-7. Payment Settings
-8. Payment History
-9. General Options
-10. Frontend Messages
-11. Google reCaptcha
-12. Basic Restriction Settings
-13. General Email Settings
-14. Export Users
-15. Import/Export Forms
-16. Gutenberg Block
-17. Registration Form
-18. Login Form
-19. Membership Registration Form
-20. User Account Page –  Horizontal Layout
-21. User Account Page –  Vertical Layout
+1. Membership Creation
+2. Payment Setup
+3. Content Restriction Rules
+4. Restricted View
+5. Form Builder
+6. Registration Form
+7. Login Form
+8. My Account Page
+9. Subscription Management
 
 == Changelog ==
+
+= 5.2.4    - 25/06/2026 =
+* Enhance  - User role overwritten on new membership assignment.
+* Enhance  - Add customizable membership registration success message in settings.
+* Fix      - Duplicate variable.
+* Fix      - Invoice dynamic content not translatable.
+* Fix      - Missing users in user registration members section.
+* Fix      - Validation of key while saving the stripe payment settings.
+* Fix      - My Account payment tab pulling footer content inside the tab area.
+* Fix      - Address incomplete PayPal setup error when adding PayPal for old user.
+* Fix      - hCaptcha enabled on registration form blocks users from completing signup.
+* Fix      - Reset content button not working in the prevent concurrent login email template.
+* Fix      - New Member Registered email not sent when Admin Approval Request email is enabled.
+* Fix      - Harden membership coupon apply paths against PHP 8 TypeError (free membership module).
+* Fix      - File upload attachments not updating correctly when admin edits another user's profile.
+* Fix      - Registration failure causes missing member records and prevents Stripe payment processing.
+
+
+= 5.2.3    - 23/06/2026 =
+* Fix      - validation for receiver email and payment amount in PayPal IPN handling.
+* Fix      - Selected membership tier during registration missed proper validation, allowing assignment of off-form membership tiers.
+* Fix      - Stripe subscription requests could trigger unintended deletion of pending member accounts due to insufficient authorization validation.
+
+= 5.2.2    - 19/06/2026 =
+* Dev      - Add UR_WPML compatibility service class.
+* Fix      - Password reset link shows "invalid or expired" error.
+* Fix      - Membership subscriptions stuck pending on 3D Secure (SCA) cards.
+* Fix      - Hardcoded database table names causing failures on custom table prefixes.
+* Fix      - Checkbox visibility issue on WP user profile/edit page  caused by CSS conflict.
+* Fix      - PayPal credentials not detected during registration despite valid saved settings.
+* Fix      - Password reset link shows invalid or expired on hosts that do not support PHP cookies.
+* Fix      - Webhook not configured but still can bypass PayPal payments.
+* Fix      - Payment Method Bypass Allows Free Access to Paid Memberships via Tampered Registration Request.
+* Fix      - Payment method field during registration could be manipulated to bypass payment for paid memberships.
+* Fix      - Authenticated users could modify other members' subscriptions by supplying an arbitrary subscription ID during upgrade.
+* Fix      - Membership tier submitted during registration was not validated against the memberships configured on the form, allowing substitution with an off-form tier.
+
+= 5.2.1    - 28/05/2026 =
+* Fix      - Stripe order validation issue.
+* Fix      - Membership upgrade action not available after disabling group add-on.
+* Fix      - Custom emails addon cannot be enabled with plus plan even available in personal.
+* Fix      - Nav menu items disappear for logged-out users when logout endpoint set to slash.
+* Fix      - File upload addon shows upgrade to premium prompt despite user having an active plan.
+* Fix      - Ensure meta_query is initialized before adding payment status condition in user payments query.
+
+= 5.2.0    - 20/05/2026 =
+* Refactor - Members registration process.
+* Refactor - Migrated PayPal integration from PayPal Standard to PayPal APIs.
+* Feature  - Membership pricing widget for Elementor.
+* Enhance  - Added new {{urm_bank_details}} smart tags for emails.
+* Enhance  - Improved Content Restriction compatibility with  Object Caching.
+* Enhance  - Validate payment gateways test api key before updating the settings.
+* Enhance  - Payment backfill cron for missed payment and subscription updates for PayPal.
+* Enhance  - Check "Login Methods" setting before validating the provided detail by user while login.
+* Dev      - Updated Stripe SDK version to 19.4.0.
+* Dev      - Updated vulnerable packages dependencies.
+* Dev 	   - Security audit to identify vulnerabilities and resolve them.
+* Fix      - Coupon, Tax and Upgrade Conflicts.
+* Fix      - Hide label not working in Login form.
+* Fix      - Cookie and error message handling on lost password.
+* Fix      - Wrong smart tag used in membership expiring soon email.
+* Fix      - User Export Not Ordered by Date When Using Date Range Filter.
+* Fix      - Content Restriction message not rendering smart tags properly.
+* Fix      - Update subscription status handling for manually created orders.
+* Fix      - Missing or incorrect text-domain for improving translation support.
+* Fix      - Validate user ownership before deleting profile picture attachments.
+* Fix      - Properly store Paypal transaction id and subscription id in database.
+* Fix      - Content Restriction Message Appears in UAE Header and Footer Templates.
+* Fix      - Update success message icon and cookie settings for pro version activation.
+* Fix      - Emails not being sent if the registration success state is not broadcasted properly.
+* Fix      - Stripe Credit card details reset when switching membership plans in registration forms.
+* Fix      - Members table showing Membership and Subscription status even when membership is not used.
+* Fix      - Prevented PayPal payment status from being changed from pending to completed without a successful payment.
+* Fix      - Content restriction only applied to the main content area, leaving page titles and featured images visible in Elementor.
+
+= 5.1.6   - 27/04/2026 =
+* Enhance  - Logger structure.
+* Fix      - Stripe payment bypass.
+* Fix      - Admin approval bypass.
+* Fix      - Hide comments for restricted posts.
+* Fix      - User created even when payments fails.
+* Fix      - Open redirect security issue on logout.
+* Fix      - Fatal error while updating profile details.
+* Fix      - Registration submitted without card details.
+* Fix      - Country not displaying in WordPress users menu.
+* Fix      - HCaptcha loads reCAPTCHA and endless intervals.
+* Fix      - Payment history page reflects unescaped action parameter value.
+* Fix      - Duplicate transaction id issue when using 3D secure card in stripe.
+* Fix      - Export Members causes fatal memory exhaustion on large user datasets.
+* Fix      - Sanitize OrdersRepository::get_all() query params to prevent SQL injection.
+* Fix      - File upload data synced to admin profile during user approval or media access.
+* Fix      - Handle array value from get_user_meta for country field in edit profile template.
+* Fix      - Cloudflare turnstile error appears on second form submission after validation failure.
+* Fix      - Stripe card mode validation to prevent test or live card mismatch during registration.
+* Fix      - Payment stuck on 'Invalid Request' and network error after successful Stripe subscription.
+
+= 5.1.5    - 18/3/2026 =
+
+* Feature  - Feature to show bank details directly within the form.
+* Feature  - Payment fetch cron added for better subscription sync with Stripe.
+
+* Enhance  - Better search for addons page.
+* Enhance  - Better UI/UX for the Membership field.
+* Enhance  - Addition of Members Directory to the content rules.
+* Enhance  - Addition of navigational UI to better find plugin features.
+* Enhance  - Improved price transparency for prorated membership upgrades.
+* Enhance  - Updated tooltips and navigational popups throughout the plugin.
+* Enhance  - Individual membership selection in membership field and pricing block.
+* Enhance  - Proper notice in memberhip upgrades when there is just a single membership.
+
+* Refactor - Removed / refactored old setup assistent steps.
+* Refactor - Edits for subscriptions now reflected in Stripe too.
+* Refactor - Added filter hook to customize payment gateway logos.
+* Refactor - No longer hiding search bars on tables after 10+ entries.
+* Refactor - No longer hiding subscriptions and payments tab at the start.
+* Refactor - Pricing previews made more readable and clear for membership plans.
+* Refactor - Added price check in stripe to avoid multiple prices in same product.
+* Refactor - Thank you page and form redirection settings have been merged for consistency.
+
+* Fix      - Added proper capability checks.
+* Fix      - Missing .css file throwing errors.
+* Fix      - Capability check issue on embed form.
+* Fix      - Global hidden css conflicting on site.
+* Fix      - Create subscription table, excessive gap.
+* Fix      - Raw CSS showing for certain email platforms.
+* Fix      - Membership fields draggable outside of bounds.
+* Fix      - Trial members unable to access member content.
+* Fix      - File downloads backend redirection link issue.
+* Fix      - Redundant content restriction message removed.
+* Fix      - UI issues in nested menus for the setting areas.
+* Fix      - File downloads not working in local environments.
+* Fix      - License deactivating upon temporary deactivation.
+* Fix      - Redirect to previous page after login not working.
+* Fix      - Design issues in backend for change password block.
+* Fix      - Missing connection indicators for mailing integrations.
+* Fix      - Edit profile failing when permalinks were set to plain.
+* Fix      - Email settings container showing irrelevant notice messages.
+* Fix      - Trash, published filters missing in registration form table.
+* Fix      - Content restriction block styles and shortcode not rendering.
+* Fix      - Full amount upgrade providing full amount discount in stripe.
+* Fix      - Payment gateway layout overflow and inconsistent option width.
+* Fix      - Login | Logout option not working properly with certain themes.
+* Fix      - URM shortcode contents appearing twice when used with Elementor.
+* Fix      - Stripe registrations encountering fatal error in some instances.
+* Fix      - Auto Approval and auto login not working in case of PayPal payments.
+* Fix      - Paypal one time payment error with four digit price membership plan.
+* Fix      - Masteriyo course unassigned to membership still showing sign up button.
+* Fix      - Duplicate order created in payment history after successful payment with stripe.
+* Fix      - Fatal error when upgrading from one-time payment to subscription plan with stripe.
+* Fix      - Legacy my account dashboard content visible in profile details tab on some old instances.
+* Fix      - Upon reactivation of stripe subscription, the cancel at expiry is not being removed in stripe.
+
+= 5.1.4    - 25/02/2026 =
+* Fix - Updated .org deploy code
+
+= 5.1.3    - 24/02/2026 =
+* Enhance  - Membership field not draggable when no membership plans created, notice is shown.
+* Fix      - Missing Content restriction CSS file error.
+* Fix      - Auto approval and auto login not working incase of PayPal payments.
+* Fix      - Missing connection indicators for integration add-ons.
+* Fix      - Content restriction template appearing twice when using Elementor.
+* Fix      - Insecure Direct Object Reference to Unauthenticated Limited User Deletion
+* Fix      - Unauthenticated Privilege Escalation via Membership Registration.
+* Fix      - Authentication Bypass fix.
+* Fix      - Authenticated SQL injection via membership ids fix.
+* Fix      - Missing authorization to unauthenticated payment bypass.
+
+= 5.1.2    - 12/02/2026 =
+* Security - Arbitrary code execution through shortcode.
+* Enhance  - Default WordPress login form is no longer forced.
+* Enhance  - Default filter set to All for payments table.
+* Enhance  - Added support for other search parameters on Members table.
+* Enhance  - Deactivation reason pop up update.
+* Fix      - Menu restriction rule causing rules after it to not work.
+* Fix      - Admins losing access to the site when a Whole site restriction was enabled.
+* Fix      - Content Restriction CSS not loading due to missing styles.
+* Fix      - My account layout conflicts with WooCommerce my account sync.
+* Fix      - Unable to edit member emails from the admin side.
+* Fix      - Local currency notice displaying upon free plan creation.
+* Fix      - Profile picture upload area going blank upon image update.
+* Fix      - Warnings shown during renewal process.
+* Fix      - Warnings shown during membership cancellation process.
+* Fix      - Admin styles loading in the frontend when using Oxygen builder.
+* Fix      - Undefined error in redirection url after renewal.
+* Tweak    - Notice design update for registration page selection in settings.
+
+
+= 5.1.1    - 02/2/2026 =
+* Fix      - Empty migrated rules showing up when toggling enabled/disabled state.
+* Fix      - Disabled content rules still being applied.
+* Fix      - Menu restriction blocking all website links.
+* Fix      - Getting country value while rendering form fields.
+* Fix      - My account CSS conflict with WooCommerce integration.
+* Fix      - Payment module hidden from the module area.
+* Fix      - File upload submission issue in my account page.
+* Fix      - Registration page not setting issue in advanced registration setup flow.
+* Fix      - Select 2 field design issue.
+* Fix      - Customize My account endpoint ordering issue.
+* Fix      - Google sheets integration not saving.
+
+= 5.1.0    - 26/01/2026 =
+* Feature  - Buy now button block.
+* Feature  - Masteriyo Integration.
+* Feature  - Global style configuration.
+
+= 5.0.4    - 21/01/2026 =
+* Fix      - Orders table not found.
+* Fix      - Production mode not working in paypal.
+* Fix      - Content restricted message container width.
+* Fix      - Disable the publish membership button after click.
+* Fix      - Default value for prevent dashboard access not set.
+
+= 5.0.3    - 15/01/2026 =
+* Fix      - My Account responsive design.
+* Fix      - Members menu class not found.
+* Fix      - get_form function not working.
+* Fix      - Content rules edit title design.
+* Fix      - Post editor margins removed after update.
+* Fix      - Warnings due to payment_method not defined.
+* Fix      - View payment link not working form subscription editor.
+
+= 5.0.2    - 14/01/2026 =
+* Fix      - Plugin update package build issue.
+
+= 5.0.1    - 14/01/2026 =
+* Fix      - Minor update compatibility issue.
+
+= 5.0      - 14/01/2026 =
+* New      - Streamlined setup wizard with a clean, modern interface that removes unnecessary steps and focuses only on essential configuration.
+* New      - Setup wizard now supports both user registration and membership creation with clear membership access controls.
+* New      - Simplified membership creation process with three clear steps: Basic configuration for essential settings, Access Control for content protection, and Advanced options for edge cases and additional features.
+* New      - Centralized access control system for memberships, allowing you to manage content access for pages, posts, and different content types from a single screen instead of configuring each page individually
+* New      - Unified members system that combines previously separate users and members tables, making everyone a member with easier profile management, payment history, and subscription
+tracking all in one place.
+* New      - Reorganized WordPress dashboard menus to keep things simple and minimal, with additional menus appearing only when relevant add-ons are activated.
+* New      - Restructured settings area with logical organization, making it easier to find options and configurations that were previously difficult to locate.
+* New      - Completely redesigned My Account area with a clean, modern interface that includes subscriptions and payments management, providing members with easy access to all their account
+information and activities.
+* New      - Full backward compatibility with existing features maintained through legacy support, ensuring all current functionalities continue to work seamlessly with clear notices and simple one- or two-step migration instructions for users who want to upgrade to new features.
+* New      - Multiple registration form module for creating different registration forms.
+* Refactor - Membership upgrade and renewal process.
+* Refactor - Payment configuration in the membership creation process.
+* Feature  - Header and footer configuration for membership pages.
+* Feature  - Sorting membership plans on the registration form in your preferred order.
+* Enhance  - List table UI with a cleaner interface.
+* Enhance  - Members edit page UI for better usability.
+* Enhance  - Payment history edit UI with improved design.
+* Enhance  - Thank You block and page with better presentation.
+* Enhance  - Membership listing block with updated styling.
+* Enhance  - Default email template updates with modern design.
+* Enhance  - Content restriction message UI for better readability.
+* Enhance  - Default email content updates with clearer messaging.
+* Enhance  - Membership field UI on the registration form with improved design.
+* Enhance  - Centralized checkout page for both new registrations and membership upgrades.
+* Enhance  - Registration and login pages remain accessible even when whole-site restriction is enabled.
+* Tweak    - Updated Swaziland to Eswatini in the country list.
+* Dev      - Filter to modify profile picture maximum size.
+* Dev      - Filter to modify the expired error message text.
+* Fix      - Character limit validation message not translatable.
+* Fix      - Repetition of restricted content on restricted pages.
+* Fix      - Validation message when adding a variable product to the cart.
+* Fix      - Email confirmation pending message displayed on the My Account page.
+* Fix      - Self-cURL requests used to validate images, causing server load.
+* Fix      - Checkbox value not checked when using an ampersand in the value.
+* Fix      - Custom pattern validation error message not translatable in WPML.
+* Fix      - Membership smart tag and plural translation for membership duration.
+* Fix      - Admin unable to access content when restricting all content while using the whole site restrict.
+
+= 4.4.9    - 08/01/2026 =
+* Security - Fixed XSS vulnerability for delete users.
+
+= 4.4.8    - 07/12/2025 =
+* Tweak    - Fixed empty sdk url.
+
+= 4.4.7    - 05/12/2025 =
+* Security - Fixed missing paypal redirect response validation.
+* Security - Fixed XSS vulnerability in membership shortcodes.
+* Security - Added stripe webhook validation.
+* Fix      - Site assistant page creation mismatch in lost password.
+* Tweak    - SDK Logs Refinement.
+
+
+= 4.4.6    - 13/11/2025 =
+* Enhance  - Added required pages in system info.
+* Enhance  - Design consistency in Site Assistance.
+* Enhance  - Cache handling in reset password process.
+* Enhance  - Introduce edit icon on hover for login fields.
+* Enhance  - Helper icon content and design in form builder.
+* Enhance  - Inline error for page selection in login form settings.
+* Enhance  - Password strength validation in edit password shortcode.
+* Enhance  - Preview and Embed functionality added in Login Form Builder.
+* Enhance  - Added a reset button to reset captcha keys in global settings.
+* Enhance  - Added no conflict mode to force our plugin's captchas in pages.
+* Dev      - Conditional logic support on Salesforce.
+* Dev      - Payment process logging interface for membership.
+* Dev      - Added a hook to hide the postal code in Stripe credit card.
+* Dev      - Added filter hook for setting default value for remember me checkbox in login form.
+* Tweak    - Typo in field and row deletion popup.
+* Tweak    - Updated all email content and spacing.
+* Tweak    - Show URMs page tag on our plugin's pages.
+* Tweak    - Typo in the order note of payment history.
+* Tweak    - Registration form link not displayed when Anyone can register is disabled.
+* Fix      - Banner notice design issues.
+* Fix      - Default reCAPTCHA v2 enable issue.
+* Fix      - WYSIWYG design fix in form builder.
+* Fix      - Design inconsistencies in setup wizard.
+* Fix      - Membership fields data not translatable.
+* Fix      - Form template page design inconsistencies.
+* Fix      - Select2 width overflow in general settings.
+* Fix      - Error message expiration text translatable.
+* Fix      - Form builder search fields box sticky design.
+* Fix      - Setup Wizard flickering on first installation.
+* Fix      - Smart Tags not working with membership emails.
+* Fix      - Not a member text in the login page is not translating.
+* Fix      - User login failed while using email as a login option.
+* Fix      - Invalid error message on user password failed on login.
+* Fix      - Membership details in my account page are not translatable.
+* Fix      - Custom password strength not working in Lost Password Page.
+* Fix      - Undefined variable warning being thrown in payment success email.
+* Fix      - Registration link in login form throws 404 on fresh installation.
+* Fix      - User role not updated while updating the plan from the user's dashboard.
+* Fix      - Form submission not working while making the invite code field required.
+* Fix      - Duplicate Profile Detail text on My Account Page while using Vertical Layout.
+* Fix      - Redirection logic for the membership form to the previous page is not working.
+* Fix      - Custom title and description for login and registration form are not translatable.
+* Fix      - Navigation tab not displaying in My Account page while using the Kadence theme.
+* Fix      - Membership plan details not changing while changing the plan of the edit member.
+* Fix      - Coupon service not working with Stripe and process/display decimal price for membership.
+
+= 4.4.5    - 09/10/2025 =
+* Fix      - Duplicate renewal setting.
+* Fix      - Reset Password smart tag slug.
+* Fix      - Dynamic duration for membership field.
+
+= 4.4.4    - 08/10/2025 =
+* Tweak    - Design changes on Site Assistant.
+* Fix      - Log mail send error even if logging is disabled.
+* Fix      - Error while trying to add new block in page editor.
+* Fix 	   - Addons Icons not loaded properly in All Addons page.
+
+= 4.4.3    - 07/10/2025 =
+* Security - Updated jQuery validator version to v1.20.0.
+* Feature  - Site Assistant menu introduction.
+* Refactor - Input field HTML for better translation and readability.
+* Enhance  - Support for custom login and logout redirection settings within login form builder.
+* Enhance  - Notice to install the pro version manually after entering a valid license key.
+* Enhance  - Persistent dismissal of Non-URM users admin notice in UR pages.
+* Enhance  - Individual hide label settings for login builder.
+* Enhance  - Change membership plan in members page by admin.
+* Enhance  - Separate saving mechanism for each recaptcha.
+* Enhance  - Search filter in users table search.
+* Enhance  - Sticky search bar in form fields.
+* Enhance  - All Addons Page UI enhancement.
+* Enhance  - Update tinymce design.
+* Tweak    – Reposition license-related error notices to display below the license header.
+* Tweak    – Rearrange field_name field options setting from General to Advance setting.
+* Tweak    – Allow users to opt out after entering a license key in the free version.
+* Tweak    – Remove activate/deactivate license in plugin action links.
+* Tweak    – Update tooltips and labels for field options settings.
+* Fix      - Registration successful email sent in before admin approval in membership form.
+* Fix      - Manage user_registration capability not working for users tab in custom role.
+* Fix      - Content restriction applied to members whose membership is not active.
+* Fix      - Alignment issue in gutenberg editor for membership registration block.
+* Fix      - Inner page content restriction message overriding global message.
+* Fix      - Added backend validation for pg gateways in membership.
+* Fix      - Spacing for textarea and date field in my account page.
+* Fix      - WooCommerce value not populating on URM users page.
+* Fix      - Margin bottom fix for change membership dialog box.
+* Fix      - Pdf form submission invalid image on empty src.
+* Fix      - Reflect updated plan type in change plan.
+* Fix      - Currency position not working in payment.
+* Fix      - Login Form block user state not working.
+* Fix      - Price ID not found in stripe.
+* Dev      - Allow default gateway selection in membership registration.
+* Dev      - Hook to modify the disable logout confirmation option.
+
+
+= 4.4.2    - 23/09/2025 =
+* Tweak    - User Registration body class added on whole site restriction template.
+* Tweak    - Added translations for custom password strength hint.
+* Fix      - Error message not handled properly when username provided in email only login forms.
+* Fix      - Form field labels not translatable in my account profile detail page.
+* Fix      - Smart tag user_id not working when membership is active.
+* Fix      - Undefined variable on edit profile for non URM users.
+* Fix      - Header already sent warning on lost password page.
+* Fix      - Captcha not working on ajax login.
+* Fix      - Login Form Start Action execution.
+
+= 4.4.1    - 02/09/2025 =
+* Fix      - Button style issue from v4.4.0 impacting other plugins.
+* Fix      - Admin menu not visible in mobile devices.
+* Fix      - Input field width in other admin pages.
+* Fix      - Role based redirection selection not working on form settings.
+
+= 4.4.0    - 28/08/2025 =
+* Security - Updated sql prepare for members list table query.
+* Refactor - Remove anyone can register dependency.
+* Refactor - Remove logout confirmation toggle setting.
+* Feature  - User Listing in Admin Side.
+* Feature  - Manually add payment record.
+* Feature  - Manual Payment renewal for membership.
+* Feature  - Reactivate Membership functionality for membership cancelled users.
+* Feature  - My account profile edit page for users not registered via URM forms.
+* Enhance  - Activate License settings.
+* Enhance  - Login form builder re-design.
+* Enhance  - Registration form settings design.
+* Enhance  - Improve profile picture upload UX.
+* Enhance  - Better email delivery failure detection.
+* Enhance  - Option to re-run setup wizard from Tools.
+* Enhance  - Option to restore default email templates.
+* Enhance  - Unified header across all URM admin pages.
+* Enhance  - Reset Password Page created on first install.
+* Enhance  - Email verification confirmation success toast display.
+* Enhance  - Prevent deleting membership plan while users are assigned.
+* Enhance  - Add more default currencies and validation for payment gateway compatibility.
+* Tweak    - Classname consistency for all buttons.
+* Tweak    - Update the label from Frontend Messages to Form Messages.
+* Tweak    - Improve smart tags link label and design in email settings.
+* Tweak    - Display membership plan in profile detail for frontend listing.
+* Dev      - Properly track plugin settings data.
+* Dev      - Filter to hide my account page selection notice.
+* Fix      - Ajax and Nonce related issues.
+* Fix      - Translation issue in membership.
+* Fix      - Form Templates responsive issue.
+* Fix      - Design issue all fields smart tag.
+* Fix      - Field Label translation in Polylang.
+* Fix      - Design glitch in membership settings.
+* Fix      - Prevent login form resubmission on reload.
+* Fix      - Override global setting retain in page reload.
+* Fix      - Errors for deleted membership in membership tab.
+* Fix      - WooCommerce required fields validation not working.
+* Fix      - Email notification to user on admin profile update.
+* Fix      - Array index not found issue in coupon for membership.
+* Fix      - 502 bad gateway issue while exporting large user base.
+* Fix      - Theme style not overriding the plugin design styles.
+* Fix      - Undefined error message displayed while creating member.
+* Fix      - Partial restriction not working on section of Elementor.
+* Fix      - Confusion around email confirmation email being always active.
+* Fix      - Inconsistent gaping in registration form fields advanced options.
+* Fix      - Payment invoice smart tag issue while membership module deactivated.
+* Fix      - Fatal error when editing user from default admin user edit dashboard.
+* Fix      - Membership field is locked even when payment methods are not enabled.
+* Fix      - Validation for hidden fields in field visibility throwing issue on profile update.
+* Fix      - Fatal error while sending payment successful email when membership module deactivated.
+* Fix      - All forms smart tag not working for admin approval link email after email confirmation.
+* Fix      - Override content restriction message not displayed when content is restricted for individual pages.
+
+= 4.3.0    - 17/07/2025 =
+* Security - Cross Site Scripting Vulnerability with urcr_restrict shortcode
+* Feature  - Membership upgrade.
+* Enhance  - Prevent use of external url's in Paypal settings.
+* Enhance  - Auto select membership and pg if only one membership.
+* Enhance  - Separate payment settings save mechanism for each payment module
+* Tweak    - Redirection to respective payment settings.
+* Tweak    - Consistent drop-down for login and registration form builder setting.
+* Fix      - Failure of Paypal form creation.
+* Fix      - Export users page issue in settings.
+* Fix      - Unable to check plugin status issue.
+* Fix      - Profile picture not exported in CSV file.
+* Fix      - Hidden hover CSS in login form submit button
+* Fix      - Partial content restriction message Modification.
+* Fix      - Auto login not working for stripe paid membership.
+* Fix      - Datetime field conflict with hello elementor theme.
+* Fix      - Avoid the API request to stats for development mode.
+* Fix      - Default value exported instead of selected value in CSV.
+* Fix      - Submit button label and html content not translatable in WPML.
+* Fix      - Enable Paypal in form setting triggers override global paypal settings.
+
+= 4.2.4    - 19/06/2025 =
+* Enhance  - Lock/Unlock payment form setting.
+* Tweak    - Color for error message for custom url field.
+* Tweak    - Spacing for the error message on custom url field.
+* Tweak    - Positioning of OTP code verification button positioning.
+* Dev      - Hook to sort membership field.
+* Dev      - Approval link email wpml translation key name.
+* Dev 	   - Modify the image resolution for cropped image.
+* Dev      - Hook to modify the template for repeater field.
+* Dev      - Updated database query insert and delete to support all engines.
+* Dev      - Hook to modify user registration membership payment option label.
+* Fix      - Design for resend otp.
+* Fix      - Conflict with Botiga theme.
+* Fix      - Undefined index field_name.
+* Fix      - RTL fix for my account page.
+* Fix      - Stripe subscription invalid request.
+* Fix      - Repeater fields values not being saved.
+* Fix      - Undefined index for the image captcha option.
+* Fix 	   - Issue while mapping checkbox value in WP users table.
+* Fix      - Multiple Salesforce Connections Failing to Save Properly.
+* Fix      - Email marketing addons not being installed from form builder.s
+* Fix      - Password label not changing dynamically in Login form setting.
+* Fix      - All Fields smart tag not working on customize my account pages.
+* Fix      - Icon in state fields of WooCommerce billing and shipping fields.
+* Fix      - Opening the lightbox for longe duration after login in admin dashboard.
+
+= 4.2.3    - 27/05/2025 =
+* Security - Dashboard widget form title html escaping.
+* Feature  - Customize login form title and description.
+* Feature  - Added Membership Listing and Thank You blocks.
+* Feature  - Adds support for Mollie Payment Gateway in User Registration & Membership.
+* Feature  - Add login/logout menu link for classical menu as well as block theme.
+* Enhance  - Setup Wizard Flow and Design.
+* Enhance  - Membership renewal reminder email.
+* Enhance  - Email segregation and design improvement.
+* Dev      - Added filter to change user registered date zone.
+* Fix      - Membership Thank You header translation.
+* Fix      - Text domain called earlier than initialization.
+* Fix      - Memory exhaustion error on membership list table.
+* Fix      - Remove lost your password link from login error messages
+* Fix      - Password strength not working on edit profile and lost password page.
 
 = 4.2.2    - 05/05/2025 =
 * Security - User capability check on multiple ajax requests .
@@ -639,6 +1142,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Upgrade Notice ==
 
-= 4.0 =
-###Heads up, User Registration is now User Registration & Membership!
-This update introduces substantial changes to the plugin. We recommend backing up your site before updating and testing the update in a staging environment first.
+= 5.1.2 =
+##Important: Version 5.0 and above is a major update with significant improvements
+We strongly recommend backing up your site before updating. This update includes architectural changes that make your membership management more powerful and easier to use.
+Read the full blog post to see what’s new: [User Registration & Membership v5.0](https://wpuserregistration.com/blog/user-registration-membership-pro-6/)

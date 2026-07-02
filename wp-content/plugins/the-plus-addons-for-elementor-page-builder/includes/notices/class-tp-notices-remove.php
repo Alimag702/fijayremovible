@@ -64,74 +64,19 @@ if ( ! class_exists( 'Tp_Notices_Remove' ) ) {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->tp_black_friday_2023();
-			$this->tp_widget_notice();
-			$this->tp_tpag_install_notice();
+			$this->tp_delete_removed_notice_keys();
 		}
 
 		/**
-		 * Delete Notice Black Friday In Databash
+		 * Delete notice keys which notice removed from plugin
 		 *
-		 * @since 5.3.3
-		 * @access public
+		 * @since 6.5.7
 		 */
-		public function tp_black_friday_2023() {
-			if ( get_user_meta( get_current_user_id(), 'tp_dismissed_notice_blackfy', true ) ) {
-				delete_user_meta( get_current_user_id(), 'tp_dismissed_notice_blackfy' );
-			}
-		}
-
-		/**
-		 * Delete Notice TPAG Install Plugin Currency Not active this function
-		 *
-		 * @since 5.3.3
-		 * @access public
-		 */
-		public function tp_tpag_install_notice() {
-			if ( get_user_meta( get_current_user_id(), 'theplus_tpag_blocks_dismissed_notice', true ) ) {
-				delete_user_meta( get_current_user_id(), 'theplus_tpag_blocks_dismissed_notice' );
-			}
-		}
-
-		/**
-		 * Delete Notice Horizontal Scroll Banner Widget Currency Not active this function ( 17-01-2024 )
-		 *
-		 * @since 5.3.3
-		 * @version 5.3.4
-		 * @access public
-		 */
-		public function tp_widget_notice() {
-			if ( get_user_meta( get_current_user_id(), 'tp_dismissed_notice_widget', true ) ) {
-				delete_user_meta( get_current_user_id(), 'tp_dismissed_notice_widget' );
-			}
-		}
-
-		/**
-		 * Delete OnBording Databash entry
-		 *
-		 * @since 5.3.4
-		 * @access public
-		 */
-		public function tp_onbording_end() {
-			$option_value = get_option( 'tpae_onbording_end' );
-
-			if ( false !== $option_value ) {
-				delete_option( 'tpae_onbording_end' );
-			}
-		}
-
-		/**
-		 * Delete tp_dashboard_overview transient remove
-		 *
-		 * @since 5.3.4
-		 * @access public
-		 */
-		public function tp_dashboard_overview() {
-			$option_value = get_transient( 'tp_dashboard_overview' );
-
-			if ( false !== $option_value ) {
-				delete_transient( 'tp_dashboard_overview' );
-			}
+		public function tp_delete_removed_notice_keys() {
+			delete_option( 'tpae_bfsale_notice_dismissed' );
+			delete_option( 'tpae_cmsale_notice_dismissed' );
+			delete_option( 'tpae_wintersale_notice_dismissed' );
+			delete_option( 'tpae_pluginfeatures_notice_dismissed' );
 		}
 	}
 

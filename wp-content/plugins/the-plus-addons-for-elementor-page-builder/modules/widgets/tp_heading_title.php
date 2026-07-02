@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Text_Shadow;
@@ -22,17 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class L_Theplus_Ele_Heading_Title
  */
-class L_Theplus_Ele_Heading_Title extends Widget_Base {
-
-	public $tp_doc = L_THEPLUS_TPDOC;
-
-	/**
-	 * Helpdesk Link For Need help.
-	 *
-	 * @var tp_help of the class.
-	 */
-	public $tp_help = L_THEPLUS_HELP;
-
+class L_Theplus_Ele_Heading_Title extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name.
 	 *
@@ -57,7 +47,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 	 * @since 1.0.0
 	 */
 	public function get_icon() {
-		return 'fa fa-header theplus_backend_icon';
+		return 'theplus-i-heading-title tpae-editor-logo';
 	}
 
 	/**
@@ -75,49 +65,16 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 	 * @since 1.0.0
 	 */
 	public function get_keywords() {
-		return array( 'Heading', 'Title', 'Heading Title', 'Heading Widget', 'Title Widget' );
+		return array( 'Tp Heading Title', 'Styled Heading', 'Animated Heading', 'Split Title', 'Split Heading', 'Prefix Title', 'Postfix Title', 'Subtitle Heading', 'Extra Title' );
 	}
 
 	/**
-	 * Get Widget Custom Help Url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @version 5.4.2
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		$help_url = $this->tp_help;
-
-		return esc_url( $help_url );
-	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
+	public function is_dynamic_content(): bool {
+		return false;
 	}
 
 	/**
@@ -132,25 +89,17 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 		$this->start_controls_section(
 			'heading_title_layout_section',
 			array(
-				'label' => esc_html__( 'Content', 'tpebl' ),
+				'label' => esc_html__( 'Layout', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="12427" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="12427">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/elementor-heading-titles/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
-				),
-                'label_block'     => true,
-            )
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 12427,
+				'label_block' => true,
+			)
 		);
 		$this->add_control(
 			'heading_style',
@@ -171,6 +120,134 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'style1_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Display the heading with a clean and modern design style.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_1',
+				),
+			)
+		);
+		$this->add_control(
+			'style2_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Display the heading with a minimal and simple layout.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_2',
+				),
+			)
+		);
+		$this->add_control(
+			'style4_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Display the heading with a traditional, classic look.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_4',
+				),
+			)
+		);
+		$this->add_control(
+			'style5_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add a double border style around the heading.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_5',
+				),
+			)
+		);
+		$this->add_control(
+			'style6_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add a vertical border design to the heading.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_6',
+				),
+			)
+		);
+		$this->add_control(
+			'style7_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Display the heading with dotted decorative styling.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_7',
+				),
+			)
+		);
+		$this->add_control(
+			'style8_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Apply a unique visual style to highlight the heading.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_8',
+				),
+			)
+		);
+		$this->add_control(
+			'style9_label',
+			array(
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Display the heading with a stylish and eye-catching design.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'heading_style' => 'style_9',
+				),
+			)
+		);
+		$this->add_control(
 			'select_heading',
 			array(
 				'label'   => esc_html__( 'Select Heading', 'tpebl' ),
@@ -185,63 +262,16 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 		$this->add_control(
 			'how_it_works_page_title',
 			array(
-				'label'     => wp_kses_post( "<a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "slide-out-discount-code-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> How it works <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'<a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s <i class="eicon-help-o"></i></a>',
+						esc_url( $this->tp_doc . 'slide-out-discount-code-card-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'How it works', 'tpebl' )
+					)
+				),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'select_heading' => array( 'page_title' ),
-				),
-			)
-		);
-		$this->add_control(
-			'title',
-			array(
-				'type'        => Controls_Manager::TEXT,
-				'label'       => esc_html__( 'Heading Title', 'tpebl' ),
-				'label_block' => true,
-				'default'     => esc_html__( 'Heading', 'tpebl' ),
-				'dynamic'     => array(
-					'active' => true,
-				),
-				'condition'   => array(
-					'select_heading' => 'default',
-				),
-			)
-		);
-		$this->add_control(
-			'sub_title',
-			array(
-				'type'        => Controls_Manager::TEXT,
-				'label'       => esc_html__( 'Sub Title', 'tpebl' ),
-				'label_block' => true,
-				'separator'   => 'before',
-				'default'     => esc_html__( 'Sub Title', 'tpebl' ),
-				'dynamic'     => array(
-					'active' => true,
-				),
-			)
-		);
-		$this->add_control(
-			'title_s',
-			array(
-				'type'        => Controls_Manager::TEXT,
-				'label'       => esc_html__( 'Extra Title', 'tpebl' ),
-				'label_block' => true,
-				'separator'   => 'before',
-				'default'     => esc_html__( 'Title', 'tpebl' ),
-				'dynamic'     => array(
-					'active' => true,
-				),
-			)
-		);
-		$this->add_control(
-			'heading_s_style',
-			array(
-				'type'    => Controls_Manager::SELECT,
-				'label'   => esc_html__( 'Extra Title Position', 'tpebl' ),
-				'default' => 'text_after',
-				'options' => array(
-					'text_after'  => esc_html__( 'Prefix', 'tpebl' ),
-					'text_before' => esc_html__( 'Postfix', 'tpebl' ),
 				),
 			)
 		);
@@ -274,31 +304,111 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'separator'    => 'before',
 			)
 		);
+		$this->end_controls_section();
+		$this->start_controls_section(
+			'heading_title_content_section',
+			array(
+				'label' => esc_html__( 'Content', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'title',
+			array(
+				'type'      => Controls_Manager::TEXT,
+				'label'     => esc_html__( 'Heading Title', 'tpebl' ),
+				'ai'        => false,
+				'default'   => esc_html__( 'Heading', 'tpebl' ),
+				'dynamic'   => array(
+					'active' => true,
+				),
+				'condition' => array(
+					'select_heading' => 'default',
+				),
+			)
+		);
+		$this->add_control(
+			'sub_title',
+			array(
+				'type'    => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Sub Title', 'tpebl' ),
+				'ai'      => false,
+				'default' => esc_html__( 'Sub Title', 'tpebl' ),
+				'dynamic' => array(
+					'active' => true,
+				),
+			)
+		);
+		$this->add_control(
+			'title_s',
+			array(
+				'type'      => Controls_Manager::TEXT,
+				'label'     => esc_html__( 'Extra Title', 'tpebl' ),
+				'ai'        => false,
+				'default'   => esc_html__( 'Title', 'tpebl' ),
+				'dynamic'   => array(
+					'active' => true,
+				),
+				'condition' => array(
+					'heading_style' => 'style_1',
+				),
+			)
+		);
+		$this->add_control(
+			'heading_s_style',
+			array(
+				'type'      => Controls_Manager::SELECT,
+				'label'     => esc_html__( 'Extra Title Position', 'tpebl' ),
+				'default'   => 'text_after',
+				'options'   => array(
+					'text_after'  => esc_html__( 'Prefix', 'tpebl' ),
+					'text_before' => esc_html__( 'Postfix', 'tpebl' ),
+				),
+				'condition' => array(
+					'heading_style' => 'style_1',
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'heading_title_extra_section',
+			array(
+				'label' => esc_html__( 'Extra Option', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
 		$this->add_control(
 			'heading_title_subtitle_limit',
 			array(
-				'label'     => wp_kses_post( "Heading Title & Sub Title Limit <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "limit-word-count-in-heading-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
+				'label'     => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Heading & Sub Title Limit', 'tpebl' ),
+						esc_url( $this->tp_doc . 'limit-word-count-in-heading-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
-				'separator' => 'before',
 			)
 		);
 		$this->add_control(
 			'display_heading_title_limit',
 			array(
-				'label'     => esc_html__( 'Heading Title Limit', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Show', 'tpebl' ),
-				'label_off' => esc_html__( 'Hide', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
-				'condition' => array(
+				'label'        => esc_html__( 'Heading Title Limit', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_on'     => esc_html__( 'Show', 'tpebl' ),
+				'label_off'    => esc_html__( 'Hide', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'condition'    => array(
 					'heading_title_subtitle_limit' => 'yes',
 				),
 			)
 		);
+		$this->start_popover();
 		$this->add_control(
 			'display_heading_title_by',
 			array(
@@ -343,21 +453,22 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				),
 			)
 		);
-
+		$this->end_popover();
 		$this->add_control(
 			'display_sub_title_limit',
 			array(
-				'label'     => esc_html__( 'Sub Title Limit', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Show', 'tpebl' ),
-				'label_off' => esc_html__( 'Hide', 'tpebl' ),
-				'default'   => 'no',
-				'separator' => 'before',
-				'condition' => array(
+				'label'        => esc_html__( 'Sub Title Limit', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_on'     => esc_html__( 'Show', 'tpebl' ),
+				'label_off'    => esc_html__( 'Hide', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'condition'    => array(
 					'heading_title_subtitle_limit' => 'yes',
 				),
 			)
 		);
+		$this->start_popover();
 		$this->add_control(
 			'display_sub_title_by',
 			array(
@@ -402,6 +513,862 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				),
 			)
 		);
+		$this->end_popover();
+		$this->end_controls_section();
+		$this->start_controls_section(
+			'tpebl_animated_text',
+			array(
+				'label' => esc_html__( 'Title Text Animation', 'tpebl' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'enable_text_animation',
+			array(
+				'label'        => esc_html__( 'Enable Animation', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'tpebl' ),
+				'label_off'    => esc_html__( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Toggle to enable GSAP-powered text animations for the title.', 'tpebl' ),
+			)
+		);
+		$this->add_control(
+			'text_animations',
+			array(
+				'label'     => esc_html__( 'Animation', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'tp_basic',
+				'options'   => array(
+					'tp_basic'  => esc_html__( 'Basic', 'tpebl' ),
+					'tp_global' => esc_html__( 'Global', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Select between basic animation presets or global animations defined in Site Settings.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+				),
+			)
+		);
+
+		$theplus_options = get_option( 'theplus_options' );
+		$extras_elements = ! empty( $theplus_options['extras_elements'] ) ? $theplus_options['extras_elements'] : array();
+
+		$text_global_enabled = in_array( 'plus_text_global_animation', $extras_elements );
+
+		$global_animations = array();
+		$global_options    = array();
+
+		$global_options = array( '' => esc_html__( 'Select Animation', 'tpebl' ) ) + $global_options;
+
+		if ( $text_global_enabled && class_exists( '\ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global' ) ) {
+			$global_animations = \ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global::get_text_global_gsap_list();
+
+			if ( ! empty( $global_animations ) ) {
+				foreach ( $global_animations as $animation ) {
+					$id                    = $animation['_id'] ?? '';
+					$name                  = $animation['name'] ?? 'Unnamed';
+					$global_options[ $id ] = $name;
+				}
+			}
+		}
+
+		if ( $text_global_enabled ) {
+			$this->add_control(
+				'tp_select_text_global_animation',
+				array(
+					'label'     => esc_html__( 'Global Animation', 'tpebl' ),
+					'type'      => \Elementor\Controls_Manager::SELECT,
+					'options'   => $global_options,
+					'default'   => '',
+					'condition' => array(
+						'text_animations'       => 'tp_global',
+						'enable_text_animation' => 'yes',
+					),
+					'description' => esc_html__( 'Choose a text animation previously created in the Global Scroll Interactions section of Site Settings.', 'tpebl' ),
+				)
+			);
+
+		} else {
+			$this->add_control(
+				'tp_text_global_animation_notice',
+				array(
+					'type'        => Controls_Manager::RAW_HTML,
+					'raw'         => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text">
+								<i>
+									%s<br>
+									<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>
+								</i>
+							</p>',
+							esc_html__( 'Text Global Animation is disabled. Please enable it from Dashboard → Extensions.', 'tpebl' ),
+							esc_url( admin_url( 'admin.php?page=theplus_welcome_page#/extension' ) ),
+							esc_html__( 'Click here to enable', 'tpebl' )
+						)
+					),
+					'label_block' => true,
+					'condition'   => array(
+						'text_animations' => 'tp_global',
+					),
+				)
+			);
+		}
+		$this->add_control(
+			'text_animation_type',
+			array(
+				'label'     => esc_html__( 'Animation Type', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'normal',
+				'description' => esc_html__( 'Select the desired animation style, ranging from simple transitions to complex scatter effects.', 'tpebl' ),
+				'options'   => array(
+					'normal'   => esc_html__( 'Normal', 'tpebl' ),
+					'explode'  => esc_html__( 'Explode / Scatter', 'tpebl' ),
+					'scramble' => esc_html__( 'Scramble Text', 'tpebl' ),
+					'typing'   => esc_html__( 'Typing Effect', 'tpebl' ),
+				),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'tp_tansformtion_toggel',
+			array(
+				'label'        => esc_html__( 'Transform Effects ', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( "Enable custom transformation properties like position, scale, and rotation for the 'Normal' animation type.", 'tpebl' ),
+				'condition'    => array(
+					'text_animation_type'   => 'normal',
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+
+		$this->start_popover();
+		$this->add_control(
+			'transform_x',
+			array(
+				'label'      => esc_html__( 'X Position', 'tpebl' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'default'    => array(
+					'size' => 0,
+					'unit' => 'px',
+				),
+			)
+		);
+		$this->add_control(
+			'transform_y',
+			array(
+				'label'      => esc_html__( 'Y Position', 'tpebl' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'default'    => array(
+					'size' => 0,
+					'unit' => 'px',
+				),
+			)
+		);
+		$this->add_control(
+			'transform_skewx',
+			array(
+				'label'   => esc_html__( 'Skew X', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -180,
+					'max'  => 180,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_skewy',
+			array(
+				'label'   => esc_html__( 'Skew Y', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -180,
+					'max'  => 180,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_scale',
+			array(
+				'label'   => esc_html__( 'Scale', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => 0,
+					'max'  => 5,
+					'step' => 0.01,
+				),
+				'default' => array( 'size' => 1 ),
+			)
+		);
+		$this->add_control(
+			'transform_rotation',
+			array(
+				'label'   => esc_html__( 'Rotation', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -360,
+					'max'  => 360,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_origin',
+			array(
+				'label'   => esc_html__( 'Transform Origin', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'default' => '50% 50%',
+				'options' => array(
+					'0% 0%'     => esc_html__( 'Top Left', 'tpebl' ),
+					'50% 0%'    => esc_html__( 'Top Center', 'tpebl' ),
+					'100% 0%'   => esc_html__( 'Top Right', 'tpebl' ),
+					'0% 50%'    => esc_html__( 'Center Left', 'tpebl' ),
+					'50% 50%'   => esc_html__( 'Center', 'tpebl' ),
+					'100% 50%'  => esc_html__( 'Center Right', 'tpebl' ),
+					'0% 100%'   => esc_html__( 'Bottom Left', 'tpebl' ),
+					'50% 100%'  => esc_html__( 'Bottom Center', 'tpebl' ),
+					'100% 100%' => esc_html__( 'Bottom Right', 'tpebl' ),
+				),
+			)
+		);
+
+		$this->end_popover();
+		$this->add_control(
+			'split_type',
+			array(
+				'label'     => esc_html__( 'Split Type', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'chars',
+				'options'   => array(
+					'chars' => esc_html__( 'Characters', 'tpebl' ),
+					'words' => esc_html__( 'Words', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Determine how the text is divided for the animation (by characters or by words).', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animation_type!'  => array( 'typing', 'scramble' ),
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_trigger',
+			array(
+				'label'     => esc_html__( 'Animation Trigger', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'onload',
+				'options'   => array(
+					'onload'   => esc_html__( 'On Load', 'tpebl' ),
+					'onscroll' => esc_html__( 'On Scroll', 'tpebl' ),
+					'onhover'  => esc_html__( 'On Hover', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Set when the animation starts: on initial page load, as the user scrolls, or when hovering.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'tp_scrub',
+			array(
+				'label'        => __( 'Enable Scroll Scrub', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'tpebl' ),
+				'label_off'    => __( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Enable this to sync the animation progress directly with the page scroll speed.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation' => 'yes',
+					'text_trigger'          => 'onscroll',
+					'text_animation_type!'  => array( 'typing', 'scramble' ),
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'heading_animation_controls',
+			array(
+				'label'        => __( 'Animation Controls', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => __( 'Enable', 'tpebl' ),
+				'label_on'     => __( 'Disable', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Enable custom duration, delay, and stagger timing for basic presets.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->start_popover();
+		$this->add_control(
+			'text_duration',
+			array(
+				'label'     => esc_html__( 'Duration', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 1.2,
+				'description' => esc_html__( 'Total time in seconds for the animation to complete.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_delay',
+			array(
+				'label'     => esc_html__( 'Delay', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 0.3,
+				'description' => esc_html__( 'Idle time in seconds before the animation begins.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_stagger',
+			array(
+				'label'     => esc_html__( 'Stagger', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 0.04,
+				'description' => esc_html__( 'Time interval between each individual part (character or word) of the animation.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animation_type!'  => array( 'typing', 'scramble' ),
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->end_popover();
+		$this->add_control(
+			'text_ease',
+			array(
+				'label'     => esc_html__( 'Animation Effects', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'power1.out',
+				'options'   => array(
+					'power1.out'  => esc_html__( 'Power 1 Out', 'tpebl' ),
+					'power2.out'  => esc_html__( 'Power 2 Out', 'tpebl' ),
+					'power3.out'  => esc_html__( 'Power 3 Out', 'tpebl' ),
+					'power4.out'  => esc_html__( 'Power 4 Out', 'tpebl' ),
+					'sine.out'    => esc_html__( 'Sine Out', 'tpebl' ),
+					'expo.out'    => esc_html__( 'Expo Out', 'tpebl' ),
+					'circ.out'    => esc_html__( 'Circular Out', 'tpebl' ),
+					'back.out'    => esc_html__( 'Back Out', 'tpebl' ),
+					'elastic.out' => esc_html__( 'Elastic Out', 'tpebl' ),
+					'bounce.out'  => esc_html__( 'Bounce Out', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Define the acceleration and deceleration curve for the animation movement.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation' => 'yes',
+					'text_animation_type!'  => 'typing',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_repeat',
+			array(
+				'label'        => esc_html__( 'Repeat', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'tpebl' ),
+				'label_off'    => esc_html__( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Allow the animation to play every time the trigger condition is met.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation' => 'yes',
+					// 'text_animation_type!'  => 'typing',
+					'text_animations'       => 'tp_basic',
+				),
+			)
+		);
+		$this->end_controls_section();
+		$this->start_controls_section(
+			'tpebl_animated_text_sub_txt',
+			array(
+				'label' => esc_html__( 'Sub Title Text Animation', 'tpebl' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'enable_text_animation_sub_txt',
+			array(
+				'label'        => esc_html__( 'Enable Animation', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'tpebl' ),
+				'label_off'    => esc_html__( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Toggle to enable GSAP-powered text animations for the sub-title.', 'tpebl' ),
+			)
+		);
+		$this->add_control(
+			'sub_text_animations',
+			array(
+				'label'     => esc_html__( 'Animation', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'tp_basic',
+				'options'   => array(
+					'tp_basic'  => esc_html__( 'Basic', 'tpebl' ),
+					'tp_global' => esc_html__( 'Global', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Select between basic animation presets or global animations defined in Site Settings.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+				),
+			)
+		);
+
+		$theplus_options = get_option( 'theplus_options' );
+		$extras_elements = ! empty( $theplus_options['extras_elements'] ) ? $theplus_options['extras_elements'] : array();
+
+		$text_global_enabled = in_array( 'plus_text_global_animation', $extras_elements );
+
+		$sub_global_animations = array();
+		$sub_global_options    = array();
+
+		$sub_global_options = array( '' => esc_html__( 'Select Animation', 'tpebl' ) ) + $sub_global_options;
+
+		if ( $text_global_enabled && class_exists( '\ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global' ) ) {
+			$sub_global_animations = \ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global::get_text_global_gsap_list();
+
+			if ( ! empty( $sub_global_animations ) ) {
+				foreach ( $sub_global_animations as $animation ) {
+					$id                        = $animation['_id'] ?? '';
+					$name                      = $animation['name'] ?? 'Unnamed';
+					$sub_global_options[ $id ] = $name;
+				}
+			}
+		}
+
+		if ( $text_global_enabled ) {
+			$this->add_control(
+				'tp_select_sub_text_global_animation',
+				array(
+					'label'     => esc_html__( 'Global Animation', 'tpebl' ),
+					'type'      => \Elementor\Controls_Manager::SELECT,
+					'options'   => $sub_global_options,
+					'default'   => '',
+					'condition' => array(
+						'sub_text_animations'           => 'tp_global',
+						'enable_text_animation_sub_txt' => 'yes',
+					),
+					'description' => esc_html__( 'Choose a text animation previously created in the Global Scroll Interactions section of Site Settings.', 'tpebl' ),
+				)
+			);
+		} else {
+			$this->add_control(
+				'tp_sub_text_global_animation_notice',
+				array(
+					'type'        => Controls_Manager::RAW_HTML,
+					'raw'         => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text">
+								<i>
+									%s<br>
+									<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>
+								</i>
+							</p>',
+							esc_html__( 'Text Global Animation is disabled. Please enable it from Dashboard → Extensions.', 'tpebl' ),
+							esc_url( admin_url( 'admin.php?page=theplus_welcome_page#/extension' ) ),
+							esc_html__( 'Click here to enable', 'tpebl' )
+						)
+					),
+					'label_block' => true,
+					'condition'   => array(
+						'sub_text_animations' => 'tp_global',
+					),
+				)
+			);
+		}
+		$this->add_control(
+			'text_animation_type_sub_txt',
+			array(
+				'label'     => esc_html__( 'Animation Type', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'normal',
+				'description' => esc_html__( 'Select the desired animation style for the sub-title text.', 'tpebl' ),
+				'options'   => array(
+					'normal'   => esc_html__( 'Normal', 'tpebl' ),
+					'explode'  => esc_html__( 'Explode / Scatter', 'tpebl' ),
+					'scramble' => esc_html__( 'Scramble Text', 'tpebl' ),
+					'typing'   => esc_html__( 'Typing Effect', 'tpebl' ),
+				),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'tp_tansformtion_toggel_sub_txt',
+			array(
+				'label'        => esc_html__( 'Transform Effects ', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( "Enable custom transformation properties for the 'Normal' animation type on sub-title.", 'tpebl' ),
+				'condition'    => array(
+					'text_animation_type_sub_txt'   => 'normal',
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+
+		$this->start_popover();
+		$this->add_control(
+			'transform_x_sub_txt',
+			array(
+				'label'      => esc_html__( 'X Position', 'tpebl' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'default'    => array(
+					'size' => 0,
+					'unit' => 'px',
+				),
+			)
+		);
+		$this->add_control(
+			'transform_y_sub_txt',
+			array(
+				'label'      => esc_html__( 'Y Position', 'tpebl' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%' ),
+				'range'      => array(
+					'px' => array(
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 1,
+					),
+					'%'  => array(
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					),
+				),
+				'default'    => array(
+					'size' => 0,
+					'unit' => 'px',
+				),
+			)
+		);
+		$this->add_control(
+			'transform_skewx_sub_txt',
+			array(
+				'label'   => esc_html__( 'Skew X', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -180,
+					'max'  => 180,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_skewy_sub_txt',
+			array(
+				'label'   => esc_html__( 'Skew Y', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -180,
+					'max'  => 180,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_scale_sub_txt',
+			array(
+				'label'   => esc_html__( 'Scale', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => 0,
+					'max'  => 5,
+					'step' => 0.01,
+				),
+				'default' => array( 'size' => 1 ),
+			)
+		);
+		$this->add_control(
+			'transform_rotation_sub_txt',
+			array(
+				'label'   => esc_html__( 'Rotation', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'range'   => array(
+					'min'  => -360,
+					'max'  => 360,
+					'step' => 1,
+				),
+				'default' => array( 'size' => 0 ),
+			)
+		);
+		$this->add_control(
+			'transform_origin_sub_txt',
+			array(
+				'label'   => esc_html__( 'Transform Origin', 'tpebl' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'default' => '50% 50%',
+				'options' => array(
+					'0% 0%'     => esc_html__( 'Top Left', 'tpebl' ),
+					'50% 0%'    => esc_html__( 'Top Center', 'tpebl' ),
+					'100% 0%'   => esc_html__( 'Top Right', 'tpebl' ),
+					'0% 50%'    => esc_html__( 'Center Left', 'tpebl' ),
+					'50% 50%'   => esc_html__( 'Center', 'tpebl' ),
+					'100% 50%'  => esc_html__( 'Center Right', 'tpebl' ),
+					'0% 100%'   => esc_html__( 'Bottom Left', 'tpebl' ),
+					'50% 100%'  => esc_html__( 'Bottom Center', 'tpebl' ),
+					'100% 100%' => esc_html__( 'Bottom Right', 'tpebl' ),
+				),
+			)
+		);
+
+		$this->end_popover();
+		$this->add_control(
+			'split_type_sub_txt',
+			array(
+				'label'     => esc_html__( 'Split Type', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'chars',
+				'options'   => array(
+					'chars' => esc_html__( 'Characters', 'tpebl' ),
+					'words' => esc_html__( 'Words', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Determine how the sub-title text is divided for the animation.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'text_animation_type_sub_txt!'  => array( 'typing', 'scramble' ),
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_trigger_sub_txt',
+			array(
+				'label'     => esc_html__( 'Animation Trigger', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'onload',
+				'options'   => array(
+					'onload'   => esc_html__( 'On Load', 'tpebl' ),
+					'onscroll' => esc_html__( 'On Scroll', 'tpebl' ),
+					'onhover'  => esc_html__( 'On Hover', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Set when the sub-title animation starts.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'tp_scrub_sub_txt',
+			array(
+				'label'        => __( 'Enable Scroll Scrub', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'tpebl' ),
+				'label_off'    => __( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Enable this to sync the sub-title animation progress directly with the page scroll.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'text_trigger_sub_txt'          => 'onscroll',
+					'text_animation_type_sub_txt!'  => array( 'typing', 'scramble' ),
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'sub_animation_controls',
+			array(
+				'label'        => __( 'Animation Controls', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => __( 'Enable', 'tpebl' ),
+				'label_on'     => __( 'Disable', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Enable custom timing controls for the sub-title animation.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->start_popover();
+		$this->add_control(
+			'text_duration_sub_txt',
+			array(
+				'label'     => esc_html__( 'Duration', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 1.2,
+				'description' => esc_html__( 'Total time for the sub-title animation to complete.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_delay_sub_txt',
+			array(
+				'label'     => esc_html__( 'Delay', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 0.3,
+				'description' => esc_html__( 'Delay time before the sub-title animation begins.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_stagger_sub_txt',
+			array(
+				'label'     => esc_html__( 'Stagger', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::NUMBER,
+				'default'   => 0.04,
+				'description' => esc_html__( 'Time interval between each animated part of the sub-title.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'text_animation_type_sub_txt!'  => array( 'typing', 'scramble' ),
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->end_popover();
+		$this->add_control(
+			'text_ease_sub_txt',
+			array(
+				'label'     => esc_html__( 'Animation Effects', 'tpebl' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'power1.out',
+				'options'   => array(
+					'power1.out'  => esc_html__( 'Power 1 Out', 'tpebl' ),
+					'power2.out'  => esc_html__( 'Power 2 Out', 'tpebl' ),
+					'power3.out'  => esc_html__( 'Power 3 Out', 'tpebl' ),
+					'power4.out'  => esc_html__( 'Power 4 Out', 'tpebl' ),
+					'sine.out'    => esc_html__( 'Sine Out', 'tpebl' ),
+					'expo.out'    => esc_html__( 'Expo Out', 'tpebl' ),
+					'circ.out'    => esc_html__( 'Circular Out', 'tpebl' ),
+					'back.out'    => esc_html__( 'Back Out', 'tpebl' ),
+					'elastic.out' => esc_html__( 'Elastic Out', 'tpebl' ),
+					'bounce.out'  => esc_html__( 'Bounce Out', 'tpebl' ),
+				),
+				'description' => esc_html__( 'Select an easing effect for the sub-title animation.', 'tpebl' ),
+				'condition' => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					'text_animation_type_sub_txt!'  => 'typing',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->add_control(
+			'text_repeat_sub_txt',
+			array(
+				'label'        => esc_html__( 'Repeat', 'tpebl' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'tpebl' ),
+				'label_off'    => esc_html__( 'No', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'description'  => esc_html__( 'Allow the sub-title animation to play repeatedly.', 'tpebl' ),
+				'condition'    => array(
+					'enable_text_animation_sub_txt' => 'yes',
+					// 'text_animation_type_sub_txt!'  => 'typing',
+					'sub_text_animations'           => 'tp_basic',
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/heading-title/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => esc_html__( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=OcJUA6gL_0Q&t',
+					),
+				),
+			)
+		);
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_styling',
@@ -410,6 +1377,20 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
 					'heading_style!' => array( 'style_1', 'style_2', 'style_8' ),
+				),
+			)
+		);
+		$this->add_control(
+			'sep_img',
+			array(
+				'label'     => esc_html__( 'Separator With Image', 'tpebl' ),
+				'ai'        => false,
+				'type'      => Controls_Manager::MEDIA,
+				'default'   => array(
+					'url' => '',
+				),
+				'condition' => array(
+					'heading_style' => 'style_4',
 				),
 			)
 		);
@@ -474,19 +1455,6 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 					'{{WRAPPER}} .heading.style-5 .heading-title:after' => 'height: {{VALUE}}px;',
 				),
 
-			)
-		);
-		$this->add_control(
-			'sep_img',
-			array(
-				'label'     => esc_html__( 'Separator With Image', 'tpebl' ),
-				'type'      => Controls_Manager::MEDIA,
-				'default'   => array(
-					'url' => '',
-				),
-				'condition' => array(
-					'heading_style' => 'style_4',
-				),
 			)
 		);
 		$this->add_control(
@@ -571,6 +1539,58 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'top_clr_width',
+			array(
+				'type'        => Controls_Manager::SLIDER,
+				'label'       => esc_html__( 'Width', 'tpebl' ),
+				'size_units'  => array( 'px' ),
+				'range'       => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 20,
+						'step' => 1,
+					),
+				),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 2,
+				),
+				'render_type' => 'ui',
+				'condition'   => array(
+					'heading_style' => 'style_6',
+				),
+				'selectors'   => array(
+					'{{WRAPPER}} .heading .vertical-divider' => 'width: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+		$this->add_control(
+			'top_clr_height',
+			array(
+				'type'        => Controls_Manager::SLIDER,
+				'label'       => esc_html__( 'Height', 'tpebl' ),
+				'size_units'  => array( 'px' ),
+				'range'       => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 200,
+						'step' => 1,
+					),
+				),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 30,
+				),
+				'render_type' => 'ui',
+				'condition'   => array(
+					'heading_style' => 'style_6',
+				),
+				'selectors'   => array(
+					'{{WRAPPER}} .heading .vertical-divider' => 'height: {{SIZE}}{{UNIT}}',
+				),
+			)
+		);
+		$this->add_control(
 			'top_clr',
 			array(
 				'label'     => esc_html__( 'Separator Vertical Color', 'tpebl' ),
@@ -596,6 +1616,32 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 
 			)
 		);
+		$this->add_responsive_control(
+			'title_sep_spacing',
+			array(
+				'type'        => Controls_Manager::SLIDER,
+				'label'       => esc_html__( 'Separator Spacing', 'tpebl' ),
+				'size_units'  => array( 'px' ),
+				'range'       => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 200,
+						'step' => 1,
+					),
+				),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 5,
+				),
+				'render_type' => 'ui',
+				'selectors'   => array(
+					'{{WRAPPER}} .heading.heading_style .head-title > .heading-title' => 'margin-bottom: {{SIZE}}{{UNIT}}',
+				),
+				'condition'   => array(
+					'heading_style' => 'style_4',
+				),
+			)
+		);
 		$this->add_control(
 			'title_h',
 			array(
@@ -619,6 +1665,27 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				),
 			)
 		);
+		$this->add_responsive_control(
+			's_maintitle_pg',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .heading_style .heading-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'heading_style' => array( 'style_1', 'style_2' ),
+				),
+			)
+		);
+		$this->start_controls_tabs( 'tabs_title_style' );
+		$this->start_controls_tab(
+			'tab_title_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'tpebl' ),
+			)
+		);
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
@@ -639,7 +1706,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 					),
 					'gradient' => array(
 						'title' => esc_html__( 'Gradient', 'tpebl' ),
-						'icon'  => 'fa fa-barcode',
+						'icon'  => 'eicon-barcode',
 					),
 				),
 				'label_block' => false,
@@ -774,6 +1841,33 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'of_type'   => 'gradient',
 			)
 		);
+		$this->end_controls_tab();
+		$this->start_controls_tab(
+			'tab_title_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'tpebl' ),
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'title_hover_typography',
+				'label'    => esc_html__( 'Title Typography', 'tpebl' ),
+				'selector' => '{{WRAPPER}} .heading .heading-title:hover',
+			)
+		);
+		$this->add_control(
+			'title_hover_color',
+			array(
+				'label'     => esc_html__( 'Color', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .heading .heading-title:hover' => 'color: {{VALUE}};',
+				),
+			)
+		);
+		$this->end_controls_tab();
+		$this->end_controls_tabs();
 		$this->add_group_control(
 			Group_Control_Text_Shadow::get_type(),
 			array(
@@ -782,25 +1876,13 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'separator' => 'before',
 			)
 		);
-		$this->add_responsive_control(
-			's_maintitle_pg',
-			array(
-				'label'      => esc_html__( 'Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .heading_style .heading-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'condition'  => array(
-					'heading_style' => array( 'style_1', 'style_2' ),
-				),
-			)
-		);
 		$this->add_control(
 			'special_effect',
 			array(
 				'label'     => esc_html__( 'Special Effect', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'separator' => 'before',
 				'condition' => array(
@@ -811,11 +1893,8 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 		$this->add_control(
 			'special_effect_options',
 			array(
-				'label'       => esc_html__( 'Unlock more possibilities', 'tpebl' ),
-				'type'        => Controls_Manager::TEXT,
-				'default'     => '',
-				'description' => theplus_pro_ver_notice(),
-				'classes'     => 'plus-pro-version',
+				'type'        => 'tpae_pro_feature',
+				'label_block' => true,
 				'condition'   => array(
 					'heading_style'  => array( 'style_1', 'style_2', 'style_8' ),
 					'special_effect' => 'yes',
@@ -833,6 +1912,32 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				),
 			)
 		);
+		$this->add_responsive_control(
+			'subtitle_sep_spacing',
+			array(
+				'type'        => Controls_Manager::SLIDER,
+				'label'       => esc_html__( 'Separator Spacing', 'tpebl' ),
+				'size_units'  => array( 'px' ),
+				'range'       => array(
+					'px' => array(
+						'min'  => 0,
+						'max'  => 200,
+						'step' => 1,
+					),
+				),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 5,
+				),
+				'render_type' => 'ui',
+				'selectors'   => array(
+					'{{WRAPPER}} .heading.heading_style .sub-heading > .heading-sub-title' => 'margin-top: {{SIZE}}{{UNIT}}',
+				),
+				'condition'   => array(
+					'heading_style' => 'style_4',
+				),
+			)
+		);
 		$this->add_control(
 			'sub_title_tag',
 			array(
@@ -842,7 +1947,27 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'options' => l_theplus_get_tags_options(),
 			)
 		);
-
+		$this->add_responsive_control(
+			's_subtitle_pg',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .heading_style .heading-sub-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'heading_style' => array( 'style_1', 'style_2' ),
+				),
+			)
+		);
+		$this->start_controls_tabs( 'tabs_sub_title_style' );
+		$this->start_controls_tab(
+			'tab_sub_title_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'tpebl' ),
+			)
+		);
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
@@ -863,7 +1988,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 					),
 					'gradient' => array(
 						'title' => esc_html__( 'Gradient', 'tpebl' ),
-						'icon'  => 'fa fa-barcode',
+						'icon'  => 'eicon-barcode',
 					),
 				),
 				'label_block' => false,
@@ -998,20 +2123,33 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'of_type'   => 'gradient',
 			)
 		);
-		$this->add_responsive_control(
-			's_subtitle_pg',
+		$this->end_controls_tab();
+		$this->start_controls_tab(
+			'tab_sub_title_hover',
 			array(
-				'label'      => esc_html__( 'Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .heading_style .heading-sub-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'condition'  => array(
-					'heading_style' => array( 'style_1', 'style_2' ),
+				'label' => esc_html__( 'Hover', 'tpebl' ),
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'sub_title_hover_typography',
+				'label'    => esc_html__( 'Typography', 'tpebl' ),
+				'selector' => '{{WRAPPER}} .heading .heading-sub-title:hover',
+			)
+		);
+		$this->add_control(
+			'sub_title_hover_color',
+			array(
+				'label'     => esc_html__( 'Color', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .heading .heading-sub-title:hover' => 'color: {{VALUE}};',
 				),
 			)
 		);
+		$this->end_controls_tab();
+		$this->end_controls_tabs();
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_extra_title_styling',
@@ -1022,6 +2160,13 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 					'heading_style' => 'style_1',
 					'title_s!'      => '',
 				),
+			)
+		);
+		$this->start_controls_tabs( 'tabs_ex_title_style' );
+		$this->start_controls_tab(
+			'tab_ex_title_normal',
+			array(
+				'label' => esc_html__( 'Normal', 'tpebl' ),
 			)
 		);
 		$this->add_group_control(
@@ -1044,7 +2189,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 					),
 					'gradient' => array(
 						'title' => esc_html__( 'Gradient', 'tpebl' ),
-						'icon'  => 'fa fa-barcode',
+						'icon'  => 'eicon-barcode',
 					),
 				),
 				'label_block' => false,
@@ -1179,6 +2324,33 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 				'of_type'   => 'gradient',
 			)
 		);
+		$this->end_controls_tab();
+		$this->start_controls_tab(
+			'tab_ex_title_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'tpebl' ),
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'ex_title_hover_typography',
+				'label'    => esc_html__( 'Typography', 'tpebl' ),
+				'selector' => '{{WRAPPER}} .heading .title-s:hover',
+			)
+		);
+		$this->add_control(
+			'ex_title_hover_color',
+			array(
+				'label'     => esc_html__( 'Color', 'tpebl' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .heading .title-s:hover' => 'color: {{VALUE}};',
+				),
+			)
+		);
+		$this->end_controls_tab();
+		$this->end_controls_tabs();
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'section_settings_option_styling',
@@ -1203,153 +2375,15 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 		$this->add_control(
 			'mobile_center_align',
 			array(
-				'type'    => Controls_Manager::SWITCHER,
-				'label'   => esc_html__( 'Center Alignment In Mobile', 'tpebl' ),
-				'default' => 'no',
+				'type'      => Controls_Manager::SWITCHER,
+				'label'     => esc_html__( 'Center Alignment In Mobile', 'tpebl' ),
+				'default'   => 'no',
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 			)
 		);
 		$this->end_controls_section();
-		$this->start_controls_section(
-			'section_animation_styling',
-			array(
-				'label' => esc_html__( 'On Scroll View Animation', 'tpebl' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
-		$this->add_control(
-			'animation_effects',
-			array(
-				'label'   => esc_html__( 'Choose Animation Effect', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'no-animation',
-				'options' => l_theplus_get_animation_options(),
-			)
-		);
-		$this->add_control(
-			'animation_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_duration_default',
-			array(
-				'label'     => esc_html__( 'Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animate_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'         => 'no-animation',
-					'animation_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_effects',
-			array(
-				'label'     => esc_html__( 'Out Animation Effect', 'tpebl' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'no-animation',
-				'options'   => l_theplus_get_out_animation_options(),
-				'separator' => 'before',
-				'condition' => array(
-					'animation_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_delay',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Out Animation Delay', 'tpebl' ),
-				'default'   => array(
-					'unit' => '',
-					'size' => 50,
-				),
-				'range'     => array(
-					'' => array(
-						'min'  => 0,
-						'max'  => 4000,
-						'step' => 15,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration_default',
-			array(
-				'label'     => esc_html__( 'Out Animation Duration', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'default'   => 'no',
-				'condition' => array(
-					'animation_effects!'     => 'no-animation',
-					'animation_out_effects!' => 'no-animation',
-				),
-			)
-		);
-		$this->add_control(
-			'animation_out_duration',
-			array(
-				'type'      => Controls_Manager::SLIDER,
-				'label'     => esc_html__( 'Duration Speed', 'tpebl' ),
-				'default'   => array(
-					'unit' => 'px',
-					'size' => 50,
-				),
-				'range'     => array(
-					'px' => array(
-						'min'  => 100,
-						'max'  => 10000,
-						'step' => 100,
-					),
-				),
-				'condition' => array(
-					'animation_effects!'             => 'no-animation',
-					'animation_out_effects!'         => 'no-animation',
-					'animation_out_duration_default' => 'yes',
-				),
-			)
-		);
-		$this->end_controls_section();
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation.php';
 
 		if ( defined( 'THEPLUS_VERSION' ) ) {
 			$this->start_controls_section(
@@ -1361,8 +2395,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 			);
 			$this->end_controls_section();
 		}
-		
-		include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
+
 		include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
 	}
 
@@ -1406,16 +2439,6 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 		$t_color   = ! empty( $settings['title_color'] ) ? $settings['title_color'] : '';
 		$ex_color  = ! empty( $settings['ex_title_color'] ) ? $settings['ex_title_color'] : '';
 		$sub_color = ! empty( $settings['sub_title_color'] ) ? $settings['sub_title_color'] : '';
-
-		$animation_effects = ! empty( $settings['animation_effects'] ) ? $settings['animation_effects'] : '';
-		$animation_delay   = ! empty( $settings['animation_delay']['size'] ) ? $settings['animation_delay']['size'] : 50;
-		$ani_duration      = ! empty( $settings['animation_duration_default'] ) ? $settings['animation_duration_default'] : '';
-
-		$ani_size  = ! empty( $settings['animate_duration']['size'] ) ? $settings['animate_duration']['size'] : 50;
-		$out_ani   = ! empty( $settings['animation_out_effects'] ) ? $settings['animation_out_effects'] : '';
-		$ani_delay = ! empty( $settings['animation_out_delay']['size'] ) ? $settings['animation_out_delay']['size'] : '';
-		$out_d_ani = ! empty( $settings['animation_out_duration_default'] ) ? $settings['animation_out_duration_default'] : '';
-		$out_speed = ! empty( $settings['animation_out_duration']['size'] ) ? $settings['animation_out_duration']['size'] : 50;
 
 		$sub_title_count = ! empty( $settings['display_sub_title_input'] ) ? $settings['display_sub_title_input'] : '';
 		$mobaile_align   = ! empty( $settings['mobile_center_align'] ) ? $settings['mobile_center_align'] : '';
@@ -1488,28 +2511,7 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 			$sub_gradient_cass = 'heading-title-gradient';
 		}
 
-		if ( 'no-animation' === $animation_effects ) {
-			$animated_class = '';
-			$animation_attr = '';
-		} else {
-			$animate_offset  = '85%';
-			$animated_class  = 'animate-general';
-			$animation_attr  = ' data-animate-type="' . esc_attr( $animation_effects ) . '" data-animate-delay="' . esc_attr( $animation_delay ) . '"';
-			$animation_attr .= ' data-animate-offset="' . esc_attr( $animate_offset ) . '"';
-
-			if ( 'yes' === $ani_duration ) {
-				$animate_duration = $ani_size;
-				$animation_attr  .= ' data-animate-duration="' . esc_attr( $animate_duration ) . '"';
-			}
-
-			if ( 'no-animation' !== $out_ani ) {
-				$animation_attr .= ' data-animate-out-type="' . esc_attr( $out_ani ) . '" data-animate-out-delay="' . esc_attr( $ani_delay ) . '"';
-
-				if ( 'yes' === $out_d_ani ) {
-					$animation_attr .= ' data-animate-out-duration="' . esc_attr( $out_speed ) . '"';
-				}
-			}
-		}
+		include L_THEPLUS_PATH . 'modules/widgets/theplus-widget-animation-attr.php';
 
 		$style_class = '';
 		if ( 'style_1' === $heading_style ) {
@@ -1536,7 +2538,170 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 
 		$uid = uniqid( 'heading_style' );
 
-		$heading = '<div class="heading heading_style ' . esc_attr( $uid ) . ' ' . esc_attr( $style_class ) . ' ' . esc_attr( $animated_class ) . '" ' . $animation_attr . '>';
+		$tp_text_gsap = ! empty( $settings['enable_text_animation'] ) ? $settings['enable_text_animation'] : 'no';
+
+		$data_json = '';
+
+		if ( 'yes' === $tp_text_gsap ) {
+
+			$theplus_options = get_option( 'theplus_options' );
+			$extras_elements = ! empty( $theplus_options['extras_elements'] ) ? $theplus_options['extras_elements'] : array();
+
+			$text_global_enabled = in_array( 'plus_text_global_animation', $extras_elements );
+
+			if ( 'tp_global' === $settings['text_animations'] && $text_global_enabled ) {
+
+				$text_global_list = array();
+				if ( class_exists( '\ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global' ) ) {
+					$text_global_list = \ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global::get_text_global_gsap_list();
+				}
+				$selected_global = $settings['tp_select_text_global_animation'] ?? '';
+
+				foreach ( $text_global_list as $ani ) {
+
+					if ( isset( $ani['_id'] ) && $ani['_id'] === $selected_global ) {
+
+						$gsap_config = array(
+							// Basic Animation
+							'tp_enable_ani'      => $settings['enable_text_animation'] ?? 'no',
+							'tp_effect'          => $ani['text_animation_type'] ?? 'normal',
+							'tp_split_type'      => $ani['split_type'] ?? 'chars',
+							'tp_trigger'         => $ani['text_trigger'] ?? 'onload',
+							'tp_duration'        => ! empty( $ani['text_duration'] ) ? $ani['text_duration'] : 1.2,
+							'tp_delay'           => ! empty( $ani['text_delay'] ) ? $ani['text_delay'] : 0.3,
+							'tp_stagger'         => ! empty( $ani['text_stagger'] ) ? $ani['text_stagger'] : 0.04,
+							'tp_ease'            => $ani['text_ease'] ?? 'power3.out',
+							'tp_repeat'          => $ani['text_repeat'] ?? 'no',
+							'tp_scrub'           => $ani['tp_scrub'] ?? '',
+
+							// Transform Options
+							'transform_toggle'   => $ani['tp_tansformtion_toggel'] ?? 'no',
+							'transform_x'        => ! empty( $ani['transform_x']['size'] ) ? $ani['transform_x']['size'] : 0,
+							'transform_x_unit'   => $ani['transform_x']['unit'] ?? 'px',
+							'transform_y'        => ! empty( $ani['transform_y']['size'] ) ? $ani['transform_y']['size'] : 0,
+							'transform_y_unit'   => $ani['transform_y']['unit'] ?? 'px',
+							'transform_skewx'    => ! empty( $ani['transform_skewx']['size'] ) ? $ani['transform_skewx']['size'] : 0,
+							'transform_skewy'    => ! empty( $ani['transform_skewy']['size'] ) ? $ani['transform_skewy']['size'] : 0,
+							'transform_scale'    => ! empty( $ani['transform_scale']['size'] ) ? $ani['transform_scale']['size'] : 1,
+							'transform_rotation' => ! empty( $ani['transform_rotation']['size'] ) ? $ani['transform_rotation']['size'] : 0,
+							'transform_origin'   => $ani['transform_origin'] ?? '50% 50%',
+						);
+						$data_json   = wp_json_encode( $gsap_config );
+					}
+				}
+			} else {
+				$gsap_config = array(
+					// Basic Animation
+					'tp_enable_ani'      => $settings['enable_text_animation'] ?? 'no',
+					'tp_effect'          => $settings['text_animation_type'] ?? 'normal',
+					'tp_split_type'      => $settings['split_type'] ?? 'chars',
+					'tp_trigger'         => $settings['text_trigger'] ?? 'onload',
+					'tp_duration'        => ! empty( $settings['text_duration'] ) ? $settings['text_duration'] : 1.2,
+					'tp_delay'           => ! empty( $settings['text_delay'] ) ? $settings['text_delay'] : 0.3,
+					'tp_stagger'         => ! empty( $settings['text_stagger'] ) ? $settings['text_stagger'] : 0.04,
+					'tp_ease'            => $settings['text_ease'] ?? 'power3.out',
+					'tp_repeat'          => $settings['text_repeat'] ?? 'no',
+					'tp_scrub'           => $settings['tp_scrub'] ?? '',
+
+					// Transform Options
+					'transform_toggle'   => $settings['tp_tansformtion_toggel'] ?? 'no',
+					'transform_x'        => ! empty( $settings['transform_x']['size'] ) ? $settings['transform_x']['size'] : 0,
+					'transform_x_unit'   => $settings['transform_x']['unit'] ?? 'px',
+					'transform_y'        => ! empty( $settings['transform_y']['size'] ) ? $settings['transform_y']['size'] : 0,
+					'transform_y_unit'   => $settings['transform_y']['unit'] ?? 'px',
+					'transform_skewx'    => ! empty( $settings['transform_skewx']['size'] ) ? $settings['transform_skewx']['size'] : 0,
+					'transform_skewy'    => ! empty( $settings['transform_skewy']['size'] ) ? $settings['transform_skewy']['size'] : 0,
+					'transform_scale'    => ! empty( $settings['transform_scale']['size'] ) ? $settings['transform_scale']['size'] : 1,
+					'transform_rotation' => ! empty( $settings['transform_rotation']['size'] ) ? $settings['transform_rotation']['size'] : 0,
+					'transform_origin'   => $settings['transform_origin'] ?? '50% 50%',
+				);
+				$data_json   = wp_json_encode( $gsap_config );
+			}
+		}
+
+		$tp_sub_text_gsap = ! empty( $settings['enable_text_animation_sub_txt'] ) ? $settings['enable_text_animation_sub_txt'] : 'no';
+
+		$data_json_sub_txt = '';
+
+		if ( 'yes' === $tp_sub_text_gsap ) {
+
+			$theplus_options = get_option( 'theplus_options' );
+			$extras_elements = ! empty( $theplus_options['extras_elements'] ) ? $theplus_options['extras_elements'] : array();
+
+			$text_global_enabled = in_array( 'plus_text_global_animation', $extras_elements );
+
+			if ( 'tp_global' === $settings['sub_text_animations'] && $text_global_enabled ) {
+
+				$sub_text_global_list = array();
+				if ( class_exists( '\ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global' ) ) {
+					$sub_text_global_list = \ThePlusAddons\Elementor\Text\TP_GSAP_Text_Global::get_text_global_gsap_list();
+				}
+				$sub_text_selected_global = $settings['tp_select_sub_text_global_animation'] ?? '';
+
+				foreach ( $sub_text_global_list as $ani ) {
+
+					if ( isset( $ani['_id'] ) && $ani['_id'] === $sub_text_selected_global ) {
+
+						$gsap_config_sub_txt = array(
+							// Basic Animation
+							'tp_enable_ani_sub_txt'      => $settings['enable_text_animation_sub_txt'] ?? 'no',
+							'tp_effect_sub_txt'          => $ani['text_animation_type'] ?? 'normal',
+							'tp_split_type_sub_txt'      => $ani['split_type'] ?? 'chars',
+							'tp_trigger_sub_txt'         => $ani['text_trigger'] ?? 'onload',
+							'tp_duration_sub_txt'        => ! empty( $ani['text_duration'] ) ? $ani['text_duration'] : 1.2,
+							'tp_delay_sub_txt'           => ! empty( $ani['text_delay'] ) ? $ani['text_delay'] : 0.3,
+							'tp_stagger_sub_txt'         => ! empty( $ani['text_stagger'] ) ? $ani['text_stagger'] : 0.04,
+							'tp_ease_sub_txt'            => $ani['text_ease'] ?? 'power3.out',
+							'tp_repeat_sub_txt'          => $ani['text_repeat'] ?? 'no',
+							'tp_scrub_sub_txt'           => $ani['tp_scrub'] ?? '',
+
+							// Transform Options
+							'transform_toggle_sub_txt'   => $ani['tp_tansformtion_toggel'] ?? 'no',
+							'transform_x_sub_txt'        => ! empty( $ani['transform_x']['size'] ) ? $ani['transform_x']['size'] : 0,
+							'transform_x_unit_sub_txt'   => $ani['transform_x']['unit'] ?? 'px',
+							'transform_y_sub_txt'        => ! empty( $ani['transform_y']['size'] ) ? $ani['transform_y']['size'] : 0,
+							'transform_y_unit_sub_txt'   => $ani['transform_y']['unit'] ?? 'px',
+							'transform_skewx_sub_txt'    => ! empty( $ani['transform_skewx']['size'] ) ? $ani['transform_skewx']['size'] : 0,
+							'transform_skewy_sub_txt'    => ! empty( $ani['transform_skewy']['size'] ) ? $ani['transform_skewy']['size'] : 0,
+							'transform_scale_sub_txt'    => ! empty( $ani['transform_scale']['size'] ) ? $ani['transform_scale']['size'] : 1,
+							'transform_rotation_sub_txt' => ! empty( $ani['transform_rotation']['size'] ) ? $ani['transform_rotation']['size'] : 0,
+							'transform_origin_sub_txt'   => $ani['transform_origin'] ?? '50% 50%',
+						);
+
+						$data_json_sub_txt = wp_json_encode( $gsap_config_sub_txt );
+
+					}
+				}
+			} else {
+				$gsap_config_sub_txt = array(
+					'tp_enable_ani_sub_txt'      => $settings['enable_text_animation_sub_txt'] ?? 'no',
+					'tp_effect_sub_txt'          => $settings['text_animation_type_sub_txt'] ?? 'normal',
+					'tp_split_type_sub_txt'      => $settings['split_type_sub_txt'] ?? 'chars',
+					'tp_trigger_sub_txt'         => $settings['text_trigger_sub_txt'] ?? 'onload',
+					'tp_duration_sub_txt'        => ! empty( $settings['text_duration_sub_txt'] ) ? $settings['text_duration_sub_txt'] : 1.2,
+					'tp_delay_sub_txt'           => ! empty( $settings['text_delay_sub_txt'] ) ? $settings['text_delay_sub_txt'] : 0.3,
+					'tp_stagger_sub_txt'         => ! empty( $settings['text_stagger_sub_txt'] ) ? $settings['text_stagger_sub_txt'] : 0.04,
+					'tp_ease_sub_txt'            => $settings['text_ease_sub_txt'] ?? 'power3.out',
+					'tp_repeat_sub_txt'          => $settings['text_repeat_sub_txt'] ?? 'no',
+					'tp_scrub_sub_txt'           => $settings['tp_scrub_sub_txt'] ?? '',
+
+					'transform_toggle_sub_txt'   => $settings['tp_tansformtion_toggel_sub_txt'] ?? 'no',
+					'transform_x_sub_txt'        => ! empty( $settings['transform_x_sub_txt']['size'] ) ? $settings['transform_x_sub_txt']['size'] : 0,
+					'transform_x_unit_sub_txt'   => $settings['transform_x_sub_txt']['unit'] ?? 'px',
+					'transform_y_sub_txt'        => ! empty( $settings['transform_y_sub_txt']['size'] ) ? $settings['transform_y_sub_txt']['size'] : 0,
+					'transform_y_unit_sub_txt'   => $settings['transform_y_sub_txt']['unit'] ?? 'px',
+					'transform_skewx_sub_txt'    => ! empty( $settings['transform_skewx_sub_txt']['size'] ) ? $settings['transform_skewx_sub_txt']['size'] : 0,
+					'transform_skewy_sub_txt'    => ! empty( $settings['transform_skewy_sub_txt']['size'] ) ? $settings['transform_skewy_sub_txt']['size'] : 0,
+					'transform_scale_sub_txt'    => ! empty( $settings['transform_scale_sub_txt']['size'] ) ? $settings['transform_scale_sub_txt']['size'] : 1,
+					'transform_rotation_sub_txt' => ! empty( $settings['transform_rotation_sub_txt']['size'] ) ? $settings['transform_rotation_sub_txt']['size'] : 0,
+					'transform_origin_sub_txt'   => $settings['transform_origin_sub_txt'] ?? '50% 50%',
+				);
+
+				$data_json_sub_txt = wp_json_encode( $gsap_config_sub_txt );
+			}
+		}
+
+		$heading = '<div class="heading heading_style ' . esc_attr( $uid ) . ' ' . esc_attr( $style_class ) . ' ' . esc_attr( $animated_class ) . '" ' . $animation_attr . ' data-tp-gsap-heading-text="' . esc_attr( $data_json ) . '" data-tp-gsap-sub-heading-text="' . esc_attr( $data_json_sub_txt ) . '">';
 
 		$mobile_center = '';
 
@@ -1579,9 +2744,9 @@ class L_Theplus_Ele_Heading_Title extends Widget_Base {
 			$hed_text_st = ! empty( $settings['heading_s_style'] ) ? $settings['heading_s_style'] : '';
 
 			if ( 'text_before' === $hed_text_st ) {
-				$title_con .= $title_s_before . $heading_title_text;
+				$title_con .= $title_s_before . wp_kses_post( $heading_title_text );
 			} else {
-				$title_con .= $heading_title_text . $title_s_before;
+				$title_con .= wp_kses_post( $heading_title_text ) . $title_s_before;
 			}
 				$title_con .= '</' . esc_attr( l_theplus_validate_html_tag( $title_h ) ) . '>';
 

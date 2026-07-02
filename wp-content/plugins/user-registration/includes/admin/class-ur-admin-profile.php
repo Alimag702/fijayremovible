@@ -72,10 +72,22 @@ if ( ! class_exists( 'UR_Admin_Profile', false ) ) :
 					if ( isset( $value['field_key'] ) && 'signature' === $value['field_key'] && isset( $_GET['user_id'] ) ) {
 						unset( $form_fields[ $key ] );
 					}
-					if( isset( $value['field_key'] ) && 'membership' === $value['field_key'] && isset( $_GET['user_id'] )) {
-						unset( $form_fields[ $key ] );
+					// if ( isset( $value['field_key'] ) && 'membership' === $value['field_key'] && isset( $_GET['user_id'] ) ) {
+					// unset( $form_fields[ $key ] );
+					// }
+
+					if ( array_key_exists( $key, $all_meta_for_user ) ) {
+						if ( isset( $value['field_key'], $value['choices'] ) && 'checkbox' === $value['field_key'] && empty( $value['choices'] ) ) {
+							$unserialized_checkbox_value = maybe_unserialize( $all_meta_for_user[ $key ] );
+							if ( is_array( $unserialized_checkbox_value ) ) {
+								$form_fields[ $key ]['choices'] = $unserialized_checkbox_value;
+							} else {
+								$form_fields[ $key ]['choices'] = array( $unserialized_checkbox_value );
+							}
+						}
 					}
 				}
+
 				unset( $form_fields['user_registration_profile_pic_url'] );
 
 				if ( ! empty( $form_fields ) ) {
@@ -233,7 +245,13 @@ if ( ! class_exists( 'UR_Admin_Profile', false ) ) :
 												if ( ! metadata_exists( 'user', $user->ID, $key ) && isset( $profile[ $key ] ) && isset( $profile[ $key ]['type'] ) && 'country' === $profile[ $key ]['type'] ) {
 													$selected = isset( $profile[ $key ] ['default'] ) ? $profile[ $key ] ['default'] : '';
 												} else {
-													$selected = esc_attr( get_user_meta( $user->ID, $key, true ) );
+													$raw_meta = get_user_meta( $user->ID, $key, true );
+
+													if ( preg_match( '/^\{.*\}$/s', $raw_meta ) ) {
+														$decoded  = json_decode( $raw_meta, true );
+														$raw_meta = isset( $decoded['country'] ) ? $decoded['country'] : '';
+													}
+													$selected = esc_attr( $raw_meta );
 												}
 												foreach ( $field['options'] as $option_key => $option_value ) :
 													?>
@@ -336,13 +354,15 @@ if ( ! class_exists( 'UR_Admin_Profile', false ) ) :
 																		value="<?php echo esc_attr( $option ); ?>"
 																		class="<?php echo esc_attr( $field['class'] ); ?>"
 																						<?php
-																						if ( is_array( $value ) && in_array( $option, $value ) ) {
+																						if ( is_array( $value ) && in_array( html_entity_decode( ur_sanitize_tooltip( trim( $option ) ) ), $value ) ) {
 																							echo 'checked="checked"';
 																						} elseif ( $value == $option ) {
 																							echo 'checked="checked"';
 																						}
 																						?>
-														><?php echo wp_kses_post( trim( $choice ) ); ?></label><br/>
+														><?php if ( trim( $choice ) !== '1' ) : ?>
+															<?php echo wp_kses_post( trim( $choice ) ); ?>
+														<?php endif; ?></label><br/>
 														<?php
 												}
 											} else {
@@ -553,7 +573,7 @@ if ( ! class_exists( 'UR_Admin_Profile', false ) ) :
 			 * @param string $key_prefix Prefix.
 			 * @return array
 			 */
-		protected function get_user_meta_by_prefix( $user_id, $key_prefix ) {
+		public function get_user_meta_by_prefix( $user_id, $key_prefix ) {
 
 			$values        = get_user_meta( $user_id );
 			$return_values = array();

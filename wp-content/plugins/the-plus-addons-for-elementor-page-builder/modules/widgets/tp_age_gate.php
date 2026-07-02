@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -26,16 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Age_Gate
  */
-class ThePlus_Age_Gate extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 5.3.3
-	 *
-	 * @var tp_doc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
+class ThePlus_Age_Gate extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -61,7 +52,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 	 * @since 5.3.5
 	 */
 	public function get_icon() {
-		return 'fas fa-user-shield theplus_backend_icon';
+		return 'theplus-i-age-gate tpae-editor-logo';
 	}
 
 	/**
@@ -79,22 +70,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 	 * @since 5.3.5
 	 */
 	public function get_keywords() {
-		return array( 'Age Gate', 'Age Verification', 'Age Restriction', 'Age Confirmation', 'Age Check', 'Age Limit', 'Age Requirement' );
-	}
-
-	/**
-	 * It is use for help url.
-	 *
-	 * @since 6.0.6
-	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+		return array( 'Tp Age gate Verification', 'Birthdate Verification', 'Age Restriction', '18+ Verification', 'Adult Content Lock', 'Age Popup', 'Age Restricted Content', 'Minimum Age Limit' );
 	}
 
 	/**
@@ -104,37 +80,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 	 */
 	public function is_dynamic_content(): bool {
 		return false;
-	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if ( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return array(
-			'condition'    => $val,
-			'image'        => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt'    => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title'        => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url'  => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		);
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
 	/**
@@ -152,52 +97,85 @@ class ThePlus_Age_Gate extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="16001" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="16001">%s</a>
-					</div>',
-					esc_url( 'https://theplusaddons.com/widgets/elementor-age-gate/' ),
-					esc_html__( 'Live Demo', 'tpebl' ),
-					esc_html__( 'Import Presets', 'tpebl' )
-				),
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 16001,
 				'label_block' => true,
 			)
 		);
 		$this->add_control(
 			'age_verify_method',
 			array(
-				'label'       => esc_html__( 'Method', 'theplus' ),
+				'label'       => esc_html__( 'Method', 'tpebl' ),
 				'type'        => Controls_Manager::VISUAL_CHOICE,
 				'label_block' => true,
 				'options'     => array(
 					'method-1' => array(
-						'title' => esc_attr__( 'Age Confirmation', 'tpebl' ),
+						'title' => esc_html__( 'Age Confirmation', 'tpebl' ),
 						'image' => L_THEPLUS_URL . 'assets/images/widget-style/age-gate/age-confirmation.svg',
 					),
 					'method-2' => array(
-						'title' => esc_attr__( 'Birth Date', 'tpebl' ),
+						'title' => esc_html__( 'Birth Date', 'tpebl' ),
 						'image' => L_THEPLUS_URL . 'assets/images/widget-style/age-gate/birth-date.svg',
 					),
 					'method-3' => array(
-						'title' => esc_attr__( 'Boolean', 'tpebl' ),
+						'title' => esc_html__( 'Boolean', 'tpebl' ),
 						'image' => L_THEPLUS_URL . 'assets/images/widget-style/age-gate/boolean.svg',
 					),
 				),
 				'default'     => 'method-1',
 				'columns'     => 3,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->add_control(
-			'how_it_works_birth_date',
+			'age_verify_method1_label',
 			array(
-				'type'      => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'       => wp_kses_post( "<div class='tp-docs-wrapper'><a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "add-age-verification-by-birthdate-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> How it works  <i class='eicon-help-o'></i> </a></div>" ),
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Use this option when you want users to confirm they are above a certain age with a simple enter or continue action.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
 				'condition' => array(
-					'age_verify_method' => array( 'method-2' ),
+					'age_verify_method' => 'method-1',
+				),
+			)
+		);
+		$this->add_control(
+			'age_verify_method2_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Choose this option when you need users to enter their date of birth so the system can calculate and verify their exact age.', 'tpebl' ),
+						esc_url( $this->tp_doc . 'add-age-verification-by-birthdate-in-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+						esc_html__( 'Learn More', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'age_verify_method' => 'method-2',
+				),
+			)
+		);
+		$this->add_control(
+			'age_verify_method3_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Use this option when you only need a simple Yes/No confirmation.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition' => array(
+					'age_verify_method' => 'method-3',
 				),
 			)
 		);
@@ -210,16 +188,11 @@ class ThePlus_Age_Gate extends Widget_Base {
 				'label_on'  => esc_html__( 'Show', 'tpebl' ),
 				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'separator' => 'before',
-			)
-		);
-		$this->add_control(
-			'tempNotice',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i><b>Note:</b> Keep this disabled, If you do not want that to load on editor page. Either It will highjack your whole page.</i></p>',
-				'label_block' => true,
-				'condition'   => array(
-					'backend_preview' => 'yes',
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Keep this disabled, If you do not want that to load on editor page. Either It will highjack your whole page.', 'tpebl' ),
+					)
 				),
 			)
 		);
@@ -235,7 +208,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_responsive_control(
 			'age_gate_align',
 			array(
-				'label'     => esc_html__( 'Title Alignment', 'tpebl' ),
+				'label'     => esc_html__( 'Alignment', 'tpebl' ),
 				'type'      => Controls_Manager::CHOOSE,
 				'default'   => 'center',
 				'options'   => array(
@@ -263,10 +236,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_icon_popover_toggle',
 			array(
-				'label'        => esc_html__( 'Logo', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Logo', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
@@ -301,10 +274,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_title_popover_toggle',
 			array(
-				'label'        => esc_html__( 'Title', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Title', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
@@ -340,10 +313,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_gate_description',
 			array(
-				'label'        => esc_html__( 'Text Description', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Text Description', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
@@ -413,10 +386,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_extra_info_switch',
 			array(
-				'label'        => esc_html__( 'Extra Content', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Extra Content', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			)
@@ -620,10 +593,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_cookies',
 			array(
-				'label'        => esc_html__( 'Cookies', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Cookies', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => '',
 			)
@@ -640,17 +613,15 @@ class ThePlus_Age_Gate extends Widget_Base {
 				'min'       => 1,
 				'max'       => 365,
 				'default'   => 10,
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Set how many days the cookie should be stored before it automatically expires.', 'tpebl' ),
+					)
+				),
 				'condition' => array(
 					'age_cookies' => 'yes',
 				),
-			)
-		);
-		$this->add_control(
-			'age_gate_cookiNote',
-			array(
-				'type'        => Controls_Manager::RAW_HTML,
-				'raw'         => '<p class="tp-controller-notice"><i><b>Note:</b> Set The Number Of Days Cookies To Be Saved.</i></p>',
-				'label_block' => true,
 			)
 		);
 		$this->end_popover();
@@ -686,10 +657,10 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_sec_bg_image_switch',
 			array(
-				'label'        => esc_html__( 'Background Image', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label'        => esc_html__( 'Background Image', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => '',
 			)
@@ -742,11 +713,11 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_side_image_show',
 			array(
-				'label'        => esc_html__( 'Right Side Image', 'textdomain' ),
-				'type'         => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'label_off'    => esc_html__( 'Default', 'textdomain' ),
+				'label'        => esc_html__( 'Right Side Image', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_off'    => esc_html__( 'Default', 'tpebl' ),
 				'separator'    => 'before',
-				'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+				'label_on'     => esc_html__( 'Custom', 'tpebl' ),
 				'return_value' => 'yes',
 				'default'      => '',
 			)
@@ -797,7 +768,31 @@ class ThePlus_Age_Gate extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
-
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/age-gate/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => esc_html__( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=L7-Kq4Er7Ps',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 		$this->start_controls_section(
 			'age_logo_styling',
 			array(
@@ -805,6 +800,17 @@ class ThePlus_Age_Gate extends Widget_Base {
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => array(
 					'age_icon_img_type' => 'yes',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'logo_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .tp-agegate-inner-wrapper .tp-agegate-boxes .tp-age-ii .tp-agegate-image' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			)
 		);
@@ -838,17 +844,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				),
 			)
 		);
-		$this->add_responsive_control(
-			'logo_margin',
-			array(
-				'label'      => esc_html__( 'Margin', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', 'em' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .tp-agegate-inner-wrapper .tp-agegate-boxes .tp-age-ii .tp-agegate-image' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			)
-		);
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -859,18 +854,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				'condition' => array(
 					'age_gate_title' => 'yes',
 				),
-			)
-		);
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'      => 'title_typo',
-				'label'     => esc_html__( 'Typography', 'tpebl' ),
-				'global'    => array(
-					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
-				),
-				'selector'  => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-title',
-				'separator' => 'before',
 			)
 		);
 		$this->add_responsive_control(
@@ -894,6 +877,18 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-title' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'      => 'title_typo',
+				'label'     => esc_html__( 'Typography', 'tpebl' ),
+				'global'    => array(
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				),
+				'selector'  => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-title',
+				'separator' => 'before',
 			)
 		);
 		$this->start_controls_tabs( 'age_title_color' );
@@ -944,17 +939,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				),
 			)
 		);
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'     => 'desc_typo',
-				'label'    => esc_html__( 'Typography', 'tpebl' ),
-				'global'   => array(
-					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
-				),
-				'selector' => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-description',
-			)
-		);
 		$this->add_responsive_control(
 			'desc_padding',
 			array(
@@ -976,6 +960,17 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-description' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'desc_typo',
+				'label'    => esc_html__( 'Typography', 'tpebl' ),
+				'global'   => array(
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				),
+				'selector' => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-description',
 			)
 		);
 		$this->start_controls_tabs( 'age_desc_color' );
@@ -1082,18 +1077,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				),
 			)
 		);
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'      => 'chktxt_typo',
-				'label'     => esc_html__( 'Typography', 'tpebl' ),
-				'global'    => array(
-					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
-				),
-				'selector'  => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .agc_checkbox',
-				'separator' => 'before',
-			)
-		);
 		$this->add_responsive_control(
 			'chktxt_padding',
 			array(
@@ -1115,6 +1098,18 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .agc_checkbox' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'      => 'chktxt_typo',
+				'label'     => esc_html__( 'Typography', 'tpebl' ),
+				'global'    => array(
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				),
+				'selector'  => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .agc_checkbox',
+				'separator' => 'before',
 			)
 		);
 		$this->start_controls_tabs( 'age_chktxt_color' );
@@ -1319,17 +1314,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'     => 'fbtn_typo',
-				'label'    => esc_html__( 'Typography', 'tpebl' ),
-				'global'   => array(
-					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
-				),
-				'selector' => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .age_vms .age_vmb,{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit,{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes',
-			)
-		);
 		$this->add_responsive_control(
 			'fbtn_padding',
 			array(
@@ -1355,6 +1339,17 @@ class ThePlus_Age_Gate extends Widget_Base {
 					{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 				'separator'  => 'after',
+			)
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'fbtn_typo',
+				'label'    => esc_html__( 'Typography', 'tpebl' ),
+				'global'   => array(
+					'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
+				),
+				'selector' => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .age_vms .age_vmb,{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit,{{WRAPPER}} .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes',
 			)
 		);
 		$this->start_controls_tabs( 'age_firstbtn_tab' );
@@ -1494,11 +1489,23 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'age_tglicon_styling',
 			array(
-				'label'     => esc_html__( 'First Button Icon', 'theplus' ),
+				'label'     => esc_html__( 'First Button Icon', 'tpebl' ),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'icon_action' => 'yes',
 				),
+			)
+		);
+		$this->add_responsive_control(
+			'tgl_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb i,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit i,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes i,{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb svg,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit svg,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes svg' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
 			)
 		);
 		$this->add_responsive_control(
@@ -1548,7 +1555,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb i,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit i,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes i,{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb svg,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit svg,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes svg' => 'margin-left: {{SIZE}}{{UNIT}}',
 				),
 				'condition'   => array(
-					'icon_position' => array( 'age_icon_postfix' ),
+					'icon_position' => 'age_icon_postfix',
 				),
 			)
 		);
@@ -1579,20 +1586,8 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb i,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit i,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes i,{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb svg,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit svg,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes svg' => 'margin-right: {{SIZE}}{{UNIT}}',
 				),
 				'condition'   => array(
-					'icon_position' => array( 'age_icon_prefix' ),
+					'icon_position' => 'age_icon_prefix',
 				),
-			)
-		);
-		$this->add_responsive_control(
-			'tgl_margin',
-			array(
-				'label'      => esc_html__( 'Margin', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', 'em' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb i,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit i,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes i,{{WRAPPER}} .tp-method-1 .tp-agegate-boxes .tp-agegate-method .age_vmb svg,{{WRAPPER}} .tp-method-2 .tp-agegate-boxes .tp-agegate-method .age_verify_method_btnsubmit svg,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-yes svg' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator'  => 'after',
 			)
 		);
 		$this->start_controls_tabs( 'tgl_icon_color' );
@@ -1793,7 +1788,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->add_control(
 			'icon_fs_options',
 			array(
-				'label'     => esc_html__( 'Second Button Icon', 'theplus' ),
+				'label'     => esc_html__( 'Second Button Icon', 'tpebl' ),
 				'type'      => Controls_Manager::HEADING,
 				'condition' => array(
 					'age_verify_method'  => 'method-3',
@@ -1879,7 +1874,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 					'{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-no i,{{WRAPPER}} .tp-method-3 .tp-agegate-boxes .tp-agegate-method .tp-age-btn-no svg' => 'margin-right: {{SIZE}}{{UNIT}}',
 				),
 				'condition'   => array(
-					'second_icon_position' => array( 'age_scnd_icon_prefix' ),
+					'second_icon_position' => 'age_scnd_icon_prefix',
 				),
 			)
 		);
@@ -1946,6 +1941,29 @@ class ThePlus_Age_Gate extends Widget_Base {
 			)
 		);
 		$this->add_responsive_control(
+			'info_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-extra-info' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+		$this->add_responsive_control(
+			'info_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-extra-info' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'separator'  => 'after',
+			)
+		);
+		$this->add_responsive_control(
 			'einfo_Size',
 			array(
 				'type'        => Controls_Manager::SLIDER,
@@ -1978,29 +1996,6 @@ class ThePlus_Age_Gate extends Widget_Base {
 				),
 				'selector'  => '{{WRAPPER}} .tp-agegate-boxes .tp-agegate-extra-info',
 				'separator' => 'before',
-			)
-		);
-		$this->add_responsive_control(
-			'info_padding',
-			array(
-				'label'      => esc_html__( 'Padding', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', 'em' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-extra-info' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			)
-		);
-		$this->add_responsive_control(
-			'info_margin',
-			array(
-				'label'      => esc_html__( 'Margin', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', 'em' ),
-				'selectors'  => array(
-					'{{WRAPPER}} .tp-agegate-boxes .tp-agegate-extra-info' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'separator'  => 'after',
 			)
 		);
 		$this->start_controls_tabs( 'age_einfo_color' );
@@ -2444,10 +2439,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -2562,7 +2554,7 @@ class ThePlus_Age_Gate extends Widget_Base {
 					$img_src = tp_get_image_rander( $image_id, 'full', array( 'class' => 'tp-agegate-image' ) );
 					$output .= '<div class="tp-age-ii">' . $img_src . '</div>';
 				} else {
-					$output .= '<div class="tp-age-ii"><img src=' . esc_url( $age_head_img ) . ' class="tp-agegate-image"></div>';
+					$output .= '<div class="tp-age-ii"><img src="' . esc_url( $age_head_img ) . '" class="tp-agegate-image"></div>';
 				}
 			}
 

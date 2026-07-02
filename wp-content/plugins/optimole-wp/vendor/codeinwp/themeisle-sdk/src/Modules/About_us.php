@@ -96,6 +96,9 @@ class About_Us extends Abstract_Module {
 			return;
 		}
 
+		// Refresh the about data to get the latest changes.
+		$this->about_data = apply_filters( $this->product->get_key() . '_about_us_metadata', array() );
+
 		add_submenu_page(
 			$this->about_data['location'],
 			Loader::$labels['about_us']['title'],
@@ -222,6 +225,7 @@ class About_Us extends Abstract_Module {
 				'newsHeading'      => Loader::$labels['about_us']['newsHeading'],
 				'emailPlaceholder' => Loader::$labels['about_us']['emailPlaceholder'],
 				'signMeUp'         => Loader::$labels['about_us']['signMeUp'],
+				'services'         => Loader::$labels['about_us']['services'],
 				'installNow'       => Loader::$labels['about_us']['installNow'],
 				'activate'         => Loader::$labels['about_us']['activate'],
 				'learnMore'        => Loader::$labels['about_us']['learnMore'],

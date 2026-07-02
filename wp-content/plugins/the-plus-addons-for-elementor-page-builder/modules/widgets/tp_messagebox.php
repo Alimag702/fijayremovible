@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
@@ -29,10 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_MessageBox
  */
-class ThePlus_MessageBox extends Widget_Base {
-
-	public $tp_doc = L_THEPLUS_TPDOC;
-
+class ThePlus_MessageBox extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name.
 	 *
@@ -60,7 +57,7 @@ class ThePlus_MessageBox extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-calendar-o theplus_backend_icon';
+		return 'theplus-i-message-box tpae-editor-logo';
 	}
 
 	/**
@@ -80,56 +77,16 @@ class ThePlus_MessageBox extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Message Box', 'Alert Box', 'Notification Box', 'Info Box', 'Callout Box', 'Warning Box', 'Success Box', 'Error Box', 'Message Widget', 'Alert Widget', 'Notification Widget', 'Info Widget', 'Callout Widget', 'Warning Widget', 'Success Widget', 'Error Widget' );
+		return array( 'Tp Message Box', 'Alert Box', 'Notification Box', 'Info Box', 'Callout Box', 'Warning Box', 'Success Box', 'Error Box', 'Message Widget', 'Alert Widget', 'Notification Widget', 'Info Widget', 'Callout Widget', 'Warning Widget', 'Success Widget', 'Error Widget' );
 	}
-
 	/**
-	 * Get Custom help url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 1.0.0
-	 * @version 5.4.2
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return false;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -141,25 +98,17 @@ class ThePlus_MessageBox extends Widget_Base {
 		$this->start_controls_section(
 			'message_box_content_section',
 			array(
-				'label' => esc_html__( 'Text Content', 'tpebl' ),
+				'label' => esc_html__( 'Content', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 		$this->add_control(
-			'smart-preset-button',
+			'tpae_preset_controller',
 			array(
-                'type'=> Controls_Manager::RAW_HTML,
-                'raw' => sprintf(
-					'<div class="tpae-preset-main-raw-main">
-						<a href="%s" class="tp-preset-live-demo" id="tp-preset-live-demo" data-temp_id="12363" target="_blank" rel="noopener noreferrer">%s</a>
-						<a class="tp-preset-editor-raw" id="tp-preset-editor-raw" data-temp_id="12363">%s</a>
-					</div>',
-					esc_url('https://theplusaddons.com/widgets/elementor-message-box/'),
-					esc_html__('Live Demo', 'tpebl'),
-					esc_html__('Import Presets', 'tpebl')
-				),
-                'label_block'     => true,
-            )
+				'type'        => 'tpae_preset_button',
+				'temp_id'     => 12363,
+				'label_block' => true,
+			)
 		);
 		$this->add_control(
 			'Title',
@@ -168,10 +117,9 @@ class ThePlus_MessageBox extends Widget_Base {
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__( 'This is alert need your attention', 'tpebl' ),
 				'placeholder' => esc_html__( 'Enter Title', 'tpebl' ),
-				'label_block' => false,
-				'ai' => [
+				'ai'          => array(
 					'active' => false,
-				],
+				),
 			)
 		);
 		$this->add_control(
@@ -179,8 +127,8 @@ class ThePlus_MessageBox extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Description', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 			)
 		);
@@ -190,6 +138,7 @@ class ThePlus_MessageBox extends Widget_Base {
 				'label'       => esc_html__( 'Description', 'tpebl' ),
 				'type'        => Controls_Manager::WYSIWYG,
 				'default'     => esc_html__( 'I Am Text Block. Click Edit Button To Change This Text. Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Ut Elit Tellus, Luctus Nec Ullamcorper Mattis, Pulvinar Dapibus Leo.', 'tpebl' ),
+				'ai'          => false,
 				'placeholder' => esc_html__( 'Enter Description here', 'tpebl' ),
 				'condition'   => array(
 					'Description' => 'yes',
@@ -208,14 +157,15 @@ class ThePlus_MessageBox extends Widget_Base {
 		$this->add_control(
 			'icon',
 			array(
-				'label'     => esc_html__( 'Main Icon', 'tpebl' ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'yes',
-				'separator' => 'before',
+				'label'        => esc_html__( 'Main Icon', 'tpebl' ),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_on'     => esc_html__( 'Show', 'tpebl' ),
+				'label_off'    => esc_html__( 'Hide', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
 			)
 		);
+		$this->start_popover();
 		$this->add_control(
 			'IconName',
 			array(
@@ -230,17 +180,25 @@ class ThePlus_MessageBox extends Widget_Base {
 				),
 			)
 		);
+		$this->end_popover();
 		$this->add_control(
 			'dismiss',
 			array(
-				'label'     => wp_kses_post( "Close Button <a class='tp-docs-link' href='" . esc_url( $this->tp_doc ) . "add-close-button-in-alert-box-message-box-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>" ),
-				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
-				'default'   => 'yes',
-				'separator' => 'before',
+				'label'        => wp_kses_post(
+					sprintf(
+						'%s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer"><i class="eicon-help-o"></i></a>',
+						esc_html__( 'Close Button', 'tpebl' ),
+						esc_url( $this->tp_doc . 'add-close-button-in-alert-box-message-box-elementor/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' )
+					)
+				),
+				'type'         => Controls_Manager::POPOVER_TOGGLE,
+				'label_on'     => esc_html__( 'Show', 'tpebl' ),
+				'label_off'    => esc_html__( 'Hide', 'tpebl' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
 			)
 		);
+		$this->start_popover();
 		$this->add_control(
 			'dismsIcon',
 			array(
@@ -274,13 +232,50 @@ class ThePlus_MessageBox extends Widget_Base {
 				),
 			)
 		);
+		$this->end_popover();
 		$this->end_controls_section();
-
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => esc_html__( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => esc_html__( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/help/message-box/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => esc_html__( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=yEdMsJiC7Js',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 		$this->start_controls_section(
 			'message_box_title_styling',
 			array(
 				'label' => esc_html__( 'Title', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+		$this->add_responsive_control(
+			'titleAdjust',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'separator'  => 'after',
+				'selectors'  => array(
+					'{{WRAPPER}} .msg-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
 			)
 		);
 		$this->add_group_control(
@@ -294,18 +289,6 @@ class ThePlus_MessageBox extends Widget_Base {
 				'selector'  => '{{WRAPPER}} .msg-title',
 				'condition' => array(
 					'Title!' => '',
-				),
-			)
-		);
-		$this->add_responsive_control(
-			'titleAdjust',
-			array(
-				'label'      => esc_html__( 'Title Adjust', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'separator'  => 'after',
-				'selectors'  => array(
-					'{{WRAPPER}} .msg-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			)
 		);
@@ -409,6 +392,21 @@ class ThePlus_MessageBox extends Widget_Base {
 				),
 			)
 		);
+		$this->add_responsive_control(
+			'descAdjust',
+			array(
+				'label'      => esc_html__( 'Padding', 'tpebl' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'separator'  => 'after',
+				'selectors'  => array(
+					'{{WRAPPER}} .msg-desc' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+				'condition'  => array(
+					'Description' => 'yes',
+				),
+			)
+		);
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
@@ -419,21 +417,6 @@ class ThePlus_MessageBox extends Widget_Base {
 				),
 				'selector'  => '{{WRAPPER}} .msg-desc',
 				'condition' => array(
-					'Description' => 'yes',
-				),
-			)
-		);
-		$this->add_responsive_control(
-			'descAdjust',
-			array(
-				'label'      => esc_html__( 'Description Adjust', 'tpebl' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'separator'  => 'after',
-				'selectors'  => array(
-					'{{WRAPPER}} .msg-desc' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-				'condition'  => array(
 					'Description' => 'yes',
 				),
 			)
@@ -608,8 +591,8 @@ class ThePlus_MessageBox extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Arrow', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_on'  => esc_html__( 'Enable', 'tpebl' ),
-				'label_off' => esc_html__( 'Disable', 'tpebl' ),
+				'label_on'  => esc_html__( 'Show', 'tpebl' ),
+				'label_off' => esc_html__( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'separator' => 'after',
 			)
@@ -1086,10 +1069,7 @@ class ThePlus_MessageBox extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 

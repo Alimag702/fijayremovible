@@ -39,7 +39,7 @@ class UR_Block_Login_Form extends UR_Block_Abstract {
 		if ( ! empty( $attr['userState'] ) ) {
 			$parameters['userState'] = $attr['userState'];
 		}
-		
+
 		return UR_Shortcodes::login(
 			$parameters
 		);

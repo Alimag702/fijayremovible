@@ -12,6 +12,10 @@ if ( ! class_exists( 'UR_List_Table' ) ) {
 	include_once dirname( UR_PLUGIN_FILE ) . '/includes/abstracts/abstract-ur-list-table.php';
 }
 
+if ( ! class_exists( 'UR_Base_Layout' ) ) {
+	include_once dirname( UR_PLUGIN_FILE ) . '/includes/admin/class-ur-admin-base-layout.php';
+}
+
 /**
  * Registrations table list class.
  */
@@ -37,7 +41,7 @@ class UR_Admin_Registrations_Table_List extends UR_List_Table {
 	 * No items found text.
 	 */
 	public function no_items() {
-		esc_html_e( 'No user registration found.', 'user-registration' );
+		UR_Base_Layout::no_items( 'Registration Forms' );
 	}
 
 	/**
@@ -168,57 +172,33 @@ class UR_Admin_Registrations_Table_List extends UR_List_Table {
 	 * Render the list table page, including header, notices, status filters and table.
 	 */
 	public function display_page() {
-		$this->prepare_items();
+		$class = '';
+		$attr  = '';
+
+		if ( ! ur_check_module_activation( 'multiple-registration' ) ) {
+			$class = ' ur-activate-dependent-module ui-add-disabled';
+			$attr  = 'data-slug="user-registration-multiple-registration"
+					data-name="User Registration - Multiple Registration"
+					data-plan="free"
+					aria-disabled="true"';
+		}
 		?>
-				<div class="ur-admin-page-topnav" id="ur-lists-page-topnav">
-					<div class="ur-page-title__wrapper">
-						<div class="ur-page-title__wrapper-logo">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-								<path d="M29.2401 2.25439C27.1109 3.50683 25.107 5.13503 23.3536 6.88846C21.6002 8.64188 19.972 10.6458 18.7195 12.6497C19.5962 14.4031 20.3477 16.1566 20.9739 18.0352C22.1011 15.6556 23.4788 13.5264 25.2323 11.6477V18.4109C25.2323 22.544 22.4769 26.1761 18.4691 27.3033H18.2185C17.9681 24.047 17.2166 20.9158 16.0894 17.91C14.4612 13.7769 11.9563 10.0196 8.69995 6.88846C6.94652 5.13503 4.94263 3.63208 2.81347 2.25439L2.3125 2.00388V18.2857C2.3125 24.9237 7.07177 30.6849 13.7097 31.8121H13.835C15.3379 32.0626 16.8409 32.0626 18.2185 31.8121H18.3438C24.9818 30.6849 29.7411 24.9237 29.7411 18.2857V2.00388L29.2401 2.25439ZM6.82128 18.2857V11.6477C10.7039 16.0313 13.0835 21.4168 13.5845 27.1781C9.57669 26.0509 6.82128 22.4188 6.82128 18.2857ZM15.9642 0C14.0855 0 12.5825 1.50291 12.5825 3.38158C12.5825 5.26025 14.0855 6.7632 15.9642 6.7632C17.8428 6.7632 19.3457 5.26025 19.3457 3.38158C19.3457 1.50291 17.8428 0 15.9642 0Z" fill="#475BB2"/>
-							</svg>
-						</div>
-						<div class="ur-page-title__wrapper-menu">
-							<ul class="ur-page-title__wrapper-menu__items">
-								<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=user-registration' ) ); ?>" class="current"><?php esc_html_e( 'Registration Forms', 'user-registration' ); ?></a></li>
-								<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=user-registration-login-forms' ) ); ?>" class=""><?php esc_html_e( 'Login Form', 'user-registration' ); ?></a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="ur-page-actions">
-						<button id="ur-lists-page-settings-button" class="ur-button-primary"
-							title="<?php esc_html_e( 'Screen Options', 'user-registration' ); ?>">
-							<?php esc_html_e( 'Screen Options', 'user-registration' ); ?>
-							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
-								<path d="M6 8.75C5.85 8.75 5.75 8.7 5.65 8.6L1.15 4.1C0.95 3.9 0.95 3.6 1.15 3.4C1.35 3.2 1.65 3.2 1.85 3.4L6 7.55L10.15 3.4C10.35 3.2 10.65 3.2 10.85 3.4C11.05 3.6 11.05 3.9 10.85 4.1L6.35 8.6C6.25 8.7 6.15 8.75 6 8.75Z" fill="#383838"/>
-							</svg>
-						</button>
-					</div>
-				</div>
-				<hr class="wp-header-end">
-				<div class="user-registration-list-table-container">
-					<div id="user-registration-list-table-page">
-						<div class="user-registration-list-table-header">
-							<h2><?php esc_html_e( 'All Registration Forms', 'user-registration' ); ?></h2>
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=add-new-registration' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Add New', 'user-registration' ); ?></a>
-						</div>
-						<div class="user-registration-list-table-page__body">
-							<form id="registration-list" class="user-registration-list-table-action-form" method="get" >
-								<input type="hidden" name="page" value="user-registration" />
-								<?php
-								echo "<div id='user-registration-list-filters-row'>";
-									$this->views();
-									$this->search_box( esc_html__( 'Search Registration', 'user-registration' ), 'user-registration-list-table' );
-									echo '</div>';
-
-									$this->display();
-
-									wp_nonce_field( 'save', 'user_registration_nonce' );
-								?>
-							</form>
-						</div>
-					</div>
-				</div>
+		<hr class="wp-header-end">
 		<?php
+		echo user_registration_plugin_main_header();
+		UR_Base_Layout::render_layout(
+			$this,
+			array(
+				'page'           => $this->page,
+				'title'          => esc_html__( 'Registration Forms', 'user-registration' ),
+				'add_new_action' => '',
+				'search_id'      => 'user-registration-list-table-search-input',
+				'form_id'        => 'registration-list',
+				'add_page_key'   => 'add-new-registration',
+				'add_new_class'  => $class,
+				'add_new_attr'   => $attr,
+			)
+		);
 	}
 
 	/**
@@ -227,12 +207,10 @@ class UR_Admin_Registrations_Table_List extends UR_List_Table {
 	 * @param string $text search button Text.
 	 * @param string $input_id Input field id.
 	 */
-	public function search_box( $text, $input_id ) {
+	public function display_search_box( $input_id ) {
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) { // phpcs:ignore;
 			return;
 		}
-
-		$input_id = 'user-registration-list-table-search-input';
 
 		if ( ! empty( $_REQUEST['orderby'] ) ) { // phpcs:ignore;
 			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />'; // phpcs:ignore;
@@ -247,15 +225,245 @@ class UR_Admin_Registrations_Table_List extends UR_List_Table {
 			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />'; // phpcs:ignore;
 		}
 		?>
-			<div id="user-registration-list-search-form">
-				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
-				<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_html_e( 'Search Forms ...', 'user-registration' ); ?>" />
+		<div id="user-registration-list-search-form">
+				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html__( 'Search Registration Form', 'user-registration' ); ?>:</label>
+				<input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_html_e( 'Search Registration Form', 'user-registration' ); ?>" />
 				<button type="submit" id="search-submit">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 						<path fill="#000" fill-rule="evenodd" d="M4 11a7 7 0 1 1 12.042 4.856 1.012 1.012 0 0 0-.186.186A7 7 0 0 1 4 11Zm12.618 7.032a9 9 0 1 1 1.414-1.414l3.675 3.675a1 1 0 0 1-1.414 1.414l-3.675-3.675Z" clip-rule="evenodd"/>
 					</svg>
 				</button>
-			</div>
+		</div>
 			<?php
+	}
+
+	/**
+	 * Displays the table.
+	 *
+	 * @since 3.1.0
+	 */
+	public function display() {
+		$singular = $this->_args['singular'];
+
+		$this->views();
+		echo '</br>';
+
+		$this->display_tablenav( 'top' );
+
+		$this->screen->render_screen_reader_content( 'heading_list' );
+		?>
+		<table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+				<?php $this->print_table_description(); ?>
+			<thead>
+			<tr>
+				<?php $this->print_column_headers(); ?>
+			</tr>
+			</thead>
+
+			<tbody id="the-list"
+				<?php
+				if ( $singular ) {
+					echo " data-wp-lists='list:$singular'";
+				}
+				?>
+				>
+				<?php $this->display_rows_or_placeholder(); ?>
+			</tbody>
+
+		</table>
+		<?php
+		$this->display_tablenav( 'bottom' );
+	}
+
+	/**
+	 * Generates the table navigation above or below the table
+	 *
+	 * @since 4.1
+	 *
+	 * @param string $which
+	 */
+	protected function display_tablenav( $which ) {
+		if ( 'top' === $which ) {
+			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
+		}
+		?>
+		<div class="tablenav <?php echo esc_attr( $which ); ?>">
+
+			<?php if ( $this->has_items() && 'top' === $which ) : ?>
+				<div>
+					<div class="alignleft actions bulkactions">
+						<?php $this->bulk_actions( $which ); ?>
+					</div>
+					<?php $this->extra_tablenav( $which ); ?>
+				</div>
+				<?php
+			endif;
+			if ( 'bottom' === $which ) :
+				?>
+				<div class="alignleft">
+					<?php $this->footer_text(); ?>
+				</div>
+				<?php
+				$this->pagination( $which );
+			endif;
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Displays the pagination.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $which The location of the pagination: Either 'top' or 'bottom'.
+	 */
+	protected function pagination( $which ) {
+		if ( empty( $this->_pagination_args['total_items'] ) ) {
+			return;
+		}
+
+		$total_items     = $this->_pagination_args['total_items'];
+		$total_pages     = $this->_pagination_args['total_pages'];
+		$infinite_scroll = false;
+		if ( isset( $this->_pagination_args['infinite_scroll'] ) ) {
+			$infinite_scroll = $this->_pagination_args['infinite_scroll'];
+		}
+
+		if ( 'top' === $which && $total_pages > 1 ) {
+			$this->screen->render_screen_reader_content( 'heading_pagination' );
+		}
+
+		$current              = $this->get_pagenum();
+		$removable_query_args = wp_removable_query_args();
+
+		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+
+		$current_url = remove_query_arg( $removable_query_args, $current_url );
+
+		$page_links = array();
+
+		$total_pages_before = '<span class="paging-input">';
+		$total_pages_after  = '</span></span>';
+
+		$disable_first = false;
+		$disable_last  = false;
+		$disable_prev  = false;
+		$disable_next  = false;
+
+		if ( 1 === $current ) {
+			$disable_first = true;
+			$disable_prev  = true;
+		}
+		if ( $total_pages === $current ) {
+			$disable_last = true;
+			$disable_next = true;
+		}
+
+		if ( $disable_first ) {
+			$page_links[] = '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>';
+		} else {
+			$page_links[] = sprintf(
+				"<a class='first-page button' href='%s'>" .
+					"<span class='screen-reader-text'>%s</span>" .
+					"<span aria-hidden='true'>%s</span>" .
+				'</a>',
+				esc_url( remove_query_arg( 'paged', $current_url ) ),
+				/* translators: Hidden accessibility text. */
+				__( 'First page', 'user-registration' ),
+				'&laquo;'
+			);
+		}
+
+		if ( $disable_prev ) {
+			$page_links[] = '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>';
+		} else {
+			$page_links[] = sprintf(
+				"<a class='prev-page button' href='%s'>" .
+					"<span class='screen-reader-text'>%s</span>" .
+					"<span aria-hidden='true'>%s</span>" .
+				'</a>',
+				esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
+				/* translators: Hidden accessibility text. */
+				__( 'Previous page', 'user-registration' ),
+				'&lsaquo;'
+			);
+		}
+
+		if ( 'bottom' === $which ) {
+			$html_current_page  = $current;
+			$total_pages_before = sprintf(
+				'<span class="screen-reader-text">%s</span>' .
+				'<span id="table-paging" class="paging-input">' .
+				'<span class="tablenav-paging-text">',
+				/* translators: Hidden accessibility text. */
+				__( 'Current Page', 'user-registration' )
+			);
+		} else {
+			$html_current_page = sprintf(
+				'<label for="current-page-selector" class="screen-reader-text">%s</label>' .
+				"<input class='current-page' id='current-page-selector' type='text'
+					name='paged' value='%s' size='%d' aria-describedby='table-paging' />" .
+				"<span class='tablenav-paging-text'>",
+				/* translators: Hidden accessibility text. */
+				__( 'Current Page', 'user-registration' ),
+				$current,
+				strlen( $total_pages )
+			);
+		}
+
+		$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+
+		$page_links[] = $total_pages_before . sprintf(
+			/* translators: 1: Current page, 2: Total pages. */
+			_x( '%1$s of %2$s', 'paging', 'user-registration' ),
+			$html_current_page,
+			$html_total_pages
+		) . $total_pages_after;
+
+		if ( $disable_next ) {
+			$page_links[] = '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>';
+		} else {
+			$page_links[] = sprintf(
+				"<a class='next-page button' href='%s'>" .
+					"<span class='screen-reader-text'>%s</span>" .
+					"<span aria-hidden='true'>%s</span>" .
+				'</a>',
+				esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
+				/* translators: Hidden accessibility text. */
+				__( 'Next page', 'user-registration' ),
+				'&rsaquo;'
+			);
+		}
+
+		if ( $disable_last ) {
+			$page_links[] = '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span>';
+		} else {
+			$page_links[] = sprintf(
+				"<a class='last-page button' href='%s'>" .
+					"<span class='screen-reader-text'>%s</span>" .
+					"<span aria-hidden='true'>%s</span>" .
+				'</a>',
+				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
+				/* translators: Hidden accessibility text. */
+				__( 'Last page', 'user-registration' ),
+				'&raquo;'
+			);
+		}
+
+		$pagination_links_class = 'pagination-links';
+		if ( ! empty( $infinite_scroll ) ) {
+			$pagination_links_class .= ' hide-if-js';
+		}
+		$output = "\n<span class='$pagination_links_class'>" . implode( "\n", $page_links ) . '</span>';
+
+		if ( $total_pages ) {
+			$page_class = $total_pages < 2 ? ' one-page' : '';
+		} else {
+			$page_class = ' no-pages';
+		}
+		$this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
+
+		echo $this->_pagination;
 	}
 }

@@ -141,6 +141,7 @@ if ( ! class_exists( 'L_Theplus_Widgets_Include' ) ) {
 				'tp_testimonial_listout'  => '\TheplusAddons\Widgets\L_ThePlus_Testimonial_ListOut',
 				'tp_table'                => '\TheplusAddons\Widgets\L_ThePlus_Data_Table',
 				'tp_video_player'         => '\TheplusAddons\Widgets\ThePlus_Video_Player',
+				'tp_icon'                 => '\TheplusAddons\Widgets\ThePlus_Icon',
 				'tp_wp_forms'             => '\TheplusAddons\Widgets\ThePlus_Wp_Forms',
 			);
 
@@ -171,7 +172,7 @@ if ( ! class_exists( 'L_Theplus_Widgets_Include' ) ) {
 				return false;
 			}
 
-			require L_THEPLUS_PATH . $filename;
+			require_once L_THEPLUS_PATH . $filename;
 
 			return true;
 		}

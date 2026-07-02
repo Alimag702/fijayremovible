@@ -3,13 +3,16 @@
  * Plugin Name: The Plus Addons for Elementor
  * Plugin URI: https://theplusaddons.com/
  * Description: Highly Customisable 120+ Advanced Elementor Widgets & Extensions for Performance Driven Website.
- * Version: 6.3.7
+ * Version: 6.4.17
  * Author: POSIMYTH
  * Author URI: https://posimyth.com/
+ * Tested up to: 7.0
  * Text Domain: tpebl
  * Domain Path: /languages
- * Elementor tested up to: 3.29
- * Elementor Pro tested up to: 3.29
+ * License: GPLv3
+ * License URI: https://opensource.org/licenses/GPL-3.0
+ * Elementor tested up to: 4.1
+ * Elementor Pro tested up to: 4.1
  *
  * @package the-plus-addons-for-elementor-page-builder
  */
@@ -18,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'L_THEPLUS_VERSION', '6.3.7' );
+define( 'L_THEPLUS_VERSION', '6.4.17' );
 define( 'L_THEPLUS_FILE', __FILE__ );
 define( 'L_THEPLUS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'L_THEPLUS_PBNAME', plugin_basename( __FILE__ ) );
@@ -32,5 +35,7 @@ define( 'L_THEPLUS_WSTYLES', L_THEPLUS_PATH . 'modules/widgets-styles/' );
 define( 'L_THEPLUS_TPDOC', 'https://theplusaddons.com/docs/' );
 define( 'L_THEPLUS_WDKIT_URL', 'https://wdesignkit.com/' );
 define( 'L_THEPLUS_HELP', 'https://wordpress.org/support/plugin/the-plus-addons-for-elementor-page-builder/#new-topic-0' );
+define( 'TPAE_MENU_NOTIFICETIONS', '4' );
+define( 'TPAE_WHATS_NEW_NOTIFICETIONS', '4' );
 
 require L_THEPLUS_PATH . 'widgets_loader.php';

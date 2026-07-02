@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Contact Form 7 - Dynamic Text Extension
  * Description: Extends Contact Form 7 by adding dynamic form fields that accepts shortcodes to prepopulate form fields with default values and dynamic placeholders.
- * Version: 5.0.4
+ * Version: 5.0.6
  * Text Domain: contact-form-7-dynamic-text-extension
  * Author: AuRise Creative, SevenSpark
  * Author URI: https://aurisecreative.com
@@ -32,7 +32,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('WPCF7DTX_VERSION', '5.0.4'); // Define current version of DTX
+define('WPCF7DTX_VERSION', '5.0.6'); // Define current version of DTX
 define('WPCF7DTX_MINVERSION_MAILVALIDATION', '5.7'); // The minimum version of CF7 required to use mail validator
 define('WPCF7DTX_MINVERSION_TAGGEN', '6.0'); // The minimum version of CF7 required to use tag generator
 defined('WPCF7DTX_DIR') || define('WPCF7DTX_DIR', __DIR__); // Define root directory
@@ -363,7 +363,7 @@ function wpcf7dtx_enqueue_frontend_assets($hook = '')
     wp_localize_script(
         'wpcf7dtx', // Handle
         'dtx_obj', // Object
-        array('ajax_url' => admin_url('admin-ajax.php'),'n'=>wp_create_nonce('wpcf7dtx_ajax')) // Data
+        array('ajax_url' => admin_url('admin-ajax.php'), 'n' => wp_create_nonce('wpcf7dtx_ajax')) // Data
     );
 }
 add_action('wp_enqueue_scripts', 'wpcf7dtx_enqueue_frontend_assets');
@@ -765,7 +765,7 @@ function wpcf7dtx_label_shortcode_handler($tag)
 function wpcf7dtx_js_handler()
 {
 
-    if (wp_verify_nonce(wpcf7dtx_array_has_key('n', $_POST), 'wpcf7dtx_ajax') !== 0) {
+    if (wp_verify_nonce(wpcf7dtx_array_has_key('n', $_POST), 'wpcf7dtx_ajax') !== 1) {
         wp_die();
     }
     $return = array();

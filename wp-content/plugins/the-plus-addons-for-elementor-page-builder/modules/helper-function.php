@@ -79,7 +79,7 @@ function tp_senitize_js_input( $input ) {
     $input = preg_replace( '/\s*on\w+\s*=\s*(".*?"|\'.*?\'|[^>\s]+)/is', '', $input );
 
     // Ensure input is not overly stripped by handling invalid tags carefully
-    $input = strip_tags( $input );
+    $input = wp_strip_all_tags( $input );
 
     return trim( $input ); // Return the sanitized input, trimmed of whitespace
 }
@@ -217,7 +217,7 @@ class L_Theplus_Navigation_NavWalker extends \Walker_Nav_Menu {
 				if ( ! empty( $page_data ) && isset( $page_data->post_status ) && strcmp( $page_data->post_status, 'publish' ) === 0 ) {
 
 					$elementor_instance = \Elementor\Plugin::instance();
-					$content            = $elementor_instance->frontend->get_builder_content_for_display( $item->object_id );
+					$content            = $elementor_instance->frontend->get_builder_content_for_display( $item->object_id, true );
 					$item_output       .= '<div class="plus-megamenu-content">' . $content . '</div>';
 
 				}
@@ -553,13 +553,12 @@ function l_theplus_get_image_size_options() {
 	);
 }
 
-function theplus_pro_ver_notice() {
-	return '<div class="theplus-pro-features-wrapper">
-		<div class="tp-pf-icon-text"><i class="fa fa-lock" aria-hidden="true"></i> Pro Feature</div>
-		<div class="tp-pf-info">Go with our pro version to use all our widgets & features with It\'s fullest potential. Pro version will improve your elementor work flow drastically.</div>
-		<div class="tp-pf-links">
-			<a class="tp-pf-links-buy" href="https://theplusaddons.com/pricing/" target="_blank">Buy Pro</a>
-			<a class="tp-pf-links-compare" href="https://theplusaddons.com/free-vs-pro" target="_blank">Free VS Pro</a>
-		</div>	
-	</div>';
+function tpae_wl_pluginads_enabled() {
+    $whitelabel = get_option( 'theplus_white_label' );
+
+    if ( ! empty( $whitelabel['plugin_ads'] ) && 'on' === $whitelabel['plugin_ads'] ) {
+        return true;
+    }
+
+    return false;
 }

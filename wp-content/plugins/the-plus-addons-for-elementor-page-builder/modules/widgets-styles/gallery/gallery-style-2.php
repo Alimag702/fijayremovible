@@ -81,7 +81,7 @@ if ( 'metro' !== $layout ) {
 		} elseif ( 'no' !== $popup_style ) {
 			if ( ! empty( $settings['display_box_link'] ) && 'yes' === $settings['display_box_link'] ) {
 				?>
-				<div heheh <?php echo wp_kses_post( $popup_attr_icon ); ?>><?php include L_THEPLUS_WSTYLES . 'gallery/format-image.php'; ?></div>
+				<div <?php echo wp_kses_post( $popup_attr_icon ); ?>><?php include L_THEPLUS_WSTYLES . 'gallery/format-image.php'; ?></div>
 			<?php } else { ?>
 				<a href="<?php echo esc_url( $full_image ); ?>" <?php echo wp_kses_post( $popup_attr_icon1 ); ?>><?php include L_THEPLUS_WSTYLES . 'gallery/format-image.php'; ?></a>
 				<?php

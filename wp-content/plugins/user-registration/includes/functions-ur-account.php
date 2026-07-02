@@ -12,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_filter( 'login_errors', 'ur_login_error_message' );
 add_filter( 'get_avatar', 'ur_replace_gravatar_image', 99, 6 );
 add_filter( 'ajax_query_attachments_args', 'ur_show_current_user_attachments' );
 
@@ -33,32 +32,6 @@ function ur_show_current_user_attachments( $query ) {
 	}
 
 	return $query;
-}
-
-/**
- * Modify error message on invalid username or password.
- *
- * @param string $error Error Message.
- */
-function ur_login_error_message( $error ) {
-	// Don't change login error messages on admin site .
-	if ( isset( $_POST['redirect_to'] ) && false !== strpos( wp_unslash( $_POST['redirect_to'] ), network_admin_url() ) ) {  // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		return $error;
-	}
-
-	$pos  = strpos( $error, 'incorrect' );     // Check if the error contains incorrect string.
-	$pos2 = strpos( $error, 'Invalid' );       // Check if the error contains Invalid string.
-
-	// Its the correct username with incorrect password.
-	if ( is_int( $pos ) && isset( $_POST['username'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification
-		/* translators: %s - Username */
-		$error = sprintf( '<strong>' . __( 'ERROR:', 'user-registration' ) . '</strong>' . __( 'The password you entered for username %1$1s is incorrect. %2$2s', 'user-registration' ), sanitize_text_field( wp_unslash( $_POST['username'] ) ), "<a href='" . esc_url( wp_lostpassword_url() ) . "'>" . __( 'Lost Your Password?', 'user-registration' ) . '</a>' ); // phpcs:ignore WordPress.Security.NonceVerification
-	} elseif ( is_int( $pos2 ) && isset( $_POST['username'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		/* translators: %s - Lost password URL */
-		$error = sprintf( '<strong>' . __( 'ERROR:', 'user-registration' ) . '</strong>' . __( 'Invalid username. %1s', 'user-registration' ), "<a href='" . esc_url( wp_lostpassword_url() ) . "'>" . __( 'Lost Your Password?', 'user-registration' ) . '</a>' ); // phpcs:ignore WordPress.Security.NonceVerification
-	}
-
-	return $error;
 }
 
 /**
@@ -112,6 +85,43 @@ function ur_lostpassword_url( $default_url = '' ) {
 add_filter( 'lostpassword_url', 'ur_lostpassword_url', 20, 1 );
 
 /**
+ * Returns the URL to the reset password endpoint.
+ *
+ * @param  string $default_url Default reset password URL.
+ *
+ * @return string
+ */
+function ur_resetpassword_url( $default_url = '' ) {
+
+	// Don't redirect to the user registration endpoint on global network admin resets.
+	if ( is_multisite() && isset( $_GET['redirect_to'] ) && false !== strpos( wp_unslash( $_GET['redirect_to'] ), network_admin_url() ) ) { // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		return $default_url;
+	}
+
+	// Don't change default URL if admin side reset form is being used.
+	if ( 'wp-login.php' === $GLOBALS['pagenow'] ) {
+		return $default_url;
+	}
+
+	// The lost-password page is the primary page for the reset flow.
+	$lost_password_page = get_option( 'user_registration_lost_password_page_id', false );
+
+	if ( $lost_password_page && ! empty( get_post( $lost_password_page ) ) ) {
+		return get_permalink( $lost_password_page );
+	}
+
+	// Legacy fallback: a separate reset-password page (deprecated option).
+	$reset_password_page = get_option( 'user_registration_reset_password_page_id', false );
+
+	if ( $reset_password_page && ! empty( get_post( $reset_password_page ) ) ) {
+		return get_permalink( $reset_password_page );
+	}
+
+	return ur_lostpassword_url();
+}
+add_filter( 'retrieve_password_url', 'ur_resetpassword_url', 20, 1 );
+
+/**
  * Get My Account menu items.
  *
  * @return array
@@ -129,15 +139,6 @@ function ur_get_account_menu_items() {
 		'edit-password' => __( 'Change Password', 'user-registration' ),
 		'user-logout'   => __( 'Logout', 'user-registration' ),
 	);
-
-	$user_id = get_current_user_id();
-	$form_id = ur_get_form_id_by_userid( $user_id );
-
-	$profile = user_registration_form_data( $user_id, $form_id );
-
-	if ( count( $profile ) < 1 ) {
-		unset( $items['edit-profile'] );
-	}
 
 	// Remove missing endpoints.
 	foreach ( $endpoints as $endpoint_id => $endpoint ) {
@@ -210,6 +211,9 @@ function ur_get_account_endpoint_url( $endpoint ) {
 	if ( 'user-logout' === $endpoint ) {
 		return ur_logout_url( ur_get_page_permalink( 'myaccount' ) );
 	}
+	if ( 'ur-login-logout' === $endpoint ) {
+		return '#ur_login_logout#';
+	}
 	return ur_get_endpoint_url( $endpoint, '', ur_get_page_permalink( 'myaccount' ) );
 }
 
@@ -255,8 +259,18 @@ function ur_replace_gravatar_image( $avatar, $id_or_email, $size, $default, $alt
 
 	$profile_picture_url = get_user_meta( $user->ID, 'user_registration_profile_pic_url', true );
 
+	// Track if we've already validated the image (optimization for attachment IDs).
+	$is_valid_image = false;
+
 	if ( is_numeric( $profile_picture_url ) ) {
-		$profile_picture_url = wp_get_attachment_url( $profile_picture_url );
+		// Profile picture is stored as attachment ID - validate it directly here.
+		$attachment_id = absint( $profile_picture_url );
+		if ( wp_attachment_is_image( $attachment_id ) ) {
+			$profile_picture_url = wp_get_attachment_url( $attachment_id );
+			$is_valid_image      = true; // Skip ur_check_url_is_image() call later.
+		} else {
+			$profile_picture_url = ''; // Invalid attachment, clear it.
+		}
 	}
 	$profile_picture_url = apply_filters( 'user_registration_profile_picture_url', $profile_picture_url, $user->ID );
 
@@ -274,7 +288,7 @@ function ur_replace_gravatar_image( $avatar, $id_or_email, $size, $default, $alt
 		}
 	}
 
-	if ( $profile_picture_url && ur_check_url_is_image( $profile_picture_url ) ) {
+	if ( $profile_picture_url && ( $is_valid_image || ur_check_url_is_image( $profile_picture_url ) ) ) {
 		$avatar = sprintf(
 			"<img alt='%s' src='%s' srcset='%s' class='%s' height='%d' width='%d' %s/>",
 			esc_attr( $args['alt'] ),
@@ -315,7 +329,6 @@ if ( ! function_exists( 'ur_get_user_login_option' ) ) {
 			$login_option = get_option( 'user_registration_general_setting_login_options', 'default' );
 			$login_option = ur_get_single_post_meta( $form_id, 'user_registration_form_setting_login_options', $login_option );
 		}
-
 		return $login_option;
 	}
 }

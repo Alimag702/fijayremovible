@@ -55,7 +55,7 @@ class UR_Form_Validation extends UR_Validation {
 	public function __construct() {
 		add_action( 'user_registration_validate_form_data', array( $this, 'validate_form' ), 10, 6 );
 		add_action( 'user_registration_validate_profile_update', array( $this, 'validate_update_profile' ), 10, 4 );
-		add_filter( 'user_registration_reorganize_form_data', array( $this, 'reorganize_form_data' ), 10, 2 );
+		add_filter( 'user_registration_reorganize_form_data', array( $this, 'reorganize_form_data' ), 10, 3 );
 	}
 
 	/**
@@ -63,21 +63,44 @@ class UR_Form_Validation extends UR_Validation {
 	 *
 	 * @param $valid_form_data
 	 * @param $form_field_data
+	 * @param $form_id
 	 *
 	 * @return array
 	 */
-	public function reorganize_form_data( $valid_form_data, $form_field_data ) {
+	public function reorganize_form_data( $valid_form_data, $form_field_data, $form_id ) {
 		if ( empty( $form_field_data ) ) {
 			return $valid_form_data;
 		}
 		$new_form_data = array();
 
+		$form_row_data = get_post_meta( $form_id, 'user_registration_form_row_data', true );
+
+		$row_datas = ! empty( $form_row_data ) ? json_decode( $form_row_data ) : array();
+
+		$repeater_fields     = array();
+		$repeater_field_data = array();
+		foreach ( $row_datas as $individual_row_data ) {
+
+			if ( isset( $individual_row_data->repeater_id ) && isset( $individual_row_data->field_name ) ) {
+				array_push( $repeater_fields, $individual_row_data->fields );
+
+				$repeater_field_data[ $individual_row_data->field_name ] = $valid_form_data[ $individual_row_data->field_name ] ?? array();
+			}
+		}
+
 		foreach ( $form_field_data as $key => $data ) {
+			if ( empty( $data->general_setting->field_name ) ) {
+				continue;
+			}
 			$field_name = $data->general_setting->field_name;
-			if ( array_key_exists( $field_name, $valid_form_data ) ) {
+			if ( in_array( $field_name, $repeater_fields ) ) {
+				continue;
+			} elseif ( array_key_exists( $field_name, $valid_form_data ) ) {
 				$new_form_data[ $field_name ] = $valid_form_data[ $field_name ];
 			}
 		}
+
+		$new_form_data = array_merge( $new_form_data, $repeater_field_data );
 		return $new_form_data;
 	}
 
@@ -592,6 +615,12 @@ class UR_Form_Validation extends UR_Validation {
 	 * @return void
 	 */
 	public function validate_update_profile( $form_fields, $form_data, $form_id, $user_id ) {
+		$logger = ur_get_logger();
+		$logger->info(
+			sprintf( 'validate_update_profile started - form_id: %s, user_id: %s', $form_id, $user_id ),
+			array( 'source' => 'ur-profile-validation' )
+		);
+
 		$form_field_data = ur_get_form_field_data( $form_id );
 
 		$request_form_keys = array_map(
@@ -605,13 +634,25 @@ class UR_Form_Validation extends UR_Validation {
 
 		$form_key_list = wp_list_pluck( wp_list_pluck( $form_field_data, 'general_setting' ), 'field_name' );
 
-		$required_fields = array_diff( $form_key_list, $skippable_fields );
+		$required_fields = array_filter( array_diff( $form_key_list, $skippable_fields ) );
 
 		$filteredfields = array_filter(
 			$form_field_data,
-			function ( $fields ) {
+			function ( $fields ) use ( $logger, $form_id ) {
 				$fields = json_decode( json_encode( $fields ) );
-				return property_exists( $fields, 'advance_setting' ) && property_exists( $fields->advance_setting, 'field_visibility' ) && 'reg_form' === $fields->advance_setting->field_visibility;
+				if ( ! is_object( $fields ) ) {
+					$logger->warning(
+						sprintf(
+							'validate_update_profile - skipped non-object field entry (type: %s) for form_id: %s. Value: %s',
+							gettype( $fields ),
+							$form_id,
+							wp_json_encode( $fields )
+						),
+						array( 'source' => 'ur-profile-validation' )
+					);
+					return false;
+				}
+				return property_exists( $fields, 'advance_setting' ) && is_object( $fields->advance_setting ) && property_exists( $fields->advance_setting, 'field_visibility' ) && 'reg_form' === $fields->advance_setting->field_visibility;
 			}
 		);
 
@@ -639,9 +680,24 @@ class UR_Form_Validation extends UR_Validation {
 		}
 
 		if ( array_diff( $required_fields, $request_form_keys ) ) {
+			$missing = array_diff( $required_fields, $request_form_keys );
+			$logger->error(
+				sprintf(
+					'validate_update_profile - missing required fields for form_id: %s, user_id: %s. Missing: %s',
+					$form_id,
+					$user_id,
+					implode( ', ', $missing )
+				),
+				array( 'source' => 'ur-profile-validation' )
+			);
 			ur_add_notice( 'Some fields are missing in the submitted form. Please reload the page.', 'error' );
 			return;
 		}
+
+		$logger->info(
+			sprintf( 'validate_update_profile completed successfully - form_id: %s, user_id: %s', $form_id, $user_id ),
+			array( 'source' => 'ur-profile-validation' )
+		);
 	}
 
 
@@ -695,6 +751,7 @@ class UR_Form_Validation extends UR_Validation {
 			'signature',
 			'membership',
 			'subscription_plan',
+			'coupon',
 		);
 
 		$form_skippable_fields = array_filter(
@@ -702,7 +759,7 @@ class UR_Form_Validation extends UR_Validation {
 			function ( $field ) use ( $skippable_field_types ) {
 				if ( in_array( $field->field_key, $skippable_field_types, true ) ) {
 
-					if ( 'range' === $field->field_key && ! ur_string_to_bool( $field->advance_setting->enable_payment_slider ) ) {
+					if ( 'range' === $field->field_key && ( isset( $field->advance_setting->enable_payment_slider ) && ! ur_string_to_bool( $field->advance_setting->enable_payment_slider ) ) ) {
 						return false;
 					}
 
@@ -713,8 +770,21 @@ class UR_Form_Validation extends UR_Validation {
 			}
 		);
 
-		$form_skippable_fields = wp_list_pluck( wp_list_pluck( $form_skippable_fields, 'general_setting' ), 'field_name' );
-		$skippable_fields      = $form_skippable_fields;
+		// Retrieves the hidden fields in profile update form.
+		$field_visibility_skip_fields = array_filter(
+			$form_data,
+			function ( $field ) {
+				if ( ! empty( $field->advance_setting->field_visibility ) && 'reg_form' === $field->advance_setting->field_visibility ) {
+					return true;
+				}
+
+				return false;
+			}
+		);
+
+		$field_visibility_skippable_fields = wp_list_pluck( wp_list_pluck( $field_visibility_skip_fields, 'general_setting' ), 'field_name' );
+		$form_skippable_fields             = wp_list_pluck( wp_list_pluck( $form_skippable_fields, 'general_setting' ), 'field_name' );
+		$skippable_fields                  = array_merge( $form_skippable_fields, $field_visibility_skippable_fields );
 
 		/**
 		 * Add fields to skip validation on update profile.

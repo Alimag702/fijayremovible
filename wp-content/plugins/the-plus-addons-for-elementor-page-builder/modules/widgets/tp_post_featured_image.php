@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
@@ -22,18 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Featured_Image
  */
-class ThePlus_Featured_Image extends Widget_Base {
-
-	/**
-	 * Document Link For Need help.
-	 *
-	 * @since 1.0.1
-	 * @version 5.4.2
-	 *
-	 * @var TpDoc of the class.
-	 */
-	public $tp_doc = L_THEPLUS_TPDOC;
-
+class ThePlus_Featured_Image extends Plus_Widget_Base {
 	/**
 	 * Get Widget Name.
 	 *
@@ -61,7 +50,7 @@ class ThePlus_Featured_Image extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-file-image-o theplus_backend_icon';
+		return 'theplus-i-post-featured-image tpae-editor-logo';
 	}
 
 	/**
@@ -71,7 +60,7 @@ class ThePlus_Featured_Image extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_categories() {
-		return array( 'plus-builder' );
+		return array( 'plus-essential', 'plus-single' );
 	}
 
 	/**
@@ -81,56 +70,16 @@ class ThePlus_Featured_Image extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Post Featured Image', 'Featured Image', 'Image Widget', 'Image Gallery', 'Image Slider', 'Image Carousel', 'Image Grid', 'Image Showcase', 'Image Viewer', 'Image Display', 'Image Preview', 'Image Thumbnail', 'Image Container', 'Image Box', 'Image Block', 'Image Frame', 'Image Holder', 'Image Wrapper', 'Image Placeholder', 'Image Slider Widget', 'Image Carousel Widget', 'Image Grid Widget', 'Image Showcase Widget', 'Image Viewer Widget', 'Image Display Widget', 'Image Preview Widget', 'Image Thumbnail Widget', 'Image Container Widget', 'Image Box Widget', 'Image Block' );
+		return array( 'Tp Post Featured Image', 'Featured Image', 'Image Widget', 'Image Gallery', 'Image Slider', 'Image Carousel', 'Image Grid', 'Image Showcase', 'Image Viewer', 'Image Display', 'Image Preview', 'Image Thumbnail', 'Image Container', 'Image Box', 'Image Block', 'Image Frame', 'Image Holder', 'Image Wrapper', 'Image Placeholder', 'Image Slider Widget', 'Image Carousel Widget', 'Image Grid Widget', 'Image Showcase Widget', 'Image Viewer Widget', 'Image Display Widget', 'Image Preview Widget', 'Image Thumbnail Widget', 'Image Container Widget', 'Image Box Widget', 'Image Block' );
 	}
-
 	/**
-	 * Get Custom Url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @since 1.0.1
-	 * @version 5.4.2
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
-
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if ( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return array(
-			'condition'    => $val,
-			'image'        => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt'    => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title'        => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url'  => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		);
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-
 	/**
 	 * Get Widget Custom Help Url.
 	 *
@@ -141,35 +90,47 @@ class ThePlus_Featured_Image extends Widget_Base {
 		$this->start_controls_section(
 			'content_section',
 			array(
-				'label' => esc_html__( 'Post Feature Image', 'tpebl' ),
+				'label' => esc_html__( 'Content', 'tpebl' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 		$this->add_control(
 			'pfi_type',
 			array(
-				'label'   => esc_html__( 'Type', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'pfi-default',
-				'options' => array(
+				'label'       => esc_html__( 'Type', 'tpebl' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'pfi-default',
+				'options'     => array(
 					'pfi-default'    => esc_html__( 'Standard Image', 'tpebl' ),
 					'pfi-background' => esc_html__( 'As a Background', 'tpebl' ),
+				),
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Choose how you want to display the featured image, either as a normal image inside your layout or as a background behind your content.', 'tpebl' )
+					)
 				),
 			)
 		);
 		$this->add_control(
 			'bg_in',
 			array(
-				'type'      => Controls_Manager::SELECT,
-				'label'     => esc_html__( 'Location', 'tpebl' ),
-				'default'   => 'tp-fibg-section',
-				'options'   => array(
+				'type'        => Controls_Manager::SELECT,
+				'label'       => esc_html__( 'Location', 'tpebl' ),
+				'default'     => 'tp-fibg-section',
+				'options'     => array(
 					'tp-fibg-section'       => esc_html__( 'Section', 'tpebl' ),
 					'tp-fibg-inner-section' => esc_html__( 'Inner Section', 'tpebl' ),
 					'tp-fibg-container'     => esc_html__( 'Container', 'tpebl' ),
 					'tp-fibg-column'        => esc_html__( 'Column', 'tpebl' ),
 				),
-				'condition' => array(
+				'description' => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Select where the featured image should appear.', 'tpebl' )
+					)
+				),
+				'condition'   => array(
 					'pfi_type' => 'pfi-background',
 				),
 			)
@@ -244,6 +205,52 @@ class ThePlus_Featured_Image extends Widget_Base {
 			)
 		);
 		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+						'url'   => 'https://theplusaddons.com/docs/show-post-featured-image-in-elementor-blog-post/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget',
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://youtu.be/sU-gLRCZnLs',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
+
+		if ( ! tpae_wl_pluginads_enabled() ) {
+			$this->start_controls_section(
+				'tpae_theme_builder_sec',
+				array(
+					'label' => esc_html__( 'Use with Theme Builder', 'tpebl' ),
+					'tab'   => Controls_Manager::TAB_CONTENT,
+				)
+			);
+			$this->add_control(
+				'tpae_theme_builder',
+				array(
+					'type'        => 'tpae_theme_builder',
+					'notice'      => esc_html__( 'We recommend placing this widget in the Post Single Page Template to show the featured image of the post.', 'tpebl' ),
+					'button_text' => esc_html__( 'Create Single Page', 'tpebl' ),
+					'page_type'   => 'tp_singular_page',
+				)
+			);
+			$this->end_controls_section();
+		}
 
 		$this->start_controls_section(
 			'section_img_style',
@@ -432,10 +439,7 @@ class ThePlus_Featured_Image extends Widget_Base {
 		$this->end_controls_section();
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -475,7 +479,7 @@ class ThePlus_Featured_Image extends Widget_Base {
 			if ( has_post_thumbnail( $post_id ) ) {
 				$image_content = get_the_post_thumbnail_url( $post_id, $image_size );
 			} else {
-				$image_content = L_THEPLUS_URL . '/assets/images/tp-placeholder.jpg';
+				$image_content = L_THEPLUS_URL . 'assets/images/tp-placeholder.jpg';
 			}
 
 			if ( tp_has_lazyload() ) {
@@ -484,7 +488,7 @@ class ThePlus_Featured_Image extends Widget_Base {
 		} elseif ( has_post_thumbnail( $post_id ) ) {
 			$image_content = tp_get_image_rander( $post_id, $image_size, array( 'class' => 'tp-featured-img' ), 'post' );
 		} else {
-			$image_content = '<img src="' . L_THEPLUS_URL . '/assets/images/tp-placeholder.jpg" alt="' . get_the_title() . '" class="tp-featured-img" />';
+			$image_content = '<img src="' . esc_url( L_THEPLUS_URL . 'assets/images/tp-placeholder.jpg' ) . '" alt="' . esc_attr( get_the_title() ) . '" class="tp-featured-img" />';
 		}
 
 		// if ( has_post_thumbnail( $post_id ) ) {
@@ -492,8 +496,8 @@ class ThePlus_Featured_Image extends Widget_Base {
 		// $image_content = tp_get_image_rander( $post_id, $image_size, array( 'class' => 'tp-featured-img' ), 'post' );
 
 		// } else {
-		// $image_content = L_THEPLUS_URL . '/assets/images/tp-placeholder.jpg';
-		// $image_content = '<img src="' . THEPLUS_URL . '/assets/images/tp-placeholder.jpg" alt="' . get_the_title() . '" class="tp-featured-img" />';
+		// $image_content = L_THEPLUS_URL . 'assets/images/tp-placeholder.jpg';
+		// $image_content = '<img src="' . THEPLUS_URL . 'assets/images/tp-placeholder.jpg" alt="' . get_the_title() . '" class="tp-featured-img" />';
 		// }
 
 		if ( 'pfi-background' === $pfi_type ) {

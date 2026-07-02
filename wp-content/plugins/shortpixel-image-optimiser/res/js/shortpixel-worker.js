@@ -100,8 +100,15 @@ var SpWorker = {
 			}
       if (response.ok)
       {
-          var json = await response.json();
-          postMessage({'status' : true, response: json});
+         // Try / Catch, returned data might not be valid JSON
+          try {
+            var json = await response.json();
+            postMessage({'status' : true, response: json});
+          }
+          catch (error)
+          {
+             postMessage({'status' : false, response: error});
+          }
       }
       else if(this && ! this.stopped)
       {
@@ -163,7 +170,4 @@ var SpWorker = {
       this.action = 'shortpixel_image_processing';
       this.Fetch(data);
    }
-
-
-
 } // worker

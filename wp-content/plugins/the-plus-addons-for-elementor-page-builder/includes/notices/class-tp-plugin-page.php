@@ -95,7 +95,7 @@ if ( ! class_exists( 'Tp_Plugin_Page' ) ) {
 			$links[]      = $setting_link;
 
 			/**Need Help.*/
-			if(empty( $this->whitelabel ) || 'on' !== $this->hidden_label){
+			if ( empty( $this->whitelabel ) || 'on' !== $this->hidden_label ) {
 				$need_help = sprintf( '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url( 'https://theplusaddons.com/help/getting-started/?utm_source=wpbackend&utm_medium=banner&utm_campaign=links' ), __( 'Need Help?', 'tpebl' ) );
 				$links     = (array) $links;
 				$links[]   = $need_help;
@@ -104,6 +104,13 @@ if ( ! class_exists( 'Tp_Plugin_Page' ) ) {
 			/**Upgrade PRO link.*/
 			if ( ! defined( 'THEPLUS_VERSION' ) ) {
 				$pro_link = sprintf( '<a href="%s" target="_blank" style="color: #cc0000;font-weight: 700;" rel="noopener noreferrer">%s</a>', esc_url( 'https://theplusaddons.com/pricing?utm_source=wpbackend&utm_medium=dashboard&utm_campaign=plussettings' ), __( 'Upgrade PRO', 'tpebl' ) );
+				$links    = (array) $links;
+				$links[]  = $pro_link;
+			}
+
+			/**Save $2000+*/
+			if ( ! defined( 'THEPLUS_VERSION' ) ) {
+				$pro_link = sprintf( '<a href="%s" target="_blank" style="color: #cc0000;font-weight: 700;" rel="noopener noreferrer">%s</a>', esc_url( 'https://theplusaddons.com/pricing?utm_source=wpbackend&utm_medium=dashboard&utm_campaign=plussettings' ), __( 'Save $2000+', 'tpebl' ) );
 				$links    = (array) $links;
 				$links[]  = $pro_link;
 			}
@@ -125,7 +132,7 @@ if ( ! class_exists( 'Tp_Plugin_Page' ) ) {
 			$this->whitelabel   = get_option( 'theplus_white_label' );
 			$this->hidden_label = ! empty( $this->whitelabel['help_link'] ) ? $this->whitelabel['help_link'] : '';
 
-			if ( strpos( $plugin_file, L_THEPLUS_PBNAME ) !== false && ( empty( $this->whitelabel ) || 'on' !== $this->hidden_label) ) {
+			if ( strpos( $plugin_file, L_THEPLUS_PBNAME ) !== false && ( empty( $this->whitelabel ) || 'on' !== $this->hidden_label ) ) {
 				$new_links = array(
 					'official-site'    => '<a href="' . esc_url( 'https://theplusaddons.com/?utm_source=wpbackend&utm_medium=pluginpage&utm_campaign=links' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Visit Plugin site', 'tpebl' ) . '</a>',
 					'docs'             => '<a href="' . esc_url( 'https://theplusaddons.com/docs?utm_source=wpbackend&utm_medium=pluginpage&utm_campaign=links' ) . '" target="_blank" rel="noopener noreferrer" style="color:green;">' . esc_html__( 'Docs', 'tpebl' ) . '</a>',

@@ -43,6 +43,9 @@ trait Ajax_Handler {
 		add_action( 'wp_ajax_eael_product_add_to_cart', array( $this, 'eael_product_add_to_cart' ) );
 		add_action( 'wp_ajax_nopriv_eael_product_add_to_cart', array( $this, 'eael_product_add_to_cart' ) );
 
+		add_action( 'wp_ajax_eael_ajax_add_to_cart',        [ $this, 'eael_ajax_add_to_cart' ] );
+		add_action( 'wp_ajax_nopriv_eael_ajax_add_to_cart', [ $this, 'eael_ajax_add_to_cart' ] );
+
 		add_action( 'wp_ajax_woo_checkout_update_order_review', [ $this, 'woo_checkout_update_order_review' ] );
 		add_action( 'wp_ajax_nopriv_woo_checkout_update_order_review', [ $this, 'woo_checkout_update_order_review' ] );
 
@@ -85,7 +88,21 @@ trait Ajax_Handler {
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Missing
 		wp_parse_str( $_POST['args'], $args );
+
+		// NOTE: $args comes from client ($_POST['args']); strip visibility-widening keys (e.g., post_status, perm) to prevent nopriv access to non-public content.
+		// NOTE: Keep author / author__in / author__not_in—used in Load More data-args; safe since post_status='publish' limits results to already-public posts.
+		unset( $args['post_status'], $args['perm'], $args['suppress_filters'] );
 		$args['post_status'] = 'publish';
+
+		if ( isset( $args['post__in'] ) ) {
+			$args['post__in'] = array_values( array_filter( array_map( 'absint', (array) $args['post__in'] ) ) );
+			// Cap to a sane bound to prevent abuse.
+			$args['post__in'] = array_slice( $args['post__in'], 0, 1000 );
+		}
+		if ( isset( $args['post__not_in'] ) ) {
+			$args['post__not_in'] = array_values( array_filter( array_map( 'absint', (array) $args['post__not_in'] ) ) );
+			$args['post__not_in'] = array_slice( $args['post__not_in'], 0, 1000 );
+		}
 
 		if ( isset( $args['date_query']['relation'] ) ) {
 			$args['date_query']['relation'] = HelperClass::eael_sanitize_relation( $args['date_query']['relation'] );
@@ -190,14 +207,32 @@ trait Ajax_Handler {
 			$settings['show_load_more_text']       = $settings['eael_fg_loadmore_btn_text'];
 			$settings['layout_mode']               = isset( $settings['layout_mode'] ) ? $settings['layout_mode'] : 'masonry';
 
+			// NOTE: Use server-trusted whitelists; ACF gallery needs broader post_status/type for attachments (inherit), but never 'any'—it would expose private/draft posts to unauthenticated users.
+			//NOTE: The inherit status is intentionally allowed to ensure access to attachments, since the same attachment may be associated with both private and public pages.
+			$dfg_safe_post_status = [ 'publish', 'inherit' ];
+			$dfg_safe_post_types = [ 'attachment' ];
+			if ( ! empty( $settings['post_type'] ) && is_string( $settings['post_type'] ) ) {
+				if ( 'by_id' === $settings['post_type'] ) {
+					// NOTE: Manual selection allows all public post types (to include ACF gallery parents) but excludes internal types (e.g., revision, oembed_cache, nav_menu_item) that 'any' would expose.
+					$dfg_safe_post_types = array_values( array_unique( array_merge(
+						$dfg_safe_post_types,
+						(array) get_post_types( [ 'public' => true ] )
+					) ) );
+				} else {
+					$dfg_safe_post_types[] = sanitize_key( $settings['post_type'] );
+				}
+			}
+
 			if ( ! empty( $args['fetch_acf_image'] ) && 'yes' === $args['fetch_acf_image'] && ! empty( $args['post__in'] ) ) {
-				$args['post_status'] = 'any';
-				$args['post_type'] = 'any';
+				// SECURITY: previously set to 'any'/'any' which let unauthenticated
+				// callers read drafts/private posts by passing arbitrary post__in IDs.
+				$args['post_status'] = $dfg_safe_post_status;
+				$args['post_type']   = $dfg_safe_post_types;
 			}
 
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			$exclude_ids = json_decode( html_entity_decode( stripslashes ( $_POST['exclude_ids'] ) ) );
-			$args['post__not_in'] = ( !empty( $_POST['exclude_ids'] ) ) ? array_map( 'intval', array_unique($exclude_ids) ) : array();
+			$args['post__not_in'] = ( !empty( $_POST['exclude_ids'] ) ) ? array_map( 'intval', array_unique( (array) $exclude_ids ) ) : array();
 			$active_term_id = ( !empty( $_POST['active_term_id'] ) ) ? intval( $_POST['active_term_id'] ) : 0;
 			$active_taxonomy = ( !empty( $_POST['active_taxonomy'] ) ) ? sanitize_text_field( wp_unslash( $_POST['active_taxonomy'] ) ) : '';
 
@@ -216,11 +251,15 @@ trait Ajax_Handler {
 
 				// Update args with the filtered post IDs
 				if ( ! empty( $taxonomy_map['post_ids'] ) ) {
-					$args['post__in'] = $taxonomy_map['post_ids'];
-					$args['post_type'] = 'any';
-					$args['post_status'] = 'any';
-					$args['tax_query'] = [];
-					$args['orderby'] = 'post__in';
+					// post_ids here are server-derived (parent post IDs + their ACF
+					// attachment IDs from build_dfg_acf_taxonomy_map), so they are
+					// trustworthy. Still constrain post_type/post_status to the
+					// whitelist so a stale entry can't leak non-public content.
+					$args['post__in']    = $taxonomy_map['post_ids'];
+					$args['post_type']   = $dfg_safe_post_types;
+					$args['post_status'] = $dfg_safe_post_status;
+					$args['tax_query']   = [];
+					$args['orderby']     = 'post__in';
 				}
 
 				// Apply exclusions
@@ -230,8 +269,9 @@ trait Ajax_Handler {
 			} else {
 				// Standard ACF gallery handling (non-hybrid)
 				if ( ! empty( $args['fetch_acf_image'] ) && 'yes' === $args['fetch_acf_image'] && ! empty( $args['post__in'] ) ) {
-					$args['post_status'] = 'any';
-					$args['post_type'] = 'any';
+					// SECURITY: same rationale as above — never use 'any'.
+					$args['post_status'] = $dfg_safe_post_status;
+					$args['post_type']   = $dfg_safe_post_types;
 				}
 
 				if ( ! empty( $args['post__not_in'] ) && ! empty( $args['post__in'] ) ) {
@@ -286,90 +326,51 @@ trait Ajax_Handler {
 
 			if ( $file_path ) {
 				// wp_send_json( $args );
-				// Use WC_Product_Query for Product_Grid and Woo_Product_List, WP_Query for others
-				if ( $class === '\Essential_Addons_Elementor\Elements\Product_Grid' || $class === '\Essential_Addons_Elementor\Elements\Woo_Product_List' ) {
-					// Convert args to WC_Product_Query format
-					$wc_args = $this->convert_pagination_args_to_wc_product_query( $args, $settings );
-					$wc_query = new \WC_Product_Query( $wc_args );
-					$products = $wc_query->get_products();
+				$query = new \WP_Query( $args );
+				$found_posts = $query->found_posts;
+				$iterator = 0;
 
-					// Handle WC_Product_Query results
-					if ( is_object( $products ) && isset( $products->products ) ) {
-						$product_objects = $products->products;
-						$found_posts = $products->total;
-					} else {
-						$product_objects = $products;
-						$found_posts = count( $products );
+				if ( $query->have_posts() ) {
+					if ( $class === '\Essential_Addons_Elementor\Elements\Product_Grid' && boolval( $settings['show_add_to_cart_custom_text'] ) ) {
+
+						$add_to_cart_text = [
+							'add_to_cart_simple_product_button_text'   => $settings['add_to_cart_simple_product_button_text'],
+							'add_to_cart_variable_product_button_text' => $settings['add_to_cart_variable_product_button_text'],
+							'add_to_cart_grouped_product_button_text'  => $settings['add_to_cart_grouped_product_button_text'],
+							'add_to_cart_external_product_button_text' => $settings['add_to_cart_external_product_button_text'],
+							'add_to_cart_default_product_button_text'  => $settings['add_to_cart_default_product_button_text'],
+						];
+						$this->change_add_woo_checkout_update_order_reviewto_cart_text( $add_to_cart_text );
 					}
 
-					$iterator = 0;
+					// Handle custom add to cart text for Woo_Product_List
+					if ( $class === '\Essential_Addons_Elementor\Elements\Woo_Product_List' && boolval( $settings['eael_product_list_content_footer_add_to_cart_custom_text_show'] ) ) {
+						$add_to_cart_text = [
+							'add_to_cart_simple_product_button_text'   => $settings['eael_product_list_content_footer_add_to_cart_simple_text'],
+							'add_to_cart_variable_product_button_text' => $settings['eael_product_list_content_footer_add_to_cart_variable_text'],
+							'add_to_cart_grouped_product_button_text'  => $settings['eael_product_list_content_footer_add_to_cart_grouped_text'],
+							'add_to_cart_external_product_button_text' => $settings['eael_product_list_content_footer_add_to_cart_external_text'],
+							'add_to_cart_default_product_button_text'  => $settings['eael_product_list_content_footer_add_to_cart_default_text'],
+						];
+						$this->change_add_woo_checkout_update_order_reviewto_cart_text( $add_to_cart_text );
+					}
 
-					if ( ! empty( $product_objects ) ) {
-						// Handle custom add to cart text for Product_Grid
-						if ( $class === '\Essential_Addons_Elementor\Elements\Product_Grid' && boolval( $settings['show_add_to_cart_custom_text'] ) ) {
-							$add_to_cart_text = [
-								'add_to_cart_simple_product_button_text'   => $settings['add_to_cart_simple_product_button_text'],
-								'add_to_cart_variable_product_button_text' => $settings['add_to_cart_variable_product_button_text'],
-								'add_to_cart_grouped_product_button_text'  => $settings['add_to_cart_grouped_product_button_text'],
-								'add_to_cart_external_product_button_text' => $settings['add_to_cart_external_product_button_text'],
-								'add_to_cart_default_product_button_text'  => $settings['add_to_cart_default_product_button_text'],
-							];
-							$this->change_add_woo_checkout_update_order_reviewto_cart_text( $add_to_cart_text );
-						}
+					if ( $class === '\Essential_Addons_Elementor\Pro\Elements\Dynamic_Filterable_Gallery' ) {
+						$html .= "<div class='found_posts' style='display: none;'>{$found_posts}</div>";
+					}
 
-						// Handle custom add to cart text for Woo_Product_List
-						if ( $class === '\Essential_Addons_Elementor\Elements\Woo_Product_List' && boolval( $settings['eael_product_list_content_footer_add_to_cart_custom_text_show'] ) ) {
-							$add_to_cart_text = [
-								'add_to_cart_simple_product_button_text'   => $settings['eael_product_list_content_footer_add_to_cart_simple_text'],
-								'add_to_cart_variable_product_button_text' => $settings['eael_product_list_content_footer_add_to_cart_variable_text'],
-								'add_to_cart_grouped_product_button_text'  => $settings['eael_product_list_content_footer_add_to_cart_grouped_text'],
-								'add_to_cart_external_product_button_text' => $settings['eael_product_list_content_footer_add_to_cart_external_text'],
-								'add_to_cart_default_product_button_text'  => $settings['eael_product_list_content_footer_add_to_cart_default_text'],
-							];
-							$this->change_add_woo_checkout_update_order_reviewto_cart_text( $add_to_cart_text );
-						}
+					while ( $query->have_posts() ) {
+						$query->the_post();
 
-						// Iterate through WC_Product objects
-						foreach ( $product_objects as $product ) {
-							global $post;
-							$post = get_post( $product->get_id() );
-							setup_postdata( $post );
-
-							$html .= HelperClass::include_with_variable( $file_path, [
-								'settings'      => $settings,
-								'link_settings' => $link_settings,
-								'iterator'      => $iterator
-							] );
-							$iterator ++;
-						}
-						wp_reset_postdata();
-					} else {
-						$html .= __( '<p class="no-posts-found">No posts found!</p>', 'essential-addons-for-elementor-lite' );
+						$html .= HelperClass::include_with_variable( $file_path, [
+							'settings'      => $settings,
+							'link_settings' => $link_settings,
+							'iterator'      => $iterator
+						] );
+						$iterator ++;
 					}
 				} else {
-					// Use WP_Query for non-product widgets
-					$query = new \WP_Query( $args );
-					$found_posts = $query->found_posts;
-					$iterator = 0;
-
-					if ( $query->have_posts() ) {
-						if ( $class === '\Essential_Addons_Elementor\Pro\Elements\Dynamic_Filterable_Gallery' ) {
-							$html .= "<div class='found_posts' style='display: none;'>{$found_posts}</div>";
-						}
-
-						while ( $query->have_posts() ) {
-							$query->the_post();
-
-							$html .= HelperClass::include_with_variable( $file_path, [
-								'settings'      => $settings,
-								'link_settings' => $link_settings,
-								'iterator'      => $iterator
-							] );
-							$iterator ++;
-						}
-					} else {
-						$html .= '<p class="no-posts-found">' . esc_html__( 'No posts found!', 'essential-addons-for-elementor-lite' ) . '</p>';
-					}
+					$html .= '<p class="no-posts-found">' . esc_html__( 'No posts found!', 'essential-addons-for-elementor-lite' ) . '</p>';
 				}
 			}
 		}
@@ -905,9 +906,10 @@ trait Ajax_Handler {
 	 * @since unknown
 	 */
 	public function eael_product_add_to_cart() {
+		check_ajax_referer( 'essential-addons-elementor', 'security' );
 
 		$ajax       = wp_doing_ajax();
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, 	WordPress.Security.NonceVerification.Missing
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 		$cart_items = isset( $_POST['cart_item_data'] ) ? $_POST['cart_item_data'] : [];
 		$variation  = [];
 		if ( ! empty( $cart_items ) ) {
@@ -918,9 +920,8 @@ trait Ajax_Handler {
 			}
 		}
 
-		//phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST['product_data'] ) ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Missing
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 			foreach ( $_POST['product_data'] as $item ) {
 				$product_id   = isset( $item['product_id'] ) ? sanitize_text_field( wp_unslash( $item['product_id'] ) ) : 0;
 				$variation_id = isset( $item['variation_id'] ) ? sanitize_text_field( wp_unslash( $item['variation_id'] ) ) : 0;
@@ -945,13 +946,23 @@ trait Ajax_Handler {
 	 * @since 4.0.0
 	 */
 	public function woo_checkout_update_order_review() {
-		// phpcs:disable 
+		check_ajax_referer( 'essential-addons-elementor', 'security' );
+
+		// phpcs:disable
 		$setting       = $_POST['orderReviewData'];
         $shipping_data = empty ( $_POST['shippingData'] ) ? WC()->session->get('chosen_shipping_methods') : [wc_clean( $_POST['shippingData'] )];
 		//Mondial Relay plugin integration
 		do_action( 'eael_mondialrelay_order_after_shipping' );
         
         WC()->session->set( 'chosen_shipping_methods', $shipping_data );
+
+        // Required for Avatax (and standard WC) to trigger calculation
+		if ( isset( $_POST['post_data'] ) ) {
+			$_POST['woocommerce_checkout_update_totals'] = 1;
+			do_action( 'woocommerce_checkout_update_order_review', $_POST['post_data'] );
+		}
+        // Force is_checkout() to be true so plugins like Avatax display the correct message
+        add_filter( 'woocommerce_is_checkout', '__return_true' );
 
 		ob_start();
 		AllTraits::checkout_order_review_default( $setting );
@@ -984,6 +995,7 @@ trait Ajax_Handler {
 		}
 
 		global $post, $product;
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$product = wc_get_product( $product_id );
 		$post    = get_post( $product_id );
 
@@ -995,6 +1007,11 @@ trait Ajax_Handler {
 		// Also verify post status for non-admin users
 		$post = get_post( $product_id );
 		if ( ! current_user_can( 'edit_post', $product_id ) && $post->post_status !== 'publish' ) {
+			wp_send_json_error( __( 'Product not found or not accessible', 'essential-addons-for-elementor-lite' ) );
+		}
+
+		// Block password-protected products for users who cannot edit them
+		if ( ! current_user_can( 'edit_post', $product_id ) && post_password_required( $post ) ) {
 			wp_send_json_error( __( 'Product not found or not accessible', 'essential-addons-for-elementor-lite' ) );
 		}
 
@@ -1561,6 +1578,8 @@ trait Ajax_Handler {
 			$this->empty_dir( EAEL_ASSET_PATH );
 		}
 
+		do_action( 'eael/admin/after_save_settings', $settings );
+
 		wp_send_json_success( true );
 	}
 
@@ -1632,6 +1651,77 @@ trait Ajax_Handler {
 		add_filter( 'option_yith_wcwl_ajax_enable', function ( $data ) {
 			return 'no';
 		} );
+	}
+
+	public function eael_ajax_add_to_cart() {
+		check_ajax_referer( 'eael-ajax-add-to-cart', 'nonce' );
+
+		if ( ! function_exists( 'WC' ) ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'WooCommerce is not active.', 'essential-addons-for-elementor-lite' ) ] );
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- nonce already checked above
+		$product_id   = isset( $_POST['product_id'] )   ? absint( $_POST['product_id'] )   : 0;
+		$product_type = isset( $_POST['product_type'] ) ? sanitize_key( $_POST['product_type'] ) : 'simple';
+		// phpcs:enable
+
+		if ( ! $product_id ) {
+			wp_send_json_error( [ 'message' => esc_html__( 'Invalid product.', 'essential-addons-for-elementor-lite' ) ] );
+		}
+
+		$added = false;
+
+		if ( 'grouped' === $product_type ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$quantities = isset( $_POST['quantity'] ) && is_array( $_POST['quantity'] ) ? $_POST['quantity'] : [];
+			foreach ( $quantities as $child_id => $qty ) {
+				$child_id = absint( $child_id );
+				$qty      = absint( $qty );
+				if ( $child_id > 0 && $qty > 0 ) {
+					WC()->cart->add_to_cart( $child_id, $qty );
+					$added = true;
+				}
+			}
+		} elseif ( 'variable' === $product_type ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Missing
+			$variation_id = isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : 0;
+			$quantity     = isset( $_POST['quantity'] )     ? absint( $_POST['quantity'] )     : 1;
+			$attributes   = [];
+			foreach ( $_POST as $key => $value ) {
+				if ( strpos( $key, 'attribute_' ) === 0 ) {
+					$attributes[ sanitize_key( $key ) ] = sanitize_text_field( wp_unslash( $value ) );
+				}
+			}
+			// phpcs:enable
+			if ( $variation_id ) {
+				$added = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $attributes );
+			}
+		} else {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$quantity = isset( $_POST['quantity'] ) ? absint( $_POST['quantity'] ) : 1;
+			$added    = WC()->cart->add_to_cart( $product_id, $quantity );
+		}
+
+		if ( false === $added ) {
+			ob_start();
+			wc_print_notices();
+			$notices_html = ob_get_clean();
+			wp_send_json_error( [ 'notices' => $notices_html ] );
+		}
+
+		WC()->cart->calculate_totals();
+		$fragments = apply_filters( 'woocommerce_add_to_cart_fragments', [] );
+
+		ob_start();
+		wc_print_notices();
+		$notices_html = ob_get_clean();
+
+		wp_send_json_success( [
+			'fragments'  => $fragments,
+			'cart_hash'  => WC()->cart->get_cart_hash(),
+			'cart_count' => WC()->cart->get_cart_contents_count(),
+			'notices'    => $notices_html,
+		] );
 	}
 
 }

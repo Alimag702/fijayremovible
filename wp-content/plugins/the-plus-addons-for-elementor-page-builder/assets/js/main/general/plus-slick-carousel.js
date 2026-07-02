@@ -41,9 +41,12 @@ function theplus_carousel_list(data_widget=''){
 		
 		var slider_arrows=$self.data("slider_arrows");
 
+		var slider_tablet_column=$self.data("slider_tablet_column");
+		var slider_mobile_column=$self.data("slider_mobile_column");
+
         var data = $self[0].dataset;
 
-        parsedData = data && data.result ? JSON.parse(data.result) : '';
+        const parsedData = data && data.result ? JSON.parse(data.result) : {};
         var getDIrection = parsedData.carousel_direction,
             rtlVal = false;
 
@@ -85,6 +88,20 @@ function theplus_carousel_list(data_widget=''){
 			draggable:slider_draggable,
 			dotsClass:slider_dots_style,
             rtl: rtlVal,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: slider_tablet_column,
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: slider_mobile_column,
+                    }
+                }
+            ]
             
 		}
 

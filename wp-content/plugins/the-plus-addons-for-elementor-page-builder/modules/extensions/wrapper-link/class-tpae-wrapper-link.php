@@ -90,7 +90,10 @@ if ( ! class_exists( 'Tpae_Wrapper_Link' ) ) {
 			}
 
 			add_action( 'elementor/frontend/before_render', array( $this, 'tp_wrapperlink_before_render' ), 10, 1 );
-			add_action( 'elementor/frontend/before_enqueue_scripts', array( $this, 'tp_enqueue_scripts' ), 10 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'tp_register_scripts' ) );
+
+			add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'tp_register_scripts' ), 10 );
+			add_action( 'elementor/editor/after_enqueue_scripts', function() { wp_enqueue_script( 'plus-wrapper-link' ); } , 10 );
 		}
 
 		/**
@@ -109,16 +112,26 @@ if ( ! class_exists( 'Tpae_Wrapper_Link' ) ) {
 			$element->add_control(
 				'sc_link_switch',
 				array(
-					'label'        => esc_html__( 'Link', 'tpebl' ),
+					'label'        => esc_html__( 'Wrapper Link', 'tpebl' ),
 					'type'         => Controls_Manager::SWITCHER,
+					'label_on'     => esc_html__( 'On', 'tpebl' ),
+					'label_off'    => esc_html__( 'Off', 'tpebl' ),
 					'return_value' => 'yes',
 					'default'      => 'no',
+					'description'  => wp_kses_post(
+						sprintf(
+							'<p class="tp-controller-label-text"><i> %s <a class="tp-docs-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+							esc_html__( 'Use this option to make the entire container or column clickable. This is useful when you want users to navigate by clicking anywhere inside the element instead of only on a button or text. After enabling, add the destination link you want the wrapper to point to.', 'tpebl' ),
+							esc_url( L_THEPLUS_TPDOC . 'make-elementor-container-clickable/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' ),
+							esc_html__( 'Learn More', 'tpebl' ),
+						)
+					),
 				)
 			);
 			$element->add_control(
 				'sc_link',
 				array(
-					'label'        => wp_kses_post( "Wrapper Link <a class='tp-docs-link' href='" . esc_url($this->TpDoc) . "make-elementor-container-clickable/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=widget' target='_blank' rel='noopener noreferrer'> <i class='eicon-help-o'></i> </a>", 'tpebl' ),
+					'label'       => esc_html__( 'Wrapper Link', 'tpebl' ),
 					'type'        => Controls_Manager::URL,
 					'dynamic'     => array(
 						'active' => true,
@@ -133,12 +146,12 @@ if ( ! class_exists( 'Tpae_Wrapper_Link' ) ) {
 		}
 
 		/**
-		 * Enqueue necessary scripts and styles for the widget.
+		 * Register necessary scripts for the feature.
 		 *
-		 * @since 6.2.7
+		 * @since 6.4.6
 		 */
-		public function tp_enqueue_scripts() {
-			wp_enqueue_script( 'plus-section-column-link', L_THEPLUS_URL . 'modules/extensions/wrapper-link/plus-section-column-link.min.js', array( 'jquery' ), L_THEPLUS_VERSION, true );
+		public function tp_register_scripts() {
+			wp_register_script( 'plus-wrapper-link', L_THEPLUS_URL . 'modules/extensions/wrapper-link/plus-wrapper-link.min.js', array( 'jquery' ), L_THEPLUS_VERSION, true );
 		}
 
 		/**
@@ -155,6 +168,8 @@ if ( ! class_exists( 'Tpae_Wrapper_Link' ) ) {
 			$sc_link_external = ! empty( $settings['sc_link']['is_external'] ) ? $settings['sc_link']['is_external'] : '';
 
 			if ( ( 'yes' === $sc_link_switch ) && ! empty( $settings['sc_link'] ) && ! empty( $sc_link_url ) ) {
+				wp_enqueue_script( 'plus-wrapper-link' );
+
 				$element->add_render_attribute(
 					'_wrapper',
 					array(

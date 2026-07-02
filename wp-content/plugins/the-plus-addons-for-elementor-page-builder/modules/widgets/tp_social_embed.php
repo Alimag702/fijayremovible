@@ -10,7 +10,7 @@
 
 namespace TheplusAddons\Widgets;
 
-use Elementor\Widget_Base;
+use TheplusAddons\Widgets\Base\Plus_Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Background;
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class ThePlus_Social_Embed
  */
-class ThePlus_Social_Embed extends Widget_Base {
+class ThePlus_Social_Embed extends Plus_Widget_Base {
 
 	/**
 	 * Get Widget Name.
@@ -52,7 +52,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_icon() {
-		return 'fa fa-code theplus_backend_icon';
+		return 'theplus-i-social-embed tpae-editor-logo';
 	}
 
 	/**
@@ -72,55 +72,18 @@ class ThePlus_Social_Embed extends Widget_Base {
 	 * @version 5.4.2
 	 */
 	public function get_keywords() {
-		return array( 'Social Embed', 'Social Media Embed', 'Embed Social Media', 'Social Media Widget', 'Social Media', 'Elementor Social Embed', 'Social Embed' );
+		return array( 'Tp Social Embed', 'Social Media Embed', 'Facebook Embed', 'X (Twitter) Embed', 'Instagram Embed', 'YouTube Embed', 'Vimeo Embed', 'Google Maps Embed', 'Social Feed', 'Facebook Comments', 'Facebook Post', 'Facebook Video', 'Facebook Page', 'Facebook Like Button', 'Twitter Profile', 'Instagram Reels', 'YouTube Playlist', 'Google Maps', 'Vimeo Video', 'Tweets', 'Retweet Button', 'Twitter Follow Button', 'Twitter Likes Timeline' );
 	}
 
 	/**
-	 * Get Widget Custom Help Url.
+	 * It is use for widget add in catch or not.
 	 *
-	 * @version 6.1.0
+	 * @since 6.4.13
 	 */
-	public function get_custom_help_url() {
-		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			$help_url = L_THEPLUS_HELP;
-		} else {
-			$help_url = THEPLUS_HELP;
-		}
-
-		return esc_url( $help_url );
+	public function is_dynamic_content(): bool {
+		return true;
 	}
 
-	/**
-	 * It is use for adds.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_upsale_data() {
-		$val = false;
-
-		if( ! defined( 'THEPLUS_VERSION' ) ) {
-			$val = true;
-		}
-
-		return [
-			'condition' => $val,
-			'image' => esc_url( L_THEPLUS_ASSETS_URL . 'images/pro-features/upgrade-proo.png' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'tpebl' ),
-			'title' => esc_html__( 'Unlock all Features', 'tpebl' ),
-			'upgrade_url' => esc_url( 'https://theplusaddons.com/pricing/?utm_source=wpbackend&utm_medium=elementoreditor&utm_campaign=links' ),
-			'upgrade_text' => esc_html__( 'Upgrade to Pro!', 'tpebl' ),
-		];
-	}
-
-	/**
-	 * Disable Elementor's default inner wrapper for custom HTML control.
-	 *
-	 * @since 6.3.3
-	 */
-	public function has_widget_inner_wrapper(): bool {
-		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
-	}
-	
 	/**
 	 * Register controls.
 	 *
@@ -138,17 +101,38 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'EmbedType',
 			array(
-				'label'   => esc_html__( 'Type', 'tpebl' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'facebook',
-				'options' => array(
-					'facebook'  => esc_html__( 'Facebook', 'tpebl' ),
-					'twitter'   => esc_html__( 'Twitter', 'tpebl' ),
-					'vimeo'     => esc_html__( 'Vimeo', 'tpebl' ),
-					'instagram' => esc_html__( 'Instagram', 'tpebl' ),
-					'youtube'   => esc_html__( 'YouTube', 'tpebl' ),
-					'googlemap' => esc_html__( 'Google Map', 'tpebl' ),
+				'label'       => esc_html__( 'Type', 'tpebl' ),
+				'type'        => Controls_Manager::VISUAL_CHOICE,
+				'label_block' => true,
+				'default'     => 'facebook',
+				'options'     => array(
+					'facebook'  => array(
+						'title' => esc_html__( 'Facebook', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/facebook.svg' ),
+					),
+					'twitter'   => array(
+						'title' => esc_html__( 'Twitter', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/twitter.svg' ),
+					),
+					'vimeo'     => array(
+						'title' => esc_html__( 'Vimeo', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/vimeo.svg' ),
+					),
+					'instagram' => array(
+						'title' => esc_html__( 'Instagram', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/instagram.svg' ),
+					),
+					'youtube'   => array(
+						'title' => esc_html__( 'YouTube', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/youtube.svg' ),
+					),
+					'googlemap' => array(
+						'title' => esc_html__( 'Google Map', 'tpebl' ),
+						'image' => esc_url( L_THEPLUS_URL . 'assets/images/widget-style/social-embed/googlemap.svg' ),
+					),
 				),
+				'columns'     => 3,
+				'classes'     => 'tpae-visual_choice',
 			)
 		);
 		$this->end_controls_section();
@@ -183,6 +167,24 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'custom_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Choose the kind of Facebook content you want to embed.', 'tpebl' ),
+						esc_url( 'https://developers.facebook.com/docs/plugins' ),
+						esc_html__( 'Learn More', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'facebook',
+				),
+			)
+		);
+		$this->add_control(
 			'CommentType',
 			array(
 				'label'     => esc_html__( 'Options', 'tpebl' ),
@@ -202,10 +204,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'CommentTypeViewCommentDep',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : The Embedded Comments has been deprecated.<a rel="noopener noreferrer" target="_blank" href="https://developers.facebook.com/docs/plugins/embedded-comments/" target="_blank">More Info</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'The Embedded Comments has been deprecated.', 'tpebl' ),
+						esc_url( 'https://developers.facebook.com/docs/plugins/embedded-comments/' ),
+						esc_html__( 'More Info', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType'   => 'facebook',
 					'Type'        => 'comments',
 					'CommentType' => 'viewcomment',
@@ -249,10 +257,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'AppIDFbPost',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : How to <a href="https://developers.facebook.com/apps"  target="_blank" rel="noopener noreferrer">Create App ID ?</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s<a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'How to ', 'tpebl' ),
+						esc_url( 'https://developers.facebook.com/apps' ),
+						esc_html__( 'Create App ID?', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType'   => 'facebook',
 					'Type'        => 'comments',
 					'CommentType' => 'onlypost',
@@ -333,7 +347,6 @@ class ThePlus_Social_Embed extends Widget_Base {
 					'EmbedType' => 'facebook',
 					'Type'      => 'posts',
 				),
-				'separator'     => 'before',
 			)
 		);
 		$this->add_control(
@@ -470,17 +483,6 @@ class ThePlus_Social_Embed extends Widget_Base {
 				'separator'     => 'before',
 			)
 		);
-		$this->add_control(
-			'ReMrFbPost',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://developers.facebook.com/docs/plugins"  target="_blank" rel="noopener noreferrer">Read More About All Options</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
-					'EmbedType' => 'facebook',
-				),
-			)
-		);
 		$this->end_controls_section();
 		$this->start_controls_section(
 			'semd_Fb_opts',
@@ -497,6 +499,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Parent Comment', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType'   => 'facebook',
@@ -593,6 +597,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Text', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -652,6 +658,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Allow Full Screen', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -664,6 +672,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Autoplay', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -676,6 +686,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Captions', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -752,6 +764,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Small Header', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -764,6 +778,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Cover Photo', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -776,6 +792,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Show Friend\'s Faces', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -788,6 +806,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Custom CTA Button', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -914,6 +934,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Share Button', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -926,6 +948,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Faces', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'facebook',
@@ -1092,6 +1116,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'   => esc_html__( 'Loading Message', 'tpebl' ),
 				'type'    => Controls_Manager::TEXT,
+				'ai'      => false,
 				'default' => esc_html__( 'Loading', 'tpebl' ),
 				'dynamic' => array( 'active' => true ),
 			)
@@ -1174,10 +1199,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'TwlisturlNote',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : How to <a href="https://tweetdeck.twitter.com/"  target="_blank" rel="noopener noreferrer">Create List ?</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Note: How to', 'tpebl' ),
+						esc_url( 'https://tweetdeck.twitter.com/' ),
+						esc_html__( 'Create List?', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'twitter',
 					'TweetType' => 'timelines',
 					'TwGuides'  => 'List',
@@ -1197,21 +1228,15 @@ class ThePlus_Social_Embed extends Widget_Base {
 					'is_external' => true,
 					'nofollow'    => true,
 				),
-				'condition'     => array(
-					'EmbedType' => 'twitter',
-					'TweetType' => 'timelines',
-					'TwGuides'  => 'Collection',
+				'description'   => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'How to ', 'tpebl' ),
+						esc_url( 'https://tweetdeck.twitter.com/' ),
+						esc_html__( 'Create Collections?', 'tpebl' ),
+					)
 				),
-				'separator'     => 'before',
-			)
-		);
-		$this->add_control(
-			'TwCollectionNote',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : How to <a href="https://tweetdeck.twitter.com/"  target="_blank" rel="noopener noreferrer">Create Collections ?</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'condition'     => array(
 					'EmbedType' => 'twitter',
 					'TweetType' => 'timelines',
 					'TwGuides'  => 'Collection',
@@ -1243,6 +1268,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'      => esc_html__( 'Username', 'tpebl' ),
 				'type'       => Controls_Manager::TEXT,
+				'ai'         => false,
 				'default'    => esc_html__( 'TwitterDev', 'tpebl' ),
 				'dynamic'    => array(
 					'active' => true,
@@ -1321,10 +1347,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'ReMrTwPost',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://developer.twitter.com/en/docs/twitter-for-websites/embedded-tweets/overview"  target="_blank" rel="noopener noreferrer">Read More About All Options</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Note: ', 'tpebl' ),
+						esc_url( 'https://developer.twitter.com/en/docs/twitter-for-websites/embedded-tweets/overview' ),
+						esc_html__( 'Read More About All Options', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'twitter',
 				),
 			)
@@ -1345,6 +1377,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Dark Mode', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1357,6 +1391,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Disable Media', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1369,6 +1405,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Disable Conversation', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1589,6 +1627,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Followers Count', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'yes',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1602,6 +1642,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Disable Username', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1632,6 +1674,8 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Disable Icon', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'twitter',
@@ -1693,6 +1737,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Loading Message', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => esc_html__( 'Loading', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
@@ -1721,11 +1766,28 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'     => esc_html__( 'Vimeo ID', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'default'   => esc_html__( '288344114', 'tpebl' ),
 				'dynamic'   => array(
 					'active' => true,
 				),
 				'condition' => array(
+					'EmbedType' => 'vimeo',
+				),
+			)
+		);
+		$this->add_control(
+			'ViId_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' Enter your Vimeo video ID to embed the video directly.', 'tpebl' )
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
 					'EmbedType' => 'vimeo',
 				),
 			)
@@ -1762,10 +1824,14 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'VmAutoplayNote',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : The <b>mute</b> option should be required when you select the <b>autoplay</b> option.',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'The "Mute" option is required when you select the "Autoplay" option.', 'tpebl' )
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'vimeo',
 				),
 			)
@@ -1773,10 +1839,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'ReMrVmPost',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://vimeo.zendesk.com/hc/en-us/articles/360001494447-Using-Player-Parameters"  target="_blank" rel="noopener noreferrer">Read More About All Options</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s<a href="%s"  target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Note: ', 'tpebl' ),
+						esc_url( 'https://vimeo.zendesk.com/hc/en-us/articles/360001494447-Using-Player-Parameters' ),
+						esc_html__( 'Read More About All Options', 'tpebl' )
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'vimeo',
 				),
 			)
@@ -1786,11 +1858,28 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Video Start Time', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'E.g : 5m0s', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
 				),
+				'condition'   => array(
+					'EmbedType' => 'vimeo',
+				),
+			)
+		);
+		$this->add_control(
+			'VmStime_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' If you want your video to start from a specific point, set the time here.', 'tpebl' )
+					)
+				),
+				'label_block' => true,
 				'condition'   => array(
 					'EmbedType' => 'vimeo',
 				),
@@ -1834,10 +1923,29 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'IGType_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s<a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Select the type of Instagram content you want to display.', 'tpebl' ),
+						esc_url( 'https://developers.facebook.com/docs/instagram' ),
+						esc_html__( 'Learn More', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'instagram',
+				),
+			)
+		);
+		$this->add_control(
 			'IGId',
 			array(
 				'label'     => esc_html__( 'Instagram ID', 'tpebl' ),
 				'type'      => Controls_Manager::TEXT,
+				'ai'        => false,
 				'default'   => esc_html__( 'CGAvnLcA3zb', 'tpebl' ),
 				'dynamic'   => array(
 					'active' => true,
@@ -1848,10 +1956,28 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'IGId_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enter the Instagram post, reel, or IGTV video ID to fetch the content.', 'tpebl' )
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'instagram',
+				),
+			)
+		);
+		$this->add_control(
 			'IGCaptione',
 			array(
 				'label'     => esc_html__( 'Disable Captioned', 'tpebl' ),
 				'type'      => Controls_Manager::SWITCHER,
+				'label_on'  => __( 'Show', 'tpebl' ),
+				'label_off' => __( 'Hide', 'tpebl' ),
 				'default'   => 'no',
 				'condition' => array(
 					'EmbedType' => 'instagram',
@@ -1859,12 +1985,17 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'ReMrIgPost',
+			'IGCaptione_label',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://developers.facebook.com/docs/instagram"  target="_blank" rel="noopener noreferrer">Read More About All Options</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' Enable this option if you don’t want to show captions with your Instagram content.', 'tpebl' )
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
 					'EmbedType' => 'instagram',
 				),
 			)
@@ -1897,10 +2028,29 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'YtType_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Select the type of YouTube content you want to display.', 'tpebl' ),
+						esc_url( 'https://developers.google.com/youtube/player_parameters' ),
+						esc_html__( 'Learn More', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'youtube',
+				),
+			)
+		);
+		$this->add_control(
 			'YtVideoId',
 			array(
 				'label'       => esc_html__( 'Video ID', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => esc_html__( 'XmtXC_n6X6Q', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
@@ -1917,6 +2067,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Playlist ID', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => esc_html__( 'PLivjPDlt6ApQgylktXlL2AhuPvRtDiN1S', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
@@ -1933,6 +2084,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Username', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => esc_html__( 'NationalGeographic', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
@@ -1969,23 +2121,32 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
-			'YtAutoplayNote',
+			'YtOption_label',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : The <b>mute</b> option should be required when you select the <b>autoplay</b> option.',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Select playback options to control how your YouTube video behaves', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
 					'EmbedType' => 'youtube',
 				),
 			)
 		);
 		$this->add_control(
-			'ReMrYtPost',
+			'YtAutoplayNote',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://developers.google.com/youtube/player_parameters"  target="_blank" rel="noopener noreferrer">Read More About All Options</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Note: Mute must be enabled when autoplay is turned on.', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'youtube',
 				),
 			)
@@ -1995,11 +2156,28 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'Start Time', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'E.g : 60', 'tpebl' ),
 				'dynamic'     => array(
 					'active' => true,
 				),
+				'condition'   => array(
+					'EmbedType' => 'youtube',
+				),
+			)
+		);
+		$this->add_control(
+			'YtSTime_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'If you want the video to start from a specific time, set the time here.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
 				'condition'   => array(
 					'EmbedType' => 'youtube',
 				),
@@ -2010,6 +2188,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => esc_html__( 'End Time', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'E.g : 60', 'tpebl' ),
 				'dynamic'     => array(
@@ -2021,10 +2200,27 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'YtETime_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'If you want the video to stop playing at a specific time, set the end time here.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'youtube',
+				),
+			)
+		);
+		$this->add_control(
 			'Ytlanguage',
 			array(
 				'label'       => esc_html__( 'Language', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => '',
 				'placeholder' => esc_html__( 'E.g : en', 'tpebl' ),
 				'dynamic'     => array(
@@ -2036,12 +2232,35 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'Ytlanguage_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Enter the language code to display captions or subtitles in your preferred language.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'EmbedType' => 'youtube',
+				),
+			)
+		);
+		$this->add_control(
 			'YtLangNote',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" target="_blank" rel="noopener noreferrer">Language ISO 639-1 Code</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => esc_html__( 'Note :', 'tpebl' ) . ' <a href="" target="_blank" rel="noopener noreferrer"></a>',
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Note: ', 'tpebl' ),
+						esc_url( 'http://www.loc.gov/standards/iso639-2/php/code_list.php' ),
+						esc_html__( 'Language ISO 639-1 Code', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'youtube',
 				),
 			)
@@ -2070,10 +2289,24 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'Mapaccesstoken_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Choose how you want to connect your map, use Default for basic setup or Access Token for secure API-based integration.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+			)
+		);
+		$this->add_control(
 			'GAccesstoken',
 			array(
 				'label'       => __( 'AccessToken', 'tpebl' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'ai'          => false,
 				'rows'        => 2,
 				'default'     => '',
 				'placeholder' => __( 'Enter AccessToken', 'tpebl' ),
@@ -2100,10 +2333,27 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'GMapModes_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Select how your Google Map should display.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+				),
+			)
+		);
+		$this->add_control(
 			'GSearchText',
 			array(
 				'label'       => __( 'Search Text', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => __( 'New York, NY, USA', 'tpebl' ),
 				'placeholder' => __( 'Enter Location Text', 'tpebl' ),
 				'condition'   => array(
@@ -2116,9 +2366,27 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => __( 'Starting point', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => __( 'LosAngeles+California+USA', 'tpebl' ),
 				'placeholder' => __( 'Enter Starting Point', 'tpebl' ),
 				'separator'   => 'before',
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+					'GMapModes'      => 'directions',
+				),
+			)
+		);
+		$this->add_control(
+			'GOrigin_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' Enter the location where the route should begin.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
 				'condition'   => array(
 					'Mapaccesstoken' => 'accesstoken',
 					'GMapModes'      => 'directions',
@@ -2130,8 +2398,26 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => __( 'End Point', 'tpebl' ),
 				'type'        => Controls_Manager::TEXT,
+				'ai'          => false,
 				'default'     => __( 'Corona+California+USA', 'tpebl' ),
 				'placeholder' => __( 'Enter Starting Point', 'tpebl' ),
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+					'GMapModes'      => 'directions',
+				),
+			)
+		);
+		$this->add_control(
+			'GDestination_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Set the destination point for your map route.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
 				'condition'   => array(
 					'Mapaccesstoken' => 'accesstoken',
 					'GMapModes'      => 'directions',
@@ -2143,9 +2429,27 @@ class ThePlus_Social_Embed extends Widget_Base {
 			array(
 				'label'       => __( 'Way Points', 'tpebl' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'ai'          => false,
 				'rows'        => 3,
 				'default'     => __( 'Huntington+Beach+California+US | Santa Ana+California+USA', 'tpebl' ),
 				'placeholder' => __( 'Type your description here', 'tpebl' ),
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+					'GMapModes'      => 'directions',
+				),
+			)
+		);
+		$this->add_control(
+			'GWaypoints_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( 'Add multiple stops between the starting and ending locations to create a detailed travel route.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
 				'condition'   => array(
 					'Mapaccesstoken' => 'accesstoken',
 					'GMapModes'      => 'directions',
@@ -2172,6 +2476,23 @@ class ThePlus_Social_Embed extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'GTravelMode_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' Select your mode of transportation.', 'tpebl' ),
+					)
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+					'GMapModes'      => 'directions',
+				),
+			)
+		);
+		$this->add_control(
 			'Gavoid',
 			array(
 				'label'       => esc_html__( 'Avoid Elements', 'tpebl' ),
@@ -2181,6 +2502,23 @@ class ThePlus_Social_Embed extends Widget_Base {
 				'options'     => array(
 					'tolls'    => __( 'Tolls', 'tpebl' ),
 					'highways' => __( 'Highways', 'tpebl' ),
+				),
+				'label_block' => true,
+				'condition'   => array(
+					'Mapaccesstoken' => 'accesstoken',
+					'GMapModes'      => 'directions',
+				),
+			)
+		);
+		$this->add_control(
+			'Gavoid_label',
+			array(
+				'type'        => Controls_Manager::RAW_HTML,
+				'raw'         => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i>%s</i></p>',
+						esc_html__( ' Choose elements like tolls and highways to exclude them from the suggested route.', 'tpebl' ),
+					)
 				),
 				'label_block' => true,
 				'condition'   => array(
@@ -2205,10 +2543,16 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$this->add_control(
 			'Pluscodelink',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => 'Note : <a href="https://plus.codes/7JMJ2GP6+9F" target="_blank" rel="noopener noreferrer">Get latitude and longitude</a>',
-				'content_classes' => 'tp-controller-notice',
-				'condition'       => array(
+				'type'      => Controls_Manager::RAW_HTML,
+				'raw'       => wp_kses_post(
+					sprintf(
+						'<p class="tp-controller-label-text"><i> %s <a class="" href="%s" target="_blank" rel="noopener noreferrer">%s</a></i></p>',
+						esc_html__( 'Note: ', 'tpebl' ),
+						esc_url( 'https://plus.codes/7JMJ2GP6+9F' ),
+						esc_html__( 'Get latitude and longitude', 'tpebl' ),
+					)
+				),
+				'condition' => array(
 					'EmbedType' => 'googlemap',
 				),
 			)
@@ -2388,6 +2732,31 @@ class ThePlus_Social_Embed extends Widget_Base {
 		);
 		$this->end_controls_section();
 		/*Extra Options End*/
+
+		$this->start_controls_section(
+			'tpebl_section_needhelp',
+			array(
+				'label' => esc_html__( 'Need Help?', 'tpebl' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+		$this->add_control(
+			'tpebl_help_control',
+			array(
+				'label'   => __( 'Need Help', 'tpebl' ),
+				'type'    => 'tpae_need_help',
+				'default' => array(
+					array(
+						'label' => __( 'Read Docs', 'tpebl' ),
+					),
+					array(
+						'label' => __( 'Watch Video', 'tpebl' ),
+						'url'   => 'https://www.youtube.com/watch?v=MbopAQ85pdg',
+					),
+				),
+			)
+		);
+		$this->end_controls_section();
 
 		/*Embed Options Style Start*/
 		$this->start_controls_section(
@@ -3045,10 +3414,7 @@ class ThePlus_Social_Embed extends Widget_Base {
 		/*Embed Options Style End*/
 
 		if ( defined( 'L_THEPLUS_VERSION' ) && ! defined( 'THEPLUS_VERSION' ) ) {
-			include L_THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 			include L_THEPLUS_PATH . 'modules/widgets/theplus-profeatures.php';
-		} else {
-			include THEPLUS_PATH . 'modules/widgets/theplus-needhelp.php';
 		}
 	}
 
@@ -3067,76 +3433,76 @@ class ThePlus_Social_Embed extends Widget_Base {
 		$output  = '';
 		$lz2     = function_exists( 'tp_has_lazyload' ) ? tp_bg_lazyLoad( $settings['SocialBg_image'] ) : '';
 		$output .= '<div class="tp-widget-' . esc_attr( $uid_sembed ) . ' tp-social-embed ' . $lz2 . '">';
-		if ( $EmbedType == 'vimeo' || $EmbedType == 'youtube' ) {
+		if ( $EmbedType === 'vimeo' || $EmbedType === 'youtube' ) {
 			$ExWidth  = ! empty( $settings['ExWidth']['size'] ) ? $settings['ExWidth']['size'] : 640;
 			$ExHeight = ! empty( $settings['ExHeight']['size'] ) ? $settings['ExHeight']['size'] : 360;
 		}
-		if ( $EmbedType == 'facebook' ) {
+		if ( $EmbedType === 'facebook' ) {
 			$Type    = ! empty( $settings['Type'] ) ? $settings['Type'] : '';
 			$SizeBtn = ! empty( $settings['SizeLB'] ) ? $settings['SizeLB'] : '';
-			if ( $Type == 'comments' ) {
+			if ( $Type === 'comments' ) {
 				$CommentType = ! empty( $settings['CommentType'] ) ? $settings['CommentType'] : 'viewcomment';
-				if ( $CommentType == 'viewcomment' ) {
+				if ( $CommentType === 'viewcomment' ) {
 					$CommentURL = ! empty( $settings['CommentURL'] ) && ! empty( $settings['CommentURL']['url'] ) ? urlencode( $settings['CommentURL']['url'] ) : '';
 					$FBwdCmt    = ! empty( $settings['wdCmt']['size'] ) ? $settings['wdCmt']['size'] : 560;
 					$FBHgCmt    = ! empty( $settings['HgCmt']['size'] ) ? $settings['HgCmt']['size'] : 300;
-					$PcomentcT  = ! empty( $settings['PcomentcT'] == 'yes' ) ? true : false;
+					$PcomentcT  = ! empty( $settings['PcomentcT'] === 'yes' ) ? true : false;
 					if ( $CommentURL ) {
 						$output .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/comment_embed.php?href=' . esc_attr( $CommentURL ) . '&include_parent=' . esc_attr( $PcomentcT ) . '&width=' . esc_attr( $FBwdCmt ) . '&height=' . esc_attr( $FBHgCmt ) . '&appId=" width="' . esc_attr( $FBwdCmt ) . '" height="' . esc_attr( $FBHgCmt ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media" ></iframe>';
 					} else {
 						$output .= 'URL Empty';
 					}
-				} elseif ( $CommentType == 'onlypost' ) {
+				} elseif ( $CommentType === 'onlypost' ) {
 					$FBCommentAdd = ! empty( $settings['CommentAddURL'] ) && ! empty( $settings['CommentAddURL']['url'] ) ? $settings['CommentAddURL']['url'] : '';
 					$TargetC      = ! empty( $settings['TargetC'] ) ? $settings['TargetC'] : 'custom';
-					if ( $TargetC == 'currentpage' ) {
+					if ( $TargetC === 'currentpage' ) {
 						$URLFC   = ! empty( $settings['URLFC'] ) ? $settings['URLFC'] : 'plain';
 						$post_id = get_the_ID();
-						if ( $URLFC == 'plain' ) {
+						if ( $URLFC === 'plain' ) {
 							$PlainURL = get_permalink( $post_id );
 							$output  .= '<div class="fb-comments tp-fb-iframe" data-href="' . esc_url( $PlainURL ) . '" data-width="" data-numposts="' . esc_attr( $settings['CountC'] ) . '" data-order-by="' . esc_attr( $settings['OrderByC'] ) . '" ></div>';
-						} elseif ( $URLFC == 'pretty' ) {
+						} elseif ( $URLFC === 'pretty' ) {
 							$PrettyURL = add_query_arg( 'p', $post_id, home_url() );
 							$output   .= '<div class="fb-comments tp-fb-iframe" data-href="' . esc_url( $PrettyURL ) . '" data-width="" data-numposts="' . esc_attr( $settings['CountC'] ) . '" data-order-by="' . esc_attr( $settings['OrderByC'] ) . '" ></div>';
 						}
 					} else {
 						$output .= '<div class="fb-comments tp-fb-iframe" data-href="' . esc_url( $FBCommentAdd ) . '" data-width="" data-numposts="' . esc_attr( $settings['CountC'] ) . '" data-order-by="' . esc_attr( $settings['OrderByC'] ) . '" ></div>';
 					}
-					$output .= '<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>';
+					wp_enqueue_script( 'tpae-fb-sdk', 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2', array(), L_THEPLUS_VERSION, true );
 				}
 			}
-			if ( $Type == 'posts' ) {
+			if ( $Type === 'posts' ) {
 				$PostURL = ! empty( $settings['PostURL'] ) && ! empty( $settings['PostURL']['url'] ) ? $settings['PostURL']['url'] : '';
 				$wdPost  = ! empty( $settings['wdPost']['size'] ) ? $settings['wdPost']['size'] : 500;
 				$HgPost  = ! empty( $settings['HgPost']['size'] ) ? $settings['HgPost']['size'] : 560;
-				$FullPT  = ! empty( $settings['FullPT'] == 'yes' ) ? true : false;
+				$FullPT  = ! empty( $settings['FullPT'] === 'yes' ) ? true : false;
 				$output .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/post.php?href=' . esc_url( $PostURL ) . '&show_text=' . esc_attr( $FullPT ) . '&width=' . esc_attr( $wdPost ) . '&height=' . esc_attr( $HgPost ) . '&appId=" width="' . esc_attr( $wdPost ) . '" height="' . esc_attr( $HgPost ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media" ></iframe>';
 			}
-			if ( $Type == 'videos' ) {
+			if ( $Type === 'videos' ) {
 				$VideosURL  = ! empty( $settings['VideosURL'] ) && ! empty( $settings['VideosURL']['url'] ) ? $settings['VideosURL']['url'] : '';
 				$wdVideo    = ! empty( $settings['wdVideo']['size'] ) ? $settings['wdVideo']['size'] : 500;
 				$HgVideo    = ! empty( $settings['HgVideo']['size'] ) ? $settings['HgVideo']['size'] : 560;
-				$CaptionVT  = ! empty( $settings['CaptionVT'] == 'yes' ) ? true : false;
-				$AutoplayVT = ! empty( $settings['AutoplayVT'] == 'yes' ) ? true : false;
+				$CaptionVT  = ! empty( $settings['CaptionVT'] === 'yes' ) ? true : false;
+				$AutoplayVT = ! empty( $settings['AutoplayVT'] === 'yes' ) ? true : false;
 				$FullVideo  = '';
-				if ( isset( $settings['FullVT'] ) && $settings['FullVT'] == 'yes' ) {
+				if ( isset( $settings['FullVT'] ) && $settings['FullVT'] === 'yes' ) {
 					$FullVideo = 'allowFullScreen';
 				}
 				$output .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/video.php?href=' . esc_url( $VideosURL ) . '&show_text=' . esc_attr( $CaptionVT ) . '&width=' . esc_attr( $wdVideo ) . '&height=' . esc_attr( $HgVideo ) . '&autoplay=' . esc_attr( $AutoplayVT ) . '&appId=" width="' . esc_attr( $wdVideo ) . '" height="' . esc_attr( $HgVideo ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media" ' . $FullVideo . ' ></iframe>';
 			}
-			if ( $Type == 'likebutton' ) {
+			if ( $Type === 'likebutton' ) {
 				$FBLikeBtn = ! empty( $settings['likeBtnUrl'] ) && ! empty( $settings['likeBtnUrl']['url'] ) ? $settings['likeBtnUrl']['url'] : '';
-				$FacesLBT  = ! empty( $settings['FacesLBT'] == 'yes' ) ? true : false;
+				$FacesLBT  = ! empty( $settings['FacesLBT'] === 'yes' ) ? true : false;
 				$FBHgLike  = ! empty( $settings['HgLikeBtn']['size'] ) ? $settings['HgLikeBtn']['size'] : 70;
 				$FBwdLike  = ! empty( $settings['wdLikeBtn']['size'] ) ? $settings['wdLikeBtn']['size'] : 350;
-				$SBtnLB    = ! empty( $settings['SBtnLB'] == 'yes' ) ? true : false;
-				if ( $settings['TargetLike'] == 'currentpage' ) {
+				$SBtnLB    = ! empty( $settings['SBtnLB'] === 'yes' ) ? true : false;
+				if ( $settings['TargetLike'] === 'currentpage' ) {
 					$FmtURLlb = ! empty( $settings['FmtURLlb'] ) ? $settings['FmtURLlb'] : 'plain';
 					$post_id  = get_the_ID();
-					if ( $FmtURLlb == 'plain' ) {
+					if ( $FmtURLlb === 'plain' ) {
 						$PlainLURL = get_permalink( $post_id );
 						$output   .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/like.php?href=' . esc_url( $PlainLURL ) . '&layout=' . esc_attr( $settings['BtnStyleLB'] ) . '&action=' . esc_attr( $settings['TypeLB'] ) . '&size=' . esc_attr( $SizeBtn ) . '&share=' . esc_attr( $SBtnLB ) . '&height=' . esc_attr( $FBHgLike ) . '&show_faces=' . esc_attr( $FacesLBT ) . '&colorscheme=' . esc_attr( $settings['ColorSLB'] ) . '&width=' . esc_attr( $FBwdLike ) . '&appId=" width="' . esc_attr( $FBwdLike ) . '" height="' . esc_attr( $FBHgLike ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
-					} elseif ( $FmtURLlb == 'pretty' ) {
+					} elseif ( $FmtURLlb === 'pretty' ) {
 						$PrettyLURL = add_query_arg( 'p', $post_id, home_url() );
 						$output    .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/like.php?href=' . esc_url( $PrettyLURL ) . '&layout=' . esc_attr( $settings['BtnStyleLB'] ) . '&action=' . esc_attr( $settings['TypeLB'] ) . '&size=' . esc_attr( $SizeBtn ) . '&share=' . esc_attr( $SBtnLB ) . '&height=' . esc_attr( $FBHgLike ) . '&show_faces=' . esc_attr( $FacesLBT ) . '&colorscheme=' . esc_attr( $settings['ColorSLB'] ) . '&width=' . esc_attr( $FBwdLike ) . '&appId=" width="' . esc_attr( $FBwdLike ) . '" height="' . esc_attr( $FBHgLike ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
 					}
@@ -3144,55 +3510,55 @@ class ThePlus_Social_Embed extends Widget_Base {
 					$output .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/like.php?href=' . esc_url( $FBLikeBtn ) . '&layout=' . esc_attr( $settings['BtnStyleLB'] ) . '&action=' . esc_attr( $settings['TypeLB'] ) . '&size=' . esc_attr( $SizeBtn ) . '&share=' . esc_attr( $SBtnLB ) . '&height=' . esc_attr( $FBHgLike ) . '&show_faces=' . esc_attr( $FacesLBT ) . '&colorscheme=' . esc_attr( $settings['ColorSLB'] ) . '&width=' . esc_attr( $FBwdLike ) . '&appId=" width="' . esc_attr( $FBwdLike ) . '" height="' . esc_attr( $FBHgLike ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
 				}
 			}
-			if ( $Type == 'page' ) {
+			if ( $Type === 'page' ) {
 				$URLP    = ! empty( $settings['URLP'] ) && ! empty( $settings['URLP']['url'] ) ? $settings['URLP']['url'] : '';
 				$wdPage  = ! empty( $settings['wdPage']['size'] ) ? $settings['wdPage']['size'] : 340;
 				$HgPage  = ! empty( $settings['HgPage']['size'] ) ? $settings['HgPage']['size'] : 500;
-				$smallHP = ! empty( $settings['smallHP'] == 'yes' ) ? true : false;
+				$smallHP = ! empty( $settings['smallHP'] === 'yes' ) ? true : false;
 
 				$CoverP = true;
 				if ( ! empty( $settings['CoverP'] ) && $settings['CoverP'] === 'yes' ) {
 					$CoverP = false;
 				}
 
-				$ProfileP = ! empty( $settings['ProfileP'] == 'yes' ) ? true : false;
+				$ProfileP = ! empty( $settings['ProfileP'] === 'yes' ) ? true : false;
 
-				$CTABTN  = ! empty( $settings['CTABTN'] == 'yes' ) ? true : false;
+				$CTABTN  = ! empty( $settings['CTABTN'] === 'yes' ) ? true : false;
 				$output .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/page.php?href=' . esc_url( $URLP ) . '&tabs=' . esc_attr( $settings['LayoutP'] ) . '&width=' . esc_attr( $wdPage ) . '&height=' . esc_attr( $HgPage ) . '&small_header=' . esc_attr( $smallHP ) . '&hide_cover=' . esc_attr( $CoverP ) . '&show-facepile=' . esc_attr( $ProfileP ) . '&hide_cta=' . esc_attr( $CTABTN ) . '&lazy=true&adapt_container_width=true&appId=" width="' . esc_attr( $wdPage ) . '" height="' . esc_attr( $HgPage ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media" ></iframe>';
 			}
-			if ( $Type == 'save' ) {
+			if ( $Type === 'save' ) {
 				$SaveURL = ! empty( $settings['SaveURL'] ) && ! empty( $settings['SaveURL']['url'] ) ? $settings['SaveURL']['url'] : '';
 
 				$output .= '<div class="fb-save" data-uri="' . esc_url( $SaveURL ) . '" data-size="' . esc_attr( $SizeBtn ) . '"></div>';
-				$output .= '<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>';
+				wp_enqueue_script( 'tpae-fb-sdk', 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2', array(), L_THEPLUS_VERSION, true );
 			}
-			if ( $Type == 'share' ) {
+			if ( $Type === 'share' ) {
 				$ShareURL = ! empty( $settings['ShareURL'] ) && ! empty( $settings['ShareURL']['url'] ) ? $settings['ShareURL']['url'] : '';
 				$ShareHbt = ! empty( $settings['HgShareBtn']['size'] ) ? $settings['HgShareBtn']['size'] : 50;
 				$ShareWbt = ! empty( $settings['wdShareBtn']['size'] ) ? $settings['wdShareBtn']['size'] : 96;
 				$output  .= '<iframe class="tp-fb-iframe" src="https://www.facebook.com/plugins/share_button.php?href=' . esc_url( $ShareURL ) . '&layout=' . esc_attr( $settings['ShareBTN'] ) . '&size=' . esc_attr( $SizeBtn ) . '&width=' . esc_attr( $ShareWbt ) . '&height=' . esc_attr( $ShareHbt ) . '&appId=" width="' . esc_attr( $ShareWbt ) . '" height="' . esc_attr( $ShareHbt ) . '" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>';
 			}
-		} elseif ( $EmbedType == 'twitter' ) {
+		} elseif ( $EmbedType === 'twitter' ) {
 			$TweetType = ! empty( $settings['TweetType'] ) ? $settings['TweetType'] : 'timelines';
 			$Twname    = ! empty( $settings['Twname'] ) ? $settings['Twname'] : '';
-			$TwColor   = ! empty( $settings['TwColor'] == 'yes' ) ? 'dark' : 'light';
+			$TwColor   = ! empty( $settings['TwColor'] === 'yes' ) ? 'dark' : 'light';
 			$Twwidth   = ! empty( $settings['Twwidth']['size'] ) ? $settings['Twwidth']['size'] : '';
-			$Twconver  = ! empty( $settings['Twconver'] == 'yes' ) ? 'none' : '';
+			$Twconver  = ! empty( $settings['Twconver'] === 'yes' ) ? 'none' : '';
 			$TwMsg     = ! empty( $settings['TwMsg'] ) ? $settings['TwMsg'] : '';
-			if ( $TweetType == 'Tweets' ) {
+			if ( $TweetType === 'Tweets' ) {
 				$TwRepeater = ! empty( $settings['TwRepeater'] ) ? $settings['TwRepeater'] : array();
-				$TwCards    = ! empty( $settings['TwCards'] == 'yes' ) ? 'hidden' : '';
+				$TwCards    = ! empty( $settings['TwCards'] === 'yes' ) ? 'hidden' : '';
 				$TwAlign    = ! empty( $settings['Twalign'] ) ? $settings['Twalign'] : 'center';
 				foreach ( $TwRepeater as $index => $Tweet ) {
 					$TwURl       = ! empty( $Tweet['TweetURl'] ) && ! empty( $Tweet['TweetURl']['url'] ) ? $Tweet['TweetURl']['url'] : '';
 					$TwMassage   = ! empty( $Tweet['TwMassage'] ) ? $Tweet['TwMassage'] : '';
 					$output     .= '<blockquote class="twitter-tweet" data-theme="' . esc_attr( $TwColor ) . '" data-width="' . esc_attr( $Twwidth ) . '" data-cards="' . esc_attr( $TwCards ) . '" data-align="' . esc_attr( $TwAlign ) . '" data-conversation="' . esc_attr( $Twconver ) . '" >';
 						$output .= '<p lang="en" dir="ltr">' . wp_kses_post( $TwMassage ) . '</p>';
-						$output .= '<a href="' . esc_attr( $TwURl ) . '"></a>';
+						$output .= '<a href="' . esc_url( $TwURl ) . '"></a>';
 					$output     .= '</blockquote>';
 				}
 			}
-			if ( $TweetType == 'timelines' ) {
+			if ( $TweetType === 'timelines' ) {
 				$TwURl     = '';
 				$Twclass   = 'twitter-timeline';
 				$TwGuides  = ! empty( $settings['TwGuides'] ) ? $settings['TwGuides'] : 'Profile';
@@ -3200,58 +3566,58 @@ class ThePlus_Social_Embed extends Widget_Base {
 				$Twlimit   = ! empty( $settings['Twlimit']['size'] ) ? $settings['Twlimit']['size'] : '';
 				$Twstyle   = ! empty( $settings['Twstyle'] ) ? $settings['Twstyle'] : 'linear';
 				$TwDesign  = ! empty( $settings['TwDesign'] ) ? $settings['TwDesign'] : array();
-				$Twheight  = ( $Twstyle == 'linear' ) ? $settings['Twheight']['size'] : '';
+				$Twheight  = ( $Twstyle === 'linear' ) ? $settings['Twheight']['size'] : '';
 				$DesignBTN = array();
 				if ( is_array( $TwDesign ) ) {
 					foreach ( $TwDesign as $value ) {
 						$DesignBTN[] = $value;
 					}
 				}
-				$TwDesign = json_encode( $DesignBTN );
-				if ( $TwGuides == 'Profile' ) {
+				$TwDesign = wp_json_encode( $DesignBTN );
+				if ( $TwGuides === 'Profile' ) {
 					$TwURl = 'https://twitter.com/' . esc_attr( $Twname );
-				} elseif ( $TwGuides == 'List' ) {
+				} elseif ( $TwGuides === 'List' ) {
 					$TwURl = ! empty( $settings['Twlisturl'] ) && ! empty( $settings['Twlisturl']['url'] ) ? $settings['Twlisturl']['url'] : '';
-				} elseif ( $TwGuides == 'Likes' ) {
+				} elseif ( $TwGuides === 'Likes' ) {
 					$TwURl = 'https://twitter.com/' . esc_attr( $Twname ) . '/likes';
-				} elseif ( $TwGuides == 'Collection' ) {
+				} elseif ( $TwGuides === 'Collection' ) {
 					$Twclass = 'twitter-grid';
 					$TwURl   = ! empty( $settings['TwCollection'] ) && ! empty( $settings['TwCollection']['url'] ) ? $settings['TwCollection']['url'] : '';
 				}
 				$output .= '<a class="' . esc_attr( $Twclass ) . '" href="' . esc_url( $TwURl ) . '" data-width="' . esc_attr( $Twwidth ) . '" data-height="' . esc_attr( $Twheight ) . '" data-theme="' . esc_attr( $TwColor ) . '" data-chrome="' . esc_attr( $TwDesign ) . '" data-border-color="' . esc_attr( $TwBrCr ) . '" data-tweet-limit="' . esc_attr( $Twlimit ) . '" data-aria-polite="" >' . wp_kses_post( $TwMsg ) . '</a>';
 			}
-			if ( $TweetType == 'buttons' ) {
+			if ( $TweetType === 'buttons' ) {
 				$Twbutton  = ! empty( $settings['Twbutton'] ) ? $settings['Twbutton'] : 'follow';
 				$TwBtnSize = ! empty( $settings['TwBtnSize'] ) ? $settings['TwBtnSize'] : '';
 				$TwTweetId = ! empty( $settings['TwTweetId'] ) ? $settings['TwTweetId'] : '';
-				$Twicon    = ! empty( $settings['TwIcon'] == 'yes' ) ? '' : '<i class="fab fa-twitter"></i>';
+				$Twicon    = ! empty( $settings['TwIcon'] === 'yes' ) ? '' : '<i class="fab fa-twitter"></i>';
 
 				$lz1 = function_exists( 'tp_has_lazyload' ) ? tp_bg_lazyLoad( $settings['TwBtnBg_image'], $settings['TwBtnBgH_image'] ) : '';
-				if ( $Twbutton == 'Tweets' ) {
+				if ( $Twbutton === 'Tweets' ) {
 					$TwVia      = ! empty( $settings['TwVia'] ) ? $settings['TwVia'] : '';
 					$TwTextBtn  = ! empty( $settings['TwTextBtn'] ) ? $settings['TwTextBtn'] : '';
 					$TwHashtags = ! empty( $settings['TwHashtags'] ) ? $settings['TwHashtags'] : '';
 					$TwTweetUrl = ! empty( $settings['TwTweetUrl'] ) && ! empty( $settings['TwTweetUrl']['url'] ) ? $settings['TwTweetUrl']['url'] : '';
 					$output    .= '<a class="twitter-share-button" href="https://twitter.com/intent/tweet" data-size="' . esc_attr( $TwBtnSize ) . '" data-text="' . esc_attr( $TwTextBtn ) . '" data-url="' . esc_url( $TwTweetUrl ) . '" data-via="' . esc_attr( $TwVia ) . '" data-hashtags="' . esc_attr( $TwHashtags ) . '" >' . wp_kses_post( $TwMsg ) . '</a></br>';
-				} elseif ( $Twbutton == 'follow' ) {
+				} elseif ( $Twbutton === 'follow' ) {
 					$TwCount     = ! empty( $settings['TwCount'] ) ? $settings['TwCount'] : 'false';
-					$TwHideUname = ! empty( $settings['TwHideUname'] == 'yes' ) ? 'false' : $settings['TwHideUname'];
+					$TwHideUname = ! empty( $settings['TwHideUname'] === 'yes' ) ? 'false' : $settings['TwHideUname'];
 					$output     .= '<a class="twitter-follow-button" href="https://twitter.com/' . esc_attr( $Twname ) . '" data-size="' . esc_attr( $TwBtnSize ) . '" data-show-screen-name="' . esc_attr( $TwHideUname ) . '" data-show-count="' . esc_attr( $TwCount ) . '" >' . wp_kses_post( $TwMsg ) . '</a></br>';
-				} elseif ( $Twbutton == 'Message' ) {
+				} elseif ( $Twbutton === 'Message' ) {
 					$TwRId       = ! empty( $settings['TwRId'] ) ? $settings['TwRId'] : '';
 					$TwMessage   = ! empty( $settings['TwMessage'] ) ? $settings['TwMessage'] : '';
 					$TwHideUname = ! empty( $settings['TwHideUname'] ) ? '@' : '';
 					$output     .= '<a class="twitter-dm-button" href="https://twitter.com/messages/compose?recipient_id=' . esc_attr( $TwRId ) . '" data-text="' . esc_attr( $TwMessage ) . '" data-size="' . esc_attr( $TwBtnSize ) . '" data-screen-name="' . esc_attr( $TwHideUname . $Twname ) . '">' . wp_kses_post( $TwMsg ) . '</a>';
-				} elseif ( $Twbutton == 'like' ) {
+				} elseif ( $Twbutton === 'like' ) {
 					$output .= '<a class="tw-button ' . esc_attr( $lz1 ) . '" href="https://twitter.com/intent/like?tweet_id=' . esc_attr( $TwTweetId ) . '" >' . wp_kses_post( $Twicon . ' ' . $settings['likeBtn'] ) . '</a>';
-				} elseif ( $Twbutton == 'Reply' ) {
+				} elseif ( $Twbutton === 'Reply' ) {
 					$output .= '<a class="tw-button ' . esc_attr( $lz1 ) . '" href="https://twitter.com/intent/tweet?in_reply_to=' . esc_attr( $TwTweetId ) . '">' . wp_kses_post( $Twicon . ' ' . $settings['ReplyBtn'] ) . '</a>';
-				} elseif ( $Twbutton == 'Retweet' ) {
+				} elseif ( $Twbutton === 'Retweet' ) {
 					$output .= '<a class="tw-button ' . esc_attr( $lz1 ) . '" href="https://twitter.com/intent/retweet?tweet_id=' . esc_attr( $TwTweetId ) . '">' . wp_kses_post( $Twicon . ' ' . $settings['RetweetBtn'] ) . '</a>';
 				}
 			}
-			$output .= '<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
-		} elseif ( $EmbedType == 'vimeo' ) {
+			wp_enqueue_script( 'tpae-twitter-widgets', 'https://platform.twitter.com/widgets.js', array(), L_THEPLUS_VERSION, true );
+		} elseif ( $EmbedType === 'vimeo' ) {
 			$VmId     = ! empty( $settings['ViId'] ) ? $settings['ViId'] : '';
 			$VmStime  = ! empty( $settings['VmStime'] ) ? $settings['VmStime'] : '';
 			$VmColor  = ! empty( $settings['VmColor'] ) ? ltrim( $settings['VmColor'], '#' ) : 'ffffff';
@@ -3277,22 +3643,23 @@ class ThePlus_Social_Embed extends Widget_Base {
 			$Vm_PiP         = ( in_array( 'pip', $VmALL ) ) ? 1 : 0;
 			$Vm_transparent = ( in_array( 'transparent', $VmALL ) ) ? 1 : 0;
 			$output        .= '<iframe class="tp-frame-set" src="https://player.vimeo.com/video/' . esc_attr( $VmId ) . '?autoplay=' . esc_attr( $Vm_AutoPlay ) . '&loop=' . esc_attr( $Vm_loop ) . '&muted=' . esc_attr( $Vm_Muted ) . '&autopause=' . esc_attr( $Vm_AutoPause ) . '&background=' . esc_attr( $Vm_BackGround ) . '&byline=' . esc_attr( $Vm_Byline ) . '&playsinline=' . esc_attr( $Vm_PlaySinline ) . '&speed=' . esc_attr( $Vm_Speed ) . '&title=' . esc_attr( $Vm_Title ) . '&portrait=' . esc_attr( $Vm_Portrait ) . '&dnt=' . esc_attr( $Vm_Dnt ) . '&pip=' . esc_attr( $Vm_PiP ) . '&transparent=' . esc_attr( $Vm_transparent ) . '&color=' . esc_attr( $VmColor ) . '&#t=' . esc_attr( $VmStime ) . '" width="' . esc_attr( $ExWidth ) . '" height="' . esc_attr( $ExHeight ) . '" frameborder="0" ' . esc_attr( $Vm_FullScreen ) . ' ></iframe>';
-		} elseif ( $EmbedType == 'instagram' ) {
+		} elseif ( $EmbedType === 'instagram' ) {
 			$IGType = ! empty( $settings['IGType'] ) ? $settings['IGType'] : 'posts';
 			$IGId   = ! empty( $settings['IGId'] ) ? $settings['IGId'] : 'CGAvnLcA3zb';
 			$IGCap  = '';
-			if ( isset( $settings['IGCaptione'] ) && $settings['IGCaptione'] != 'yes' ) {
+			if ( isset( $settings['IGCaptione'] ) && $settings['IGCaptione'] !== 'yes' ) {
 				$IGCap = 'data-instgrm-captioned';
 			}
-			if ( $IGType == 'posts' ) {
+			if ( $IGType === 'posts' ) {
 				$IG_id = 'p/' . $IGId;
-			} elseif ( $IGType == 'reels' ) {
+			} elseif ( $IGType === 'reels' ) {
 				$IG_id = 'reel/' . $IGId;
-			} elseif ( $IGType == 'igtv' ) {
+			} elseif ( $IGType === 'igtv' ) {
 				$IG_id = 'tv/' . $IGId;
 			}
-			$output .= '<blockquote class="instagram-media" ' . esc_attr( $IGCap ) . ' data-instgrm-version="13" data-instgrm-permalink="https://www.instagram.com/' . esc_attr( $IG_id ) . '/?utm_source=ig_embed"></blockquote><script async src="//www.instagram.com/embed.js"></script>';
-		} elseif ( $EmbedType == 'youtube' ) {
+			$output .= '<blockquote class="instagram-media" ' . esc_attr( $IGCap ) . ' data-instgrm-version="13" data-instgrm-permalink="https://www.instagram.com/' . esc_attr( $IG_id ) . '/?utm_source=ig_embed"></blockquote>';
+			wp_enqueue_script( 'tpae-instagram-embed', 'https://www.instagram.com/embed.js', array(), L_THEPLUS_VERSION, true );
+		} elseif ( $EmbedType === 'youtube' ) {
 			$YtType     = ! empty( $settings['YtType'] ) ? $settings['YtType'] : 'YtSV';
 			$YtOption   = ! empty( $settings['YtOption'] ) ? $settings['YtOption'] : array();
 			$YtSTime    = ! empty( $settings['YtSTime'] ) ? $settings['YtSTime'] : '';
@@ -3314,32 +3681,32 @@ class ThePlus_Social_Embed extends Widget_Base {
 			$Yt_playsinline    = ( in_array( 'playsinline', $YtSelect ) ) ? 1 : 0;
 			$Yt_rel            = ( in_array( 'rel', $YtSelect ) ) ? 1 : 0;
 			$YT_Parameters     = 'autoplay=' . esc_attr( $Yt_autoplay ) . '&mute=' . esc_attr( $Yt_muted ) . '&controls=' . esc_attr( $Yt_controls ) . '&disablekb=' . esc_attr( $Yt_disablekb ) . '&fs=' . esc_attr( $Yt_fs ) . '&modestbranding=' . esc_attr( $Yt_modestbranding ) . '&loop=' . esc_attr( $Yt_loop ) . '&rel=' . esc_attr( $Yt_rel ) . '&playsinline=' . esc_attr( $Yt_playsinline ) . '&start=' . esc_attr( $YtSTime ) . '&end=' . esc_attr( $YtETime ) . '&hl=' . esc_attr( $Ytlanguage );
-			if ( $YtType == 'YtSV' ) {
+			if ( $YtType === 'YtSV' ) {
 				$YtVideoId = ! empty( $settings['YtVideoId'] ) ? $settings['YtVideoId'] : '';
 				$YtSrc     = 'https://www.youtube.com/embed/' . esc_attr( $YtVideoId ) . '?playlist=' . esc_attr( $YtVideoId ) . '&' . esc_attr( $YT_Parameters );
-			} elseif ( $YtType == 'YtPlayV' ) {
+			} elseif ( $YtType === 'YtPlayV' ) {
 				$YtPlaylistId = ! empty( $settings['YtPlaylistId'] ) ? $settings['YtPlaylistId'] : '';
 				$YtSrc        = 'https://www.youtube.com/embed?listType=playlist&list=' . esc_attr( $YtPlaylistId ) . '&' . esc_attr( $YT_Parameters );
-			} elseif ( $YtType == 'YtuserV' ) {
+			} elseif ( $YtType === 'YtuserV' ) {
 				$YtUsername = ! empty( $settings['YtUsername'] ) ? $settings['YtUsername'] : '';
 				$YtSrc      = 'https://www.youtube.com/embed?listType=user_uploads&list=' . esc_attr( $YtUsername ) . '&' . esc_attr( $YT_Parameters );
 			}
-			$output .= '<iframe class="tp-frame-set" width="' . esc_attr( $ExWidth ) . '" height="' . esc_attr( $ExHeight ) . '" src="' . esc_attr( $YtSrc ) . '" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-		} elseif ( $EmbedType == 'googlemap' ) {
+			$output .= '<iframe class="tp-frame-set" width="' . esc_attr( $ExWidth ) . '" height="' . esc_attr( $ExHeight ) . '" src="' . esc_url( $YtSrc ) . '" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+		} elseif ( $EmbedType === 'googlemap' ) {
 			$Mapaccesstoken = ! empty( $settings['Mapaccesstoken'] ) ? $settings['Mapaccesstoken'] : 'default';
 			$GSearchText    = ! empty( $settings['GSearchText'] ) ? $settings['GSearchText'] : 'Goa+India';
 			$MapZoom        = ( ! empty( $settings['MapZoom'] ) && ! empty( $settings['MapZoom']['size'] ) ) ? (int) $settings['MapZoom']['size'] : 1;
 
-			if ( $Mapaccesstoken == 'default' ) {
+			if ( $Mapaccesstoken === 'default' ) {
 				$output .= '<iframe src="https://maps.google.com/maps?q=' . esc_attr( $GSearchText ) . '&z=' . esc_attr( $MapZoom ) . '&output=embed"  loading="lazy" allowfullscreen frameborder="0" scrolling="no"></iframe>';
-			} elseif ( $Mapaccesstoken == 'accesstoken' ) {
+			} elseif ( $Mapaccesstoken === 'accesstoken' ) {
 				$GAccesstoken = ! empty( $settings['GAccesstoken'] ) ? $settings['GAccesstoken'] : '';
 				$GMapModes    = ! empty( $settings['GMapModes'] ) ? $settings['GMapModes'] : 'search';
 				$MapViews     = ! empty( $settings['MapViews'] ) ? $settings['MapViews'] : 'roadmap';
 
-				if ( $GMapModes == 'place' ) {
+				if ( $GMapModes === 'place' ) {
 					$output .= '<iframe src="https://www.google.com/maps/embed/v1/place?key=' . esc_attr( $GAccesstoken ) . '&q=' . esc_attr( $GSearchText ) . '&zoom=' . esc_attr( $MapZoom ) . '&maptype=' . esc_attr( $MapViews ) . '&language=En"   loading="lazy" allowfullscreen></iframe>';
-				} elseif ( $GMapModes == 'directions' ) {
+				} elseif ( $GMapModes === 'directions' ) {
 					$GOrigin      = ! empty( $settings['GOrigin'] ) ? '&origin=' . $settings['GOrigin'] : '&origin=""';
 					$GDestination = ! empty( $settings['GDestination'] ) ? '&destination=' . $settings['GDestination'] : '&destination=""';
 					$GWaypoints   = ! empty( $settings['GWaypoints'] ) ? '&waypoints=' . $settings['GWaypoints'] : '';
@@ -3347,11 +3714,11 @@ class ThePlus_Social_Embed extends Widget_Base {
 					$Gavoid       = ! empty( $settings['Gavoid'] ) ? '&avoid=' . implode( '|', $settings['Gavoid'] ) : '';
 
 					$output .= '<iframe src="https://www.google.com/maps/embed/v1/directions?key=' . esc_attr( $GAccesstoken ) . esc_attr( $GOrigin ) . esc_attr( $GDestination ) . esc_attr( $GWaypoints ) . esc_attr( $Gavoid ) . '&mode=' . esc_attr( $GTravelMode ) . '&zoom=' . esc_attr( $MapZoom ) . '&maptype=' . esc_attr( $MapViews ) . '&language=En"  loading="lazy" allowfullscreen ></iframe>';
-				} elseif ( $GMapModes == 'streetview' ) {
+				} elseif ( $GMapModes === 'streetview' ) {
 					$GstreetviewText = ! empty( $settings['GstreetviewText'] ) ? $settings['GstreetviewText'] : '';
 
 					$output .= '<iframe src="https://www.google.com/maps/embed/v1/streetview?key=' . esc_attr( $GAccesstoken ) . '&location=' . esc_attr( $GstreetviewText ) . '&heading=210&pitch=10&fov=90"  loading="lazy" allowfullscreen></iframe>';
-				} elseif ( $GMapModes == 'search' ) {
+				} elseif ( $GMapModes === 'search' ) {
 					$output .= '<iframe src="https://www.google.com/maps/embed/v1/search?key=' . esc_attr( $GAccesstoken ) . '&q=' . esc_attr( $GSearchText ) . '&zoom=' . esc_attr( $MapZoom ) . '&maptype=' . esc_attr( $MapViews ) . '&language=En"  loading="lazy" allowfullscreen ></iframe>';
 				}
 			}

@@ -129,16 +129,14 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 			}
 
 			$tp_client_title   = $this->tpae_post_type_get_option( 'post_type', 'client_plugin_title' );
-			$client_post_title = 'Tp Clients';
+			$client_post_title = __( 'Tp Clients', 'tpebl' );
 			if ( isset( $tp_client_title ) && ! empty( $tp_client_title ) ) {
 				$client_post_title = $this->tpae_post_type_get_option( 'post_type', 'client_plugin_title' );
 			}
 
 			$labels = array(
-				// Translators: %s is the plural name of the post type.
-				'name'                  => sprintf( _x( '%s', 'Post Type General Name', 'tpebl' ), $client_post_title ),
-				// Translators: %s is the singular name of the post type.
-				'singular_name'         => sprintf( _x( '%s', 'Post Type Singular Name', 'tpebl' ), $client_post_title ),
+				'name'                  => esc_html( $client_post_title ),
+				'singular_name'         => esc_html( $client_post_title ),
 				'menu_name'             => esc_html( $client_post_title ),
 				'name_admin_bar'        => esc_html( $client_post_title ),
 				'archives'              => esc_html__( 'Item Archives', 'tpebl' ),
@@ -185,7 +183,7 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 				'capability_type'     => 'page',
 			);
 
-			register_post_type( $post_name, $args );
+			register_post_type( sanitize_key( $post_name ), $args );
 		}
 
 		/**
@@ -276,16 +274,14 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 			}
 
 			$tp_testimonial_title      = $this->tpae_post_type_get_option( 'post_type', 'testimonial_plugin_title' );
-			$tp_testimonial_post_title = 'TP Testimonials';
+			$tp_testimonial_post_title = __( 'TP Testimonials', 'tpebl' );
 			if ( isset( $tp_testimonial_title ) && ! empty( $tp_testimonial_title ) ) {
 				$tp_testimonial_post_title = $this->tpae_post_type_get_option( 'post_type', 'testimonial_plugin_title' );
 			}
 
 			$labels = array(
-				// Translators: %s is the post type general name.
-				'name'                  => sprintf( _x( '%s', 'Post Type General Name', 'tpebl' ), $tp_testimonial_post_title ),
-				// Translators: %s is the post type singular name.
-				'singular_name'         => sprintf( _x( '%s', 'Post Type Singular Name', 'tpebl' ), $tp_testimonial_post_title ),
+				'name'                  => esc_html( $tp_testimonial_post_title ),
+				'singular_name'         => esc_html( $tp_testimonial_post_title ),
 				'menu_name'             => esc_html( $tp_testimonial_post_title ),
 				'name_admin_bar'        => esc_html( $tp_testimonial_post_title ),
 				'archives'              => esc_html__( 'Item Archives', 'tpebl' ),
@@ -331,7 +327,7 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 				'capability_type'     => 'page',
 			);
 
-			register_post_type( $post_name, $args );
+			register_post_type( sanitize_key( $post_name ), $args );
 		}
 
 		/**
@@ -424,16 +420,14 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 			}
 
 			$team_member_plugin_title = $this->tpae_post_type_get_option( 'post_type', 'team_member_plugin_title' );
-			$team_member_title        = 'TP Team Member';
+			$team_member_title = __( 'TP Team Member', 'tpebl' );
 			if ( isset( $team_member_plugin_title ) && ! empty( $team_member_plugin_title ) ) {
 				$team_member_title = $this->tpae_post_type_get_option( 'post_type', 'team_member_plugin_title' );
 			}
 
 			$labels = array(
-				// Translators: %s is the post type general name.
-				'name'                  => sprintf( _x( '%s', 'Post Type General Name', 'tpebl' ), $team_member_title ),
-				// Translators: %s is the post type singular name.
-				'singular_name'         => sprintf( _x( '%s', 'Post Type Singular Name', 'tpebl' ), $team_member_title ),
+				'name'                  => esc_html( $team_member_title ),
+				'singular_name'         => esc_html( $team_member_title ),
 				'menu_name'             => esc_html( $team_member_title ),
 				'name_admin_bar'        => esc_html( $team_member_title ),
 				'archives'              => esc_html__( 'Item Archives', 'tpebl' ),
@@ -481,7 +475,7 @@ if ( ! class_exists( 'Tpae_Dashboard_Listing' ) ) {
 				'capability_type'     => 'page',
 			);
 
-			register_post_type( $post_name, $args );
+			register_post_type( sanitize_key( $post_name ), $args );
 		}
 
 		/**

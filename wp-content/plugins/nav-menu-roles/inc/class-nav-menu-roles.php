@@ -40,7 +40,7 @@ class Nav_Menu_Roles {
 	* @constant string version number
 	* @since 1.7.0
 	*/
-	const VERSION = '2.1.0';
+	const VERSION = '2.1.3';
 
 	/**
 	 * Main Nav Menu Roles Instance
@@ -79,7 +79,6 @@ class Nav_Menu_Roles {
 
 	/**
 	 * Nav_Menu_Roles Constructor.
-	 * @access public
 	 * @return Nav_Menu_Roles
 	 * @since  1.0
 	 */
@@ -100,11 +99,6 @@ class Nav_Menu_Roles {
 
 		// Add FAQ and Donate link to plugin.
 		add_filter( 'plugin_row_meta', array( $this, 'add_action_links' ), 10, 2 );
-
-		// Maybe switch the admin walker.
-		if ( ! self::is_wp_gte( '5.4' ) ) {
-			add_filter( 'wp_edit_nav_menu_walker', array( $this, 'edit_nav_menu_walker' ) );
-		}
 
 		// Add new fields via hook.
 		add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'custom_fields' ), 10, 4 );
@@ -131,9 +125,6 @@ class Nav_Menu_Roles {
 
 	/**
 	 * Include the custom admin walker
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function admin_init() {
 
@@ -146,9 +137,6 @@ class Nav_Menu_Roles {
 	/**
 	 * Register the Importer
 	 * the regular Importer skips post meta for the menu items
-	 *
-	 * @access private
-	 * @return void
 	 */
 	public function register_importer() {
 		// Register the new importer.
@@ -336,7 +324,7 @@ class Nav_Menu_Roles {
 		$display_roles = apply_filters( 'nav_menu_roles', $wp_roles->role_names, $item );
 
 		// Alpha sort roles by label.
-		asort( $wp_roles->role_names );
+		asort( $display_roles );
 
 		/**
 		* If no roles are being used, don't display the role selection radio buttons at all.
@@ -373,52 +361,50 @@ class Nav_Menu_Roles {
 		// Whether to display the role checkboxes.
 		$hidden = 'in' === $logged_in_out ? '' : 'display: none;';
 
-		$float = is_rtl() ? 'float:"right";' : 'float:"left";';
-
 		?>
 
 		<input type="hidden" name="nav-menu-role-nonce" value="<?php echo esc_attr( wp_create_nonce( 'nav-menu-nonce-name' ) ); ?>" />
 
-		<fieldset class="field-nav_menu_role nav_menu_display_mode_field description-wide" style="margin: 5px 0;">
+		<fieldset class="field-nav_menu_role nav_menu_display_mode_field">
 			<legend class="description"><?php esc_html_e( 'Display Mode', 'nav-menu-roles' ); ?></legend>
 
 			<input type="hidden" class="nav-menu-id" value="<?php echo esc_attr( $item->ID ); ?>" />
 
-			<label for="nav_menu_show-for-<?php echo esc_attr( $item->ID ); ?>" style="<?php echo esc_attr( $float ); ?> width: 35%;">
+			<label for="nav_menu_show-for-<?php echo esc_attr( $item->ID ); ?>">
 				<input type="radio" class="nav-menu-display-mode" name="nav-menu-display-mode[<?php echo esc_attr( $item->ID ); ?>]" id="nav_menu_show-for-<?php echo esc_attr( $item->ID ); ?>" <?php checked( 'show', $display_mode ); ?> value="show" />
 				<?php esc_html_e( 'Show', 'nav-menu-roles' ); ?>   
 			</label>
 		
-			<label for="nav_menu_hide-for-<?php echo esc_attr( $item->ID ); ?>" style="<?php echo esc_attr( $float ); ?> width: 35%;">
+			<label for="nav_menu_hide-for-<?php echo esc_attr( $item->ID ); ?>">
 				<input type="radio" class="nav-menu-display-mode" name="nav-menu-display-mode[<?php echo esc_attr( $item->ID ); ?>]" id="nav_menu_hide-for-<?php echo esc_attr( $item->ID ); ?>" <?php checked( 'hide', $display_mode ); ?> value="hide" />
 				<?php esc_html_e( 'Hide', 'nav-menu-roles' ); ?>	       
 			</label>
 
 		</fieldset>
 
-		<fieldset class="field-nav_menu_role nav_menu_logged_in_out_field description-wide" style="margin: 5px 0;">
+		<fieldset class="field-nav_menu_role nav_menu_logged_in_out_field">
 			<legend class="description"><?php esc_html_e( 'Target audience', 'nav-menu-roles' ); ?></legend>
 
 			<input type="hidden" class="nav-menu-id" value="<?php echo esc_attr( $item->ID ); ?>" />
 
-			<label for="nav_menu_logged_in-for-<?php echo esc_attr( $item->ID ); ?>" style="<?php echo esc_attr( $float ); ?> width: 35%;">
+			<label for="nav_menu_logged_in-for-<?php echo esc_attr( $item->ID ); ?>">
 				<input type="radio" class="nav-menu-logged-in-out" name="nav-menu-logged-in-out[<?php echo esc_attr( $item->ID ); ?>]" id="nav_menu_logged_in-for-<?php echo esc_attr( $item->ID ); ?>" <?php checked( 'in', $logged_in_out ); ?> value="in" />
 				<?php esc_html_e( 'Logged In Users', 'nav-menu-roles' ); ?>   
 			</label>
 		
-			<label for="nav_menu_logged_out-for-<?php echo esc_attr( $item->ID ); ?>" style="<?php echo esc_attr( $float ); ?> width: 35%;">
+			<label for="nav_menu_logged_out-for-<?php echo esc_attr( $item->ID ); ?>">
 				<input type="radio" class="nav-menu-logged-in-out" name="nav-menu-logged-in-out[<?php echo esc_attr( $item->ID ); ?>]" id="nav_menu_logged_out-for-<?php echo esc_attr( $item->ID ); ?>" <?php checked( 'out', $logged_in_out ); ?> value="out" />
 				<?php esc_html_e( 'Logged Out Users', 'nav-menu-roles' ); ?>	       
 			</label>
 
-			<label for="nav_menu_by_role-for-<?php echo esc_attr( $item->ID ); ?>" style="<?php echo esc_attr( $float ); ?> width: 30%;">
+			<label for="nav_menu_by_role-for-<?php echo esc_attr( $item->ID ); ?>">
 				<input type="radio" class="nav-menu-logged-in-out" name="nav-menu-logged-in-out[<?php echo esc_attr( $item->ID ); ?>]" id="nav_menu_by_role-for-<?php echo esc_attr( $item->ID ); ?>" <?php checked( '', $logged_in_out ); ?> value="" />
 				<?php esc_html_e( 'Everyone', 'nav-menu-roles' ); ?>
 			</label>
 
 		</fieldset>
 
-		<fieldset class="field-nav_menu_role nav_menu_role_field description-wide" style="margin: 5px 0; <?php echo esc_attr( $hidden ); ?>">
+		<fieldset class="field-nav_menu_role nav_menu_role_field description-wide" style="<?php echo esc_attr( $hidden ); ?>">
 			<legend class="description"><?php esc_html_e( 'Target role', 'nav-menu-roles' ); ?></legend>
 
 			<?php
@@ -432,7 +418,7 @@ class Nav_Menu_Roles {
 				$checked = checked( true, ( is_array( $checked_roles ) && in_array( $role, $checked_roles ) ), false );
 				?>
 
-				<label for="nav_menu_role-<?php echo esc_attr( $role ); ?>-for-<?php echo esc_attr( $item->ID ); ?>" style="display: block; margin: 2px 0;">
+				<label for="nav_menu_role-<?php echo esc_attr( $role ); ?>-for-<?php echo esc_attr( $item->ID ); ?>">
 					<input type="checkbox" name="nav-menu-role[<?php echo esc_attr( $item->ID ); ?>][<?php echo esc_attr( $i ); ?>]" id="nav_menu_role-<?php echo esc_attr( $role ); ?>-for-<?php echo esc_attr( $item->ID ); ?>" <?php echo esc_attr( $checked ); ?> value="<?php echo esc_attr( $role ); ?>" />
 					<?php echo esc_html( $name ); ?>
 					<?php $i++; ?>
@@ -453,7 +439,32 @@ class Nav_Menu_Roles {
 	 */
 	public function enqueue_scripts( $hook ) {
 		if ( 'nav-menus.php' === $hook ) {
-			wp_enqueue_script( 'nav-menu-roles', plugins_url( 'dist/nav-menu-roles.js', $this->main_file ), array( 'jquery' ), self::VERSION, true );
+			
+			wp_enqueue_script( 'nav-menu-roles', plugins_url( 'assets/js/nav-menu-roles.js', $this->main_file ), array( 'jquery' ), self::VERSION, true );
+
+			?>
+			<style>
+
+				fieldset.field-nav_menu_role { margin: 0 0 1rem 0; }
+				fieldset.field-nav_menu_role legend { font-weight: bold; margin-bottom: .5rem; }
+				fieldset.nav_menu_display_mode_field > label,
+				fieldset.nav_menu_logged_in_out_field > label {
+					float: left;
+					margin: 0 .5rem 0 0;
+				}
+				fieldset.nav_menu_role_field {
+					column-count: 2;
+				}
+				fieldset.nav_menu_role_field > label {
+					display: block;
+				}
+				.rtl fieldset.nav_menu_display_mode_field > label,
+				.rtl fieldset.nav_menu_logged_in_out_field > label {
+					float: right;
+					margin: 0 0 0 .5rem;
+				}
+			</style>
+			<?php
 		}
 	}
 
@@ -642,9 +653,6 @@ class Nav_Menu_Roles {
 
 	/**
 	 * Maybe upgrade
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function maybe_upgrade() {
 		$db_version = get_option( 'nav_menu_roles_db_version', false );
@@ -658,7 +666,6 @@ class Nav_Menu_Roles {
 	/**
 	 * Test WordPress version
 	 *
-	 * @access public
 	 * @param  string $version - A WordPress version to compare against current version.
 	 * @return boolean
 	 */

@@ -58,6 +58,21 @@ if ( ! class_exists( 'L_Tpae_Extensions_Main' ) ) {
                 include L_THEPLUS_PATH . 'modules/extensions/class-tpae-glass-morphism.php';
             }
 
+            $required_keys = array(
+                'plus_text_global_animation',
+                'plus_image_global_animation',
+                'plus_adv_scroll_interactions',
+            );
+
+            if ( ! empty( array_intersect( $required_keys, (array) $extras_elements ) ) ) {
+                include_once L_THEPLUS_PATH . 'modules/extensions/animation/class-tp-gsap-main.php';
+            }
+
+            if ( in_array( 'plus_dynamic_tag', $extras_elements ) ) {
+                include L_THEPLUS_PATH . 'modules/extensions/dynamic-tag/class-tpae-dynamic-tag.php';
+			}
+
+            include_once L_THEPLUS_PATH . 'modules/extensions/global-control/class-tp-global-controller-main.php';
         }
     }
 }

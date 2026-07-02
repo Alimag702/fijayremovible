@@ -42,7 +42,7 @@ if ( ! empty( $testimonial_author_text ) ) {
 			$remaining_words = substr( $testimonial_author_text, $desc_limit, $ltn );
 
 			if ( strlen( $testimonial_author_text ) > $desc_limit ) {
-				$excerpt = $limit_words . '<span class="testi-more-text" style = "display:none" >' . wp_kses_post( $remaining_words ) . '</span><a ' . esc_attr( $attr ) . ' class="testi-readbtn"> ' . esc_attr( $redmor_txt ) . ' </a>';
+				$excerpt = $limit_words . '<span class="testi-more-text" style = "display:none" >' . wp_kses_post( $remaining_words ) . '</span><a ' . esc_attr( $attr ) . ' class="testi-readbtn"> ' . esc_html( $redmor_txt ) . ' </a>';
 			} else {
 				$excerpt = $limit_words;
 			}
@@ -53,9 +53,9 @@ if ( ! empty( $testimonial_author_text ) ) {
 <div class="entry-content">
 	<?php
 	if ( 'tlrepeater' === $con_from ) {
-		echo $excerpt;
+		echo wp_kses_post( $excerpt );
 	} else {
-		echo $testimonial_author_text;
+		echo wp_kses_post( $testimonial_author_text );
 	}
 	?>
 </div>
