@@ -219,18 +219,15 @@
 }
 
 /* Utilidades simples para alternar versiones por dispositivo en Elementor */
-.res-desktop,
-.resp-desktop,
-.versionxl {
+
+.resp-desktop {
     display: block !important;
 }
 
-.res-tablet,
-.res-mobile,
+
 .resp-tablet,
-.resp-mobile,
-.versionlg,
-.versionxs {
+.resp-mobile
+{
     display: none !important;
 }
 
@@ -269,21 +266,17 @@
         min-height: 40px;
     }
 
-    .res-desktop,
-    .resp-desktop,
-    .versionxl {
+    
+    .resp-desktop {
         display: none !important;
     }
 
-    .res-tablet,
-    .resp-tablet,
-    .versionlg {
+    .resp-tablet{
         display: block !important;
     }
 
-    .res-mobile,
-    .resp-mobile,
-    .versionxs {
+   
+    .resp-mobile {
         display: none !important;
     }
 
@@ -316,15 +309,12 @@
         font-size: 12px;
     }
 
-    .res-tablet,
-    .resp-tablet,
-    .versionlg {
+   
+    .resp-tablet {
         display: none !important;
     }
 
-    .res-mobile,
-    .resp-mobile,
-    .versionxs {
+    .resp-mobile {
         display: block !important;
     }
 }
