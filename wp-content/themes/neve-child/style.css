@@ -4,7 +4,7 @@ Description:  Child theme para modificaciones varias
 Author:       Alicia Martin Gonzalez		
 Author URI:   http://fijayremovible.compact
 Template:     neve
-Version:      1.0.1
+Version:      1.0.2
 License:      GNU General Public License v2 or later
 License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
@@ -29,31 +29,55 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
     color: #f9f9f9 !important;
 }
 
-/* Contact Form 7: fallback styles for the contact page form */
+/* Contact Form 7: styles moved from Additional CSS into the child theme */
+.contact-line,
+.contact-line * {
+    box-sizing: border-box;
+}
+
 .contact-line {
-    max-width: 500px;
+    width: min(100%, 500px);
+    max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 15px;
+    color: #1b0f95;
     backdrop-filter: blur(8px);
 }
 
-.contact-line > p {
-    margin: 0;
-    color: #1b0f95;
-    font-size: 14px;
-    font-weight: 500;
-}
-
+.contact-line > p,
 .contact-line label {
     display: block;
+    margin: 0 0 14px;
     color: inherit;
-    font-size: inherit;
-    font-weight: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.contact-line > p:last-child {
+    margin-bottom: 0;
 }
 
 .contact-line .wpcf7-form-control-wrap {
     display: block;
-   
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.theplus-contact-form span.wpcf7-form-control-wrap .wpcf7-not-valid-tip,
+.contact-line .wpcf7-not-valid-tip,
+.cf7-tab-form .wpcf7-not-valid-tip {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    background: transparent !important;
 }
 
 .contact-line input[type="text"],
@@ -61,11 +85,13 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line input[type="tel"],
 .contact-line textarea {
     width: 100%;
-    padding: 8px 5px 0 !important;
+    max-width: 100%;
+    margin-top: 0 !important;
+    padding: 2px 2px 2px 6px !important;
     border: none;
     border-bottom: 2px solid #1b0f95;
     background: rgba(255, 255, 255, 0.4);
-    font-size: 14px;
+    font-size: 12px;
     color: #1b0f95;
     outline: none;
     transition: border-color 0.2s;
@@ -82,13 +108,15 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 }
 
 .contact-line textarea {
-    min-height: 60px;
+    min-height: 40px;
     resize: vertical;
 }
 
 .contact-line .btn-wrap {
-    text-align: center;
+    width: 100%;
     margin-top: 10px;
+    font-size: 16px !important;
+    text-align: center;
 }
 
 .contact-line .btn-wrap p {
@@ -96,13 +124,18 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 }
 
 .contact-line input[type="submit"] {
-    background: #1b0f95;
-    color: #fff;
+    width: auto;
+    max-width: 100%;
+    display: inline-block;
     padding: 12px 35px;
     border: none;
     border-radius: 25px;
-    font-size: 12px;
+    background: #1b0f95;
+    color: #fff;
+    font-size: 16px !important;
+    line-height: 1.2;
     cursor: pointer;
+    white-space: normal;
     transition: background 0.2s, transform 0.2s;
 }
 
@@ -111,38 +144,215 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
     transform: translateY(-2px);
 }
 
-@media screen and (max-width: 768px) {
-    .contact-line {
-        max-width: 90%;
-        padding: 15px;
+/* Compatibilidad con formularios dentro de Tabs de Elementor */
+.elementor-widget-tabs .elementor-tabs-content-wrapper,
+.elementor-widget-tabs .elementor-tab-content {
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.elementor-widget-tabs .elementor-tab-content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.elementor-widget-tabs .elementor-tab-content .contact-line {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Utilidades de visibilidad por dispositivo */
+.versionxl,
+.versionlg,
+.resp-desktop,
+.resp_desktop,
+.resp-tablet,
+.resp_tablet,
+.res-desktop,
+.res-tablet {
+    display: none !important;
+}
+
+.versionxs,
+.resp-mobile,
+.resp_mobile,
+.res-mobile {
+    display: block !important;
+}
+
+/* Check azul para acceptance / checkbox estilado por The Plus */
+.check-azul .input__checkbox_btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    position: relative !important;
+    cursor: pointer !important;
+    line-height: 1.4;
+}
+
+.check-azul .toggle-button__icon {
+    position: relative !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px;
+    border: 2px solid #1e73be !important;
+    border-radius: 3px !important;
+    background-color: #fff !important;
+    transition: background 0.2s;
+}
+
+.check-azul .toggle-button__icon.fas.fa-check {
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+.check-azul input.input-checkbox-check:checked + label .toggle-button__icon::after,
+.check-azul input.input-checkbox-check:checked + .input__checkbox_btn .toggle-button__icon::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    width: 5px;
+    height: 9px;
+    border: solid #1e73be !important;
+    border-width: 0 2px 2px 0 !important;
+    transform: rotate(45deg);
+}
+
+.check-azul .input__checkbox_btn a {
+    color: #1e73be !important;
+    font-size: 14px !important;
+    text-decoration: underline !important;
+}
+
+/* Contenedor auxiliar para formularios CF7 dentro de tabs */
+.cf7-tab-form,
+.cf7-tab-form * {
+    box-sizing: border-box;
+}
+
+.cf7-tab-form .wpcf7-form-control-wrap,
+.cf7-tab-form .wpcf7-form-control,
+.cf7-tab-form .wpcf7-response-output {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+.cf7-tab-form input.wpcf7-form-control,
+.cf7-tab-form textarea.wpcf7-form-control,
+.cf7-tab-form select.wpcf7-form-control {
+    width: 100%;
+    max-width: 100%;
+}
+
+.cf7-tab-form .wpcf7-response-output,
+.contact-line .wpcf7-response-output {
+    width: 100%;
+    max-width: 100%;
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 577px) {
+    .versionlg,
+    .resp-tablet,
+    .resp_tablet,
+    .res-tablet {
+        display: block !important;
     }
 
+    .versionxs,
+    .resp-mobile,
+    .resp_mobile,
+    .res-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
     .contact-line > p,
-    .contact-line label,
+    .contact-line label {
+        font-size: 16px;
+    }
+
     .contact-line input[type="text"],
     .contact-line input[type="email"],
     .contact-line input[type="tel"],
     .contact-line textarea {
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .contact-line textarea {
-        min-height: 40px;
+        min-height: 60px;
+    }
+
+    .versionxl,
+    .resp-desktop,
+    .resp_desktop,
+    .res-desktop {
+        display: block !important;
+    }
+
+    .versionlg,
+    .versionxs,
+    .resp-tablet,
+    .resp_tablet,
+    .res-tablet,
+    .resp-mobile,
+    .resp_mobile,
+    .res-mobile {
+        display: none !important;
     }
 }
 
-@media screen and (max-width: 576px) {
+@media (max-width: 768px) {
+    .elementor-widget-tabs .elementor-tabs-wrapper {
+        display: flex;
+        flex-wrap: wrap !important;
+        width: 100%;
+    }
+
+    .elementor-widget-tabs .elementor-tab-title {
+        flex: 1 1 100%;
+        padding: 10px 5px;
+        box-sizing: border-box;
+        text-align: center;
+        white-space: normal !important;
+    }
+
+    .elementor-widget-tabs .elementor-tab-content {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .elementor-widget-tabs {
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 576px) {
     .contact-line {
-        max-width: 100%;
         padding: 15px;
     }
 
     .contact-line textarea {
-        min-height: 20px;
+        min-height: 32px;
     }
 
     .contact-line input[type="submit"] {
-        padding: 15px 40px;
-        font-size: 12px;
+        padding: 15px 24px;
+        font-size: 14px !important;
+    }
+
+    .elementor-widget-tabs .elementor-tab-content {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
     }
 }

@@ -1,0 +1,13 @@
+2026-07-09T18:21:32+02:00 DEBUG Mail action ***wp_mail_failed*** triggered. Callback function :: ***ur_email_send_failed_handler()***
+2026-07-09T18:21:32+02:00 ERROR Mail send failed. Details:
+{
+    "reason": "Direcci\u00f3n no v\u00e1lida:  (From): wordpress@localhost",
+    "to": [
+        "al.margo.2@hotmail.com"
+    ],
+    "subject": "[Fija & Removible] Tu sitio tiene problemas t\u00e9cnicos",
+    "headers": [],
+    "attachments": [
+        ""
+    ]
+}

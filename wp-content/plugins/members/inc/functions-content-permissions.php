@@ -40,6 +40,111 @@ function members_get_post_roles( $post_id ) {
 }
 
 /**
+ * Sanitizes a single `_members_access_role` meta value for storage.
+ *
+ * Registered meta uses `single => false`, so each value must be a string. Arrays are
+ * rejected so REST saves never pass nested role lists into members_sanitize_role().
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  mixed  $value  Meta value from the database or REST request.
+ * @return string
+ */
+function members_sanitize_access_role_meta_value( $value ) {
+
+	if ( is_array( $value ) || ! is_string( $value ) || '' === $value ) {
+		return '';
+	}
+
+	$role = members_sanitize_role( $value );
+
+	return '' !== $role ? $role : '';
+}
+
+/**
+ * Sanitizes an array of `_members_access_role` values for REST and programmatic saves.
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  mixed  $roles  Role slug list from a REST or form payload.
+ * @return array
+ */
+function members_sanitize_access_role_meta_list( $roles ) {
+
+	$sanitized = array();
+
+	if ( ! is_array( $roles ) ) {
+		return $sanitized;
+	}
+
+	foreach ( $roles as $role ) {
+		if ( is_string( $role ) && '' !== $role ) {
+			$role = members_sanitize_role( $role );
+
+			if ( '' !== $role ) {
+				$sanitized[] = $role;
+			}
+		}
+	}
+
+	return array_values( array_unique( $sanitized ) );
+}
+
+/**
+ * Prevents empty `_members_access_role` rows from being stored.
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  null|bool  $check       Short-circuit return value.
+ * @param  int        $object_id   Post ID.
+ * @param  string     $meta_key    Meta key.
+ * @param  mixed      $meta_value  Meta value.
+ * @return null|bool
+ */
+function members_skip_empty_access_role_post_meta( $check, $object_id, $meta_key, $meta_value ) {
+
+	if ( '_members_access_role' !== $meta_key || ( is_string( $meta_value ) && '' !== $meta_value ) ) {
+		return $check;
+	}
+
+	return true;
+}
+
+add_filter( 'add_post_metadata', 'members_skip_empty_access_role_post_meta', 10, 4 );
+add_filter( 'update_post_metadata', 'members_skip_empty_access_role_post_meta', 10, 4 );
+
+/**
+ * Returns access roles for REST/block editor reads without writing to the database.
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  int  $post_id  Post ID.
+ * @return array
+ */
+function members_get_post_roles_for_rest( $post_id ) {
+
+	$roles = members_get_post_roles( $post_id );
+
+	if ( empty( $roles ) ) {
+		$legacy = get_post_meta( $post_id, '_role', false );
+
+		if ( ! empty( $legacy ) ) {
+			$roles = array();
+
+			foreach ( (array) $legacy as $role ) {
+				if ( is_string( $role ) && '' !== $role ) {
+					$roles[] = members_sanitize_role( $role );
+				}
+			}
+
+			$roles = array_values( array_unique( $roles ) );
+		}
+	}
+
+	return is_array( $roles ) ? $roles : array();
+}
+
+/**
  * Conditional check to determine if a post has roles assigned to it.
  *
  * @since  2.0.0
@@ -55,6 +160,74 @@ function members_has_post_roles( $post_id = '' ) {
 	$roles = members_get_post_roles( $post_id );
 
 	return ! empty( $roles );
+}
+
+/**
+ * Whether Content Permissions is enabled for a post type.
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  string  $post_type  Post type slug.
+ * @return bool
+ */
+function members_is_content_permissions_enabled_for_post_type( $post_type ) {
+
+	if ( empty( $post_type ) || 'attachment' === $post_type ) {
+		return false;
+	}
+
+	$type = get_post_type_object( $post_type );
+
+	if ( ! $type ) {
+		return false;
+	}
+
+	$enable = $type->public;
+
+	return apply_filters( "members_enable_{$post_type}_content_permissions", $enable );
+}
+
+/**
+ * Post types that support the Content Permissions UI and REST meta fields.
+ *
+ * @since  3.2.22
+ * @access public
+ * @return array Post type slugs.
+ */
+function members_get_content_permissions_post_types() {
+
+	$post_types = array();
+
+	foreach ( get_post_types( array(), 'names' ) as $post_type ) {
+		if ( members_is_content_permissions_enabled_for_post_type( $post_type ) ) {
+			$post_types[] = $post_type;
+		}
+	}
+
+	return $post_types;
+}
+
+/**
+ * Resolves the post for Content Permissions UI (classic meta box and block editor).
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  \WP_Post|null  $post  Known post object, if available.
+ * @return \WP_Post|null
+ */
+function members_get_post_for_content_permissions( $post = null ) {
+
+	if ( $post instanceof \WP_Post ) {
+		return $post;
+	}
+
+	$post = get_post();
+
+	if ( ! $post && ! empty( $_GET['post'] ) ) {
+		$post = get_post( absint( $_GET['post'] ) );
+	}
+
+	return $post instanceof \WP_Post ? $post : null;
 }
 
 /**
@@ -83,6 +256,33 @@ function members_add_post_role( $post_id, $role ) {
 function members_remove_post_role( $post_id, $role ) {
 
 	return delete_post_meta( $post_id, '_members_access_role', $role );
+}
+
+/**
+ * Returns stored role slugs that are not registered WordPress roles (e.g. deleted custom roles).
+ *
+ * @since  3.2.22
+ * @access public
+ * @param  int  $post_id  Post ID.
+ * @return array
+ */
+function members_get_orphan_post_roles( $post_id ) {
+	global $wp_roles;
+
+	$roles   = members_get_post_roles( $post_id );
+	$orphans = array();
+
+	if ( empty( $roles ) || ! is_array( $roles ) ) {
+		return $orphans;
+	}
+
+	foreach ( $roles as $role ) {
+		if ( is_string( $role ) && '' !== $role && ! isset( $wp_roles->role_names[ $role ] ) ) {
+			$orphans[] = members_sanitize_role( $role );
+		}
+	}
+
+	return array_values( array_unique( $orphans ) );
 }
 
 /**
@@ -323,23 +523,254 @@ function members_convert_old_post_meta( $post_id ) {
  * @return array
  */
 function members_filter_protected_posts_for_rest( $posts, $query ) {
-    // If not content permissions enabled, or it is enabled but not protected, bail.
-    if ( ! members_content_permissions_enabled() || ( members_content_permissions_enabled() && ! members_is_hidden_protected_posts_enabled() ) ) {
-        return $posts;
-    }
 
-    // Check if the current request is a REST API request and $posts is valid array
-    if ( defined( 'REST_REQUEST' ) && REST_REQUEST && is_array($posts) ) {
-        // Loop through the posts
-        foreach ( $posts as $key => $post ) {
-            if ( ! members_can_current_user_view_post( $post->ID ) ) {
-                // Remove the protected post from the results
-                unset( $posts[$key] );
-            }
-        }
-        // Re-index the array to prevent issues with keys
-        $posts = array_values( $posts );
-    }
+	if ( ! members_content_permissions_enabled() || ! members_is_hidden_protected_posts_enabled() ) {
+		return $posts;
+	}
 
-    return $posts;
+	if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST || ! is_array( $posts ) || empty( $posts ) ) {
+		return $posts;
+	}
+
+	$removed = 0;
+
+	foreach ( $posts as $key => $post ) {
+		if ( members_can_current_user_view_post( $post->ID ) ) {
+			continue;
+		}
+
+		// Permission managers may load protected posts they can edit (block editor list/detail).
+		if ( current_user_can( 'restrict_content' ) && current_user_can( 'edit_post', $post->ID ) ) {
+			continue;
+		}
+
+		unset( $posts[ $key ] );
+		$removed++;
+	}
+
+	// Recompute the query metadata so the REST pagination headers (X-WP-Total /
+	// X-WP-TotalPages) reflect the filtered result set rather than the raw count.
+	// This is a defense-in-depth backstop for any posts not already excluded at
+	// the SQL level by members_exclude_protected_posts_from_rest_query().
+	if ( $removed > 0 && $query instanceof \WP_Query ) {
+
+		$query->found_posts = max( 0, (int) $query->found_posts - $removed );
+
+		$per_page = (int) $query->get( 'posts_per_page' );
+
+		if ( $per_page > 0 ) {
+			$query->max_num_pages = (int) ceil( $query->found_posts / $per_page );
+		}
+	}
+
+	return array_values( $posts );
 }
+
+/**
+ * Whether the REST protected-post SQL exclusion should run for a query.
+ *
+ * Only paginated collection queries expose X-WP-Total / X-WP-TotalPages headers.
+ * Single-item lookups and unbounded queries are skipped to avoid unnecessary work.
+ *
+ * @since 3.2.23
+ * @access public
+ * @param  WP_Query  $query  The WP_Query object.
+ * @return bool
+ */
+function members_should_apply_rest_protected_posts_sql( $query ) {
+
+	if ( ! $query instanceof \WP_Query ) {
+		return false;
+	}
+
+	if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST ) {
+		return false;
+	}
+
+	// Single-item lookups do not expose collection pagination headers.
+	if ( $query->get( 'p' ) || $query->get( 'page_id' ) || $query->get( 'name' ) || $query->get( 'pagename' ) ) {
+		return false;
+	}
+
+	$per_page = (int) $query->get( 'posts_per_page' );
+
+	return $per_page > 0;
+}
+
+/**
+ * Returns the post IDs the current user cannot view, for REST collection exclusion.
+ *
+ * Earlier releases mirrored members_can_user_view_post() directly in SQL, walking the
+ * post hierarchy with deeply nested correlated subqueries. On large sites that caused
+ * severe database load, and it could exceed MySQL's join/subquery limits so the whole
+ * query failed and returned zero posts. Instead we resolve the (usually small) set of
+ * posts that actually carry a role restriction, reuse the vetted PHP permission logic,
+ * then expand to the descendants that inherit an unsatisfied restriction.
+ *
+ * @since 3.2.24
+ * @access public
+ * @param  WP_Query  $query  The query being filtered.
+ * @return int[]  Post IDs to exclude from the collection (may be empty).
+ */
+function members_get_rest_hidden_post_ids( $query ) {
+
+	global $wpdb;
+
+	// Limit to the queried post type(s) when known; inheritance follows same-type parents.
+	// 'any' (and an unset type) means no scoping, so fall back to scanning all restricted posts.
+	$post_types = array_filter( array_map( 'strval', (array) $query->get( 'post_type' ) ) );
+
+	if ( in_array( 'any', $post_types, true ) ) {
+		$post_types = array();
+	}
+
+	if ( ! empty( $post_types ) ) {
+		$placeholders = implode( ', ', array_fill( 0, count( $post_types ), '%s' ) );
+
+		$roots = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT p.ID
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
+				WHERE pm.meta_key IN ( '_members_access_role', '_role' )
+				AND p.post_type IN ( {$placeholders} )",
+				$post_types
+			)
+		);
+	} else {
+		$roots = $wpdb->get_col(
+			"SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+			WHERE meta_key IN ( '_members_access_role', '_role' )"
+		);
+	}
+
+	$roots = array_values( array_unique( array_map( 'intval', (array) $roots ) ) );
+
+	// No posts carry a restriction, so nothing is hidden.
+	if ( empty( $roots ) ) {
+		return array();
+	}
+
+	// Prime caches so the per-post permission checks below don't each hit the database.
+	_prime_post_caches( $roots, false, true );
+
+	// Direct restrictions the current user cannot satisfy. members_can_current_user_view_post()
+	// already applies the role, author, edit_post, and restrict_content checks.
+	$hidden = array();
+
+	foreach ( $roots as $root_id ) {
+		if ( ! members_can_current_user_view_post( $root_id ) ) {
+			$hidden[ $root_id ] = $root_id;
+		}
+	}
+
+	if ( empty( $hidden ) ) {
+		return array();
+	}
+
+	// Expand to descendants that inherit an unsatisfied restriction. A descendant that
+	// carries its own restriction is governed independently, so descent stops at any post
+	// that is itself a restriction root.
+	$root_lookup = array_flip( $roots );
+	$parents     = array_values( $hidden );
+	$guard       = 0;
+
+	while ( ! empty( $parents ) && $guard++ < 100 ) {
+
+		$placeholders = implode( ', ', array_fill( 0, count( $parents ), '%d' ) );
+
+		$children = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts} WHERE post_parent IN ( {$placeholders} )",
+				$parents
+			)
+		);
+
+		$parents = array();
+
+		foreach ( array_map( 'intval', (array) $children ) as $child_id ) {
+
+			// Already hidden, or a root that is governed on its own terms.
+			if ( isset( $hidden[ $child_id ] ) || isset( $root_lookup[ $child_id ] ) ) {
+				continue;
+			}
+
+			$hidden[ $child_id ] = $child_id;
+			$parents[]           = $child_id;
+		}
+	}
+
+	return array_values( $hidden );
+}
+
+/**
+ * Excludes protected posts from REST API collection queries so pagination stays accurate.
+ *
+ * Filtering the results after the query runs (see members_filter_protected_posts_for_rest())
+ * hides the post bodies but leaves the row count intact, so the X-WP-Total / X-WP-TotalPages
+ * headers and per-page "empty array" responses can be used as a side channel to infer the
+ * existence of hidden posts. Excluding the row IDs in the query itself keeps the counts
+ * accurate and closes that side channel.
+ *
+ * The excluded IDs are resolved in PHP via members_get_rest_hidden_post_ids(), which reuses
+ * members_can_user_view_post(); custom filters on that function are therefore honored. Use
+ * the members_rest_hidden_post_ids filter to adjust the excluded set directly.
+ *
+ * @since 3.2.23
+ * @access public
+ * @param  string    $where  The WHERE clause of the query.
+ * @param  WP_Query  $query  The WP_Query object.
+ * @return string
+ */
+function members_exclude_protected_posts_from_rest_query( $where, $query ) {
+
+	global $wpdb;
+
+	if ( ! members_content_permissions_enabled() || ! members_is_hidden_protected_posts_enabled() ) {
+		return $where;
+	}
+
+	if ( ! members_should_apply_rest_protected_posts_sql( $query ) ) {
+		return $where;
+	}
+
+	// Permission managers may legitimately load protected posts (e.g. in the block
+	// editor). The posts_results filter still vets each one per-post.
+	if ( current_user_can( 'restrict_content' ) ) {
+		return $where;
+	}
+
+	$hidden = members_get_rest_hidden_post_ids( $query );
+
+	/**
+	 * Filters the post IDs excluded from REST collections for the current user.
+	 *
+	 * @since 3.2.24
+	 *
+	 * @param int[]    $hidden  Post IDs to exclude.
+	 * @param WP_Query $query   The WP_Query object.
+	 */
+	$hidden = apply_filters( 'members_rest_hidden_post_ids', $hidden, $query );
+
+	$hidden = array_filter( array_map( 'intval', (array) $hidden ) );
+
+	if ( ! empty( $hidden ) ) {
+		$where .= " AND {$wpdb->posts}.ID NOT IN ( " . implode( ', ', $hidden ) . ' )';
+	}
+
+	/**
+	 * Filters the SQL WHERE clause used to exclude protected posts from REST collections.
+	 *
+	 * @since 3.2.23
+	 *
+	 * @param string   $where  The WHERE clause of the query.
+	 * @param WP_Query $query  The WP_Query object.
+	 */
+	return apply_filters( 'members_rest_protected_posts_where', $where, $query );
+}
+
+# Exclude protected posts from REST API queries at the SQL level so pagination headers stay accurate.
+add_filter( 'posts_where', 'members_exclude_protected_posts_from_rest_query', 10, 2 );
+
+# Filter protected posts from being returned in the REST API.
+add_filter( 'posts_results', 'members_filter_protected_posts_for_rest', 10, 2 );
