@@ -1007,3 +1007,24 @@ Message : Maximum execution time of 120 seconds exceeded
 File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\modules\ai\connect\ai.php:2
 Status  : FAILED
 ================================================================
+2026-07-09T18:56:28+02:00 CRITICAL ================================================================
+[2026-07-09 16:56:28] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\inc\hustle-module-widget.php:126
+Status  : FAILED
+================================================================
+2026-07-09T18:56:28+02:00 CRITICAL ================================================================
+[2026-07-09 16:56:28] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\inc\hustle-module-widget.php:126
+Status  : FAILED
+================================================================
+2026-07-09T18:56:29+02:00 CRITICAL ================================================================
+[2026-07-09 16:56:29] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\inc\hustle-module-widget.php:126
+Status  : FAILED
+================================================================

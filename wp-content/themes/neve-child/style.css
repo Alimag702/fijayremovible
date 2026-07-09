@@ -4,7 +4,7 @@ Description:  Child theme para modificaciones varias
 Author:       Alicia Martin Gonzalez		
 Author URI:   http://fijayremovible.compact
 Template:     neve
-Version:      1.0.2
+Version:      1.0.4
 License:      GNU General Public License v2 or later
 License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
@@ -47,11 +47,11 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line > p,
 .contact-line label {
     display: block;
-    margin: 0 0 14px;
+   /* margin: 0 0 14px;*/
     color: inherit;
     font-size: 12px;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.2;
 }
 
 .contact-line > p:last-child {
@@ -142,6 +142,120 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line input[type="submit"]:hover {
     background: #1b0f95;
     transform: translateY(-2px);
+}
+
+/* Responsive real del formulario de contacto principal */
+.contact-line.contact-line-responsive {
+    width: min(100%, 500px);
+    max-width: 100%;
+    display: grid;
+    gap: clamp(10px, 1.8vw, 16px);
+    padding: clamp(14px, 3vw, 22px);
+}
+
+.contact-line.contact-line-responsive label {
+    margin: 0;
+    font-size: clamp(12px, 1.45vw, 16px);
+    line-height: 1.35;
+}
+
+.contact-line.contact-line-responsive label .wpcf7-form-control-wrap {
+    margin-top: clamp(6px, 1.1vw, 10px);
+}
+
+.contact-line.contact-line-responsive input[type="text"],
+.contact-line.contact-line-responsive input[type="email"],
+.contact-line.contact-line-responsive input[type="tel"],
+.contact-line.contact-line-responsive textarea {
+    min-height: clamp(38px, 5vw, 46px);
+    padding: clamp(6px, 1vw, 10px) 8px !important;
+    font-size: clamp(12px, 1.25vw, 15px);
+    line-height: 1.3;
+}
+
+.contact-line.contact-line-responsive textarea {
+    min-height: clamp(96px, 18vw, 150px);
+    padding-top: clamp(8px, 1vw, 10px) !important;
+}
+
+.contact-line.contact-line-responsive .check-azul {
+    margin-top: 2px;
+}
+
+.contact-line.contact-line-responsive .check-azul .wpcf7-list-item {
+    margin: 0;
+}
+
+.contact-line.contact-line-responsive .check-azul .input__checkbox_btn {
+    align-items: flex-start !important;
+    gap: 10px !important;
+    font-size: clamp(12px, 1.15vw, 14px);
+    line-height: 1.45;
+}
+
+.contact-line.contact-line-responsive .check-azul .toggle-button__icon {
+    margin-top: 1px;
+}
+
+.contact-line.contact-line-responsive .check-azul .input__checkbox_btn a {
+    font-size: inherit !important;
+}
+
+.contact-line.contact-line-responsive .btn-wrap {
+    margin-top: clamp(4px, 1vw, 10px);
+}
+
+.contact-line.contact-line-responsive input[type="submit"] {
+    padding: clamp(12px, 2vw, 14px) clamp(24px, 5vw, 36px);
+    font-size: clamp(14px, 1.45vw, 16px) !important;
+}
+
+.contact-line.contact-line-responsive .wpcf7-response-output {
+    margin-top: clamp(10px, 1.5vw, 16px);
+}
+
+@media (max-width: 768px) {
+    .contact-line.contact-line-responsive {
+        gap: 12px;
+        padding: 16px 14px;
+    }
+
+    .contact-line.contact-line-responsive label {
+        line-height: 1.3;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-line.contact-line-responsive {
+        gap: 10px;
+        padding: 14px 12px;
+    }
+
+    .contact-line.contact-line-responsive .wpcf7-form-control-wrap {
+        margin-top: 6px;
+    }
+
+    .contact-line.contact-line-responsive input[type="text"],
+    .contact-line.contact-line-responsive input[type="email"],
+    .contact-line.contact-line-responsive input[type="tel"],
+    .contact-line.contact-line-responsive textarea {
+        min-height: 36px;
+        padding: 7px 6px !important;
+    }
+
+    .contact-line.contact-line-responsive textarea {
+        min-height: 88px;
+        padding-top: 8px !important;
+    }
+
+    .contact-line.contact-line-responsive .check-azul .input__checkbox_btn {
+        gap: 8px !important;
+        line-height: 1.4;
+    }
+
+    .contact-line.contact-line-responsive input[type="submit"] {
+        width: 100%;
+    }
 }
 
 /* Compatibilidad con formularios dentro de Tabs de Elementor */

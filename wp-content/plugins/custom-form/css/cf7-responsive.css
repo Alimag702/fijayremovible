@@ -220,13 +220,17 @@
 
 /* Utilidades simples para alternar versiones por dispositivo en Elementor */
 
-.resp-desktop {
+.resp-desktop,
+.res-desktop
+{
     display: block !important;
 }
 
 
 .resp-tablet,
-.resp-mobile
+.resp-mobile,
+.res-tablet,
+.res-mobile
 {
     display: none !important;
 }
@@ -267,16 +271,20 @@
     }
 
     
-    .resp-desktop {
+    .resp-desktop,
+    .res-desktop,
+    .res-desktoc {
         display: none !important;
     }
 
-    .resp-tablet{
+    .resp-tablet,
+    .res-tablet{
         display: block !important;
     }
 
    
-    .resp-mobile {
+    .resp-mobile,
+    .res-mobile {
         display: none !important;
     }
 
@@ -310,11 +318,13 @@
     }
 
    
-    .resp-tablet {
+    .resp-tablet,
+    .res-tablet {
         display: none !important;
     }
 
-    .resp-mobile {
+    .resp-mobile,
+    .res-mobile {
         display: block !important;
     }
 }
