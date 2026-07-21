@@ -38,8 +38,6 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line {
     width: min(100%, 500px);
     max-width: 100%;
-    margin: 0 auto;
-    padding: 20px 15px;
     color: #1b0f95;
     backdrop-filter: blur(8px);
 }
@@ -150,7 +148,6 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
     max-width: 100%;
     display: grid;
     gap: clamp(10px, 1.8vw, 16px);
-    padding: clamp(14px, 3vw, 22px);
 }
 
 .contact-line.contact-line-responsive label {
