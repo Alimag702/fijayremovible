@@ -1028,3 +1028,192 @@ Message : Maximum execution time of 120 seconds exceeded
 File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-popup\inc\hustle-module-widget.php:126
 Status  : FAILED
 ================================================================
+2026-07-22T17:34:24+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:24] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:24+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:24] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:25+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:25] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:34+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:34] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:35+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:35] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:35+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:35] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-includes\functions.php:6910
+Status  : FAILED
+================================================================
+2026-07-22T17:34:50+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:50] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\smart-slider-3\Nextend\Framework\Pattern\SingletonTrait.php:4
+Status  : FAILED
+================================================================
+2026-07-22T17:34:50+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:50] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\smart-slider-3\Nextend\Framework\Pattern\SingletonTrait.php:4
+Status  : FAILED
+================================================================
+2026-07-22T17:34:50+02:00 CRITICAL ================================================================
+[2026-07-22 15:34:50] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\smart-slider-3\Nextend\Framework\Pattern\SingletonTrait.php:4
+Status  : FAILED
+================================================================
+2026-07-22T17:35:01+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:01] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\optimole-wp\inc\compatibilities\jet_elements.php:43
+Status  : FAILED
+================================================================
+2026-07-22T17:35:01+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:01] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\optimole-wp\inc\compatibilities\jet_elements.php:43
+Status  : FAILED
+================================================================
+2026-07-22T17:35:01+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:01] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\optimole-wp\inc\compatibilities\jet_elements.php:43
+Status  : FAILED
+================================================================
+2026-07-22T17:35:25+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:25] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\core\settings\manager.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:25+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:25] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\core\settings\manager.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:25+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:25] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\core\settings\manager.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:33+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:33] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\template-library\sources\base.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:33+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:33] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\template-library\sources\base.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:34+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:34] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\elementor\includes\template-library\sources\base.php:2
+Status  : FAILED
+================================================================
+2026-07-22T17:35:56+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:56] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\user-registration\includes\admin\settings\class-ur-members-menu.php:12
+Status  : FAILED
+================================================================
+2026-07-22T17:35:57+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:57] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\user-registration\includes\admin\settings\class-ur-members-menu.php:12
+Status  : FAILED
+================================================================
+2026-07-22T17:35:57+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:57] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\user-registration\includes\admin\settings\class-ur-members-menu.php:12
+Status  : FAILED
+================================================================
+2026-07-22T17:35:58+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:58] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\alerts\webinar-promo-notification.php:3
+Status  : FAILED
+================================================================
+2026-07-22T17:35:58+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:58] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\alerts\webinar-promo-notification.php:3
+Status  : FAILED
+================================================================
+2026-07-22T17:35:58+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:58] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\integrations\alerts\webinar-promo-notification.php:3
+Status  : FAILED
+================================================================
+2026-07-22T17:35:58+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:58] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\conditionals\news-conditional.php:8
+Status  : FAILED
+================================================================
+2026-07-22T17:35:58+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:58] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\conditionals\news-conditional.php:8
+Status  : FAILED
+================================================================
+2026-07-22T17:35:59+02:00 CRITICAL ================================================================
+[2026-07-22 15:35:59] CRITICAL  Fatal error
+----------------------------------------------------------------
+Message : Maximum execution time of 120 seconds exceeded
+File    : C:\xampp8.2.12\htdocs\fijayremovible\wp-content\plugins\wordpress-seo\src\conditionals\news-conditional.php:8
+Status  : FAILED
+================================================================
