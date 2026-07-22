@@ -46,11 +46,12 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line > p,
 .contact-line label {
     display: block;
-   /* margin: 0 0 14px;*/
+    margin: 0 0 0px;
     color: inherit;
     font-size: 12px;
     font-weight: 500;
     line-height: 1.2;
+    margin-bottom: 0px !important;
 }
 
 .contact-line > p:last-child {
