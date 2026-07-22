@@ -23,6 +23,7 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
     font-size: 20px;
     font-weight: 500;
     line-height: 19px;
+    background-color: #1B0F9557;
 }
 
 .user-registration-password-hint {
@@ -33,6 +34,8 @@ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, access
 .contact-line,
 .contact-line * {
     box-sizing: border-box;
+    background-color: #1b0f953b;
+    border-radius: 25px;
 }
 
 .contact-line {
