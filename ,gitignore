@@ -31,6 +31,3 @@ node_modules/
 # Subidas de usuarios
 wp-content/uploads/
 
-# Configuración privada de VS Code y SFTP
-.vscode/
-.vscode/sftp.json
