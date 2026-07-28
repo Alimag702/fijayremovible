@@ -1,0 +1,33 @@
+# Configuración sensible
+wp-config.php
+.htaccess
+
+# Archivos temporales y caché
+wp-content/cache/
+wp-content/litespeed/
+wp-content/wflogs/
+wp-content/upgrade/
+wp-content/backup*/
+*.log
+
+# Archivos del editor y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Copias
+*.zip
+*.tar
+*.tar.gz
+*.sql
+*.sql.gz
+*.bak
+*.bk
+
+# Dependencias locales
+node_modules/
+
+# Subidas de usuarios
+wp-content/uploads/
+
